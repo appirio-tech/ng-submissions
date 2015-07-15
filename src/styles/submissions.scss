@@ -1,4 +1,4 @@
-@import "work-styles";
+@import "work-includes";
 
 submissions {
   h4.work-name {
@@ -18,23 +18,29 @@ submissions {
     }
 
     .checkmark {
-      min-width       : 20px;
+      width       : 20px;
       height          : 20px;
       background-color: green;
       margin-left     : $spacing;
     }
 
     .avatar {
-      min-width       : 40px;
+      width       : 40px;
       height          : 40px;
       background-color: blue;
       margin-left     : $spacing;
     }
 
+    .bubble {
+      width       : 40px;
+      height          : 40px;
+      background-color: pink;
+    }
+
     .submitter {
       margin-left: $spacing;
-      min-width: 120px;
-      max-width: 120px;
+      min-width  : 120px;
+      max-width  : 120px;
 
       .name {
         @include ellipsis();
@@ -51,9 +57,9 @@ submissions {
     }
 
     .thumbnails {
-      display        : flex;
-      align-items    : center;
-      flex-wrap      : wrap;
+      display    : flex;
+      align-items: center;
+      flex-wrap  : wrap;
 
       .thumbnail {
         margin: $spacing-small;

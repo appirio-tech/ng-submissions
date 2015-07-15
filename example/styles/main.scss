@@ -1,3 +1,5 @@
+@import "work-styles";
+
 h1 {
   text-align: center;
 }
@@ -6,5 +8,11 @@ h1 {
   max-width       : 760px;
   background-color: white;
   margin          : 0 auto;
-  padding         : 50px;
+  padding         : 20px;
+}
+
+body > a {
+  color: white;
+  margin: 10px;
+  display: inline-block;
 }

@@ -1,0 +1,66 @@
+@import "work-includes";
+
+submission-detail {
+  h4.work-name {
+    text-align: center;
+  }
+
+  header {
+    border         : 2px solid $primary-color-lightest;
+    border-left    : none;
+    border-right   : none;
+    display        : flex;
+    align-items    : center;
+    justify-content: space-between;
+    padding        : $spacing 0;
+    margin-top     : $spacing-big;
+
+    .submitter {
+      display: flex;
+      align-items    : center;
+
+      .avatar {
+        min-width       : 40px;
+        height          : 40px;
+        background-color: blue;
+        margin-left     : $spacing;
+      }
+
+      .text {
+        margin-left: $spacing;
+      }
+    }
+
+    .accept {
+      display: flex;
+      align-items    : center;
+
+      .checkmark {
+        min-width       : 20px;
+        height          : 20px;
+        background-color: green;
+        margin-left     : $spacing;
+      }
+
+      .text {
+        margin-left: $spacing;
+      }
+    }
+
+    .comment {
+      display: flex;
+      align-items    : center;
+
+      .bubble {
+        min-width       : 20px;
+        height          : 20px;
+        background-color: green;
+        margin-left     : $spacing;
+      }
+
+      .text {
+        margin-left: $spacing;
+      }
+    }
+  }
+}
