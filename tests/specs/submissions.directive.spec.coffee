@@ -1,9 +1,9 @@
 'use strict'
 
 element = null
-html    = '<threads subscriber-id="123"></threads>'
+html    = '<submissions></submissions>'
 
-describe 'ThreadDirective', ->
+describe 'SubmissionsDirective', ->
   beforeEach inject ($compile, $rootScope) ->
     compiled = $compile html
     element  = compiled $rootScope

@@ -1,29 +1,17 @@
 - var scripts = []
 - scripts.push('constants')
-- scripts.push('messaging.module')
-- scripts.push('messaging.controller')
-- scripts.push('messaging.service')
-- scripts.push('messaging.directive')
-- scripts.push('threads.directive')
-- scripts.push('messages-api.service')
-- scripts.push('user-api.service')
-- scripts.push('threads.service')
-- scripts.push('threads-api.service')
-- scripts.push('threads.controller')
-- scripts.push('time-lapse.filter')
+- scripts.push('submissions.module')
+- scripts.push('submissions.directive')
 
-- scriptsNoBuild = ['routes', 'example.controller']
+- scriptsNoBuild = ['routes']
 
 - var bowers = []
 - bowers.push('angular/angular')
 - bowers.push('angular-resource/angular-resource')
 - bowers.push('angular-ui-router/release/angular-ui-router')
-- bowers.push('angular-scroll/angular-scroll')
-- bowers.push('moment/moment')
-- bowers.push('appirio-tech-ng-file-upload/dist/main')
 
 doctype html
-html(ng-app='appirio-tech-messaging')
+html(ng-app='appirio-tech-submissions')
   head
     script(type="text/javascript", src="/scripts/json-fixtures.js")
 
@@ -48,7 +36,7 @@ html(ng-app='appirio-tech-messaging')
 
       localStorage.setItem('userJWTToken', '"yyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2FwaS50b3Bjb2Rlci1kZXYuY29tIiwiZXhwIjoxNDMzMjcxNzYwLCJ1c2VySWQiOiI0MDEzNTUxNiIsImlhdCI6MTQzMzI3MTE2MCwianRpIjoiMDZhNzVjM2EtMTQ0MC00MWE3LTk5N2YtZmFmMGVjZjFmOGM1In0.okSjl5KOmGQ6hJEoQxk4SVkFra65_Id6KUQGdAVmJNe"');
 
-    title Messaging
+    title Submissions
 
     meta(charset='utf-8')
 
@@ -59,7 +47,7 @@ html(ng-app='appirio-tech-messaging')
     include css-files
 
   body
-    main.layout-main.messaging("role"="main", class="{{ pageClass }}", ui-view="")
+    main.layout-main.submissions("role"="main", class="{{ pageClass }}", ui-view="")
 
     each path in bowers
       script(src="bower_components/#{path}.js", type="text/javascript")

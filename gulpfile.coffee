@@ -3,11 +3,10 @@ configs =
 
 configs.templateCache =
   files : [
-    '.tmp/views/messaging.directive.html'
-    '.tmp/views/threads.directive.html'
+    '.tmp/views/submissions.directive.html'
   ]
   root  : 'views/'
-  module: 'appirio-tech-messaging'
+  module: 'appirio-tech-submissions'
 
 
 ### END CONFIG ###
