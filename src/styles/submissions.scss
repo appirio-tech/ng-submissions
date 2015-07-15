@@ -1,5 +1,69 @@
-@import "work-includes";
+@import "work-styles";
 
 submissions {
-  background-color: pink;
+  h4.work-name {
+    text-align: center;
+  }
+
+  > ul {
+    margin-top : $spacing;
+  }
+
+  .submission {
+    display    : flex;
+    align-items: center;
+
+    &:first-child {
+      margin-top: 0;
+    }
+
+    .checkmark {
+      min-width       : 20px;
+      height          : 20px;
+      background-color: green;
+      margin-left     : $spacing;
+    }
+
+    .avatar {
+      min-width       : 40px;
+      height          : 40px;
+      background-color: blue;
+      margin-left     : $spacing;
+    }
+
+    .submitter {
+      margin-left: $spacing;
+      min-width: 120px;
+      max-width: 120px;
+
+      .name {
+        @include ellipsis();
+      }
+
+      time {
+        display: block;
+      }
+    }
+
+    .link {
+      margin-left: $spacing;
+      white-space: nowrap;
+    }
+
+    .thumbnails {
+      display        : flex;
+      align-items    : center;
+      flex-wrap      : wrap;
+
+      .thumbnail {
+        margin: $spacing-small;
+
+        .img {
+          width           : 50px;
+          height          : 40px;
+          background-color: purple;
+        }
+      }
+    }
+  }
 }

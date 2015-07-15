@@ -1,1 +1,21 @@
-div hello world
+h4.work-name {{ vm.workName }} : {{ vm.workType }}
+
+h2 Screening Submissions
+
+ul.submissions
+  li.submission(ng-repeat="submission in vm.screeningSubmissions track by $index")
+    .checkmark
+
+    .avatar
+
+    .submitter
+      .name {{ submission.name }}
+
+      time {{ submission.createdAt }}
+
+    ul.thumbnails
+      li.thumbnail(ng-repeat="i in [1, 2, 3, 4] track by $index")
+        .img
+
+    .link
+      a(href="#") view all
