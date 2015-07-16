@@ -18,21 +18,24 @@ submissions {
     }
 
     .checkmark {
-      width       : 20px;
+      width           : 20px;
+      min-width       : 20px;
       height          : 20px;
       background-color: green;
       margin-left     : $spacing;
     }
 
     .avatar {
-      width       : 40px;
+      width           : 40px;
+      min-width       : 40px;
       height          : 40px;
       background-color: blue;
       margin-left     : $spacing;
     }
 
     .bubble {
-      width       : 40px;
+      width           : 40px;
+      min-width       : 40px;
       height          : 40px;
       background-color: pink;
     }
@@ -62,7 +65,8 @@ submissions {
       flex-wrap  : wrap;
 
       .thumbnail {
-        margin: $spacing-small;
+        margin-right: $spacing-small;
+        margin-bottom: $spacing-small;
 
         .img {
           width           : 50px;
