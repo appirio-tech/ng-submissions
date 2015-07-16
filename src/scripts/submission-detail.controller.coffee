@@ -1,14 +1,28 @@
 'use strict'
 
-SubmissionDetailController = ($scope) ->
+SubmissionDetailController = ($scope, SubmissionDetailService) ->
   vm = this
+  vm.work = null;
+  vm.submissionAccepted = false;
+
+  vm.acceptSubmission = ->
+    SubmissionDetailService.acceptSubmission()
 
   activate = ->
-    vm.workName = 'IBM Internal HR'
-    vm.workType = 'mobile app'
+    vm.work = SubmissionDetailService.initializeSubmissionDetail()
+    console.log('initalizing', vm.work)
+
+  watchSubmissionAccepted = ->
+    SubmissionDetailService.submissionAccepted
+
+  setSubmissionAccepted = (accepted) ->
+    console.log('watching', accepted)
+    vm.submissionAccepted = accepted
+
+  $scope.$watch watchSubmissionAccepted, setSubmissionAccepted, true
 
   activate()
 
-SubmissionDetailController.$inject = ['$scope']
+SubmissionDetailController.$inject = ['$scope', 'SubmissionDetailService']
 
 angular.module('appirio-tech-submissions').controller 'SubmissionDetailController', SubmissionDetailController
