@@ -1,4 +1,4 @@
-h4.work-name {{ vm.workName }} : {{ vm.workType }}
+h4.work-name {{ vm.work.name }} : {{ vm.work.type }}
 
 ul.actions
   li.submitter
@@ -12,7 +12,8 @@ ul.actions
   li.accept
     .checkmark
 
-    p Accept this submission
+    p(ng-if="!vm.submissionAccepted", ng-click="vm.acceptSubmission()") Accept this submission
+    p(ng-if="vm.submissionAccepted") Submission Accepted
 
   li.comment
     .bubble
