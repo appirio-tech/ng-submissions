@@ -1,7 +1,7 @@
 h4.work-name {{ vm.workName }} : {{ vm.workType }}
 
-header
-  .submitter
+ul.actions
+  li.submitter
     .avatar
 
     p
@@ -9,18 +9,20 @@ header
 
       time Submitted: 12:30 June 24 2015
 
-  .accept
+  li.accept
     .checkmark
 
     p Accept this submission
 
-  .comment
+  li.comment
     .bubble
 
     p Comment on this submission
 
 ul.previews
   li.preview(ng-repeat="preview in [1, 2, 3, 4, 5, 6] track by $index")
+    .checkmark
+
     .img
 
-    p login-screen
+    p a-long-freaking-name-oh-baby-jesus
