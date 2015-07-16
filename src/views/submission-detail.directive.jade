@@ -4,17 +4,23 @@ header
   .submitter
     .avatar
 
-    .text
-      .name Rafael
+    p
+      span Rafael
 
       time Submitted: 12:30 June 24 2015
 
   .accept
     .checkmark
 
-    .text Accept this submission
+    p Accept this submission
 
   .comment
     .bubble
 
-    .text Comment on this submission
+    p Comment on this submission
+
+ul.previews
+  li.preview(ng-repeat="preview in [1, 2, 3, 4, 5, 6] track by $index")
+    .img
+
+    p login-screen

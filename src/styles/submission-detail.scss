@@ -26,8 +26,12 @@ submission-detail {
         margin-left     : $spacing;
       }
 
-      .text {
+      p {
         margin-left: $spacing;
+
+        time {
+          display: block;
+        }
       }
     }
 
@@ -42,7 +46,7 @@ submission-detail {
         margin-left     : $spacing;
       }
 
-      .text {
+      p {
         margin-left: $spacing;
       }
     }
@@ -58,8 +62,28 @@ submission-detail {
         margin-left     : $spacing;
       }
 
-      .text {
+      p {
         margin-left: $spacing;
+      }
+    }
+  }
+
+  .previews {
+    display  : flex;
+    flex-wrap: wrap;
+    margin-top: $spacing;
+
+    .preview {
+      margin: 10px;
+
+      .img {
+        width: 160px;
+        height: 130px;
+        background-color: orange;
+      }
+
+      p {
+        padding: $spacing-smallest;
       }
     }
   }
