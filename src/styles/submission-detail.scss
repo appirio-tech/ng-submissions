@@ -20,8 +20,9 @@ submission-detail {
       align-items: center;
       margin     : $spacing;
 
-      p {
+      p, .name-time {
         margin-left: $spacing;
+        max-width: 200px;
       }
     }
 
@@ -30,6 +31,10 @@ submission-detail {
         min-width       : 40px;
         height          : 40px;
         background-color: blue;
+      }
+
+      .name {
+        @include ellipsis();
       }
 
       time {
