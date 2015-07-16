@@ -5,6 +5,7 @@ configs.templateCache =
   files : [
     '.tmp/views/submissions.directive.html'
     '.tmp/views/submission-detail.directive.html'
+    '.tmp/views/submission-slides.directive.html'
   ]
   root  : 'views/'
   module: 'appirio-tech-submissions'

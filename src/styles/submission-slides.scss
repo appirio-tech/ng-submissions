@@ -1,0 +1,91 @@
+@import "work-includes";
+
+submission-slides {
+  ul.header {
+    display        : flex;
+    justify-content: space-between;
+    align-items    : center;
+    flex-wrap      : wrap;
+
+    li {
+      display    : flex;
+      align-items: center;
+    }
+
+    .avatar {
+      width           : 40px;
+      height          : 40px;
+      background-color: grey;
+    }
+
+    .name-time {
+      margin-left: $spacing;
+    }
+
+    .checkmark {
+      height          : 30px;
+      width           : 30px;
+      background-color: green;
+    }
+
+    .bubble {
+      height          : 30px;
+      width           : 30px;
+      margin-left     : $spacing;
+      background-color: orange;
+    }
+  }
+
+  ul.slideshow {
+    display        : flex;
+    justify-content: space-between;
+    align-items    : center;
+    flex-wrap      : wrap;
+
+    .left-arrow {
+      width           : 50px;
+      height          : 80px;
+      background-color: purple;
+    }
+
+    .right-arrow {
+      width           : 50px;
+      height          : 80px;
+      background-color: purple;
+    }
+
+    .preview {
+      max-width: 200px;
+
+      p {
+        text-align: center;
+        @include ellipsis();
+        margin-top: $spacing-big;
+      }
+
+      .img {
+        width: 200px;
+        height: 400px;
+        background-color: blue;
+      }
+    }
+  }
+
+  ul.thumbnails {
+    display        : flex;
+    justify-content: space-between;
+    align-items    : center;
+    flex-wrap      : wrap;
+    margin         : 0 auto;
+    margin-top     : $spacing-big;
+    max-width      : 360px;
+
+    li {
+      .img {
+        width: 30px;
+        height: 30px;
+        background-color: pink;
+      }
+    }
+  }
+}

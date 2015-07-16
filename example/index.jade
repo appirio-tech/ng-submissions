@@ -5,6 +5,8 @@
 - scripts.push('submissions.directive')
 - scripts.push('submission-detail.controller')
 - scripts.push('submission-detail.directive')
+- scripts.push('submission-slides.controller')
+- scripts.push('submission-slides.directive')
 
 
 - scriptsNoBuild = ['routes']
@@ -54,6 +56,8 @@ html(ng-app='appirio-tech-submissions')
     a.submissions(ui-sref="submissions") Submissions
 
     a.detail(ui-sref="submission-detail") Detail
+
+    a.detail(ui-sref="submission-slides") Slides
 
     main.layout-main.submissions("role"="main", class="{{ pageClass }}", ui-view="")
 
