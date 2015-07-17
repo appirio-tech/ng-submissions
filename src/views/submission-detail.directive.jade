@@ -5,9 +5,9 @@ ul.actions
     .avatar
 
     .name-time
-      .name Rafael is the best ninja mutant turtle
+      .name {{vm.work.submitter.name}}
 
-      time Submitted: 12:30 June 24 2015
+      time Submitted: {{vm.work.dateCreated}}
 
   li.accept
     .checkmark
@@ -21,9 +21,9 @@ ul.actions
     p Comment on this submission
 
 ul.previews
-  li.preview(ng-repeat="preview in [1, 2, 3, 4, 5, 6] track by $index")
+  li.preview(ng-repeat="file in vm.work.files track by $index")
     .checkmark
 
-    .img
+    button.img(ui-sref="submission-slides")
 
     p a-long-freaking-name-oh-baby-jesus
