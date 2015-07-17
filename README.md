@@ -7,7 +7,7 @@
 http://docs.messaging14.apiary.io/#
 
 ### Designs
-https://drive.google.com/drive/folders/0B6NlMQSXkImbfm5DcEZqN1JPN1R6MGVvbDdzTEEtVlZPQTBjNU1QYVRaWVFfcXZQN2FjZkk
+https://drive.google.com/drive/folders/0B6NlMQSXkImbfkZYOXctRWdVakJjOWcycHlGTG1aUnFYZzY5eDVjSHlKTmhHN19jWDNlVEk
 
 ## Development
 ```
