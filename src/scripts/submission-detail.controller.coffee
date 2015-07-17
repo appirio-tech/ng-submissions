@@ -2,13 +2,14 @@
 
 SubmissionDetailController = ($scope, SubmissionDetailService) ->
   vm = this
-  vm.submissionAccepted = false;
+  vm.submissionAccepted = null
 
   vm.acceptSubmission = ->
     SubmissionDetailService.acceptSubmission()
 
   activate = ->
     vm.work = SubmissionDetailService.initializeSubmissionDetail()
+    vm.submissionAccepted = vm.work.accepted;
     return
 
   watchSubmissionAccepted = ->
