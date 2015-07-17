@@ -3,7 +3,7 @@ ul.header
     .avatar
 
     .name-time
-      .name alpha User
+      .name Alpha User
 
       time Submitted: 12:30 June 24 2015
 
@@ -16,15 +16,16 @@ hr
 
 ul.slideshow
   li
-    button.left-arrow
+    button.left-arrow(ng-click="previewPrevious()")
 
   li.preview
     .img
+      p {{vm.selectedPreview.id}}
 
     p a-really-login-freaken-name-that-some-idiot-put
 
   li
-    button.right-arrow
+    button.right-arrow(ng-click="previewNext()")
 
 ul.thumbnails
   for i in [0, 1, 2, 3, 4, 5, 6]
