@@ -16,50 +16,62 @@ submissions {
       margin-top: 0;
     }
 
-    .checkmark {
-      width           : 20px;
-      min-width       : 20px;
-      height          : 20px;
-      background-color: green;
-    }
+    ul.user-details {
+      @include flex-center;
 
-    .avatar {
-      width           : 40px;
-      min-width       : 40px;
-      height          : 40px;
-      background-color: blue;
-      margin-left     : $spacing;
-    }
-
-    .bubble {
-      width           : 40px;
-      min-width       : 40px;
-      height          : 40px;
-      background-color: pink;
-    }
-
-    .submitter {
-      margin-left: $spacing;
-      min-width  : 120px;
-      max-width  : 120px;
-
-      .name {
-        @include ellipsis();
+      li {
+        margin-right: $spacing-small;
+        margin-bottom: $spacing-small;
       }
 
-      time {
-        display: block;
+      .name-time {
+        min-width  : 120px;
+        max-width  : 120px;
+
+        .name {
+          @include ellipsis();
+        }
+
+        time {
+          display: block;
+        }
+      }
+
+      .avatar {
+        width           : 40px;
+        min-width       : 40px;
+        height          : 40px;
+        background-color: blue;
+        margin-left     : $spacing;
       }
     }
 
-    .actions {
-      min-width: 160px;
+    ul.actions {
       margin-left: $spacing;
       @include flex-center(space-between);
+
+      li {
+        margin-right: $spacing-small;
+        margin-bottom: $spacing-small;
+      }
+
+      .checkmark {
+        width           : 20px;
+        min-width       : 20px;
+        height          : 20px;
+        background-color: green;
+      }
+
+      .bubble {
+        width           : 40px;
+        min-width       : 40px;
+        height          : 40px;
+        background-color: pink;
+      }
     }
 
-    .thumbnails {
-      @include flex-center(space-between);
+    ul.thumbnails {
+      @include flex-center;
 
       .thumbnail {
         margin-right: $spacing-small;
