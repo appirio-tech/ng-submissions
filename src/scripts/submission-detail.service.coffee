@@ -1,7 +1,7 @@
 'use strict'
 service = ($resource) ->
   #variables
-  submissionAccepted = false;
+  submissionAccepted = false
   #functions
   initializeSubmissionDetail = ->
     #TODO: replace with API data
@@ -10,8 +10,8 @@ service = ($resource) ->
     type: 'mobile app'
 
   acceptSubmission = ->
-    service.submissionAccepted = true
-    console.log('accepting', service.submissionAccepted)
+    this.submissionAccepted = true
+    console.log('accepting', this.submissionAccepted)
 
   submissionAccepted: submissionAccepted
   initializeSubmissionDetail: initializeSubmissionDetail
