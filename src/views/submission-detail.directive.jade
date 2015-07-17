@@ -10,13 +10,13 @@ ul.actions
       time Submitted: {{vm.work.dateCreated}}
 
   li.accept
-    .checkmark
+    button.checkmark(ng-click="vm.acceptSubmission()")
 
-    p(ng-if="!vm.submissionAccepted", ng-click="vm.acceptSubmission()") Accept this submission
+    p(ng-if="!vm.submissionAccepted") Accept this submission
     p(ng-if="vm.submissionAccepted") Submission Accepted
 
   li.comment
-    .bubble
+    button.bubble
 
     p Comment on this submission
 
@@ -26,4 +26,4 @@ ul.previews
 
     button.img(ui-sref="submission-slides")
 
-    p a-long-freaking-name-oh-baby-jesus
+    p {{file.name}}
