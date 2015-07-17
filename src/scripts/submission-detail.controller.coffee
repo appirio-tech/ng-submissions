@@ -8,8 +8,13 @@ SubmissionDetailController = ($scope, SubmissionDetailService) ->
     SubmissionDetailService.acceptSubmission()
 
   activate = ->
-    vm.work = SubmissionDetailService.initializeSubmissionDetail()
-    vm.submissionAccepted = vm.work.accepted;
+    #TODO: dynamic ids based on stateParams
+    params =
+      id: '123',
+      submission_id: '321'
+    SubmissionDetailService.getSubmissionDetail(params).then (response) ->
+      vm.work = response
+      vm.submissionAccepted = vm.work.accepted;
     return
 
   watchSubmissionAccepted = ->
