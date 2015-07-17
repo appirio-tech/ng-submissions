@@ -6,22 +6,26 @@ service = ($resource) ->
   #functions
   initializeSubmissionDetail = ->
     #TODO: replace with API data
-    id: '123'
-    name: 'IBM Internal HR'
-    type: 'mobile app'
-    submitter:
-      name: 'Alpha User'
-    dateCreated: '12:30 June 24 2015'
-    files: [
-      {name: 'a-long-freaken-name-oh-baby-jesus'},
-      {name: 'a-long-freaken-name-oh-baby-jesus'},
-      {name: 'a-long-freaken-name-oh-baby-jesus'},
-      {name: 'a-long-freaken-name-oh-baby-jesus'},
-      {name: 'a-long-freaken-name-oh-baby-jesus'},
-      {name: 'a-long-freaken-name-oh-baby-jesus'}
-    ]
+    {
+       id: '123',
+       submitter: {
+         id: '123',
+         handle: 'Alpha User',
+         avatarUrl: 'http://www.topcoder.com/i/m/cardiboy_big.jpg'
+       },
+       accepted: false,
+       createdAt: '2008-10-15T05:08:00.000-0400',
+       files: [{
+         id: '1234567',
+         name: 'BatBaby',
+         accepted: true,
+         thumbnailUrl: 'http://www.topcoder.com/i/m/cardiboy_big.jpg',
+         url:  'http://www.topcoder.com/i/m/cardiboy_big.jpg'
+       }]
+     }
 
   acceptSubmission = ->
+    # TODO: PUT request to submissions service
     this.submissionAccepted = true
     return
 
