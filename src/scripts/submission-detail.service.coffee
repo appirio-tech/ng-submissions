@@ -9,6 +9,10 @@ service = ($resource) ->
     id: '123'
     name: 'IBM Internal HR'
     type: 'mobile app'
+    submitter:
+      name: 'Alpha User'
+    dateCreated: '12:30 June 24 2015'
+    files: [1, 2, 3, 4, 5, 6]
 
   acceptSubmission = ->
     this.submissionAccepted = true
