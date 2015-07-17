@@ -6,10 +6,10 @@ transformResponse = (response) ->
   parsed?.result?.content || {}
 
 srv = ($resource, API_URL) ->
-  url = API_URL + '/:work_id/submissions/:submission_id'
+  url = API_URL + '/work/:id/submissions/:submission_id'
 
   params  =
-    work_id          : '@work_id'
+    id: '@id'
     submission_id: '@submission_id'
 
   actions =

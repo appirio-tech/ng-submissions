@@ -1,28 +1,20 @@
 'use strict'
-service = ($resource) ->
+service = ($resource, SubmissionDetailAPIService) ->
   #variables
   submissionAccepted = false
 
   #functions
-  initializeSubmissionDetail = ->
+  getSubmissionDetail = (params)->
     #TODO: replace with API data
-    {
-       id: '123',
-       submitter: {
-         id: '123',
-         handle: 'Alpha User',
-         avatarUrl: 'http://www.topcoder.com/i/m/cardiboy_big.jpg'
-       },
-       accepted: false,
-       createdAt: '2008-10-15T05:08:00.000-0400',
-       files: [{
-         id: '1234567',
-         name: 'BatBaby',
-         accepted: true,
-         thumbnailUrl: 'http://www.topcoder.com/i/m/cardiboy_big.jpg',
-         url:  'http://www.topcoder.com/i/m/cardiboy_big.jpg'
-       }]
-     }
+    resource = SubmissionDetailAPIService.get params
+
+    resource.$promise.then (response) ->
+     return response
+
+    resource.$promise.catch (error)->
+      console.log('error on submission detail', error)
+
+    resource.$promise.finally ->
 
   acceptSubmission = ->
     # TODO: PUT request to submissions service
@@ -30,10 +22,10 @@ service = ($resource) ->
     return
 
   submissionAccepted: submissionAccepted
-  initializeSubmissionDetail: initializeSubmissionDetail
+  getSubmissionDetail: getSubmissionDetail
   acceptSubmission: acceptSubmission
 
 
-service.$inject = ['$resource']
+service.$inject = ['$resource', 'SubmissionDetailAPIService']
 
 angular.module('appirio-tech-submissions').factory 'SubmissionDetailService', service

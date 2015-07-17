@@ -23,7 +23,6 @@ ul.previews
   li.preview(ng-repeat="file in vm.work.files track by $index")
     .checkmark
 
-    button.img(ui-sref="submission-slides")
-      img(src="file.thumbnailUrl")
+    img.img(src="{{file.thumbnailUrl}}", ui-sref="submission-slides")
 
-    p {{file.name}}
+    p {{file.id}}
