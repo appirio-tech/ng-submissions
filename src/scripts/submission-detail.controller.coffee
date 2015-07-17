@@ -2,8 +2,8 @@
 
 SubmissionDetailController = ($scope, SubmissionDetailService) ->
   vm = this
-  vm.work = null;
-  vm.submissionAccepted = false;
+  # vm.work = null;
+  # vm.submissionAccepted = false;
 
   vm.acceptSubmission = ->
     SubmissionDetailService.acceptSubmission()
@@ -14,9 +14,10 @@ SubmissionDetailController = ($scope, SubmissionDetailService) ->
 
   watchSubmissionAccepted = ->
     SubmissionDetailService.submissionAccepted
+    console.log('submission', SubmissionDetailService.submissionAccepted)
 
   setSubmissionAccepted = (accepted) ->
-    console.log('watching', accepted)
+    console.log('setting', accepted)
     vm.submissionAccepted = accepted
 
   $scope.$watch watchSubmissionAccepted, setSubmissionAccepted, true
