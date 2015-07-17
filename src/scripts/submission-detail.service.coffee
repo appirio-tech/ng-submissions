@@ -12,7 +12,14 @@ service = ($resource) ->
     submitter:
       name: 'Alpha User'
     dateCreated: '12:30 June 24 2015'
-    files: [1, 2, 3, 4, 5, 6]
+    files: [
+      {name: 'a-long-freaken-name-oh-baby-jesus'},
+      {name: 'a-long-freaken-name-oh-baby-jesus'},
+      {name: 'a-long-freaken-name-oh-baby-jesus'},
+      {name: 'a-long-freaken-name-oh-baby-jesus'},
+      {name: 'a-long-freaken-name-oh-baby-jesus'},
+      {name: 'a-long-freaken-name-oh-baby-jesus'}
+    ]
 
   acceptSubmission = ->
     this.submissionAccepted = true
