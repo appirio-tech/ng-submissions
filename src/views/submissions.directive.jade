@@ -1,11 +1,11 @@
-h4.work-name {{ vm.workName }} : {{ vm.workType }}
+h1.work-name {{ vm.workName }} : {{ vm.workType }}
 
-h2 Screening Submissions
+h3 Screening Submissions Phase
+
+h4 Review and comment on submissions. Choose the participants that will move to the final phase.
 
 ul.submissions
   li.submission(ng-repeat="submission in vm.screeningSubmissions track by $index")
-    .checkmark
-
     .avatar
 
     .submitter
@@ -17,15 +17,20 @@ ul.submissions
       li.thumbnail(ng-repeat="i in [1, 2, 3, 4] track by $index")
         .img
 
-    .link
-      a(href="#") view all
+    ul.actions
+      li.view
+        a(href="#") and 123 more
 
-h2 Final Submissions
+      li
+        .checkmark
+
+      li
+        .bubble
+
+h3 Final Submissions
 
 ul.submissions
   li.submission(ng-repeat="submission in vm.screeningSubmissions track by $index")
-    .checkmark
-
     .avatar
 
     .submitter
@@ -37,5 +42,12 @@ ul.submissions
       li.thumbnail(ng-repeat="i in [1, 2, 3, 4] track by $index")
         .img
 
-    .link
-      a(href="#") view all
+    ul.actions
+      li.view
+        a(href="#") and 123 more
+
+      li
+        .checkmark
+
+      li
+        .bubble

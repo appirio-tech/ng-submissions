@@ -1,9 +1,8 @@
 @import "work-includes";
+@import "mixins";
 
 submissions {
-  h4.work-name {
-    text-align: center;
-  }
+  @include submission-headers();
 
   > ul {
     margin-top : $spacing;
@@ -22,7 +21,6 @@ submissions {
       min-width       : 20px;
       height          : 20px;
       background-color: green;
-      margin-left     : $spacing;
     }
 
     .avatar {
@@ -54,15 +52,14 @@ submissions {
       }
     }
 
-    .link {
+    .actions {
+      min-width: 160px;
       margin-left: $spacing;
-      white-space: nowrap;
+      @include flex-center(space-between);
     }
 
     .thumbnails {
-      display    : flex;
-      align-items: center;
-      flex-wrap  : wrap;
+      @include flex-center(space-between);
 
       .thumbnail {
         margin-right: $spacing-small;
