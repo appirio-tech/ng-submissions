@@ -2,6 +2,7 @@
 service = ($resource) ->
   #variables
   submissionAccepted = false
+
   #functions
   initializeSubmissionDetail = ->
     #TODO: replace with API data
@@ -11,7 +12,7 @@ service = ($resource) ->
 
   acceptSubmission = ->
     this.submissionAccepted = true
-    console.log('accepting', this.submissionAccepted)
+    return
 
   submissionAccepted: submissionAccepted
   initializeSubmissionDetail: initializeSubmissionDetail
