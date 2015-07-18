@@ -49,11 +49,7 @@ html(ng-app='appirio-tech-submissions')
     include css-files
 
   body
-    a.submissions(ui-sref="submissions") Submissions
-
-    a.detail(ui-sref="submission-detail") Detail
-
-    a.detail(ui-sref="submission-slides") Slides
+    include nav
 
     main.layout-main.submissions("role"="main", class="{{ pageClass }}", ui-view="")
 
