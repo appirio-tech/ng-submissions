@@ -1,6 +1,6 @@
 'use strict'
 
-SubmissionSlidesController = ($scope, SubmissionDetailService) ->
+SubmissionSlidesController = ($scope, SubmissionDetailAPIService) ->
   vm = this
   #TODO: Default to index of file id passed in stateParams
   vm.selectedPreviewIndex = 0
@@ -12,9 +12,15 @@ SubmissionSlidesController = ($scope, SubmissionDetailService) ->
       id: '123'
       submission_id: '321'
 
-    SubmissionDetailService.getSubmissionDetail(params).then (response) ->
+    resource = SubmissionDetailAPIService.get params
+
+    resource.$promise.then (response) ->
+      response
       vm.work = response
       vm.selectedPreview = vm.work.files[vm.selectedPreviewIndex]
+
+    resource.$promise.catch (error)->
+      console.log 'error on submission detail', error
     return
 
 #restart slide show based on position in array
@@ -46,6 +52,6 @@ SubmissionSlidesController = ($scope, SubmissionDetailService) ->
 
   activate()
 
-SubmissionSlidesController.$inject = ['$scope', 'SubmissionDetailService']
+SubmissionSlidesController.$inject = ['$scope', 'SubmissionDetailAPIService']
 
 angular.module('appirio-tech-submissions').controller 'SubmissionSlidesController', SubmissionSlidesController
