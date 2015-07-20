@@ -20,6 +20,6 @@ config = ($stateProvider) ->
 
 config.$inject = ['$stateProvider']
 
-angular.module('appirio-tech-submissions').config(config).run()
+angular.module('example').config(config).run()
 
 

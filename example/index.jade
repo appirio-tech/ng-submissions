@@ -1,44 +1,24 @@
-- var scripts = []
-- scripts.push('constants')
-- scripts.push('submissions.module')
-- scripts.push('submissions.controller')
-- scripts.push('submissions.directive')
-- scripts.push('submission-detail.controller')
-- scripts.push('submission-detail.directive')
-- scripts.push('submission-slides.controller')
-- scripts.push('submission-slides.directive')
-
-
-- scriptsNoBuild = ['routes']
-
-- var bowers = []
-- bowers.push('angular/angular')
-- bowers.push('angular-resource/angular-resource')
-- bowers.push('angular-ui-router/release/angular-ui-router')
-
 doctype html
-html(ng-app='appirio-tech-submissions')
+html(ng-app='example')
   head
+    = "\n"
+    // removeIf(production)
+    = "\n"
+
     script(type="text/javascript", src="/scripts/json-fixtures.js")
 
     script(type="text/javascript", src="/bower_components/sinon/index.js")
 
     script(type="text/javascript", src="/bower_components/auto-config-fake-server/dist/auto-config-fake-server.js")
 
-    script(type="text/javascript").
-      AutoConfigFakeServer.init();
+    script(type="text/javascript", src="/scripts/mock.js")
 
-      AutoConfigFakeServer.fakeServer.autoRespond = true;
-
-      schemas = [
-        FIXTURES['bower_components/appirio-tech-api-schemas/swagger/v3-submissions.json'],
-      ];
-
-      AutoConfigFakeServer.consume(schemas);
-
-      localStorage.setItem('userJWTToken', '"yyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2FwaS50b3Bjb2Rlci1kZXYuY29tIiwiZXhwIjoxNDMzMjcxNzYwLCJ1c2VySWQiOiI0MDEzNTUxNiIsImlhdCI6MTQzMzI3MTE2MCwianRpIjoiMDZhNzVjM2EtMTQ0MC00MWE3LTk5N2YtZmFmMGVjZjFmOGM1In0.okSjl5KOmGQ6hJEoQxk4SVkFra65_Id6KUQGdAVmJNe"');
+    = "\n"
+    // endRemoveIf(production)
+    = "\n"
 
     title Submissions
+
 
     meta(charset='utf-8')
 
@@ -53,19 +33,9 @@ html(ng-app='appirio-tech-submissions')
 
     main.layout-main.submissions("role"="main", class="{{ pageClass }}", ui-view="")
 
-    each path in bowers
-      script(src="bower_components/#{path}.js", type="text/javascript")
+    include lib-files
 
-    = "\n"
-    // build:js main.js
-    = "\n"
-    each path in scripts
-      = "\n"
-      script(src="scripts/#{path}.js", type="text/javascript")
-      = "\n"
-    = "\n"
-    // endbuild
-    = "\n"
+    include app-files
 
-    each path in scriptsNoBuild
-      script(src="scripts/#{path}.js", type="text/javascript")
+    include example-files
+

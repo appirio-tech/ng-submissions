@@ -1,0 +1,14 @@
+- var bowers = []
+- bowers.push('angular/angular')
+- bowers.push('angular-resource/angular-resource')
+- bowers.push('angular-ui-router/release/angular-ui-router')
+
+= "\n"
+// build:js lib.js
+= "\n"
+each path in bowers
+  = "\n"
+  script(src="bower_components/#{path}.js", type="text/javascript")
+  = "\n"
+// endbuild
+= "\n"
