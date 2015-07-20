@@ -1,6 +1,6 @@
 'use strict'
 
-SubmissionDetailController = ($scope, SubmissionDetailService) ->
+SubmissionDetailController = ($scope, SubmissionDetailAPIService) ->
   vm = this
   vm.submissionAccepted = null;
 
@@ -13,13 +13,20 @@ SubmissionDetailController = ($scope, SubmissionDetailService) ->
       id: '123'
       submission_id: '321'
 
-    SubmissionDetailService.getSubmissionDetail(params).then (response) ->
+    resource = SubmissionDetailAPIService.get params
+
+    resource.$promise.then (response) ->
+      response
       vm.work = response
-      vm.submissionAccepted = vm.work.accepted;
+      vm.submissionAccepted = vm.work.accepted
+
+    resource.$promise.catch (error)->
+      console.log 'error on submission detail', error
     return
+
 
   activate()
 
-SubmissionDetailController.$inject = ['$scope', 'SubmissionDetailService']
+SubmissionDetailController.$inject = ['$scope', 'SubmissionDetailAPIService']
 
 angular.module('appirio-tech-submissions').controller 'SubmissionDetailController', SubmissionDetailController
