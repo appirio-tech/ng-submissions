@@ -14,7 +14,6 @@ script:
 - gulp useref
 - gulp copy-files
 - gulp remove-code
-- gulp e2e
 sudo: false
 after_success:
 - gulp coveralls
