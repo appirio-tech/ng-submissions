@@ -6,7 +6,7 @@ transformResponse = (response) ->
   parsed?.result?.content || []
 
 srv = ($resource, API_URL) ->
-  url = API_URL + '/work/:work_id/submissions'
+  url = API_URL + '/work/:workId/submissions'
 
   params =
     workId: '@workId'

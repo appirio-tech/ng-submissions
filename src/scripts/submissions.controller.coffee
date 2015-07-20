@@ -6,7 +6,7 @@ SubmissionsController = ($scope, SubmissionAPIService) ->
 
   activate = ->
     params =
-      work_id: $scope.workId
+      workId: $scope.workId
 
     getSubmissions params
 
