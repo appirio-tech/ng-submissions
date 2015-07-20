@@ -6,7 +6,7 @@ transformResponse = (response) ->
   parsed?.result?.content || []
 
 srv = ($resource, API_URL) ->
-  url = API_URL
+  url = API_URL + '/work/:work_id/submissions'
 
   params =
     workId: '@workId'
@@ -14,9 +14,16 @@ srv = ($resource, API_URL) ->
   methods =
     query:
       method           : 'GET'
-      isArray          : true
+      isArray          : false
       transformResponse: transformResponse
 
-  $resource url, {}, methods
+    get:
+      method           : 'GET'
+      isArray          : false
+      transformResponse: transformResponse
+
+  $resource url, params, methods
 
 srv.$inject = ['$resource', 'API_URL']
+
+angular.module('appirio-tech-submissions').factory 'SubmissionAPIService', srv

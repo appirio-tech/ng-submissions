@@ -7,6 +7,6 @@ directive = ->
   controller  : 'SubmissionsController'
   controllerAs: 'vm'
   scope       :
-    submissionId: '@submissionId'
+    workId: '@workId'
 
 angular.module('appirio-tech-submissions').directive 'submissions', directive
