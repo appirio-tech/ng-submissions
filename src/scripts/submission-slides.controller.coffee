@@ -3,14 +3,15 @@
 SubmissionSlidesController = ($scope, SubmissionDetailService) ->
   vm = this
   #TODO: Default to index of file id passed in stateParams
-  vm.selectedPreviewIndex = 0;
-  vm.selectedPreview = null;
+  vm.selectedPreviewIndex = 0
+  vm.selectedPreview = null
 
   activate = ->
     #TODO: dynamic ids based on stateParams
     params =
-      id: '123',
+      id: '123'
       submission_id: '321'
+
     SubmissionDetailService.getSubmissionDetail(params).then (response) ->
       vm.work = response
       vm.selectedPreview = vm.work.files[vm.selectedPreviewIndex]
@@ -18,30 +19,28 @@ SubmissionSlidesController = ($scope, SubmissionDetailService) ->
 
 #restart slide show based on position in array
   vm.previewPrevious = ->
-    if vm.selectedPreviewIndex == 0
-      vm.selectedPreviewIndex = vm.work.files.length-1
+    isFirst = vm.selectedPreviewIndex == 0
+    if isFirst
+      vm.selectedPreviewIndex = vm.work.files.length - 1
     else
-      vm.selectedPreviewIndex--
-    return
+      vm.selectedPreviewIndex -= 1
 
   vm.previewNext = ->
-    if vm.selectedPreviewIndex == vm.work.files.length-1
+    isLast = vm.selectedPreviewIndex == vm.work.files.length - 1
+    if isLast
       vm.selectedPreviewIndex = 0
     else
-      vm.selectedPreviewIndex++
-    return
+      vm.selectedPreviewIndex += 1
 
   vm.previewSelected = (index)->
     vm.selectedPreviewIndex = index
-    return
+
 
   watchSelectedPreviewIndex = ->
     vm.selectedPreviewIndex
 
   setSelectedPreview = (index) ->
-    if vm.work?.files
-      vm.selectedPreview = vm.work.files[index]
-    return
+    vm.selectedPreview = vm.work.files[index] if vm.work?.files
 
   $scope.$watch watchSelectedPreviewIndex, setSelectedPreview
 
