@@ -48,7 +48,7 @@ $templateCache.put("views/submission-slides.directive.html","<ul class=\"header\
 
   srv = function($resource, API_URL) {
     var methods, params, url;
-    url = API_URL + '/work/:work_id/submissions';
+    url = API_URL + '/work/:workId/submissions';
     params = {
       workId: '@workId'
     };
@@ -110,7 +110,7 @@ $templateCache.put("views/submission-slides.directive.html","<ul class=\"header\
     activate = function() {
       var params;
       params = {
-        work_id: $scope.workId
+        workId: $scope.workId
       };
       getSubmissions(params);
       return vm;
@@ -156,11 +156,14 @@ $templateCache.put("views/submission-slides.directive.html","<ul class=\"header\
       controller: 'SubmissionsController as vm',
       templateUrl: 'views/submissions.directive.html',
 <<<<<<< HEAD
+<<<<<<< HEAD
       scope: {
         submissionId: '@submissionId'
 =======
       controller: 'SubmissionsController',
       controllerAs: 'vm',
+=======
+>>>>>>> added scope variable to test
       scope: {
         workId: '@workId'
 >>>>>>> deleted service, controller calls api, avatar component added
