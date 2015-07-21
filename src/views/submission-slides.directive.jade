@@ -29,4 +29,5 @@ ul.slideshow
 
 ul.thumbnails
     li.thumbnail(ng-repeat="file in vm.work.files")
-      img.img(src="{{file.thumbnailUrl}}", ng-click="vm.previewSelected($index)")
+      button.thumbnail
+        img.img(src="{{file.thumbnailUrl}}", ng-click="vm.previewSelected($index)")

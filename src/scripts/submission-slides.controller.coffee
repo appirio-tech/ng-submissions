@@ -18,7 +18,7 @@ SubmissionSlidesController = ($scope, SubmissionDetailAPIService) ->
       vm.selectedPreview = vm.work?.files[vm.selectedPreviewIndex]
 
     resource.$promise.catch (error)->
-      console.log 'error on submission detail', error
+      # TODO: add error handling
     return
 
 #restart slide show based on position in array

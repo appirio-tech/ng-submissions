@@ -19,7 +19,7 @@ SubmissionDetailController = ($scope, SubmissionDetailAPIService) ->
       vm.submissionAccepted = vm.work.accepted
 
     resource.$promise.catch (error)->
-      console.log 'error on submission detail', error
+      # TODO: add error handling
     return
 
 
