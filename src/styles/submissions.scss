@@ -2,7 +2,8 @@
 @import "mixins";
 
 submissions {
-  display: inline-block;
+  position: relative;
+  display : inline-block;
 
   @include submission-headers();
 

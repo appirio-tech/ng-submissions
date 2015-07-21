@@ -1,31 +1,41 @@
 'use strict'
 
-SubmissionsController = ($scope) ->
-  vm = this
+SubmissionsController = ($scope, SubmissionAPIService) ->
+  vm             = this
+  vm.submissions = []
 
   activate = ->
-    vm.workName = 'IBM Internal HR'
-    vm.workType = 'mobile app'
-    vm.screeningSubmissions = []
+    params =
+      workId: $scope.workId
 
-    vm.screeningSubmissions.push
-      name: 'Batman'
-      createdAt: '4 Days ago'
+    getSubmissions params
 
-    vm.screeningSubmissions.push
-      name: 'Robin'
-      createdAt: '4 Days ago'
+    vm
 
-    vm.screeningSubmissions.push
-      name: 'Dude with freaking long name'
-      createdAt: '4 Days ago'
+  onChange = (submissions) ->
+    vm.submissions = submissions
 
-    vm.screeningSubmissions.push
-      name: 'Jesus'
-      createdAt: '4 Days ago'
+  getSubmissions = (params) ->
+    submissions =
+      submissions: []
+      avatars    : {}
+
+    resource = SubmissionAPIService.get params
+
+    resource.$promise.then (response) ->
+      submissions = response
+
+      onChange submissions
+
+    resource.$promise.catch (response) ->
+      # TODO: do something intelligent
+
+    resource.$promise.finally ->
+      # TODO: do something intelligent
+
 
   activate()
 
-SubmissionsController.$inject = ['$scope']
+SubmissionsController.$inject = ['$scope', 'SubmissionAPIService']
 
 angular.module('appirio-tech-submissions').controller 'SubmissionsController', SubmissionsController
