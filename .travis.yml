@@ -5,7 +5,6 @@ install:
 - npm install -g npm
 - npm install -g gulp
 - npm install -g bower
-- echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
 - npm install
 - bower install
 script:
