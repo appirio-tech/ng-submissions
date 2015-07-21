@@ -27,9 +27,15 @@ angular.module("app.constants", [])
 
 }).call(this);
 
+<<<<<<< HEAD
+angular.module("appirio-tech-submissions").run(["$templateCache", function($templateCache) {$templateCache.put("views/submissions.directive.html","<h1 class=\"work-name\">{{ vm.workName }} : {{ vm.workType }}</h1><hr/><h3>Screening Submissions Phase</h3><h4>Review and comment on submissions. Choose the participants that will move to the final phase.</h4><ul class=\"submissions\"><li ng-repeat=\"submission in vm.screeningSubmissions track by $index\" class=\"submission\"><ul class=\"user-details\"><li><div class=\"avatar\"></div></li><li><div class=\"name-time\"><div class=\"name\">{{ submission.name }}</div><time>{{ submission.createdAt }}</time></div></li></ul><ul class=\"thumbnails\"><li ng-repeat=\"i in [1, 2, 3, 4, 5, 6, 7, 8] track by $index\" class=\"thumbnail\"><div class=\"img\"></div></li></ul><ul class=\"actions\"><li class=\"view\"><a href=\"#\">and 123 more</a></li><li><div class=\"checkmark\"></div></li><li><div class=\"bubble\"></div></li></ul></li></ul><hr/><h3>Final Submissions</h3><h4>Begins in 3 days</h4>");
+$templateCache.put("views/submission-detail.directive.html","<ul class=\"actions\"><li class=\"submitter\"><div class=\"avatar\"></div><div class=\"name-time\"><div class=\"name\">{{vm.work.submitter.handle}}</div><time>{{vm.work.createdAt | date: \'h:mm a, MMMM d, y\'}}</time></div></li><li class=\"accept\"><button ng-click=\"vm.acceptSubmission()\" class=\"checkmark\"></button><p ng-if=\"!vm.submissionAccepted\">Accept this submission</p><p ng-if=\"vm.submissionAccepted\">Submission Accepted</p></li><li class=\"comment\"><button class=\"bubble\"></button><p>Comment on this submission</p></li></ul><ul class=\"previews\"><li ng-repeat=\"file in vm.work.files track by $index\" class=\"preview\"><div class=\"checkmark\"></div><img src=\"{{file.thumbnailUrl}}\" ui-sref=\"submission-slides\" class=\"img\"/><p>{{file.id}}</p></li></ul>");
+$templateCache.put("views/submission-slides.directive.html","<ul class=\"header\"><li class=\"submitter\"><div class=\"avatar\"></div><div class=\"name-time\"><div class=\"name\">{{vm.work.submitter.handle}}</div><time>{{vm.work.createdAt | date: \'h:mm a, MMMM d, y\'}}</time></div></li><li><div class=\"checkmark\"></div><div class=\"bubble\"></div></li></ul><hr/><ul class=\"slideshow\"><li><button ng-click=\"vm.previewPrevious()\" class=\"left-arrow\"></button></li><li class=\"preview\"><div class=\"img\"><img src=\"{{vm.selectedPreview.url}}\" class=\"img\"/></div><p>{{vm.work.files[vm.selectedPreviewIndex][\'id\']}}</p></li><li><button ng-click=\"vm.previewNext()\" class=\"right-arrow\"></button></li></ul><ul class=\"thumbnails\"><li ng-repeat=\"file in vm.work.files\" class=\"thumbnail\"><button class=\"thumbnail\"><img src=\"{{file.thumbnailUrl}}\" ng-click=\"vm.previewSelected($index)\" class=\"img\"/></button></li></ul>");}]);
+=======
 angular.module("appirio-tech-submissions").run(["$templateCache", function($templateCache) {$templateCache.put("views/submissions.directive.html","<h1 class=\"work-name\">{{ vm.submissions.workName }} : {{ vm.submissions.workType }}</h1><hr/><h3>Screening Submissions Phase</h3><h4>Review and comment on submissions. Choose the participants that will move to the final phase.</h4><ul class=\"submissions\"><li ng-repeat=\"submission in vm.submissions.screeningSubmissions track by $index\" class=\"submission\"><ul class=\"user-details\"><li><avatar avatar-url=\"http://www.topcoder.com/i/m/cardiboy_big.jpg\"></avatar></li><li><div class=\"name-time\"><div class=\"name\">{{ submission.submitter.handle }}</div><time>{{ submission.createdAt }}</time></div></li></ul><ul class=\"thumbnails\"><li ng-repeat=\"file in submission.files track by $index\" class=\"thumbnail\"><div class=\"img\"></div></li></ul><ul class=\"actions\"><li class=\"view\"><a href=\"#\">and 123 more</a></li><li><div class=\"checkmark\"></div></li><li><div class=\"bubble\"></div></li></ul></li></ul><hr/><h3>Final Submissions</h3><h4>Begins in 3 days</h4>");
 $templateCache.put("views/submission-detail.directive.html","<h4 class=\"work-name\">{{ vm.workName }} : {{ vm.workType }}</h4><ul class=\"actions\"><li class=\"submitter\"><div class=\"avatar\"></div><div class=\"name-time\"><div class=\"name\">Rafael is the best ninja mutant turtle</div><time>Submitted: 12:30 June 24 2015</time></div></li><li class=\"accept\"><div class=\"checkmark\"></div><p>Accept this submission</p></li><li class=\"comment\"><div class=\"bubble\"></div><p>Comment on this submission</p></li></ul><ul class=\"previews\"><li ng-repeat=\"preview in [1, 2, 3, 4, 5, 6] track by $index\" class=\"preview\"><div class=\"checkmark\"></div><div class=\"img\"></div><p>a-long-freaking-name-oh-baby-jesus</p></li></ul>");
 $templateCache.put("views/submission-slides.directive.html","<ul class=\"header\"><li class=\"submitter\"><div class=\"avatar\"></div><div class=\"name-time\"><div class=\"name\">alpha User</div><time>Submitted: 12:30 June 24 2015</time></div></li><li><div class=\"checkmark\"></div><div class=\"bubble\"></div></li></ul><hr/><ul class=\"slideshow\"><li><button class=\"left-arrow\"></button></li><li class=\"preview\"><div class=\"img\"></div><p>a-really-login-freaken-name-that-some-idiot-put</p></li><li><button class=\"right-arrow\"></button></li></ul><ul class=\"thumbnails\"><li class=\"thumbnail\"><button class=\"img\"></button></li><li class=\"thumbnail\"><button class=\"img\"></button></li><li class=\"thumbnail\"><button class=\"img\"></button></li><li class=\"thumbnail\"><button class=\"img\"></button></li><li class=\"thumbnail\"><button class=\"img\"></button></li><li class=\"thumbnail\"><button class=\"img\"></button></li><li class=\"thumbnail\"><button class=\"img\"></button></li></ul>");}]);
+>>>>>>> 55be0d67bcbed210bdb1653dcdc9bf27e49ca15b
 (function() {
   'use strict';
   var SubmissionsController;
@@ -132,17 +138,30 @@ $templateCache.put("views/submission-slides.directive.html","<ul class=\"header\
   'use strict';
   var SubmissionDetailController;
 
-  SubmissionDetailController = function($scope) {
+  SubmissionDetailController = function($scope, SubmissionDetailAPIService) {
     var activate, vm;
     vm = this;
+    vm.submissionAccepted = null;
+    vm.acceptSubmission = function() {
+      return vm.submissionAccepted = true;
+    };
     activate = function() {
-      vm.workName = 'IBM Internal HR';
-      return vm.workType = 'mobile app';
+      var params, resource;
+      params = {
+        workId: $scope.workId,
+        submissionId: $scope.submissionId
+      };
+      resource = SubmissionDetailAPIService.get(params);
+      resource.$promise.then(function(response) {
+        vm.work = response;
+        return vm.submissionAccepted = vm.work.accepted;
+      });
+      resource.$promise["catch"](function(error) {});
     };
     return activate();
   };
 
-  SubmissionDetailController.$inject = ['$scope'];
+  SubmissionDetailController.$inject = ['$scope', 'SubmissionDetailAPIService'];
 
   angular.module('appirio-tech-submissions').controller('SubmissionDetailController', SubmissionDetailController);
 
@@ -158,7 +177,8 @@ $templateCache.put("views/submission-slides.directive.html","<ul class=\"header\
       controller: 'SubmissionDetailController as vm',
       templateUrl: 'views/submission-detail.directive.html',
       scope: {
-        workId: '@workId'
+        workId: '@workId',
+        submissionId: '@submissionId'
       }
     };
   };
@@ -168,6 +188,72 @@ $templateCache.put("views/submission-slides.directive.html","<ul class=\"header\
 }).call(this);
 
 (function() {
+<<<<<<< HEAD
+  'use strict';
+  var SubmissionSlidesController;
+
+  SubmissionSlidesController = function($scope, SubmissionDetailAPIService) {
+    var activate, setSelectedPreview, vm, watchSelectedPreviewIndex;
+    vm = this;
+    vm.selectedPreviewIndex = 0;
+    vm.selectedPreview = null;
+    activate = function() {
+      var params, resource;
+      params = {
+        workId: $scope.workId,
+        submissionId: $scope.submissionId
+      };
+      resource = SubmissionDetailAPIService.get(params);
+      resource.$promise.then(function(response) {
+        var ref;
+        vm.work = response;
+        return vm.selectedPreview = (ref = vm.work) != null ? ref.files[vm.selectedPreviewIndex] : void 0;
+      });
+      resource.$promise["catch"](function(error) {});
+    };
+    vm.previewPrevious = function() {
+      var isFirst;
+      isFirst = vm.selectedPreviewIndex === 0;
+      if (isFirst) {
+        return vm.selectedPreviewIndex = vm.work.files.length - 1;
+      } else {
+        return vm.selectedPreviewIndex -= 1;
+      }
+    };
+    vm.previewNext = function() {
+      var isLast;
+      isLast = vm.selectedPreviewIndex === vm.work.files.length - 1;
+      if (isLast) {
+        return vm.selectedPreviewIndex = 0;
+      } else {
+        return vm.selectedPreviewIndex += 1;
+      }
+    };
+    vm.previewSelected = function(index) {
+      return vm.selectedPreviewIndex = index;
+    };
+    watchSelectedPreviewIndex = function() {
+      return vm.selectedPreviewIndex;
+    };
+    setSelectedPreview = function(index) {
+      var ref;
+      if ((ref = vm.work) != null ? ref.files : void 0) {
+        return vm.selectedPreview = vm.work.files[index];
+      }
+    };
+    $scope.$watch(watchSelectedPreviewIndex, setSelectedPreview);
+    return activate();
+  };
+
+  SubmissionSlidesController.$inject = ['$scope', 'SubmissionDetailAPIService'];
+
+  angular.module('appirio-tech-submissions').controller('SubmissionSlidesController', SubmissionSlidesController);
+
+}).call(this);
+
+(function() {
+=======
+>>>>>>> 55be0d67bcbed210bdb1653dcdc9bf27e49ca15b
   'use strict';
   var directive;
 
@@ -177,11 +263,50 @@ $templateCache.put("views/submission-slides.directive.html","<ul class=\"header\
       controller: 'SubmissionSlidesController as vm',
       templateUrl: 'views/submission-slides.directive.html',
       scope: {
-        workId: '@workId'
+        workId: '@workId',
+        submissionId: '@submissionId'
       }
     };
   };
 
   angular.module('appirio-tech-submissions').directive('submissionSlides', directive);
+
+}).call(this);
+
+(function() {
+  'use strict';
+  var srv, transformResponse;
+
+  transformResponse = function(response) {
+    var parsed, ref;
+    parsed = JSON.parse(response);
+    return (parsed != null ? (ref = parsed.result) != null ? ref.content : void 0 : void 0) || {};
+  };
+
+  srv = function($resource, API_URL) {
+    var actions, params, url;
+    url = API_URL + '/work/:workId/submissions/:submissionId';
+    params = {
+      workId: '@workId',
+      submissionId: '@submissionId'
+    };
+    actions = {
+      query: {
+        method: 'GET',
+        isArray: false,
+        transformResponse: transformResponse
+      },
+      get: {
+        method: 'GET',
+        isArray: false,
+        transformResponse: transformResponse
+      }
+    };
+    return $resource(url, params, actions);
+  };
+
+  srv.$inject = ['$resource', 'API_URL'];
+
+  angular.module('appirio-tech-submissions').factory('SubmissionDetailAPIService', srv);
 
 }).call(this);

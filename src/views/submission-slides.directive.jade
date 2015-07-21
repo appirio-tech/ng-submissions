@@ -3,9 +3,9 @@ ul.header
     .avatar
 
     .name-time
-      .name alpha User
+      .name {{vm.work.submitter.handle}}
 
-      time Submitted: 12:30 June 24 2015
+      time {{vm.work.createdAt | date: 'h:mm a, MMMM d, y'}}
 
   li
     .checkmark
@@ -16,17 +16,18 @@ hr
 
 ul.slideshow
   li
-    button.left-arrow
+    button.left-arrow(ng-click="vm.previewPrevious()")
 
   li.preview
     .img
+      img.img(src="{{vm.selectedPreview.url}}")
 
-    p a-really-login-freaken-name-that-some-idiot-put
+    p {{vm.work.files[vm.selectedPreviewIndex]['id']}}
 
   li
-    button.right-arrow
+    button.right-arrow(ng-click="vm.previewNext()")
 
 ul.thumbnails
-  for i in [0, 1, 2, 3, 4, 5, 6]
-    li.thumbnail
-      button.img
+    li.thumbnail(ng-repeat="file in vm.work.files")
+      button.thumbnail
+        img.img(src="{{file.thumbnailUrl}}", ng-click="vm.previewSelected($index)")

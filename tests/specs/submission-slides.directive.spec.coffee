@@ -1,7 +1,7 @@
 'use strict'
 
 element = null
-html    = '<submission-slides></submission-slides>'
+html    = '<submission-slides work-id="123" submission-id="123"></submission-slides>'
 
 describe 'SubmissionSlidesDirective', ->
   beforeEach inject ($compile, $rootScope) ->

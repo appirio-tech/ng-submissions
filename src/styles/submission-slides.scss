@@ -74,6 +74,14 @@ submission-slides {
     @include flex-center(space-between);
 
     li {
+      button {
+        background-color: Transparent;
+        background-repeat:no-repeat;
+        border: none;
+        cursor:pointer;
+        overflow: hidden;
+        outline:none;
+      }
       .img {
         width: 30px;
         height: 30px;

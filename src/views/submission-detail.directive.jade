@@ -1,28 +1,29 @@
-h4.work-name {{ vm.workName }} : {{ vm.workType }}
 
 ul.actions
   li.submitter
     .avatar
 
     .name-time
-      .name Rafael is the best ninja mutant turtle
+      .name {{vm.work.submitter.handle}}
 
-      time Submitted: 12:30 June 24 2015
+      time {{vm.work.createdAt | date: 'h:mm a, MMMM d, y'}}
 
   li.accept
-    .checkmark
+    button.checkmark(ng-click="vm.acceptSubmission()")
 
-    p Accept this submission
+    p(ng-if="!vm.submissionAccepted") Accept this submission
+
+    p(ng-if="vm.submissionAccepted") Submission Accepted
 
   li.comment
-    .bubble
+    button.bubble
 
     p Comment on this submission
 
 ul.previews
-  li.preview(ng-repeat="preview in [1, 2, 3, 4, 5, 6] track by $index")
+  li.preview(ng-repeat="file in vm.work.files track by $index")
     .checkmark
 
-    .img
+    img.img(src="{{file.thumbnailUrl}}" ui-sref="submission-slides")
 
-    p a-long-freaking-name-oh-baby-jesus
+    p {{file.id}}
