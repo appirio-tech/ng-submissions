@@ -1,6 +1,6 @@
 # Submissions
 [![Build Status](https://travis-ci.org/appirio-tech/ng-submissions.svg)](https://travis-ci.org/appirio-tech/ng-submissions)
-[![Coverage Status](https://coveralls.io/repos/appirio-tech/messaging/badge.svg?branch=master&t=qP5jFO)](https://coveralls.io/r/appirio-tech/messaging?branch=master)
+[![Coverage Status](https://coveralls.io/repos/appirio-tech/ng-submissions/badge.svg?branch=master&service=github&t=UHjCEN)](https://coveralls.io/github/appirio-tech/ng-submissions?branch=master)
 
 ## Docs
 ### API
