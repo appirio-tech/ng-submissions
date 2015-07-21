@@ -42,5 +42,5 @@
 }).call(this);
 
 angular.module("example").run(["$templateCache", function($templateCache) {$templateCache.put("views/submissions.html","<submissions work-id=\"leonardo\"></submissions>");
-$templateCache.put("views/submission-detail.html","<h1>Submission Detail</h1><submission-detail submission-id=\"michelangelo\"></submission-detail>");
-$templateCache.put("views/submission-slides.html","<h1>Submission Slides</h1><submission-slides></submission-slides>");}]);
+$templateCache.put("views/submission-detail.html","<h1>Submission Detail</h1><submission-detail work-id=\"123\" submission-id=\"123\"></submission-detail>");
+$templateCache.put("views/submission-slides.html","<h1>Submission Slides</h1><submission-slides work-id=\"123\" submission-id=\"123\"></submission-slides>");}]);
