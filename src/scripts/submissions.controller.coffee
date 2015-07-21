@@ -3,6 +3,7 @@
 SubmissionsController = ($scope, SubmissionAPIService) ->
   vm             = this
   vm.submissions = []
+  vm.loaded      = false
 
   activate = ->
     params =
@@ -24,6 +25,7 @@ SubmissionsController = ($scope, SubmissionAPIService) ->
 
     resource.$promise.then (response) ->
       submissions = response
+      vm.loaded   = true
 
       onChange submissions
 
@@ -31,6 +33,7 @@ SubmissionsController = ($scope, SubmissionAPIService) ->
       # TODO: do something intelligent
 
     resource.$promise.finally ->
+      vm.loaded = false
       # TODO: do something intelligent
 
 

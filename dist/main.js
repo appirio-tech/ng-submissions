@@ -27,7 +27,7 @@ angular.module("app.constants", [])
 
 }).call(this);
 
-angular.module("appirio-tech-submissions").run(["$templateCache", function($templateCache) {$templateCache.put("views/submissions.directive.html","<h1 class=\"work-name\">{{ vm.submissions.workName }} : {{ vm.submissions.workType }}</h1><hr/><h3>Screening Submissions Phase</h3><h4>Review and comment on submissions. Choose the participants that will move to the final phase.</h4><ul class=\"submissions\"><li ng-repeat=\"submission in vm.submissions.screeningSubmissions track by $index\" class=\"submission\"><ul class=\"user-details\"><li><avatar avatar-url=\"http://www.topcoder.com/i/m/cardiboy_big.jpg\"></avatar></li><li><div class=\"name-time\"><div class=\"name\">{{ submission.submitter.handle }}</div><time>{{ submission.createdAt }}</time></div></li></ul><ul class=\"thumbnails\"><li ng-repeat=\"file in submission.files track by $index\" class=\"thumbnail\"><div class=\"img\"></div></li></ul><ul class=\"actions\"><li class=\"view\"><a href=\"#\">and 123 more</a></li><li><div class=\"checkmark\"></div></li><li><div class=\"bubble\"></div></li></ul></li></ul><hr/><h3>Final Submissions</h3><h4>Begins in 3 days</h4>");
+angular.module("appirio-tech-submissions").run(["$templateCache", function($templateCache) {$templateCache.put("views/submissions.directive.html","<loader ng-show=\"vm.loaded\"></loader><h1 class=\"work-name\">{{ vm.submissions.workName }} : {{ vm.submissions.workType }}</h1><hr/><h3>Screening Submissions Phase</h3><h4>Review and comment on submissions. Choose the participants that will move to the final phase.</h4><ul class=\"submissions\"><li ng-repeat=\"submission in vm.submissions.screeningSubmissions track by $index\" class=\"submission\"><ul class=\"user-details\"><li><avatar avatar-url=\"http://www.topcoder.com/i/m/cardiboy_big.jpg\"></avatar></li><li><div class=\"name-time\"><div class=\"name\">{{ submission.submitter.handle }}</div><time>{{ submission.createdAt }}</time></div></li></ul><ul class=\"thumbnails\"><li ng-repeat=\"file in submission.files track by $index\" class=\"thumbnail\"><div class=\"img\"></div></li></ul><ul class=\"actions\"><li class=\"view\"><a href=\"#\">and 123 more</a></li><li><div class=\"checkmark\"></div></li><li><div class=\"bubble\"></div></li></ul></li></ul><hr/><h3>Final Submissions</h3><h4>Begins in 3 days</h4>");
 $templateCache.put("views/submission-detail.directive.html","<h4 class=\"work-name\">{{ vm.workName }} : {{ vm.workType }}</h4><ul class=\"actions\"><li class=\"submitter\"><div class=\"avatar\"></div><div class=\"name-time\"><div class=\"name\">Rafael is the best ninja mutant turtle</div><time>Submitted: 12:30 June 24 2015</time></div></li><li class=\"accept\"><div class=\"checkmark\"></div><p>Accept this submission</p></li><li class=\"comment\"><div class=\"bubble\"></div><p>Comment on this submission</p></li></ul><ul class=\"previews\"><li ng-repeat=\"preview in [1, 2, 3, 4, 5, 6] track by $index\" class=\"preview\"><div class=\"checkmark\"></div><div class=\"img\"></div><p>a-long-freaking-name-oh-baby-jesus</p></li></ul>");
 $templateCache.put("views/submission-slides.directive.html","<ul class=\"header\"><li class=\"submitter\"><div class=\"avatar\"></div><div class=\"name-time\"><div class=\"name\">alpha User</div><time>Submitted: 12:30 June 24 2015</time></div></li><li><div class=\"checkmark\"></div><div class=\"bubble\"></div></li></ul><hr/><ul class=\"slideshow\"><li><button class=\"left-arrow\"></button></li><li class=\"preview\"><div class=\"img\"></div><p>a-really-login-freaken-name-that-some-idiot-put</p></li><li><button class=\"right-arrow\"></button></li></ul><ul class=\"thumbnails\"><li class=\"thumbnail\"><button class=\"img\"></button></li><li class=\"thumbnail\"><button class=\"img\"></button></li><li class=\"thumbnail\"><button class=\"img\"></button></li><li class=\"thumbnail\"><button class=\"img\"></button></li><li class=\"thumbnail\"><button class=\"img\"></button></li><li class=\"thumbnail\"><button class=\"img\"></button></li><li class=\"thumbnail\"><button class=\"img\"></button></li></ul>");}]);
 (function() {
@@ -38,6 +38,7 @@ $templateCache.put("views/submission-slides.directive.html","<ul class=\"header\
     var activate, getSubmissions, onChange, vm;
     vm = this;
     vm.submissions = [];
+    vm.loaded = false;
     activate = function() {
       var params;
       params = {
@@ -58,10 +59,13 @@ $templateCache.put("views/submission-slides.directive.html","<ul class=\"header\
       resource = SubmissionAPIService.get(params);
       resource.$promise.then(function(response) {
         submissions = response;
+        vm.loaded = true;
         return onChange(submissions);
       });
       resource.$promise["catch"](function(response) {});
-      return resource.$promise["finally"](function() {});
+      return resource.$promise["finally"](function() {
+        return vm.loaded = false;
+      });
     };
     return activate();
   };
