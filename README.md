@@ -1,5 +1,5 @@
 # Submissions
-[![Build Status](https://magnum.travis-ci.com/appirio-tech/ng-submissions.svg?token=uz72pTNpy965c5qCuNBU)](https://magnum.travis-ci.com/appirio-tech/ng-submissions)
+[![Build Status](https://travis-ci.org/appirio-tech/ng-submissions.svg)](https://travis-ci.org/appirio-tech/ng-submissions)
 [![Coverage Status](https://coveralls.io/repos/appirio-tech/messaging/badge.svg?branch=master&t=qP5jFO)](https://coveralls.io/r/appirio-tech/messaging?branch=master)
 
 ## Docs
