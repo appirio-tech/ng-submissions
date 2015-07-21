@@ -33,6 +33,7 @@ SubmissionsController = ($scope, SubmissionAPIService) ->
     resource.$promise.finally ->
       # TODO: do something intelligent
 
+
   activate()
 
 SubmissionsController.$inject = ['$scope', 'SubmissionAPIService']
