@@ -9,5 +9,5 @@ describe 'submission details', ->
 
       done()
 
-  it 'should have "Submission Detai" in the header', ->
+  it 'should have "Submission Slides" in the header', ->
     expect(htmlText).to.equal('Submission Slides')
