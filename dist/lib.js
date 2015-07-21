@@ -33458,3 +33458,514 @@ angular.module('ui.router.state')
 }).call(this);
 
 angular.module("appirio-tech-ng-ui-components").run(["$templateCache", function($templateCache) {$templateCache.put("views/avatar.directive.html","<img ng-src=\"{{ vm.avatarUrl }}\" ng-show=\"vm.avatarUrl\" class=\"avatar\"/><svg class=\"avatar\" ng-hide=\"vm.avatarUrl\" version=\"1.1\" id=\"Layer_1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" x=\"0px\" y=\"0px\" viewBox=\"0 0 512 512\" enable-background=\"new 0 0 512 512\" xml:space=\"preserve\"><path fill=\"#020201\" d=\"M454.426,392.582c-5.439-16.32-15.298-32.782-29.839-42.362c-27.979-18.572-60.578-28.479-92.099-39.085 c-7.604-2.664-15.33-5.568-22.279-9.7c-6.204-3.686-8.533-11.246-9.974-17.886c-0.636-3.512-1.026-7.116-1.228-10.661 c22.857-31.267,38.019-82.295,38.019-124.136c0-65.298-36.896-83.495-82.402-83.495c-45.515,0-82.403,18.17-82.403,83.468 c0,43.338,16.255,96.5,40.489,127.383c-0.221,2.438-0.511,4.876-0.95,7.303c-1.444,6.639-3.77,14.058-9.97,17.743 c-6.957,4.133-14.682,6.756-22.287,9.42c-31.521,10.605-64.119,19.957-92.091,38.529c-14.549,9.58-24.403,27.159-29.838,43.479 c-5.597,16.938-7.886,37.917-7.541,54.917h205.958h205.974C462.313,430.5,460.019,409.521,454.426,392.582z\"/></svg>");}]);
+(function () {
+  'use strict';
+
+  angular.module('ap-file-upload', [
+    'ngResource'
+  ]);
+
+})();
+(function () {
+  'use strict';
+
+  angular
+    .module('ap-file-upload')
+    .factory('UploaderService', UploaderService);
+
+  UploaderService.$inject = ['$q', 'File', '$resource'];
+  /* @ngInject */
+  function UploaderService($q, File, $resource) {
+
+    var uploaderRegistry = {};
+
+    function getUploader(options) {
+      if (uploaderRegistry[options.name]) {
+        return uploaderRegistry[options.name];
+      } else {
+        var uploader = new Uploader(options);
+        uploaderRegistry[options.name] = uploader;
+        return uploader;
+      }
+    }
+
+    function Uploader(options) {
+      options = options || {};
+
+      this.files = [];
+      this.allowMultiple = options.allowMultiple || false;
+      this.allowDuplicates = options.allowDuplicates || false;
+      this.$fileResource = $resource(options.fileEndpoint);
+      console.log(options.urlPresigner);
+      this.$presignResource = $resource(options.urlPresigner);
+      this.saveParams = options.saveParams || {};
+
+      if (options.queryUrl) {
+        this._populate(options.queryUrl);
+      }
+    }
+
+    Uploader.prototype.add = function(files, options) {
+      var uploader = this;
+      options = options || {};
+      files = filelistToArray(files);
+
+      // Fail if we're trying to add multiple files to a single upload
+      if (files.length > 1 && uploader.allowMultiple === false) {
+        deferred.reject('NOTMULTI');
+      }
+
+      return $q.all(files.map(function(file){
+        return uploader._add(file, options);
+      }));
+    };
+
+    Uploader.prototype.onUpdate = function() {};
+
+    Uploader.prototype._add = function(file, options) {
+      options = options || {};
+      var deferred = $q.defer();
+      var uploader = this;
+
+      // TODO: Prompt user to confirm replacing file
+      var replace = true;
+      var dupePosition = uploader._indexOfFilename(file.name);
+      var dupe = dupePosition >= 0;
+
+      if (dupe) {
+        if (replace) {
+          uploader.files[dupePosition].remove().then(function() {
+            uploader.files[dupePosition] = uploader._newFile(file, options);
+          });
+        } else {
+          deferred.reject('DUPE');
+        }
+      } else {
+        if (uploader.allowMultiple) {
+          uploader.files.push(uploader._newFile(file, options));
+        } else {
+          if (uploader.files[0]) {
+            uploader.files[0].remove().then(function() {
+              uploader.files[0] = uploader._newFile(file, options);
+            });
+          } else {
+            uploader.files[0] = uploader._newFile(file, options);
+          }
+        }
+      }
+
+      deferred.resolve();
+
+      return deferred.promise;
+    };
+
+    Uploader.prototype._populate = function(queryUrl) {
+      var uploader = this;
+      var $promise = $resource(queryUrl).get().$promise;
+
+      $promise.then(function(data) {
+        var files = data.result.content || [];
+
+        files.forEach(function(file) {
+          uploader._add({
+            name: file.fileName
+          }, {
+            newFile: false,
+            fileId: file.fileId
+          });
+        });
+      });
+    };
+
+    Uploader.prototype._newFile = function(file, options) {
+      var uploader = this;
+
+      options.$presignResource = uploader.$presignResource;
+      options.$fileResource = uploader.$fileResource;
+      options.saveParams = uploader.saveParams;
+
+      file = new File(file, options);
+
+      file.onProgress = function(response) {
+        uploader.onUpdate();
+      };
+
+      file.onSuccess = function(response) {
+        uploader.onUpdate();
+      };
+
+      file.onFailure = function(response) {
+        uploader.onUpdate();
+      };
+
+      file.onRemove = function(file) {
+        uploader._remove(file);
+      };
+
+      return file;
+    };
+
+    Uploader.prototype._remove = function(file) {
+      var deferred = $q.defer();
+      this.files.splice(this._indexOfFilename(file.name), 1);
+
+      deferred.resolve();
+      return deferred.promise;
+    };
+
+    Uploader.prototype._indexOfFilename = function(name) {
+      var uploader = this;
+
+      for (var i = 0; i < uploader.files.length; i++) {
+        if (uploader.files[i].name === name) return i;
+      }
+
+      return -1;
+    };
+
+    function filelistToArray(collection) {
+      var array = [];
+      for (var i = 0; i < collection.length; i++) {
+        array[i] = collection[i];
+      }
+      return array;
+    }
+
+    return {
+      get: getUploader
+    };
+
+  }
+})();
+
+(function () {
+  'use strict';
+
+  angular
+    .module('ap-file-upload')
+    .factory('File', File);
+
+  File.$inject = ['$q', '$http'];
+
+  function File($q, $http) {
+
+    function File(data, options) {
+      var file = this;
+
+      file.data = data;
+      file.name = data.name;
+      file.newFile = options.newFile !== false;
+      file.locked = options.locked || false;
+      file.$fileResource = options.$fileResource;
+      file.$presignResource = options.$presignResource;
+
+      file.saveParams = {};
+      file.saveParams.param = angular.copy(options.saveParams);
+      file.saveParams.param.fileName = file.data.name;
+      file.saveParams.param.fileType = file.data.type;
+      file.saveParams.param.fileSize = file.data.size;
+
+      if (file.newFile) {
+        file._upload();
+      } else {
+        file.fileId = options.fileId;
+        file.status = 'succeeded';
+      }
+
+      return file;
+    }
+
+    //
+    // Public methods
+    //
+
+    File.prototype.retry = function() {
+      this._upload();
+    };
+
+    File.prototype.cancel = function() {
+      if (this._xhr) {
+        this._xhr.abort();
+      } else {
+        this.onRemove(this);
+      }
+    };
+
+    File.prototype.remove = function() {
+      var deferred = $q.defer();
+      var file = this;
+
+      var $promise = file._deleteFileRecord();
+
+      $promise.then(function(){
+        file.onRemove(file);
+        deferred.resolve();
+      });
+
+      $promise.catch(function(){
+        deferred.reject();
+      });
+
+      return deferred.promise;
+    };
+
+    File.prototype.onRemove = function() { /* noop */ };
+    File.prototype.onProgress = function() { /* noop */ };
+    File.prototype.onSuccess = function() { /* noop */ };
+    File.prototype.onFailure = function() { /* noop */ };
+
+    //
+    // Private methods
+    //
+
+    File.prototype._upload = function() {
+      var file = this;
+
+      file.status = 'started';
+      file.progress = 0;
+
+      var $promise = file._getPresignedUrl();
+
+      $promise.then(function(response) {
+        if (!response.result.content) {
+          return file._failed('Could not get presigned URL from server');
+        }
+        
+        file.preSignedUrlUpload = response.result.content.preSignedUrlUpload;
+
+        var xhr = file._xhr = new XMLHttpRequest();
+        var formData = new FormData();
+
+        formData.append(file.data.name, file.data);
+
+        xhr.upload.onprogress = file._onProgress.bind(file);
+        xhr.onload = file._onLoad.bind(file);
+        xhr.onerror = file._onError.bind(file);
+        xhr.onabort = file._onAbort.bind(file);
+
+        xhr.open('PUT', file.preSignedUrlUpload, true);
+        xhr.setRequestHeader('Content-Type', 'multipart/form-data');
+        xhr.send(formData);
+      });
+
+      $promise.catch(function(data) {
+        file._failed('Could not get presigned URL from server');
+      });
+      
+    };
+
+    File.prototype._createFileRecord = function() {
+      return this.$fileResource.save(this.saveParams).$promise;
+    };
+
+    File.prototype._deleteFileRecord = function() {
+      return this.$fileResource.delete({
+        fileId: this.fileId
+      }).$promise;
+    };
+
+    File.prototype._getPresignedUrl = function() {
+      return this.$presignResource.get({
+        name: this.name
+      }).$promise;
+    };
+
+    File.prototype._onProgress = function(e) {
+      this.progress = Math.round(e.lengthComputable ? e.loaded * 100 / e.total : 0);
+    };
+
+    File.prototype._onLoad = function() {
+      var file = this;
+      var response = file._transformResponse(file._xhr);
+
+      if (file._isSuccessCode(file._xhr.status)) {
+
+        var $promise = file._createFileRecord();
+
+        $promise.then(function(data) {
+          file.fileId = data.result.content.fileId;
+          file.status = 'succeeded';
+          file.onSuccess(response);
+        });
+
+        $promise.catch(function() {
+          file._failed('Could not create file record in database');
+        });
+
+      } else {
+        file._failed('Could not upload file to S3');
+      }
+
+    };
+
+    File.prototype._onError = function() {
+      var response = this._transformResponse(this._xhr);
+      this._failed('Could not connect to S3');
+    };
+
+    File.prototype._onAbort = function() {
+      this.onRemove(this);
+    };
+
+    File.prototype._failed = function(msg) {
+      console.log(msg);
+      file.status = 'failed';
+      file.onFailure(msg);
+    };
+
+    //
+    // Helper methods
+    //
+
+    File.prototype._parseHeaders = function(headers) {
+      var parsed = {}, key, val, i;
+
+      if (!headers) return parsed;
+
+      angular.forEach(headers.split('\n'), function(line) {
+        i = line.indexOf(':');
+        key = line.slice(0, i).trim().toLowerCase();
+        val = line.slice(i + 1).trim();
+
+        if (key) {
+          parsed[key] = parsed[key] ? parsed[key] + ', ' + val : val;
+        }
+      });
+
+      return parsed;
+    };
+
+    File.prototype._transformResponse = function(xhr) {
+      var headers = this._parseHeaders(xhr.getAllResponseHeaders());
+      var response = xhr.response;
+      var headersGetter = this._headersGetter(headers);
+      angular.forEach($http.defaults.transformResponse, function(transformFn) {
+        response = transformFn(response, headersGetter);
+      });
+      return response;
+    };
+
+    File.prototype._headersGetter = function(parsedHeaders) {
+      return function(name) {
+        if (name) {
+          return parsedHeaders[name.toLowerCase()] || null;
+        }
+        return parsedHeaders;
+      };
+    };
+
+    File.prototype._isSuccessCode = function(status) {
+      return (status >= 200 && status < 300) || status === 304;
+    };
+
+    return File;
+
+  }
+})();
+
+(function () {
+  'use strict';
+
+  // Gets around Angular's inability to bind to file input's change event
+  // See https://github.com/angular/angular.js/issues/1375
+  angular.module('ap-file-upload').directive('onFileChange', onFileChangeDirective);
+
+  onFileChangeDirective.$inject = [];
+
+  function onFileChangeDirective() {
+    return {
+      restrict: 'A',
+      scope: {
+        onFileChange: '&'
+      },
+      link: function(scope, element, attr, ctrl) {
+        element.bind("change", function() {
+          scope.onFileChange({fileList : element[0].files});
+          this.value = '';
+        });
+      }
+    }
+  };
+
+})();
+(function () {
+  'use strict';
+
+  angular.module('ap-file-upload').directive('apUploader', apUploader);
+
+  apUploader.$inject = [];
+
+  function apUploader() {
+    return {
+      scope: {
+        status: '=',
+        config: '='
+      },
+      controller: 'UploaderController as vm',
+      templateUrl: 'uploader.html'
+    }
+  };
+
+})();
+(function () {
+  'use strict';
+
+  angular
+    .module('ap-file-upload')
+    .controller('UploaderController', UploaderController);
+
+  UploaderController.$inject = ['$scope', 'UploaderService'];
+
+  function UploaderController($scope, UploaderService) {
+    var vm = this;
+    vm.multiple = $scope.config.multiple;
+
+    vm.uploader = UploaderService.get({
+      name: $scope.config.name,
+      allowMultiple: $scope.config.allowMultiple,
+      fileEndpoint: $scope.config.fileEndpoint,
+      queryUrl: $scope.config.queryUrl,
+      urlPresigner: $scope.config.urlPresigner,
+      saveParams: $scope.config.saveParams,
+    });
+
+  }
+  
+})();
+
+(function () {
+  'use strict';
+
+  angular.module('ap-file-upload').directive('apFile', apFile);
+
+  apFile.$inject = [];
+
+  function apFile() {
+    return {
+      scope: {
+        file: '='
+      },
+      controller: 'FileController as vm',
+      templateUrl: 'file.html'
+    }
+  };
+
+})();
+(function () {
+  'use strict';
+
+  angular
+    .module('ap-file-upload')
+    .controller('FileController', FileController);
+
+  FileController.$inject = ['$scope'];
+
+  function FileController($scope) {
+    var vm = this;
+    vm.file = $scope.file;
+  }
+  
+})();
+
+angular.module("ap-file-upload").run(["$templateCache", function($templateCache) {$templateCache.put("file.html","<div ng-class=\"vm.file.status\"><span>{{vm.file.name}}</span><button ng-show=\"vm.file.status == \'started\'\" ng-click=\"vm.file.cancel()\">Cancel</button><button ng-show=\"vm.file.status == \'succeeded\' || vm.file.status == \'failed\'\" ng-click=\"vm.file.remove()\">Remove</button><button ng-show=\"vm.file.status == \'failed\'\" ng-click=\"vm.file.retry()\">Retry</button><progress ng-show=\"vm.file.status == \'started\'\" value=\"{{vm.file.progress}}\" max=\"100\">{{vm.file.progress}}%</progress></div>");
+$templateCache.put("uploader.html","<div class=\"wrapper\"><input ng-if=\"vm.allowMultiple\" multiple=\"\" type=\"file\" on-file-change=\"vm.uploader.add(fileList)\"/><input ng-if=\"!vm.allowMultiple\" type=\"file\" on-file-change=\"vm.uploader.add(fileList)\"/><ul><li ng-repeat=\"file in vm.uploader.files\"><ap-file file=\"file\"></ap-file></li></ul></div>");}]);
