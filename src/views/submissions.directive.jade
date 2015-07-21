@@ -1,4 +1,4 @@
-h1.work-name {{ vm.workName }} : {{ vm.workType }}
+h1.work-name {{ vm.submissions.workName }} : {{ vm.submissions.workType }}
 
 hr
 
@@ -7,19 +7,20 @@ h3 Screening Submissions Phase
 h4 Review and comment on submissions. Choose the participants that will move to the final phase.
 
 ul.submissions
-  li.submission(ng-repeat="submission in vm.screeningSubmissions track by $index")
+  li.submission(ng-repeat="submission in vm.submissions.screeningSubmissions track by $index")
     ul.user-details
       li
-        .avatar
+        avatar(avatar-url="http://www.topcoder.com/i/m/cardiboy_big.jpg")
+
 
       li
         .name-time
-          .name {{ submission.name }}
+          .name {{ submission.submitter.handle }}
 
           time {{ submission.createdAt }}
 
     ul.thumbnails
-      li.thumbnail(ng-repeat="i in [1, 2, 3, 4, 5, 6, 7, 8] track by $index")
+      li.thumbnail(ng-repeat="file in submission.files track by $index")
         .img
 
     ul.actions
