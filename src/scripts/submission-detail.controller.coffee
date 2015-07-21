@@ -8,15 +8,13 @@ SubmissionDetailController = ($scope, SubmissionDetailAPIService) ->
     vm.submissionAccepted = true;
 
   activate = ->
-    #TODO: dynamic ids based on stateParams
     params =
-      id: '123'
-      submission_id: '321'
+      workId: $scope.workId
+      submissionId: $scope.submissionId
 
     resource = SubmissionDetailAPIService.get params
 
     resource.$promise.then (response) ->
-      response
       vm.work = response
       vm.submissionAccepted = vm.work.accepted
 
