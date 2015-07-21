@@ -28,10 +28,10 @@ SubmissionsController = ($scope, SubmissionAPIService) ->
       onChange submissions
 
     resource.$promise.catch (response) ->
-      # do something intelligent
+      # TODO: do something intelligent
 
     resource.$promise.finally ->
-      # do something intelligent
+      # TODO: do something intelligent
 
   activate()
 
