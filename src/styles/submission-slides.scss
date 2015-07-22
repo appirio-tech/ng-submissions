@@ -19,17 +19,8 @@ submission-slides {
       margin-left: $spacing;
     }
 
-    .checkmark {
-      height          : 30px;
-      width           : 30px;
-      background-color: green;
-    }
-
     .bubble {
-      height          : 30px;
-      width           : 30px;
-      margin-left     : $spacing;
-      background-color: orange;
+      margin-left: $spacing;
     }
   }
 
@@ -58,10 +49,18 @@ submission-slides {
         @include ellipsis();
       }
 
-      .img {
-        width           : 200px;
-        height          : 400px;
-        background-color: blue;
+      .img-container {
+        width          : 200px;
+        height         : 400px;
+        display        : flex;
+        justify-content: center;
+        flex-direction : column;
+        align-items    : center;
+
+        img {
+          max-width: 200px;
+          max-height: 400px;
+        }
       }
     }
   }
