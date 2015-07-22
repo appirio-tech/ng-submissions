@@ -1,12 +1,14 @@
 'use strict'
 describe 'SubmissionSlidesController', ->
+
   controller = null
+
   beforeEach ->
     bard.inject this, '$rootScope', '$q', '$controller', 'SubmissionDetailAPIService'
     scope = $rootScope.$new()
 
     bard.mockService SubmissionDetailAPIService,
-      _default: {$promise: $q.when({files: [1, 2, 3], accepted: true})}
+      _default: $promise: $q.when(files: [1, 2, 3], accepted: true)
 
     controller = $controller('SubmissionSlidesController', {$scope: scope})
 
@@ -25,7 +27,7 @@ describe 'SubmissionSlidesController', ->
       expect(controller.selectedPreviewIndex).to.equal(0)
 
     it 'should preview next image', ->
-      controller.work = {files: [1, 2, 3]}
+      controller.work = files: [1, 2, 3]
       controller.selectedPreviewIndex = 2
       controller.previewNext()
       expect(controller.selectedPreviewIndex).to.equal(0)

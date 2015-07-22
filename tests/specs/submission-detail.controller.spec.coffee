@@ -1,6 +1,8 @@
 'use strict'
 describe 'SubmissionDetailController', ->
+
   controller = null
+
   beforeEach ->
     bard.inject this, '$rootScope', '$q', '$controller', 'SubmissionDetailAPIService'
     scope = $rootScope.$new()
@@ -10,18 +12,16 @@ describe 'SubmissionDetailController', ->
 
     controller = $controller('SubmissionDetailController', {$scope: scope})
 
-  bard.verifyNoOutstandingHttpRequests()
-
   describe 'Submission Detail Controller', ->
     it 'should be created successfully', ->
       expect(controller).to.be.defined
 
     it 'should initialize submission accepted as null', ->
-      expect(controller.submissionAccepted).to.equal(null)
+     expect(controller.submissionAccepted).to.not.be.ok
 
     it 'should set submission accepted', ->
       controller.acceptSubmission()
-      expect(controller.submissionAccepted).to.equal(true)
+      expect(controller.submissionAccepted).to.be.ok
 
     it 'should call API service for work details', ->
       expect(SubmissionDetailAPIService.get).to.have.been.called
