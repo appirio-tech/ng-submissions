@@ -13,7 +13,7 @@ ul.submissions
   li.submission(ng-repeat="submission in vm.submissions.screeningSubmissions track by $index")
     ul.user-details
       li
-        avatar(avatar-url="http://www.topcoder.com/i/m/cardiboy_big.jpg")
+        avatar(avatar-url="{{ submission.submitter.avatarUrl }}")
 
 
       li
@@ -28,7 +28,7 @@ ul.submissions
 
     ul.actions
       li.view
-        a(href="#") and 123 more
+        a(ui-sref="submission-slides") and 123 more
 
       li
         .checkmark
