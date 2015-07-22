@@ -8,9 +8,9 @@ describe 'SubmissionDetailController', ->
     scope = $rootScope.$new()
 
     bard.mockService SubmissionDetailAPIService,
-      _default: {$promise: $q.when({accepted: true})}
+      _default: $promise: $q.when(accepted: true)
 
-    controller = $controller('SubmissionDetailController', {$scope: scope})
+    controller = $controller('SubmissionDetailController', $scope: scope)
 
   describe 'Submission Detail Controller', ->
     it 'should be created successfully', ->
