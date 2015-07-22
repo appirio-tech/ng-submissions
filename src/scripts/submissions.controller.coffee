@@ -25,15 +25,14 @@ SubmissionsController = ($scope, SubmissionAPIService) ->
 
     resource.$promise.then (response) ->
       submissions = response
-      vm.loaded   = true
 
       onChange submissions
 
     resource.$promise.catch (response) ->
-      vm.loaded = false
       # TODO: do something intelligent
 
     resource.$promise.finally ->
+      vm.loaded = true
       # TODO: do something intelligent
 
 
