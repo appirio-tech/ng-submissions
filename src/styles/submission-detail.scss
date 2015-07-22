@@ -35,22 +35,6 @@ submission-detail {
         display: block;
       }
     }
-
-    .accept {
-      .checkmark {
-        min-width       : 20px;
-        height          : 20px;
-        background-color: green;
-      }
-    }
-
-    .comment {
-      .bubble {
-        min-width       : 20px;
-        height          : 20px;
-        background-color: green;
-      }
-    }
   }
 
 
@@ -71,13 +55,13 @@ submission-detail {
         background-color: orange;
       }
 
-      .checkmark {
+      .checkmark-container {
         position        : absolute;
-        min-width       : 20px;
-        height          : 20px;
-        background-color: teal;
+        background-color: white;
         top             : $spacing;
         right           : $spacing;
+        border-radius   : 50%;
+        padding         : $spacing-smallest;
       }
 
       p {
