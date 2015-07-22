@@ -1,4 +1,4 @@
-loader
+loader(ng-hide="vm.loaded")
 
 h1.work-name {{ vm.submissions.workName }} : {{ vm.submissions.workType }}
 
@@ -13,14 +13,14 @@ ul.submissions
   li.submission(ng-repeat="submission in vm.submissions.screeningSubmissions track by $index")
     ul.user-details
       li
-        avatar(avatar-url="http://www.topcoder.com/i/m/cardiboy_big.jpg")
+        avatar(avatar-url="{{ submission.submitter.avatarUrl }}")
 
 
       li
         .name-time
           .name {{ submission.submitter.handle }}
 
-          time {{ submission.createdAt }}
+          time {{ submission.createdAt | timeLapse }}
 
     ul.thumbnails
       li.thumbnail(ng-repeat="file in submission.files track by $index")
@@ -28,7 +28,7 @@ ul.submissions
 
     ul.actions
       li.view
-        a(href="#") and 123 more
+        a(ui-sref="submission-slides") view all
 
       li
         .checkmark
