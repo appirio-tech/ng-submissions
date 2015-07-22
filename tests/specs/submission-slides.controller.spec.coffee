@@ -12,8 +12,6 @@ describe 'SubmissionSlidesController', ->
 
     controller = $controller('SubmissionSlidesController', {$scope: scope})
 
-  bard.verifyNoOutstandingHttpRequests()
-
   describe 'Submission Slides Controller', ->
     it 'should be created successfully', ->
       expect(controller).to.be.defined
