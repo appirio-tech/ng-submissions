@@ -1,4 +1,4 @@
-loader(ng-show="vm.loaded")
+loader(ng-hide="vm.loaded")
 
 h1.work-name {{ vm.submissions.workName }} : {{ vm.submissions.workType }}
 
@@ -20,7 +20,7 @@ ul.submissions
         .name-time
           .name {{ submission.submitter.handle }}
 
-          time {{ submission.createdAt }}
+          time {{ submission.createdAt | timeLapse }}
 
     ul.thumbnails
       li.thumbnail(ng-repeat="file in submission.files track by $index")
