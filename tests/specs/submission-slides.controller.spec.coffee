@@ -35,7 +35,7 @@ describe 'SubmissionSlidesController', ->
       expect(controller.selectedPreviewIndex).to.equal(1)
 
     it 'should call API service for work details', ->
-      expect(SubmissionDetailAPIService.get).to.have.been.called
+      expect(SubmissionDetailAPIService.get.called).to.be.ok
 
     it 'should initialize selected preview', ->
       expect(controller.selectedPreview).to.be.defined
