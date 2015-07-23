@@ -54,8 +54,8 @@ submission-slides {
         @include flex-direction(column);
         @include justify-content(center);
 
-        width          : 200px;
-        height         : 400px;
+        width : 200px;
+        height: 400px;
 
         img {
           max-width: 200px;

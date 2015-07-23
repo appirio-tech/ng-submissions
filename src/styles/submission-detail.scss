@@ -21,12 +21,6 @@ submission-detail {
     }
 
     .submitter {
-      .avatar {
-        min-width       : 40px;
-        height          : 40px;
-        background-color: blue;
-      }
-
       .name {
         @include ellipsis();
       }
