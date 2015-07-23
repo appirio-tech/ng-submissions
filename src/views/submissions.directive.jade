@@ -23,7 +23,8 @@ ul.submissions.color-even
 
     ul.thumbnails
       li.thumbnail(ng-repeat="file in submission.files track by $index")
-        .img
+        a(href="{{ file.url }}")
+          img.img(ng-src="{{ file.thumbnailUrl }}")
 
     ul.actions
       li.view
@@ -39,4 +40,4 @@ hr
 
 h3 Final Submissions
 
-h4 Begins in 3 days
+h4 {{ vm.submissions.finalSubmissionStartDate | timeLapse }}
