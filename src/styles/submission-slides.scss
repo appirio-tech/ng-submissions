@@ -50,12 +50,12 @@ submission-slides {
       }
 
       .img-container {
+        @include flex-center();
+        @include flex-direction(column);
+        @include justify-content(center);
+
         width          : 200px;
         height         : 400px;
-        display        : flex;
-        justify-content: center;
-        flex-direction : column;
-        align-items    : center;
 
         img {
           max-width: 200px;
@@ -66,25 +66,15 @@ submission-slides {
   }
 
   ul.thumbnails {
-    margin    : 0 auto;
+    @include flex-center(center, $spacing);
+
     margin-top: $spacing-big;
-    max-width : 360px;
 
-    @include flex-center(space-between);
-
-    li {
-      button {
-        background-color: Transparent;
-        background-repeat:no-repeat;
-        border: none;
-        cursor:pointer;
-        overflow: hidden;
-        outline:none;
-      }
-      .img {
-        width: 30px;
-        height: 30px;
-        background-color: pink;
+    button {
+      img {
+        width  : 30px;
+        height : 30px;
+        display: block;
       }
     }
   }

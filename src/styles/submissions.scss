@@ -12,8 +12,7 @@ submissions {
   }
 
   .submission {
-    display    : flex;
-    align-items: center;
+     @include flex-center;
 
     &:first-child {
       margin-top: 0;
@@ -33,10 +32,6 @@ submissions {
         time {
           display: block;
         }
-      }
-
-      avatar {
-        margin-left: $spacing;
       }
     }
 
