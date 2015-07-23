@@ -22,7 +22,7 @@ ul.slideshow
     .img-container
       img(src="{{vm.selectedPreview.url}}")
 
-    p {{vm.work.files[vm.selectedPreviewIndex]['id']}}
+    p {{vm.work.files[vm.selectedPreviewIndex].name}}
 
   li
     button.clean.icon.circle-arrow.right.biggest(ng-click="vm.previewNext()")

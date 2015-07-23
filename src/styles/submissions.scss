@@ -20,12 +20,7 @@ submissions {
     }
 
     ul.user-details {
-      @include flex-center;
-
-      li {
-        margin-right: $spacing-small;
-        margin-bottom: $spacing-small;
-      }
+      @include flex-center(flex-start, $spacing-small);
 
       .name-time {
         min-width  : 120px;
@@ -46,22 +41,13 @@ submissions {
     }
 
     ul.actions {
-      margin-left: $spacing;
-      @include flex-center(space-between);
-
-      li {
-        margin-right: $spacing-small;
-        margin-bottom: $spacing-small;
-      }
+      @include flex-center(space-between, $spacing-small);
     }
 
     ul.thumbnails {
-      @include flex-center;
+      @include flex-center(flex-start, $spacing-small);
 
       .thumbnail {
-        margin-right: $spacing-small;
-        margin-bottom: $spacing-small;
-
         .img {
           width           : 50px;
           height          : 40px;
