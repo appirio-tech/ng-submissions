@@ -15,7 +15,6 @@ ul.submissions
       li
         avatar(avatar-url="{{ submission.submitter.avatarUrl }}")
 
-
       li
         .name-time
           .name {{ submission.submitter.handle }}
@@ -24,7 +23,8 @@ ul.submissions
 
     ul.thumbnails
       li.thumbnail(ng-repeat="file in submission.files track by $index")
-        .img
+        a(href="{{ file.url }}")
+          img.img(ng-src="{{ file.thumbnailUrl }}")
 
     ul.actions
       li.view
@@ -40,4 +40,25 @@ hr
 
 h3 Final Submissions
 
-h4 Begins in 3 days
+h4 {{ vm.submissions.finalSubmissionStartDate | timeLapse }}
+
+ul.submissions
+  li.submission(ng-repeat="submission in vm.submissions.finalSubmissions track by $index")
+    ul.user-details
+      li
+        avatar(avatar-url="{{ submission.submitter.avatarUrl }}")
+
+      li
+        .name-time
+          .name {{ submission.submitter.handle }}
+
+          time {{ submission.createdAt | timeLapse }}
+
+    ul.thumbnails
+      li.thumbnail(ng-repeat="file in submission.files track by $index")
+        a(href="{{ file.url }}")
+          img.img(ng-src="{{ file.thumbnailUrl }}")
+
+    ul.actions
+      li.view
+        a(ui-sref="submission-slides") view all
