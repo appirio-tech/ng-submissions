@@ -2,7 +2,7 @@ htmlText = null
 
 describe 'submission details', ->
   beforeEach (done) ->
-    browser.get 'http://localhost:9000/#/detail'
+    browser.get 'http://localhost:9999/#/detail'
 
     $('h1').getText().then (value) ->
       htmlText = value
