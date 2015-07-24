@@ -87,7 +87,7 @@ $templateCache.put("views/submission-slides.directive.html","<ul class=\"header\
 
   srv = function($resource, API_URL) {
     var methods, params, url;
-    url = API_URL + '/work/:workId/submissions';
+    url = API_URL + '/projects/:workId/submissions';
     params = {
       workId: '@workId'
     };
@@ -260,7 +260,7 @@ $templateCache.put("views/submission-slides.directive.html","<ul class=\"header\
 
   srv = function($resource, API_URL) {
     var actions, params, url;
-    url = API_URL + '/work/:workId/submissions/:submissionId';
+    url = API_URL + '/projects/:workId/submissions/:submissionId';
     params = {
       workId: '@workId',
       submissionId: '@submissionId'
