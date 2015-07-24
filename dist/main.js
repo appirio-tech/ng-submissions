@@ -1,22 +1,3 @@
-angular.module("app.constants", [])
-
-.constant("apiUrl", "https://api.topcoder-dev.com/v3/")
-
-.constant("API_URL", "https://api.topcoder-dev.com/v3")
-
-.constant("API_URL_V2", "https://api.topcoder-dev.com/v2")
-
-.constant("AVATAR_URL", "http://www.topcoder.com")
-
-.constant("SUBMISSION_URL", "https://studio.topcoder.com")
-
-.constant("AUTH0_CLIENT_ID", "abc123")
-
-.constant("AUTH0_DOMAIN", "topcoder-dev.auth0.com")
-
-.constant("AUTH0_TOKEN_NAME", "userJWTToken")
-
-;
 (function() {
   'use strict';
   var dependencies;
@@ -27,9 +8,9 @@ angular.module("app.constants", [])
 
 }).call(this);
 
-angular.module("appirio-tech-submissions").run(["$templateCache", function($templateCache) {$templateCache.put("views/submissions.directive.html","<loader ng-hide=\"vm.loaded\"></loader><h1 class=\"work-name\">{{ vm.submissions.workName }} : {{ vm.submissions.workType }}</h1><hr/><h3>Screening Submissions Phase</h3><h4>Review and comment on submissions. Choose the participants that will move to the final phase.</h4><ul class=\"submissions\"><li ng-repeat=\"submission in vm.submissions.screeningSubmissions track by $index\" class=\"submission\"><ul class=\"user-details\"><li><avatar avatar-url=\"{{ submission.submitter.avatarUrl }}\"></avatar></li><li><div class=\"name-time\"><div class=\"name\">{{ submission.submitter.handle }}</div><time>{{ submission.createdAt | timeLapse }}</time></div></li></ul><ul class=\"thumbnails\"><li ng-repeat=\"file in submission.files track by $index\" class=\"thumbnail\"><div class=\"img\"></div></li></ul><ul class=\"actions\"><li class=\"view\"><a ui-sref=\"submission-slides\">view all</a></li><li><div class=\"checkmark\"></div></li><li><div class=\"bubble\"></div></li></ul></li></ul><hr/><h3>Final Submissions</h3><h4>Begins in 3 days</h4>");
-$templateCache.put("views/submission-detail.directive.html","<ul class=\"actions\"><li class=\"submitter\"><div class=\"avatar\"></div><div class=\"name-time\"><div class=\"name\">{{vm.work.submitter.handle}}</div><time>{{vm.work.createdAt | date: \'h:mm a, MMMM d, y\'}}</time></div></li><li class=\"accept\"><button ng-click=\"vm.acceptSubmission()\" class=\"checkmark\"></button><p ng-if=\"!vm.submissionAccepted\">Accept this submission</p><p ng-if=\"vm.submissionAccepted\">Submission Accepted</p></li><li class=\"comment\"><button class=\"bubble\"></button><p>Comment on this submission</p></li></ul><ul class=\"previews\"><li ng-repeat=\"file in vm.work.files track by $index\" class=\"preview\"><div class=\"checkmark\"></div><img src=\"{{file.thumbnailUrl}}\" ui-sref=\"submission-slides\" class=\"img\"/><p>{{file.id}}</p></li></ul>");
-$templateCache.put("views/submission-slides.directive.html","<ul class=\"header\"><li class=\"submitter\"><div class=\"avatar\"></div><div class=\"name-time\"><div class=\"name\">{{vm.work.submitter.handle}}</div><time>{{vm.work.createdAt | date: \'h:mm a, MMMM d, y\'}}</time></div></li><li><div class=\"checkmark\"></div><div class=\"bubble\"></div></li></ul><hr/><ul class=\"slideshow\"><li><button ng-click=\"vm.previewPrevious()\" class=\"left-arrow\"></button></li><li class=\"preview\"><div class=\"img\"><img src=\"{{vm.selectedPreview.url}}\" class=\"img\"/></div><p>{{vm.work.files[vm.selectedPreviewIndex][\'id\']}}</p></li><li><button ng-click=\"vm.previewNext()\" class=\"right-arrow\"></button></li></ul><ul class=\"thumbnails\"><li ng-repeat=\"file in vm.work.files\" class=\"thumbnail\"><button class=\"thumbnail\"><img src=\"{{file.thumbnailUrl}}\" ng-click=\"vm.previewSelected($index)\" class=\"img\"/></button></li></ul>");}]);
+angular.module("appirio-tech-submissions").run(["$templateCache", function($templateCache) {$templateCache.put("views/submissions.directive.html","<loader ng-hide=\"vm.loaded\"></loader><h1 class=\"work-name\">{{ vm.submissions.workName }} : {{ vm.submissions.workType }}</h1><hr/><h3>Screening Submissions Phase</h3><h4>Review and comment on submissions. Choose the participants that will move to the final phase.</h4><ul class=\"submissions color-even\"><li ng-repeat=\"submission in vm.submissions.screeningSubmissions track by $index\" class=\"submission\"><ul class=\"user-details\"><li><avatar avatar-url=\"{{ submission.submitter.avatarUrl }}\"></avatar></li><li><div class=\"name-time\"><div class=\"name\">{{ submission.submitter.handle }}</div><time>{{ submission.createdAt | timeLapse }}</time></div></li></ul><ul class=\"thumbnails\"><li ng-repeat=\"file in submission.files track by $index\" class=\"thumbnail\"><a href=\"{{ file.url }}\"><img ng-src=\"{{ file.thumbnailUrl }}\" class=\"img\"/></a></li></ul><ul class=\"actions\"><li class=\"view\"><a ui-sref=\"submission-slides\">view all</a></li><li><div class=\"icon checkmark\"></div></li><li><div class=\"icon bubble\"></div></li></ul></li></ul><hr/><h3>Final Submissions</h3><h4>{{ vm.submissions.finalSubmissionStartDate | timeLapse }}</h4>");
+$templateCache.put("views/submission-detail.directive.html","<ul class=\"actions\"><li class=\"submitter\"><avatar avatar-url=\"{{vm.work.submitter.avatarUrl}}\"></avatar><div class=\"name-time\"><div class=\"name\">{{vm.work.submitter.handle}}</div><time>{{vm.work.createdAt | date: \'h:mm a, MMMM d, y\'}}</time></div></li><li class=\"accept\"><button ng-click=\"vm.acceptSubmission()\" class=\"clean icon checkmark\"></button><p ng-if=\"!vm.submissionAccepted\">Accept this submission</p><p ng-if=\"vm.submissionAccepted\">Submission Accepted</p></li><li class=\"comment\"><button class=\"clean icon bubble\"></button><p>Comment on this submission</p></li></ul><ul class=\"previews\"><li ng-repeat=\"file in vm.work.files track by $index\" class=\"preview\"><div class=\"checkmark-container\"><div class=\"icon checkmark smallest\"></div></div><img src=\"{{file.thumbnailUrl}}\" ui-sref=\"submission-slides\" class=\"img\"/><p>{{file.name}}</p></li></ul>");
+$templateCache.put("views/submission-slides.directive.html","<ul class=\"header\"><li class=\"submitter\"><avatar avatar-url=\"{{vm.work.submitter.avatarUrl}}\"></avatar><div class=\"name-time\"><div class=\"name\">{{vm.work.submitter.handle}}</div><time>{{vm.work.createdAt | date: \'h:mm a, MMMM d, y\'}}</time></div></li><li><div class=\"icon checkmark\"></div><div class=\"icon bubble\"></div></li></ul><hr/><ul class=\"slideshow\"><li><button ng-click=\"vm.previewPrevious()\" class=\"clean icon circle-arrow biggest\"></button></li><li class=\"preview\"><div class=\"img-container\"><img src=\"{{vm.selectedPreview.url}}\"/></div><p>{{vm.work.files[vm.selectedPreviewIndex].name}}</p></li><li><button ng-click=\"vm.previewNext()\" class=\"clean icon circle-arrow right biggest\"></button></li></ul><ul class=\"thumbnails\"><li ng-repeat=\"file in vm.work.files\" class=\"thumbnail\"><button class=\"clean thumbnail\"><img src=\"{{file.thumbnailUrl}}\" ng-click=\"vm.previewSelected($index)\"/></button></li></ul>");}]);
 (function() {
   'use strict';
   var SubmissionsController;
