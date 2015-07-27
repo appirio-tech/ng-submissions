@@ -1,9 +1,7 @@
 'use strict'
 
-SubmissionSlidesController = ($scope, SubmissionDetailAPIService) ->
+SubmissionSlidesController = ($scope, SubmissionDetailAPIService, SubmissionSlidesService) ->
   vm = this
-  #TODO: Default to index of file id passed in stateParams
-  vm.selectedPreviewIndex = 0
   vm.selectedPreview = null
 
   activate = ->
@@ -15,33 +13,24 @@ SubmissionSlidesController = ($scope, SubmissionDetailAPIService) ->
 
     resource.$promise.then (response) ->
       vm.work = response
-      vm.selectedPreview = vm.work?.files[vm.selectedPreviewIndex]
+      #TODO: Default to index of file id passed in stateParams
+      SubmissionSlidesService.initialize(0, vm.work?.files)
 
     resource.$promise.catch (error)->
       # TODO: add error handling
     return
 
-#restart slide show based on position in array
   vm.previewPrevious = ->
-    isFirst = vm.selectedPreviewIndex == 0
-    if isFirst
-      vm.selectedPreviewIndex = vm.work.files.length - 1
-    else
-      vm.selectedPreviewIndex -= 1
+    SubmissionSlidesService.previewPrevious()
 
   vm.previewNext = ->
-    isLast = vm.selectedPreviewIndex == vm.work.files.length - 1
-    if isLast
-      vm.selectedPreviewIndex = 0
-    else
-      vm.selectedPreviewIndex += 1
+    SubmissionSlidesService.previewNext()
 
   vm.previewSelected = (index)->
-    vm.selectedPreviewIndex = index
-
+    SubmissionSlidesService.previewSelected index
 
   watchSelectedPreviewIndex = ->
-    vm.selectedPreviewIndex
+    SubmissionSlidesService.selectedPreviewIndex
 
   setSelectedPreview = (index) ->
     vm.selectedPreview = vm.work.files[index] if vm.work?.files
@@ -50,6 +39,6 @@ SubmissionSlidesController = ($scope, SubmissionDetailAPIService) ->
 
   activate()
 
-SubmissionSlidesController.$inject = ['$scope', 'SubmissionDetailAPIService']
+SubmissionSlidesController.$inject = ['$scope', 'SubmissionDetailAPIService', 'SubmissionSlidesService']
 
 angular.module('appirio-tech-submissions').controller 'SubmissionSlidesController', SubmissionSlidesController
