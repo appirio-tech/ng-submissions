@@ -20,7 +20,7 @@ ul.slideshow
 
   li.preview
     .img-container
-      img(src="{{vm.selectedPreview.url}}")
+      img(ng-src="{{vm.selectedPreview.url}}")
 
     p {{vm.work.files[vm.selectedPreviewIndex].name}}
 
@@ -30,4 +30,4 @@ ul.slideshow
 ul.thumbnails
     li.thumbnail(ng-repeat="file in vm.work.files")
       button.clean.thumbnail
-        img(src="{{file.thumbnailUrl}}", ng-click="vm.previewSelected($index)")
+        img(ng-src="{{file.thumbnailUrl}}", ng-click="vm.previewSelected($index)")
