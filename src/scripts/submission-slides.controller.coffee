@@ -3,6 +3,7 @@
 SubmissionSlidesController = ($scope, SubmissionDetailAPIService, SubmissionSlidesService) ->
   vm = this
   vm.selectedPreview = null
+  vm.selectedPreviewIndex = 0
 
   activate = ->
     params =
@@ -14,23 +15,25 @@ SubmissionSlidesController = ($scope, SubmissionDetailAPIService, SubmissionSlid
     resource.$promise.then (response) ->
       vm.work = response
       #TODO: Default to index of file id passed in stateParams
-      SubmissionSlidesService.initialize(0, vm.work?.files)
+      vm.selectedPreview = vm.work?.files[vm.selectedPreviewIndex]
 
     resource.$promise.catch (error)->
       # TODO: add error handling
     return
 
-  vm.previewPrevious = ->
-    SubmissionSlidesService.previewPrevious()
+  vm.previewPrevious =  ->
+    srv = SubmissionSlidesService
+    vm.selectedPreviewIndex = srv.previewPrevious vm.selectedPreviewIndex, vm.work.files
 
-  vm.previewNext = ->
-    SubmissionSlidesService.previewNext()
+  vm.previewNext =  ->
+    srv = SubmissionSlidesService
+    vm.selectedPreviewIndex = srv.previewNext vm.selectedPreviewIndex, vm.work.files
 
-  vm.previewSelected = (index)->
-    SubmissionSlidesService.previewSelected index
+  vm.previewSelected = (index) ->
+    vm.selectedPreviewIndex = index
 
   watchSelectedPreviewIndex = ->
-    SubmissionSlidesService.selectedPreviewIndex
+    vm.selectedPreviewIndex
 
   setSelectedPreview = (index) ->
     vm.selectedPreview = vm.work.files[index] if vm.work?.files
