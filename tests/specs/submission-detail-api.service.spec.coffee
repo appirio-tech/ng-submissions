@@ -3,7 +3,7 @@
 srv      = null
 work = {}
 
-describe.only 'SubmissionDetailAPIService', ->
+describe 'SubmissionDetailAPIService', ->
   beforeEach inject (SubmissionDetailAPIService) ->
     srv = SubmissionDetailAPIService
 
