@@ -16,9 +16,10 @@ window.__karma__.loaded = ->
 
   AutoConfigFakeServer.fakeServer.respondImmediately = true
 
-  schemas = [
-    FIXTURES['bower_components/appirio-tech-api-schemas/swagger/v3-submissions.json']
-  ]
+  schemas = []
+
+  for path, fixture of FIXTURES
+    schemas.push fixture
 
   AutoConfigFakeServer.consume schemas
 
