@@ -7,7 +7,7 @@ describe 'SubmissionsController', ->
   describe 'activate', ->
     beforeEach inject ($rootScope, $controller, $httpBackend) ->
       scope        = $rootScope.$new()
-      scope.workId = '123'
+      scope.linkId = '123'
       vm           = $controller 'SubmissionsController', $scope: scope
       $httpBackend.flush()
 

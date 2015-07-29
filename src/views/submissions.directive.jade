@@ -1,12 +1,30 @@
 loader(ng-hide="vm.loaded")
 
-h1.work-name {{ vm.submissions.workName }} : {{ vm.submissions.workType }}
+h1(ng-if="vm.phase != 'Final'") Concept Designs
+
+h1(ng-if="vm.phase == 'Final'") Final Designs
+
+ul.timeline
+  li
+
+  li.active
+
+  li
+
+h4 Give feedback and select the top 5 design concepts.
+
+p.duration You have 39 hours to give feedback
+
+ul.top-selection
+  - each i in [1, 2, 3, 4, 5]
+    li.vacant=i
+
+    li
+      avatar
+
+button.confirm.info Confirm your selections
 
 hr
-
-h3 Screening Submissions Phase
-
-h4 Review and comment on submissions. Choose the participants that will move to the final phase.
 
 ul.submissions.color-even
   li.submission(ng-repeat="submission in vm.submissions.screeningSubmissions track by $index")
@@ -26,17 +44,16 @@ ul.submissions.color-even
           img.img(ng-src="{{ file.thumbnailUrl }}")
 
     ul.actions
-      li.view
-        a(ui-sref="submission-slides") view all
-
       li
-        .icon.checkmark
+        a(ui-sref="submission-slides") view all (12)
 
-      li
+      li.comments
+        | 20/28
+
         .icon.bubble
 
-hr
+      li
+        select
+          - each rank, i in ['1st Place', '2nd Place', '3rd Place', '4th Place', '5th Place']
+            option(value="#{ i + 1 }")=rank
 
-h3 Final Submissions
-
-h4 {{ vm.submissions.finalSubmissionStartDate | timeLapse }}

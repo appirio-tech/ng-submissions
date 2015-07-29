@@ -2,28 +2,86 @@
 @import "mixins";
 
 submissions {
+  @include submission-headers();
+
   position: relative;
   display : inline-block;
 
-  @include submission-headers();
+  .timeline {
+    @include block-center();
+    @include flex-center;
+    @include justify-content(space-between);
+
+    height          : 2px;
+    background-color: $primary-color-light;
+    width           : 100px;
+    margin-top      : $spacing;
+    margin-bottom   : $spacing;
+
+    li {
+      width           : 6px;
+      height          : 6px;
+      background-color: $primary-color-light;
+      border-radius   : 50%;
+
+      &.active {
+        background-color: $primary-color-dark;
+      }
+    }
+  }
+
+  .duration {
+    text-align: center;
+    margin-top: $spacing-smallest;
+  }
 
   > ul {
     margin-top : $spacing;
   }
 
+  button.confirm {
+    @include block-center();
+
+    text-transform: uppercase;
+  }
+
+  .top-selection {
+    @include flex-center;
+    @include justify-content(space-between);
+
+    width : 260px;
+    margin: $spacing-big auto;
+
+    li {
+      $radius: 40px;
+
+      width      : $radius;
+      height     : $radius;
+      font-size  : $font-size-big;
+      line-height: $radius - 2px * 2;
+
+      &.vacant {
+        border        : 2px dashed $primary-color;
+        border-radius : 50%;
+        text-align    : center;
+        vertical-align: middle;
+      }
+    }
+  }
+
   .submission {
-     @include flex-center;
+    @include flex-center;
 
     &:first-child {
       margin-top: 0;
     }
 
     ul.user-details {
-      @include flex-center(flex-start, $spacing-small);
+      @include flex-center(flex-start, $spacing-big);
 
       .name-time {
-        min-width  : 120px;
-        max-width  : 120px;
+        min-width: 120px;
+        max-width: 120px;
 
         .name {
           @include ellipsis();
@@ -36,7 +94,13 @@ submissions {
     }
 
     ul.actions {
-      @include flex-center(space-between, $spacing-small);
+      @include flex-center(space-between, $spacing-big);
+
+      .comments {
+        .icon {
+          margin: 0 auto;
+        }
+      }
     }
 
     ul.thumbnails {
