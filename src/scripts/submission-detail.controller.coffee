@@ -9,7 +9,7 @@ SubmissionDetailController = ($scope, SubmissionDetailAPIService) ->
 
   activate = ->
     params =
-      workId: $scope.workId
+      workId      : $scope.workId
       submissionId: $scope.submissionId
 
     resource = SubmissionDetailAPIService.get params
@@ -20,7 +20,8 @@ SubmissionDetailController = ($scope, SubmissionDetailAPIService) ->
 
     resource.$promise.catch (error)->
       # TODO: add error handling
-    return
+
+    vm
 
 
   activate()

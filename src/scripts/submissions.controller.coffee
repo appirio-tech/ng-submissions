@@ -4,11 +4,11 @@ SubmissionsController = ($scope, SubmissionAPIService) ->
   vm             = this
   vm.submissions = []
   vm.loaded      = false
-  vm.phase        = $scope.phase
+  vm.phase       = $scope.phase
 
   activate = ->
     params =
-      linkId: $scope.linkId
+      workId: $scope.workId
       phase : $scope.phase
 
     getSubmissions params

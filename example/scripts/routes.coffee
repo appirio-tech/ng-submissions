@@ -7,6 +7,10 @@ config = ($stateProvider) ->
     url         : '/'
     templateUrl : 'views/submissions.html'
 
+  states['final-fixes'] =
+    url         : '/final-fixes'
+    templateUrl : 'views/final-fixes.html'
+
   states['submission-detail'] =
     url         : '/detail'
     templateUrl : 'views/submission-detail.html'
