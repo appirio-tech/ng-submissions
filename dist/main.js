@@ -8,9 +8,10 @@
 
 }).call(this);
 
-angular.module("appirio-tech-submissions").run(["$templateCache", function($templateCache) {$templateCache.put("views/submissions.directive.html","<loader ng-hide=\"vm.loaded\"></loader><h1 class=\"work-name\">{{ vm.submissions.workName }} : {{ vm.submissions.workType }}</h1><hr/><h3>Screening Submissions Phase</h3><h4>Review and comment on submissions. Choose the participants that will move to the final phase.</h4><ul class=\"submissions color-even\"><li ng-repeat=\"submission in vm.submissions.screeningSubmissions track by $index\" class=\"submission\"><ul class=\"user-details\"><li><avatar avatar-url=\"{{ submission.submitter.avatarUrl }}\"></avatar></li><li><div class=\"name-time\"><div class=\"name\">{{ submission.submitter.handle }}</div><time>{{ submission.createdAt | timeLapse }}</time></div></li></ul><ul class=\"thumbnails\"><li ng-repeat=\"file in submission.files track by $index\" class=\"thumbnail\"><a href=\"{{ file.url }}\"><img ng-src=\"{{ file.thumbnailUrl }}\" class=\"img\"/></a></li></ul><ul class=\"actions\"><li class=\"view\"><a ui-sref=\"submission-slides\">view all</a></li><li><div class=\"icon checkmark\"></div></li><li><div class=\"icon bubble\"></div></li></ul></li></ul><hr/><h3>Final Submissions</h3><h4>{{ vm.submissions.finalSubmissionStartDate | timeLapse }}</h4>");
-$templateCache.put("views/submission-detail.directive.html","<ul class=\"actions\"><li class=\"submitter\"><avatar avatar-url=\"{{vm.work.submitter.avatarUrl}}\"></avatar><div class=\"name-time\"><div class=\"name\">{{vm.work.submitter.handle}}</div><time>{{vm.work.createdAt | date: \'h:mm a, MMMM d, y\'}}</time></div></li><li class=\"accept\"><button ng-click=\"vm.acceptSubmission()\" class=\"clean icon checkmark\"></button><p ng-if=\"!vm.submissionAccepted\">Accept this submission</p><p ng-if=\"vm.submissionAccepted\">Submission Accepted</p></li><li class=\"comment\"><button class=\"clean icon bubble\"></button><p>Comment on this submission</p></li></ul><ul class=\"previews\"><li ng-repeat=\"file in vm.work.files track by $index\" class=\"preview\"><div class=\"checkmark-container\"><div class=\"icon checkmark smallest\"></div></div><img ng-src=\"{{file.thumbnailUrl}}\" ui-sref=\"submission-slides\" class=\"img\"/><p>{{file.name}}</p></li></ul>");
-$templateCache.put("views/submission-slides.directive.html","<ul class=\"header\"><li class=\"submitter\"><avatar avatar-url=\"{{vm.work.submitter.avatarUrl}}\"></avatar><div class=\"name-time\"><div class=\"name\">{{vm.work.submitter.handle}}</div><time>{{vm.work.createdAt | date: \'h:mm a, MMMM d, y\'}}</time></div></li><li><div class=\"icon checkmark\"></div><div class=\"icon bubble\"></div></li></ul><hr/><ul class=\"slideshow\"><li><button ng-click=\"vm.previewPrevious()\" class=\"clean icon circle-arrow biggest\"></button></li><li class=\"preview\"><div class=\"img-container\"><img ng-src=\"{{vm.selectedPreview.url}}\"/></div><p>{{vm.work.files[vm.selectedPreviewIndex].name}}</p></li><li><button ng-click=\"vm.previewNext()\" class=\"clean icon circle-arrow right biggest\"></button></li></ul><ul class=\"thumbnails\"><li ng-repeat=\"file in vm.work.files\" class=\"thumbnail\"><button class=\"clean thumbnail\"><img ng-src=\"{{file.thumbnailUrl}}\" ng-click=\"vm.previewSelected($index)\"/></button></li></ul>");}]);
+angular.module("appirio-tech-submissions").run(["$templateCache", function($templateCache) {$templateCache.put("views/submissions.directive.html","<loader ng-hide=\"vm.loaded\"></loader><ul class=\"header\"><li class=\"previous\"><a href=\"#\">&lt;</a></li><li><h1>Final Fixes</h1><h1>Final Designs</h1><h1>Concept Designs</h1></li><li class=\"next\"><a href=\"#\">&gt;</a></li></ul><ul class=\"timeline\"><li></li><li class=\"active\"></li><li></li></ul><h4>Submissions for the Design Concept Phase coming in &hellip;</h4><h4>Final Design Phase starts in &hellip;</h4><ul class=\"countdown\"><li><span class=\"value\">9</span><span class=\"unit\">hrs</span></li><li><span class=\"value\">12</span><span class=\"unit\">mins</span></li><li><span class=\"value\">32</span><span class=\"unit\">sec</span></li></ul><h4>Give feedback and select the top 5 design concepts.</h4><p class=\"duration\">You have 39 hours to give feedback</p><ul class=\"top-selection\"><li><div class=\"shell\">1</div><avatar></avatar><div class=\"rank\">1st Place</div></li><li><div class=\"shell\">2</div><avatar></avatar><div class=\"rank\">2nd Place</div></li><li><div class=\"shell\">3</div><avatar></avatar><div class=\"rank\">3rd Place</div></li><li><div class=\"shell\">4</div><avatar></avatar><div class=\"rank\">4th Place</div></li><li><div class=\"shell\">5</div><avatar></avatar><div class=\"rank\">5th Place</div></li></ul><button class=\"confirm info\">Confirm your selections</button><hr/><ul class=\"submissions color-even\"><li ng-repeat=\"submission in vm.submissions.screeningSubmissions track by $index\" class=\"submission\"><ul class=\"user-details\"><li><avatar avatar-url=\"{{ submission.submitter.avatarUrl }}\"></avatar></li><li><div class=\"name-time\"><div class=\"name\">{{ submission.submitter.handle }}</div><time>{{ submission.createdAt | timeLapse }}</time></div></li></ul><ul class=\"thumbnails\"><li ng-repeat=\"file in submission.files track by $index\" class=\"thumbnail\"><a href=\"{{ file.url }}\"><img ng-src=\"{{ file.thumbnailUrl }}\" class=\"img\"/></a></li></ul><ul class=\"actions\"><li><a ui-sref=\"submission-slides\">view all (12)</a></li><li class=\"comments\">20/28<div class=\"icon bubble\"></div></li><li><select><option value=\"1\">1st Place</option><option value=\"2\">2nd Place</option><option value=\"3\">3rd Place</option><option value=\"4\">4th Place</option><option value=\"5\">5th Place</option></select></li></ul></li></ul>");
+$templateCache.put("views/final-fixes.directive.html","<ul class=\"header\"><li class=\"previous\"><a href=\"#\">&lt;</a></li><li><h1>Final Fixes</h1><h1>Final Designs</h1><h1>Concept Designs</h1></li><li class=\"next\"><a href=\"#\">&gt;</a></li></ul><ul class=\"timeline\"><li></li><li class=\"active\"></li><li></li></ul><h4>Final Fixes Phase starts in &hellip;</h4><ul class=\"countdown\"><li><span class=\"value\">9</span><span class=\"unit\">hrs</span></li><li><span class=\"value\">12</span><span class=\"unit\">mins</span></li><li><span class=\"value\">32</span><span class=\"unit\">sec</span></li></ul><h4>Give final feedback and accept each image to complate the design project.</h4><p class=\"duration\">You have 39 hours to give feedback</p><ul class=\"winner\"><li><avatar></avatar></li><li>Alpha User is the Winner!</li><li><button class=\"clean icon download\"></button></li></ul><hr/><ul class=\"approval\"><li class=\"filter\"><button class=\"clean\">Approved Screen</button> \n| <button class=\"clean\">Un-approved</button></li><li class=\"approve-all\"><input type=\"checkbox\"/><label>Approve all</label></li><li class=\"confirm\"><button class=\"info\">Confirm final approval</button></li></ul><ul class=\"previews\"><li ng-repeat=\"file in vm.files track by $index\" class=\"preview\"><div class=\"checkmark-container\"><div class=\"icon checkmark smallest\"></div></div><img ng-src=\"{{ file.thumbnailUrl }}\" ui-sref=\"submission-slides\" class=\"img\"/><p>{{ file.name }}</p><input type=\"checkbox\"/><label>accepted</label></li></ul>");
+$templateCache.put("views/submission-detail.directive.html","<ul class=\"actions\"><li class=\"submitter\"><avatar avatar-url=\"{{ vm.work.submitter.avatarUrl }}\"></avatar><div class=\"name-time\"><div class=\"name\">{{ vm.work.submitter.handle }}</div><time>{{ vm.work.createdAt | date: \'h:mm a, MMMM d, y\' }}</time></div></li><li class=\"position\">Select Position<select ng-model=\"vm.selectedPosition\"><option ng-repeat=\"position in vm.positions\" value=\"{{position}}\">{{position}}</option></select><button ng-show=\"vm.selectedPosition\" ng-click=\"vm.selectPosition()\" class=\"confirm info\">Select Position</button></li><li class=\"submissionsCount\"><p>{{vm.submissionsCount}} Submissions</p></li></ul><ul class=\"previews\"><li ng-repeat=\"file in vm.work.files track by $index\" class=\"preview\"><div class=\"checkmark-container\"><div class=\"icon checkmark smallest\"></div></div><img ng-src=\"{{ file.thumbnailUrl }}\" ui-sref=\"submission-slides\" class=\"img\"/><p>{{ file.name }}</p></li></ul>");
+$templateCache.put("views/submission-slides.directive.html","<ul class=\"header\"><li class=\"submitter\"><avatar avatar-url=\"{{ vm.work.submitter.avatarUrl }}\"></avatar><div class=\"name-time\"><div class=\"name\">{{ vm.work.submitter.handle }}</div><time>{{ vm.work.createdAt | date: \'h:mm a, MMMM d, y\' }}</time></div></li><li class=\"icons\"><div class=\"icon download\"></div><div class=\"icon checkmark\"></div><div class=\"icon bubble\"></div></li></ul><hr/><ul class=\"slideshow\"><li><button ng-click=\"vm.previewPrevious()\" class=\"clean icon circle-arrow biggest\"></button></li><li class=\"preview\"><div class=\"img-container\"><img ng-src=\"{{ vm.selectedPreview.url }}\"/></div><p>{{ vm.work.files[vm.selectedPreviewIndex].name }}</p></li><li><button ng-click=\"vm.previewNext()\" class=\"clean icon circle-arrow right biggest\"></button></li></ul><ul class=\"thumbnails\"><li ng-repeat=\"file in vm.work.files\" class=\"thumbnail\"><button class=\"clean thumbnail\"><img ng-src=\"{{ file.thumbnailUrl }}\" ng-click=\"vm.previewSelected($index)\"/><div class=\"notification\">1</div></button></li></ul>");}]);
 (function() {
   'use strict';
   var SubmissionsController;
@@ -20,10 +21,12 @@ $templateCache.put("views/submission-slides.directive.html","<ul class=\"header\
     vm = this;
     vm.submissions = [];
     vm.loaded = false;
+    vm.phase = $scope.phase;
     activate = function() {
       var params;
       params = {
-        workId: $scope.workId
+        workId: $scope.workId,
+        phase: $scope.phase
       };
       getSubmissions(params);
       return vm;
@@ -66,12 +69,55 @@ $templateCache.put("views/submission-slides.directive.html","<ul class=\"header\
       controller: 'SubmissionsController as vm',
       templateUrl: 'views/submissions.directive.html',
       scope: {
-        workId: '@workId'
+        workId: '@workId',
+        phase: '@phase'
       }
     };
   };
 
   angular.module('appirio-tech-submissions').directive('submissions', directive);
+
+}).call(this);
+
+(function() {
+  'use strict';
+  var FinalFixesController;
+
+  FinalFixesController = function($scope) {
+    var activate, vm;
+    vm = this;
+    vm.files = JSON.parse('[{"id":"abc","name":"luke-i-m-your-father.jpg","accepted":true,"thumbnailUrl":"https://i.kinja-img.com/gawker-media/image/upload/raoq6i3zhiq78kigjuam.jpg","url":"https://i.kinja-img.com/gawker-media/image/upload/raoq6i3zhiq78kigjuam.jpg"},{"id":"abc","name":"luke-i-m-your-father.jpg","accepted":true,"thumbnailUrl":"https://i.kinja-img.com/gawker-media/image/upload/raoq6i3zhiq78kigjuam.jpg","url":"https://i.kinja-img.com/gawker-media/image/upload/raoq6i3zhiq78kigjuam.jpg"},{"id":"abc","name":"luke-i-m-your-father.jpg","accepted":true,"thumbnailUrl":"https://i.kinja-img.com/gawker-media/image/upload/raoq6i3zhiq78kigjuam.jpg","url":"https://i.kinja-img.com/gawker-media/image/upload/raoq6i3zhiq78kigjuam.jpg"},{"id":"abc","name":"luke-i-m-your-father.jpg","accepted":true,"thumbnailUrl":"https://i.kinja-img.com/gawker-media/image/upload/raoq6i3zhiq78kigjuam.jpg","url":"https://i.kinja-img.com/gawker-media/image/upload/raoq6i3zhiq78kigjuam.jpg"},{"id":"abc","name":"luke-i-m-your-father.jpg","accepted":true,"thumbnailUrl":"https://i.kinja-img.com/gawker-media/image/upload/raoq6i3zhiq78kigjuam.jpg","url":"https://i.kinja-img.com/gawker-media/image/upload/raoq6i3zhiq78kigjuam.jpg"},{"id":"abc","name":"luke-i-m-your-father.jpg","accepted":true,"thumbnailUrl":"https://i.kinja-img.com/gawker-media/image/upload/raoq6i3zhiq78kigjuam.jpg","url":"https://i.kinja-img.com/gawker-media/image/upload/raoq6i3zhiq78kigjuam.jpg"}]');
+    vm.acceptSubmission = function() {
+      return vm.submissionAccepted = true;
+    };
+    activate = function() {
+      return vm;
+    };
+    return activate();
+  };
+
+  FinalFixesController.$inject = ['$scope'];
+
+  angular.module('appirio-tech-submissions').controller('FinalFixesController', FinalFixesController);
+
+}).call(this);
+
+(function() {
+  'use strict';
+  var directive;
+
+  directive = function() {
+    return {
+      restrict: 'E',
+      controller: 'FinalFixesController as vm',
+      templateUrl: 'views/final-fixes.directive.html',
+      scope: {
+        workId: '@workId'
+      }
+    };
+  };
+
+  angular.module('appirio-tech-submissions').directive('finalFixes', directive);
 
 }).call(this);
 
@@ -89,7 +135,8 @@ $templateCache.put("views/submission-slides.directive.html","<ul class=\"header\
     var methods, params, url;
     url = API_URL + '/projects/:workId/submissions';
     params = {
-      workId: '@workId'
+      workId: '@workId',
+      phase: '@phase'
     };
     methods = {
       query: {
@@ -119,9 +166,17 @@ $templateCache.put("views/submission-slides.directive.html","<ul class=\"header\
   SubmissionDetailController = function($scope, SubmissionDetailAPIService) {
     var activate, vm;
     vm = this;
-    vm.submissionAccepted = null;
-    vm.acceptSubmission = function() {
-      return vm.submissionAccepted = true;
+    vm.work = null;
+    vm.positions = null;
+    vm.submissionsCount = null;
+    vm.selectedPosition = null;
+    vm.selectPosition = function() {
+      var body;
+      return body = {
+        workId: $scope.workId,
+        submissionId: $scope.submissionId,
+        position: vm.selectedPosition
+      };
     };
     activate = function() {
       var params, resource;
@@ -132,9 +187,11 @@ $templateCache.put("views/submission-slides.directive.html","<ul class=\"header\
       resource = SubmissionDetailAPIService.get(params);
       resource.$promise.then(function(response) {
         vm.work = response;
-        return vm.submissionAccepted = vm.work.accepted;
+        vm.submissionsCount = vm.work.files.length - 1;
+        return vm.positions = [1, 2, 3, 4];
       });
       resource.$promise["catch"](function(error) {});
+      return vm;
     };
     return activate();
   };
@@ -169,11 +226,11 @@ $templateCache.put("views/submission-slides.directive.html","<ul class=\"header\
   'use strict';
   var SubmissionSlidesController;
 
-  SubmissionSlidesController = function($scope, SubmissionDetailAPIService) {
+  SubmissionSlidesController = function($scope, SubmissionDetailAPIService, SubmissionSlidesService) {
     var activate, setSelectedPreview, vm, watchSelectedPreviewIndex;
     vm = this;
-    vm.selectedPreviewIndex = 0;
     vm.selectedPreview = null;
+    vm.selectedPreviewIndex = 0;
     activate = function() {
       var params, resource;
       params = {
@@ -189,22 +246,14 @@ $templateCache.put("views/submission-slides.directive.html","<ul class=\"header\
       resource.$promise["catch"](function(error) {});
     };
     vm.previewPrevious = function() {
-      var isFirst;
-      isFirst = vm.selectedPreviewIndex === 0;
-      if (isFirst) {
-        return vm.selectedPreviewIndex = vm.work.files.length - 1;
-      } else {
-        return vm.selectedPreviewIndex -= 1;
-      }
+      var srv;
+      srv = SubmissionSlidesService;
+      return vm.selectedPreviewIndex = srv.previewPrevious(vm.selectedPreviewIndex, vm.work.files);
     };
     vm.previewNext = function() {
-      var isLast;
-      isLast = vm.selectedPreviewIndex === vm.work.files.length - 1;
-      if (isLast) {
-        return vm.selectedPreviewIndex = 0;
-      } else {
-        return vm.selectedPreviewIndex += 1;
-      }
+      var srv;
+      srv = SubmissionSlidesService;
+      return vm.selectedPreviewIndex = srv.previewNext(vm.selectedPreviewIndex, vm.work.files);
     };
     vm.previewSelected = function(index) {
       return vm.selectedPreviewIndex = index;
@@ -222,7 +271,7 @@ $templateCache.put("views/submission-slides.directive.html","<ul class=\"header\
     return activate();
   };
 
-  SubmissionSlidesController.$inject = ['$scope', 'SubmissionDetailAPIService'];
+  SubmissionSlidesController.$inject = ['$scope', 'SubmissionDetailAPIService', 'SubmissionSlidesService'];
 
   angular.module('appirio-tech-submissions').controller('SubmissionSlidesController', SubmissionSlidesController);
 
@@ -283,5 +332,39 @@ $templateCache.put("views/submission-slides.directive.html","<ul class=\"header\
   srv.$inject = ['$resource', 'API_URL'];
 
   angular.module('appirio-tech-submissions').factory('SubmissionDetailAPIService', srv);
+
+}).call(this);
+
+(function() {
+  'use strict';
+  var srv;
+
+  srv = function() {
+    srv.previewPrevious = function(selectedPreviewIndex, files) {
+      var isFirst;
+      isFirst = selectedPreviewIndex === 0;
+      if (isFirst) {
+        selectedPreviewIndex = files.length - 1;
+      } else {
+        selectedPreviewIndex -= 1;
+      }
+      return selectedPreviewIndex;
+    };
+    srv.previewNext = function(selectedPreviewIndex, files) {
+      var isLast;
+      isLast = selectedPreviewIndex === files.length - 1;
+      if (isLast) {
+        selectedPreviewIndex = 0;
+      } else {
+        selectedPreviewIndex += 1;
+      }
+      return selectedPreviewIndex;
+    };
+    return srv;
+  };
+
+  srv.$inject = [];
+
+  angular.module('appirio-tech-submissions').factory('SubmissionSlidesService', srv);
 
 }).call(this);

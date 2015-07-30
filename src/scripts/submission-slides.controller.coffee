@@ -1,9 +1,9 @@
 'use strict'
 
-SubmissionSlidesController = ($scope, SubmissionDetailAPIService, SubmissionSlidesService) ->
+SubmissionSlidesController = ($scope, $state, SubmissionDetailAPIService, SubmissionSlidesService) ->
   vm = this
   vm.selectedPreview = null
-  vm.selectedPreviewIndex = 0
+  vm.selectedPreviewIndex = null
 
   activate = ->
     params =
@@ -14,12 +14,17 @@ SubmissionSlidesController = ($scope, SubmissionDetailAPIService, SubmissionSlid
 
     resource.$promise.then (response) ->
       vm.work = response
-      #TODO: Default to index of file id passed in stateParams
+      vm.selectedPreviewIndex = vm.work?.files.indexOf $state.params.fileId
       vm.selectedPreview = vm.work?.files[vm.selectedPreviewIndex]
 
-    resource.$promise.catch (error)->
+    resource.$promise.catch (error) ->
       # TODO: add error handling
     return
+
+  vm.acceptFile = ->
+    params =
+      submissionId: $scope.submissionId
+      #look up by current index in files
 
   vm.previewPrevious =  ->
     srv = SubmissionSlidesService
