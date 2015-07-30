@@ -7,13 +7,16 @@ ul.actions
 
       time {{ vm.work.createdAt | date: 'h:mm a, MMMM d, y' }}
 
-  li.position Select Position
+  li.position
     select(ng-model="vm.selectedPosition")
-      option(ng-repeat="position in vm.positions" value="{{position}}") {{position}}
+      option(value="") Select Position
+
+      option(ng-repeat="position in vm.positions" value="{{position}}") {{ position }}
+
     button.confirm.info(ng-show="vm.selectedPosition" ng-click="vm.selectPosition()") Select Position
 
   li.submissionsCount
-    p {{vm.submissionsCount}} Submissions
+    p {{ vm.submissionsCount }} Submissions
 
 ul.previews
   li.preview(ng-repeat="file in vm.work.files track by $index")
