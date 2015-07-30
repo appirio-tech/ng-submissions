@@ -2,10 +2,18 @@
 
 SubmissionDetailController = ($scope, SubmissionDetailAPIService) ->
   vm = this
-  vm.submissionAccepted = null;
+  vm.work = null
+  vm.positions = null
+  vm.submissionsCount = null
+  vm.selectedPosition = null
 
-  vm.acceptSubmission = ->
-    vm.submissionAccepted = true;
+  vm.selectPosition = ->
+    body =
+      workId      : $scope.workId
+      submissionId: $scope.submissionId
+      position: vm.selectedPosition
+    # TODO: Correct API call to update submission body
+    # SubmissionDetailAPIService.put body
 
   activate = ->
     params =
@@ -16,13 +24,15 @@ SubmissionDetailController = ($scope, SubmissionDetailAPIService) ->
 
     resource.$promise.then (response) ->
       vm.work = response
-      vm.submissionAccepted = vm.work.accepted
+      vm.submissionsCount = vm.work.files.length - 1
+      #TODO: Dynamic positions count based on data
+      vm.positions = [1, 2, 3, 4]
 
     resource.$promise.catch (error)->
       # TODO: add error handling
 
-    vm
 
+    vm
 
   activate()
 
