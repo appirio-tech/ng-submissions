@@ -9,6 +9,9 @@
 ### Designs
 https://drive.google.com/drive/folders/0B6NlMQSXkImbfm5DcEZqN1JPN1R6MGVvbDdzTEEtVlZPQTBjNU1QYVRaWVFfcXZQN2FjZkk
 
+### User requirements
+https://appirio.atlassian.net/wiki/display/ProdDevOverview/Collaboration+for+Mobile+Design+Submissions
+
 ## Development
 ```
 alias gserve='nvm use; gulp clean; gulp serve'
