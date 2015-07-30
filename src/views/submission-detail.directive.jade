@@ -7,22 +7,20 @@ ul.actions
 
       time {{ vm.work.createdAt | date: 'h:mm a, MMMM d, y' }}
 
-  li.accept
-    button.clean.icon.checkmark(ng-click="vm.acceptSubmission()")
+  li.position
+    select(ng-model="vm.selectedPosition")
+      option(value="") Select Position
 
-    p(ng-if="!vm.submissionAccepted") Accept this submission
+      option(ng-repeat="position in vm.positions" value="{{position}}") {{ position }}
 
-    p(ng-if="vm.submissionAccepted") Submission Accepted
+    button.confirm.info(ng-show="vm.selectedPosition" ng-click="vm.selectPosition()") Select Position
 
-  li.comment
-    button.clean.icon.bubble
-
-    p Comment on this submission
+  li.submissionsCount
+    p {{ vm.submissionsCount }} Submissions
 
 ul.previews
   li.preview(ng-repeat="file in vm.work.files track by $index")
-    .checkmark-container
-      .icon.checkmark.smallest
+    .notification 123
 
     img.img(ng-src="{{ file.thumbnailUrl }}" ui-sref="submission-slides")
 

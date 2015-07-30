@@ -19,12 +19,11 @@ describe 'SubmissionDetailController', ->
     it 'should call API service for work details', ->
       expect(SubmissionDetailAPIService.get.called).to.be.ok
 
-    it 'should initialize submission accepted as null', ->
-     expect(controller.submissionAccepted).not.to.be.ok
+    it 'should initialize selected position', ->
+     expect(controller.selectedPosition).not.to.be.ok
 
-    it 'should set submission accepted', ->
-      controller.acceptSubmission()
-      expect(controller.submissionAccepted).to.be.ok
+    it 'should have selectPosition method', ->
+      expect(controller.selectPosition).to.exist
 
     it 'should initialize work', ->
       expect(controller.work).to.be.defined
