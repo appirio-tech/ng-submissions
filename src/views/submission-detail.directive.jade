@@ -20,8 +20,7 @@ ul.actions
 
 ul.previews
   li.preview(ng-repeat="file in vm.work.files track by $index")
-    .checkmark-container
-      .icon.checkmark.smallest
+    .notification 123
 
     img.img(ng-src="{{ file.thumbnailUrl }}" ui-sref="submission-slides")
 
