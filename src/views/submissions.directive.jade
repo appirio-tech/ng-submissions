@@ -43,7 +43,7 @@ ul.submissions.color-even
 
     ul.thumbnails
       li.thumbnail(ng-repeat="file in submission.files track by $index")
-        a(ui-sref="submission-slides({submissionId: submission.id, index: $index})")
+        a(ui-sref="submission-slides({submissionId: submission.id, fileId: file.id})")
           img.img(ng-src="{{ file.thumbnailUrl }}")
 
     ul.actions
