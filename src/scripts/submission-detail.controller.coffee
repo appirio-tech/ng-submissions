@@ -31,7 +31,6 @@ SubmissionDetailController = ($scope, SubmissionDetailAPIService) ->
     resource.$promise.catch (error)->
       # TODO: add error handling
 
-
     vm
 
   activate()
