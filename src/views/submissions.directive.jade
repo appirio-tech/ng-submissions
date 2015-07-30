@@ -35,6 +35,9 @@ ul.submissions.color-even
       li
         .icon.bubble
 
+      li
+        select(ng-model="submission.position", ng-options="o as o for o in vm.positions")
+
 hr
 
 h3 Final Submissions

@@ -4,6 +4,10 @@ SubmissionsController = ($scope, SubmissionAPIService) ->
   vm             = this
   vm.submissions = []
   vm.loaded      = false
+  vm.positions   = ['1st Place', '2nd Place', '3rd Place', '4th Place', '5th Place']
+
+  vm.reorder = (submission) ->
+    console.log submission
 
   activate = ->
     params =
