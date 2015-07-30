@@ -38,12 +38,16 @@ angular.module("app.constants", [])
       url: '/',
       templateUrl: 'views/submissions.html'
     };
+    states['final-fixes'] = {
+      url: '/final-fixes',
+      templateUrl: 'views/final-fixes.html'
+    };
     states['submission-detail'] = {
       url: '/detail',
       templateUrl: 'views/submission-detail.html'
     };
     states['submission-slides'] = {
-      url: '/slides',
+      url: '/slides/:id',
       templateUrl: 'views/submission-slides.html'
     };
     results = [];
@@ -60,6 +64,7 @@ angular.module("app.constants", [])
 
 }).call(this);
 
-angular.module("example").run(["$templateCache", function($templateCache) {$templateCache.put("views/submissions.html","<submissions work-id=\"leonardo\"></submissions>");
+angular.module("example").run(["$templateCache", function($templateCache) {$templateCache.put("views/submissions.html","<submissions work-id=\"leonardo\" phase=\"Final\"></submissions>");
+$templateCache.put("views/final-fixes.html","<final-fixes work-id=\"leonardo\"></final-fixes>");
 $templateCache.put("views/submission-detail.html","<h1>Submission Detail</h1><submission-detail work-id=\"123\" submission-id=\"123\"></submission-detail>");
 $templateCache.put("views/submission-slides.html","<h1>Submission Slides</h1><submission-slides work-id=\"123\" submission-id=\"123\"></submission-slides>");}]);
