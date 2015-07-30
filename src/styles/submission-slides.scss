@@ -19,8 +19,8 @@ submission-slides {
       margin-left: $spacing;
     }
 
-    .bubble {
-      margin-left: $spacing;
+    .icons {
+      @include flex-center(flex-start, $spacing);
     }
   }
 
