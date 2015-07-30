@@ -76,7 +76,7 @@ final-fixes, submission-detail {
   .previews {
     margin-top: $spacing;
 
-    @include flex-center;
+    @include flex-center(center);
 
     .preview {
       margin-right : $spacing;
