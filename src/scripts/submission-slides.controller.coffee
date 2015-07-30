@@ -3,7 +3,8 @@
 SubmissionSlidesController = ($scope, SubmissionDetailAPIService, SubmissionSlidesService, $stateParams) ->
   vm                      = this
   vm.selectedPreview      = null
-  vm.selectedPreviewIndex = $stateParams.index
+  vm.selectedPreviewIndex = 0
+  vm.fileId               = $stateParams.fileId
 
   activate = ->
     params =
