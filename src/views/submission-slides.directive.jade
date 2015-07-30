@@ -33,3 +33,5 @@ ul.thumbnails
     li.thumbnail(ng-repeat="file in vm.work.files")
       button.clean.thumbnail
         img(ng-src="{{ file.thumbnailUrl }}", ng-click="vm.previewSelected($index)")
+
+        .notification 1

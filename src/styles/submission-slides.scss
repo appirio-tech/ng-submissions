@@ -71,10 +71,23 @@ submission-slides {
     margin-top: $spacing-big;
 
     button {
+      position: relative;
+
       img {
-        width  : 30px;
-        height : 30px;
+        width  : 40px;
+        height : 40px;
         display: block;
+      }
+
+      .notification {
+        background-color: $color-danger;
+        color           : white;
+        position        : absolute;
+        top             : -5px;
+        right           : -5px;
+        padding         : 0 4px;
+        border-radius   : 10px;
+        font-size       : $font-size-small;
       }
     }
   }
