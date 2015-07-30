@@ -4,6 +4,25 @@ submissions, final-fixes {
   position: relative;
   display : inline-block;
 
+  .header {
+    @include flex-center(center);
+
+    .next, .previous {
+      a {
+        font-size: 30px;
+        text-decoration: none;
+      }
+    }
+
+    .next {
+      margin-left: 50px;
+    }
+
+    .previous {
+      margin-right: 50px;
+    }
+  }
+
   > h1, > h3, > h4 {
     text-align: center;
   }
