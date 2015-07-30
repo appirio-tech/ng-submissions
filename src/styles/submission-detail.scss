@@ -30,38 +30,4 @@ submission-detail {
       }
     }
   }
-
-
-  .previews {
-    margin-top: $spacing;
-
-    @include flex-center;
-
-    .preview {
-      margin-right : $spacing;
-      margin-bottom: $spacing;
-      width        : 160px;
-      position     : relative;
-
-      .img {
-        width           : 160px;
-        height          : 130px;
-        background-color: orange;
-      }
-
-      .checkmark-container {
-        position        : absolute;
-        background-color: white;
-        top             : $spacing;
-        right           : $spacing;
-        border-radius   : 50%;
-        padding         : $spacing-smallest;
-      }
-
-      p {
-        padding: $spacing-smallest;
-        @include ellipsis();
-      }
-    }
-  }
 }

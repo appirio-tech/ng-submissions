@@ -1,26 +1,31 @@
+- ranks = ['1st Place', '2nd Place', '3rd Place', '4th Place', '5th Place']
+
 loader(ng-hide="vm.loaded")
 
-h1(ng-if="vm.phase != 'Final'") Concept Designs
+h1 Concept Designs
 
-h1(ng-if="vm.phase == 'Final'") Final Designs
+h1 Final Designs
 
-ul.timeline
-  li
+include parts/timeline
 
-  li.active
+h4 Submissions for the Design Concept Phase coming in &hellip;
 
-  li
+h4 Final Design Phase starts in &hellip;
+
+include parts/countdown
 
 h4 Give feedback and select the top 5 design concepts.
 
 p.duration You have 39 hours to give feedback
 
 ul.top-selection
-  - each i in [1, 2, 3, 4, 5]
-    li.vacant=i
-
+  - each rank, i in ranks
     li
+      .shell #{i + 1}
+
       avatar
+
+      .rank #{rank}
 
 button.confirm.info Confirm your selections
 
@@ -54,6 +59,6 @@ ul.submissions.color-even
 
       li
         select
-          - each rank, i in ['1st Place', '2nd Place', '3rd Place', '4th Place', '5th Place']
+          - each rank, i in ranks
             option(value="#{ i + 1 }")=rank
 

@@ -1,0 +1,89 @@
+@import "work-includes";
+
+submissions, final-fixes {
+  position: relative;
+  display : inline-block;
+
+  > h1, > h3, > h4 {
+    text-align: center;
+  }
+
+  > h3 {
+    text-transform: uppercase;
+    color: $primary-color;
+  }
+
+  > h4 {
+    color: $primary-color-light;
+  }
+
+  .duration {
+    text-align: center;
+    margin-top: $spacing-smallest;
+  }
+
+  .timeline {
+    @include block-center();
+    @include flex-center(space-between);
+
+    height          : 2px;
+    background-color: $primary-color-light;
+    width           : 100px;
+    margin-top      : $spacing;
+    margin-bottom   : $spacing;
+
+    li {
+      width           : 6px;
+      height          : 6px;
+      background-color: $primary-color-light;
+      border-radius   : 50%;
+
+      &.active {
+        background-color: $primary-color-dark;
+      }
+    }
+  }
+
+  .countdown {
+    @include flex-center(center, $spacing-small);
+
+    .value {
+      font-size: $font-size-biggest;
+    }
+  }
+}
+
+final-fixes, submission-detail {
+  .previews {
+    margin-top: $spacing;
+
+    @include flex-center;
+
+    .preview {
+      margin-right : $spacing;
+      margin-bottom: $spacing;
+      width        : 160px;
+      position     : relative;
+
+      .img {
+        width           : 160px;
+        height          : 130px;
+        background-color: orange;
+      }
+
+      .checkmark-container {
+        position        : absolute;
+        background-color: white;
+        top             : $spacing;
+        right           : $spacing;
+        border-radius   : 50%;
+        padding         : $spacing-smallest;
+      }
+
+      p {
+        padding: $spacing-smallest;
+        @include ellipsis();
+      }
+    }
+  }
+ }

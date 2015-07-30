@@ -1,44 +1,6 @@
 @import "work-includes";
-@import "mixins";
 
 submissions {
-  @include submission-headers();
-
-  position: relative;
-  display : inline-block;
-
-  .timeline {
-    @include block-center();
-    @include flex-center;
-    @include justify-content(space-between);
-
-    height          : 2px;
-    background-color: $primary-color-light;
-    width           : 100px;
-    margin-top      : $spacing;
-    margin-bottom   : $spacing;
-
-    li {
-      width           : 6px;
-      height          : 6px;
-      background-color: $primary-color-light;
-      border-radius   : 50%;
-
-      &.active {
-        background-color: $primary-color-dark;
-      }
-    }
-  }
-
-  .duration {
-    text-align: center;
-    margin-top: $spacing-smallest;
-  }
-
-  > ul {
-    margin-top : $spacing;
-  }
-
   button.confirm {
     @include block-center();
 
@@ -55,12 +17,20 @@ submissions {
     li {
       $radius: 40px;
 
-      width      : $radius;
-      height     : $radius;
-      font-size  : $font-size-big;
-      line-height: $radius - 2px * 2;
+      avatar, .shell {
+        max-width : $radius;
+        max-height: $radius;
+      }
 
-      &.vacant {
+      avatar {
+        @include block-center;
+
+        margin-bottom: $spacing-smallest;
+      }
+
+      .shell {
+        font-size     : $font-size-big;
+        line-height   : $radius - 2px * 2;
         border        : 2px dashed $primary-color;
         border-radius : 50%;
         text-align    : center;

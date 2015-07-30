@@ -9,7 +9,7 @@ srv = ($resource, API_URL) ->
   url = API_URL + '/projects/:workId/submissions/:submissionId'
 
   params  =
-    workId: '@workId'
+    workId      : '@workId'
     submissionId: '@submissionId'
 
   actions =

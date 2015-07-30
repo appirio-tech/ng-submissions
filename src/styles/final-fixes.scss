@@ -1,0 +1,20 @@
+@import "work-includes";
+@import "mixins";
+
+final-fixes {
+  .winner {
+    @include flex-center(center, $spacing);
+  }
+
+  .approval {
+     @include flex-center(flex-start, $spacing);
+
+     padding-left: 0;
+
+    .confirm {
+      button {
+        text-transform: uppercase;
+      }
+    }
+  }
+}

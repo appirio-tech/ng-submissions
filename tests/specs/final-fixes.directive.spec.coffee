@@ -1,9 +1,9 @@
 'use strict'
 
 element = null
-html    = '<submissions work-id="123" phase="Final"></submissions>'
+html    = '<final-fixes work-id="123"></final-fixes>'
 
-describe 'SubmissionsDirective', ->
+describe 'FinalFixesDirective', ->
   beforeEach inject ($compile, $rootScope) ->
     compiled = $compile html
     element  = compiled $rootScope

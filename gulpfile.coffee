@@ -5,6 +5,7 @@ configs.templateCache = []
 configs.templateCache.push
   files : [
     '.tmp/views/submissions.directive.html'
+    '.tmp/views/final-fixes.directive.html'
     '.tmp/views/submission-detail.directive.html'
     '.tmp/views/submission-slides.directive.html'
   ]
@@ -15,6 +16,7 @@ configs.templateCache.push
   fileName: 'example-templates.js'
   files : [
     '.tmp/views/submissions.html'
+    '.tmp/views/final-fixes.html'
     '.tmp/views/submission-detail.html'
     '.tmp/views/submission-slides.html'
   ]
