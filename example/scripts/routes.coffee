@@ -16,7 +16,7 @@ config = ($stateProvider) ->
     templateUrl : 'views/submission-detail.html'
 
   states['submission-slides'] =
-    url         : '/slides'
+    url         : '/slides/:id'
     templateUrl : 'views/submission-slides.html'
 
   for key, state of states

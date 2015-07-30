@@ -48,7 +48,8 @@ ul.submissions.color-even
 
     ul.actions
       li
-        a(ui-sref="submission-slides") view all (12)
+        a(ui-sref="submission-slides({id: submission.id})") view all (12)
+        //- need to pass id in the scope
 
       li.comments
         | 20/28
