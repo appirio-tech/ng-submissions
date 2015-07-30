@@ -19,6 +19,9 @@ ul.winner
   li
     button.clean.icon.download
 
+  li
+    a(href="#") View previous submission comments
+
 hr
 
 ul.approval
@@ -40,8 +43,17 @@ ul.approval
 
 ul.previews
   li.preview(ng-repeat="file in vm.files track by $index")
-    .checkmark-container
-      .icon.checkmark.smallest
+    ul.icons
+      li.notification
+        button.clean 1
+
+      li
+        button.clean
+          .icon.checkmark.smallest
+
+      li
+        button.clean
+          .icon.download.smallest
 
     img.img(ng-src="{{ file.thumbnailUrl }}" ui-sref="submission-slides")
 
