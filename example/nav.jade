@@ -1,12 +1,12 @@
 ul.nav
   li
-    a.submissions(ui-sref="submissions") Submissions
+    a.submissions(ui-sref="submissions({workId: 123, phase: 1})") Submissions
 
   li
     a.final-fixes(ui-sref="final-fixes") Final Fixes
 
   li
-    a.detail(ui-sref="submission-detail({submissionId: 123})") Detail
+    a.detail(ui-sref="submission-detail({workId: 123, submissionId: 123})") Detail
 
   li
-    a.slides(ui-sref="submission-slides({submissionId: 123, fileId: 321})") Slides
+    a.slides(ui-sref="submission-slides({workId: 123, submissionId: 123, fileId: 321})") Slides
