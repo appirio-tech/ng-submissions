@@ -32,6 +32,9 @@ describe 'SubmissionSlidesController', ->
     it 'should initialize work', ->
       expect(controller.work).to.be.defined
 
+    # it 'should initalize selected preview index', ->
+    #   expect(controller.selectedPreviewIndex).to.equal(0)
+
     it 'should call preview previous on service', ->
       controller.previewPrevious()
       expect(previewPreviousSpy.called).to.be.ok
@@ -47,3 +50,5 @@ describe 'SubmissionSlidesController', ->
     it 'should call API service for work details', ->
       expect(SubmissionDetailAPIService.get.called).to.be.ok
 
+    it 'should have an accept files method', ->
+      expect(controller.acceptFile).to.exist
