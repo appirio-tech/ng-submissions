@@ -4,6 +4,7 @@ SubmissionSlidesController = ($scope, $state, SubmissionDetailAPIService, Submis
   vm = this
   vm.selectedPreview = null
   vm.selectedPreviewIndex = null
+  vm.showComments = false
 
   activate = ->
     params =
@@ -24,6 +25,7 @@ SubmissionSlidesController = ($scope, $state, SubmissionDetailAPIService, Submis
           vm.selectedPreviewIndex = 0
 
       vm.selectedPreview = vm.work?.files[vm.selectedPreviewIndex]
+      vm.showComments = true
 
     resource.$promise.catch (error)->
       # TODO: add error handling
@@ -49,7 +51,7 @@ SubmissionSlidesController = ($scope, $state, SubmissionDetailAPIService, Submis
     vm.selectedPreviewIndex = index
     # change url without full page reload
     if ($state.current.name)
-      $state.go 'submission-slides', {submissionId: $scope.submissionId, fileId: vm.selectedPreview.id}, {notify:false}
+      $state.go 'submission-slides', {submissionId: $scope.submissionId, fileId: vm.selectedPreview.id}, {notify: false}
 
   watchSelectedPreviewIndex = ->
     vm.selectedPreviewIndex
