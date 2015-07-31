@@ -6,24 +6,23 @@ include parts/header
 
 include parts/timeline
 
-h4 Submissions for the Design Concept Phase coming in &hellip;
+h4 Submissions for the {{ vm.phases.current.name }} Phase coming in &hellip;
 
-h4 Final Design Phase starts in &hellip;
+h4 {{ vm.phases.next.name }} Phase starts in &hellip;
 
 include parts/countdown
 
-h4 Give feedback and select the top 5 design concepts.
+h4 Give feedback and select the top {{ vm.ranks.length }} design concepts.
 
 p.duration You have 39 hours to give feedback
 
 ul.top-selection
-  - each rank, i in ranks
-    li
-      .shell #{i + 1}
+  li(ng-repeat="rank in vm.ranks track by $index")
+    .shell {{ rank.value }}
 
-      avatar
+    avatar(avatar-url="{{ rank.avatarUrl }}")
 
-      .rank #{rank}
+    .rank {{ rank.longLabel }}
 
 button.confirm.info Confirm your selections
 
@@ -56,7 +55,5 @@ ul.submissions.color-even
         .icon.bubble
 
       li
-        select
-          - each rank, i in ranks
-            option(value="#{ i + 1 }")=rank
+        select(ng-model="submission.position", ng-options="pos as pos.longLabel for pos in vm.ranks", ng-change="vm.reorder(submission)")
 
