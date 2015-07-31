@@ -53,5 +53,5 @@ describe 'SubmissionSlidesController', ->
     it 'should have an accept files method', ->
       expect(controller.acceptFile).to.exist
 
-   it 'should have a showComments variable', ->
-     expect(controller.showComments).to.exist
+    it 'should have a showComments variable', ->
+      expect(controller.showComments).to.exist

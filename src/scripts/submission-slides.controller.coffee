@@ -9,7 +9,6 @@ SubmissionSlidesController = ($scope, $state, SubmissionDetailAPIService, Submis
   vm.workId               = $scope.workId
   vm.submissionId         = $scope.submissionId
 
-
   activate = ->
     params =
       workId      : vm.workId
