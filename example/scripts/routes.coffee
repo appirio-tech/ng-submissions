@@ -4,7 +4,7 @@ config = ($stateProvider) ->
   states = {}
 
   states['submissions'] =
-    url         : '/'
+    url         : '/:workId/submissions/:phase'
     templateUrl : 'views/submissions.html'
 
   states['final-fixes'] =
@@ -12,11 +12,11 @@ config = ($stateProvider) ->
     templateUrl : 'views/final-fixes.html'
 
   states['submission-detail'] =
-    url         : '/detail/:submissionId'
+    url         : '/:workId/detail/:submissionId'
     templateUrl : 'views/submission-detail.html'
 
   states['submission-slides'] =
-    url         : '/slides/:submissionId/:fileId'
+    url         : '/:workId/slides/:submissionId/:fileId'
     templateUrl : 'views/submission-slides.html'
 
   for key, state of states
