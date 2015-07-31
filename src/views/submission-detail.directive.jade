@@ -24,6 +24,6 @@ ul.previews
       li.notification
         button.clean 1
 
-    img.img(ng-src="{{ file.thumbnailUrl }}" ui-sref="submission-slides")
+    img.img(ng-src="{{ file.thumbnailUrl }}" ui-sref="submission-slides({submissionId: vm.work.id, fileId: file.id})")
 
     p {{ file.name }}
