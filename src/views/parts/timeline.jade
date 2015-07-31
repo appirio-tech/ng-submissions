@@ -1,6 +1,2 @@
 ul.timeline
-  li
-
-  li.active
-
-  li
+  li(ng-repeat="phase in vm.timeline track by $index", ng-class="phase")

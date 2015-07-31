@@ -1,11 +1,31 @@
 'use strict'
 
 SubmissionsController = ($scope, SubmissionAPIService) ->
-  vm             = this
-  vm.submissions = []
-  vm.loaded      = false
-  vm.phase       = $scope.phase
-  vm.workId      = $scope.workId
+  vm               = this
+  vm.loaded        = false
+  vm.submissions   = []
+  vm.ranks         = []
+  vm.timeline      = []
+
+  vm.rankNames = [
+    '1st Place'
+    '2nd Place'
+    '3rd Place'
+    '4th Place'
+    '5th Place'
+    '6th Place'
+    '7th Place'
+    '8th Place'
+    '9th Place'
+    '10th Place'
+  ]
+  
+  vm.phase =
+    current:
+      name: ''
+      status: 'scheduled'
+    next:
+      null
 
   activate = ->
     params =
@@ -16,8 +36,65 @@ SubmissionsController = ($scope, SubmissionAPIService) ->
 
     vm
 
-  onChange = (submissions) ->
-    vm.submissions = submissions
+  vm.reorder = (changedSubmission) ->
+    populateRankList vm.submissions
+
+  populateTimeline = (phaseInfo) ->
+    timeline = []
+
+    for i in [1..phaseInfo.numberOfPhases] by 1
+      if (i == phaseInfo.currentPhase)
+        timeline.push 'active'
+      else
+        timeline.push ''
+
+    vm.timeline = timeline
+
+  trimRankNames = (limit) ->
+    vm.rankNames = vm.rankNames.slice 0, limit
+
+  populateRankList = (submissions) ->
+    ranks = []
+
+    for i in [0...vm.numberOfRanks] by 1
+      ranks.push { value: i, label: vm.rankNames[i], avatar: null }
+
+    submissions.forEach (submission) ->
+      rank = submission.rank
+      if (rank <= vm.numberOfRanks)
+        ranks[rank].avatarUrl = submission.submitter.avatarUrl
+
+    vm.ranks = ranks
+
+  # TODO: Update schema
+  useMockData = (data) ->
+    data.submissions = data.screeningSubmissions
+
+    data.submissions[0].rank = 0;
+    data.submissions[1].rank = 1;
+    data.submissions[2].rank = 2;
+
+    data.numberOfRanks = 5
+    
+    data.phase =
+      numberOfPhases: 3
+      currentPhase: 1
+      current:
+        name: 'Design Concepts'
+      next:
+        name: 'Final Designs'
+
+    data
+
+  onChange = (data) ->
+    data = useMockData data
+    vm.numberOfRanks = data.numberOfRanks
+    vm.submissions = data.submissions
+    vm.phase = data.phase
+
+    trimRankNames data.numberOfRanks
+    populateRankList data.submissions
+    populateTimeline data.phase
 
   getSubmissions = (params) ->
     submissions =
