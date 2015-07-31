@@ -11,11 +11,11 @@ ul.header
     button.clean
      .icon.download
 
-    button.clean
-     .icon.checkmark(ng-click="vm.acceptFile()")
+    button.clean(ng-click="vm.acceptFile()")
+     .icon.checkmark
 
-    button.clean
-     .icon.bubble(ng-click="vm.showComments = !vm.showComments")
+    button.clean(ng-click="vm.showComments = !vm.showComments")
+     .icon.bubble
 
 
 hr

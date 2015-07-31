@@ -54,7 +54,9 @@ SubmissionSlidesController = ($scope, $state, SubmissionDetailAPIService, Submis
     vm.selectedPreviewIndex = index
     # change url without full page reload
     if ($state.current.name)
-      $state.go 'submission-slides', {submissionId: $scope.submissionId, fileId: vm.selectedPreview.id}, {notify: false}
+      submissionId = vm.submissionId
+      fileId = vm.selectedPreview.id
+      $state.go 'submission-slides', {submissionId: submissionId, fileId: fileId}, {notify: false}
 
   watchSelectedPreviewIndex = ->
     vm.selectedPreviewIndex
