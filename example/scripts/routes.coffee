@@ -12,11 +12,11 @@ config = ($stateProvider) ->
     templateUrl : 'views/final-fixes.html'
 
   states['submission-detail'] =
-    url         : '/detail'
+    url         : '/detail/:submissionId'
     templateUrl : 'views/submission-detail.html'
 
   states['submission-slides'] =
-    url         : '/slides'
+    url         : '/slides/:submissionId/:fileId'
     templateUrl : 'views/submission-slides.html'
 
   for key, state of states

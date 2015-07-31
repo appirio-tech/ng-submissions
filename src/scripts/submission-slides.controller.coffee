@@ -1,13 +1,14 @@
 'use strict'
 
-SubmissionSlidesController = ($scope, SubmissionDetailAPIService, SubmissionSlidesService) ->
-  vm = this
-  vm.selectedPreview = null
+SubmissionSlidesController = ($scope, SubmissionDetailAPIService, SubmissionSlidesService, $stateParams) ->
+  vm                      = this
+  vm.selectedPreview      = null
   vm.selectedPreviewIndex = 0
+  vm.fileId               = $stateParams.fileId
 
   activate = ->
     params =
-      workId: $scope.workId
+      workId      : $scope.workId
       submissionId: $scope.submissionId
 
     resource = SubmissionDetailAPIService.get params
@@ -22,11 +23,11 @@ SubmissionSlidesController = ($scope, SubmissionDetailAPIService, SubmissionSlid
     return
 
   vm.previewPrevious =  ->
-    srv = SubmissionSlidesService
+    srv                     = SubmissionSlidesService
     vm.selectedPreviewIndex = srv.previewPrevious vm.selectedPreviewIndex, vm.work.files
 
   vm.previewNext =  ->
-    srv = SubmissionSlidesService
+    srv                     = SubmissionSlidesService
     vm.selectedPreviewIndex = srv.previewNext vm.selectedPreviewIndex, vm.work.files
 
   vm.previewSelected = (index) ->
@@ -42,6 +43,6 @@ SubmissionSlidesController = ($scope, SubmissionDetailAPIService, SubmissionSlid
 
   activate()
 
-SubmissionSlidesController.$inject = ['$scope', 'SubmissionDetailAPIService', 'SubmissionSlidesService']
+SubmissionSlidesController.$inject = ['$scope', 'SubmissionDetailAPIService', 'SubmissionSlidesService', '$stateParams']
 
 angular.module('appirio-tech-submissions').controller 'SubmissionSlidesController', SubmissionSlidesController
