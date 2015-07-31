@@ -27,13 +27,10 @@ describe 'SubmissionSlidesController', ->
       expect(controller).to.be.defined
 
     it 'should initialize selected preview', ->
-      expect(controller.selectedPreview).to.equal(1)
+      expect(controller.selectedPreview).to.be.ok
 
     it 'should initialize work', ->
       expect(controller.work).to.be.defined
-
-    it 'should initalize selected preview index', ->
-      expect(controller.selectedPreviewIndex).to.equal(0)
 
     it 'should call preview previous on service', ->
       controller.previewPrevious()

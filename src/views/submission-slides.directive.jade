@@ -8,11 +8,14 @@ ul.header
       time {{ vm.work.createdAt | date: 'h:mm a, MMMM d, y' }}
 
   li.icons
-    .icon.download
+    button.clean
+     .icon.download
 
-    .icon.checkmark
+    button.clean
+     .icon.checkmark(ng-click="vm.acceptFile()")
 
-    .icon.bubble(ng-click="vm.acceptFile()")
+    button.clean
+      .icon.bubble
 
 hr
 

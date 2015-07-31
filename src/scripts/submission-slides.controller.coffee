@@ -3,7 +3,7 @@
 SubmissionSlidesController = ($scope, $state, SubmissionDetailAPIService, SubmissionSlidesService) ->
   vm = this
   vm.selectedPreview = null
-  vm.selectedPreviewIndex = 0
+  vm.selectedPreviewIndex = null
 
   activate = ->
     params =
@@ -15,12 +15,14 @@ SubmissionSlidesController = ($scope, $state, SubmissionDetailAPIService, Submis
     resource.$promise.then (response) ->
       vm.work = response
       # set selected preview to fileId in stateParams
+
       vm.work?.files.forEach (file, index) ->
         if file.id == $state.params.fileId
           vm.selectedPreviewIndex = index
-          return
+        else
           # default to first if file not found
-        vm.selectedPreviewIndex = 0
+          vm.selectedPreviewIndex = 0
+
       vm.selectedPreview = vm.work?.files[vm.selectedPreviewIndex]
 
     resource.$promise.catch (error)->
