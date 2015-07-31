@@ -30,16 +30,4 @@ submission-detail {
       }
     }
   }
-
-  .previews {
-    .notification {
-      background-color: $color-danger;
-      color           : white;
-      position        : absolute;
-      top             : -5px;
-      right           : -5px;
-      padding         : 2px $spacing-smallest;
-      border-radius   : $border-radius;
-    }
-  }
 }

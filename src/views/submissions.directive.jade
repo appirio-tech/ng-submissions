@@ -42,12 +42,12 @@ ul.submissions.color-even
 
     ul.thumbnails
       li.thumbnail(ng-repeat="file in submission.files track by $index")
-        a(href="{{ file.url }}")
+        a(ui-sref="submission-slides({submissionId: submission.id, fileId: file.id})")
           img.img(ng-src="{{ file.thumbnailUrl }}")
 
     ul.actions
       li
-        a(ui-sref="submission-slides") view all (12)
+        a(ui-sref="submission-detail({submissionId: submission.id})") view all (12)
 
       li.comments
         | 20/28

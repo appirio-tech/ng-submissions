@@ -90,13 +90,30 @@ final-fixes, submission-detail {
         background-color: orange;
       }
 
-      .checkmark-container {
-        position        : absolute;
-        background-color: white;
-        top             : $spacing;
-        right           : $spacing;
-        border-radius   : 50%;
-        padding         : $spacing-smallest;
+      .icons {
+        position: absolute;
+        top     : 0;
+        right   : $spacing-smallest;
+
+        li {
+          background-color: white;
+          border-radius   : $border-radius;
+          margin-top      : $spacing-smallest;
+          text-align      : center;
+
+          button {
+            padding: $spacing-smallest;
+          }
+
+          &.notification {
+            background-color: $color-danger;
+
+            button {
+              color: white;
+              font-size: $font-size;
+            }
+          }
+        }
       }
 
       p {

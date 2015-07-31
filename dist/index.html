@@ -2,10 +2,13 @@
 <!-- removeIf(production)-->
 <script type="text/javascript" src="/scripts/json-fixtures.js"></script><script type="text/javascript" src="/bower_components/sinon/index.js"></script><script type="text/javascript" src="/bower_components/auto-config-fake-server/dist/auto-config-fake-server.js"></script><script type="text/javascript" src="/scripts/mock.js"></script>
 <!-- endRemoveIf(production)-->
+<title>Submissions</title><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="example.css">
+<link rel="stylesheet" href="lib.css">
 <link rel="stylesheet" href="main.css">
 
 
-</head><body><ul class="nav"><li><a ui-sref="submissions" class="submissions">Submissions</a></li><li><a ui-sref="submission-detail" class="detail">Detail</a></li><li><a ui-sref="submission-slides" class="detail">Slides</a></li></ul><main role="main" ui-view="" class="layout-main submissions {{ pageClass }}"></main>
+</head><body><ul class="nav"><li><a ui-sref="submissions" class="submissions">Submissions</a></li><li><a ui-sref="final-fixes" class="final-fixes">Final Fixes</a></li><li><a ui-sref="submission-detail({submissionId: 123})" class="detail">Detail</a></li><li><a ui-sref="submission-slides({submissionId: 123, fileId: 321})" class="slides">Slides</a></li></ul><main role="main" ui-view="" class="layout-main submissions {{ pageClass }}"></main>
 <script src="lib.js"></script>
 <script src="main.js"></script>
 <script src="example.js"></script>
