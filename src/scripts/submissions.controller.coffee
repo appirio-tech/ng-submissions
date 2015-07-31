@@ -1,34 +1,31 @@
 'use strict'
 
 SubmissionsController = ($scope, SubmissionAPIService) ->
-  vm             = this
-  vm.submissions = []
-  vm.loaded      = false
-  vm.phase       = $scope.phase
-  
-  vm.phases =
-    current:
-      number: 1
-      outOf: 3
-      name: 'Design Concepts'
-      status: 'open'
-    next:
-      name: 'Final Designs'
-      starts: '2015-05-05T20:53:41.467Z'
+  vm               = this
+  vm.loaded        = false
+  vm.submissions   = []
+  vm.ranks         = []
+  vm.timeline      = []
 
-  vm.ranks = [
-    { value: 1, longLabel: '1st Place', avatarUrl: null }
-    { value: 2, longLabel: '2nd Place', avatarUrl: null }
-    { value: 3, longLabel: '3rd Place', avatarUrl: null }
-    { value: 4, longLabel: '4th Place', avatarUrl: null }
-    { value: 5, longLabel: '5th Place', avatarUrl: null }
+  vm.rankNames = [
+    '1st Place'
+    '2nd Place'
+    '3rd Place'
+    '4th Place'
+    '5th Place'
+    '6th Place'
+    '7th Place'
+    '8th Place'
+    '9th Place'
+    '10th Place'
   ]
-
-  vm.timeline = [ 'active', '', '' ]
-
-  vm.reorder = (submission) ->
-    # TODO: Update order on server, then reload the collection
-    onChange vm.submissions
+  
+  vm.phase =
+    current:
+      name: ''
+      status: 'scheduled'
+    next:
+      null
 
   activate = ->
     params =
@@ -39,15 +36,49 @@ SubmissionsController = ($scope, SubmissionAPIService) ->
 
     vm
 
-  populateRanks = (submissions) ->
-    submissions.forEach (submission) ->
-      if (submission.position?.value <= vm.ranks.length)
-        position                     = submission.position.value - 1
-        vm.ranks[position].avatarUrl = submission.submitter.avatarUrl
+  vm.reorder = (changedSubmission) ->
+    populateRankList vm.submissions
 
-  onChange = (submissions) ->
-    vm.submissions = submissions
-    populateRanks submissions.screeningSubmissions
+  populateTimeline = (phaseInfo) ->
+    timeline = []
+
+    for i in [1..phaseInfo.numberOfPhases] by 1
+      if (i == phaseInfo.currentPhase)
+        timeline.push 'active'
+      else
+        timeline.push ''
+
+    vm.timeline = timeline
+
+  trimRankNames = (limit) ->
+    vm.rankNames = vm.rankNames.slice 0, limit
+
+  populateRankList = (submissions) ->
+    ranks = []
+
+    for i in [0...vm.numberOfRanks] by 1
+      ranks.push { value: i, label: vm.rankNames[i], avatar: null }
+
+    submissions.forEach (submission) ->
+      rank = submission.rank
+      if (rank <= vm.numberOfRanks)
+        ranks[rank].avatarUrl = submission.submitter.avatarUrl
+
+    vm.ranks = ranks
+
+  onChange = (data) ->
+    # TODO: Move this to the schema
+    data.submissions[0].rank = 0;
+    data.submissions[1].rank = 1;
+    data.submissions[2].rank = 2;
+
+    vm.numberOfRanks = data.numberOfRanks
+    vm.submissions = data.submissions
+    vm.phase = data.phase
+
+    trimRankNames data.numberOfRanks
+    populateRankList data.submissions
+    populateTimeline data.phase
 
   getSubmissions = (params) ->
     submissions =

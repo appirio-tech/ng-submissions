@@ -1,14 +1,12 @@
-- ranks = ['1st Place', '2nd Place', '3rd Place', '4th Place', '5th Place']
-
 loader(ng-hide="vm.loaded")
 
 include parts/header
 
 include parts/timeline
 
-h4 Submissions for the {{ vm.phases.current.name }} Phase coming in &hellip;
+h4 Submissions for the {{ vm.phase.current.name }} Phase coming in &hellip;
 
-h4 {{ vm.phases.next.name }} Phase starts in &hellip;
+h4 {{ vm.phase.next.name }} Phase starts in &hellip;
 
 include parts/countdown
 
@@ -22,14 +20,14 @@ ul.top-selection
 
     avatar(avatar-url="{{ rank.avatarUrl }}")
 
-    .rank {{ rank.longLabel }}
+    .rank {{ rank.label }}
 
 button.confirm.info Confirm your selections
 
 hr
 
 ul.submissions.color-even
-  li.submission(ng-repeat="submission in vm.submissions.screeningSubmissions track by $index")
+  li.submission(ng-repeat="submission in vm.submissions track by $index")
     ul.user-details
       li
         avatar(avatar-url="{{ submission.submitter.avatarUrl }}")
@@ -55,5 +53,6 @@ ul.submissions.color-even
         .icon.bubble
 
       li
-        select(ng-model="submission.position", ng-options="pos as pos.longLabel for pos in vm.ranks", ng-change="vm.reorder(submission)")
+        select(ng-model="submission.rank", ng-change="vm.reorder(submission)", ng-init="")
+          option(ng-repeat="rank in vm.rankNames", value="{{ $index }}", ng-selected="{{ $index == submission.rank }}") {{ rank }}
 
