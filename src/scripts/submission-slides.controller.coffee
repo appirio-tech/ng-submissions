@@ -3,7 +3,7 @@
 SubmissionSlidesController = ($scope, $state, SubmissionDetailAPIService, SubmissionSlidesService) ->
   vm = this
   vm.selectedPreview = null
-  vm.selectedPreviewIndex = null
+  vm.selectedPreviewIndex = 0
 
   activate = ->
     params =
@@ -14,17 +14,26 @@ SubmissionSlidesController = ($scope, $state, SubmissionDetailAPIService, Submis
 
     resource.$promise.then (response) ->
       vm.work = response
-      vm.selectedPreviewIndex = vm.work?.files.indexOf $state.params.fileId
+      # set selected preview to fileId in stateParams
+      vm.work?.files.forEach (file, index) ->
+        if file.id == $state.params.fileId
+          vm.selectedPreviewIndex = index
+          return
+          # default to first if file not found
+        vm.selectedPreviewIndex = 0
       vm.selectedPreview = vm.work?.files[vm.selectedPreviewIndex]
 
-    resource.$promise.catch (error) ->
+    resource.$promise.catch (error)->
       # TODO: add error handling
     return
 
   vm.acceptFile = ->
-    params =
+    body =
+      fileId: vm.selectedPreview.id
       submissionId: $scope.submissionId
-      #look up by current index in files
+      accepted: true
+    # TODO: PUT request to API Service
+    # SubmissionDetailAPIService.put body
 
   vm.previewPrevious =  ->
     srv = SubmissionSlidesService
@@ -47,6 +56,6 @@ SubmissionSlidesController = ($scope, $state, SubmissionDetailAPIService, Submis
 
   activate()
 
-SubmissionSlidesController.$inject = ['$scope', 'SubmissionDetailAPIService', 'SubmissionSlidesService']
+SubmissionSlidesController.$inject = ['$scope', '$state', 'SubmissionDetailAPIService', 'SubmissionSlidesService']
 
 angular.module('appirio-tech-submissions').controller 'SubmissionSlidesController', SubmissionSlidesController

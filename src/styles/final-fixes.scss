@@ -4,6 +4,15 @@
 final-fixes {
   .winner {
     @include flex-center(center, $spacing);
+
+    .download {
+      @include vertical-align-middle();
+
+      p {
+        margin-left: $spacing-smallest;
+        line-height: 24px;
+      }
+    }
   }
 
   .approval {
