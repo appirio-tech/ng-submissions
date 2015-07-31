@@ -17,7 +17,7 @@ $templateCache.put("views/submission-slides.directive.html","<ul class=\"header\
   var SubmissionsController;
 
   SubmissionsController = function($scope, SubmissionAPIService) {
-    var activate, getSubmissions, onChange, populateRankList, populateTimeline, trimRankNames, vm;
+    var activate, getSubmissions, onChange, populateRankList, populateTimeline, trimRankNames, useMockData, vm;
     vm = this;
     vm.loaded = false;
     vm.submissions = [];
@@ -77,10 +77,26 @@ $templateCache.put("views/submission-slides.directive.html","<ul class=\"header\
       });
       return vm.ranks = ranks;
     };
-    onChange = function(data) {
+    useMockData = function(data) {
+      data.submissions = data.screeningSubmissions;
       data.submissions[0].rank = 0;
       data.submissions[1].rank = 1;
       data.submissions[2].rank = 2;
+      data.numberOfRanks = 5;
+      data.phase = {
+        numberOfPhases: 3,
+        currentPhase: 1,
+        current: {
+          name: 'Design Concepts'
+        },
+        next: {
+          name: 'Final Designs'
+        }
+      };
+      return data;
+    };
+    onChange = function(data) {
+      data = useMockData(data);
       vm.numberOfRanks = data.numberOfRanks;
       vm.submissions = data.submissions;
       vm.phase = data.phase;

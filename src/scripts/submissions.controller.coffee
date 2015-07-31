@@ -66,12 +66,28 @@ SubmissionsController = ($scope, SubmissionAPIService) ->
 
     vm.ranks = ranks
 
-  onChange = (data) ->
-    # TODO: Move this to the schema
+  # TODO: Update schema
+  useMockData = (data) ->
+    data.submissions = data.screeningSubmissions
+
     data.submissions[0].rank = 0;
     data.submissions[1].rank = 1;
     data.submissions[2].rank = 2;
 
+    data.numberOfRanks = 5
+    
+    data.phase =
+      numberOfPhases: 3
+      currentPhase: 1
+      current:
+        name: 'Design Concepts'
+      next:
+        name: 'Final Designs'
+
+    data
+
+  onChange = (data) ->
+    data = useMockData data
     vm.numberOfRanks = data.numberOfRanks
     vm.submissions = data.submissions
     vm.phase = data.phase
