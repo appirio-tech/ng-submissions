@@ -1,33 +1,48 @@
 'use strict'
 
-SubmissionSlidesController = ($scope, SubmissionDetailAPIService, SubmissionSlidesService, $stateParams) ->
-  vm                      = this
-  vm.selectedPreview      = null
-  vm.selectedPreviewIndex = 0
-  vm.fileId               = $stateParams.fileId
+SubmissionSlidesController = ($scope, $state, SubmissionDetailAPIService, SubmissionSlidesService) ->
+  vm = this
+  vm.selectedPreview = null
+  vm.selectedPreviewIndex = null
 
   activate = ->
     params =
-      workId      : $scope.workId
+      workId: $scope.workId
       submissionId: $scope.submissionId
 
     resource = SubmissionDetailAPIService.get params
 
     resource.$promise.then (response) ->
       vm.work = response
-      #TODO: Default to index of file id passed in stateParams
+      # set selected preview to fileId in stateParams
+
+      vm.work?.files.forEach (file, index) ->
+        if file.id == $state.params.fileId
+          vm.selectedPreviewIndex = index
+        else
+          # default to first if file not found
+          vm.selectedPreviewIndex = 0
+
       vm.selectedPreview = vm.work?.files[vm.selectedPreviewIndex]
 
     resource.$promise.catch (error)->
       # TODO: add error handling
     return
 
+  vm.acceptFile = ->
+    body =
+      fileId: vm.selectedPreview.id
+      submissionId: $scope.submissionId
+      accepted: true
+    # TODO: PUT request to API Service
+    # SubmissionDetailAPIService.put body
+
   vm.previewPrevious =  ->
-    srv                     = SubmissionSlidesService
+    srv = SubmissionSlidesService
     vm.selectedPreviewIndex = srv.previewPrevious vm.selectedPreviewIndex, vm.work.files
 
   vm.previewNext =  ->
-    srv                     = SubmissionSlidesService
+    srv = SubmissionSlidesService
     vm.selectedPreviewIndex = srv.previewNext vm.selectedPreviewIndex, vm.work.files
 
   vm.previewSelected = (index) ->
@@ -43,6 +58,6 @@ SubmissionSlidesController = ($scope, SubmissionDetailAPIService, SubmissionSlid
 
   activate()
 
-SubmissionSlidesController.$inject = ['$scope', 'SubmissionDetailAPIService', 'SubmissionSlidesService', '$stateParams']
+SubmissionSlidesController.$inject = ['$scope', '$state', 'SubmissionDetailAPIService', 'SubmissionSlidesService']
 
 angular.module('appirio-tech-submissions').controller 'SubmissionSlidesController', SubmissionSlidesController
