@@ -35,7 +35,7 @@ angular.module("app.constants", [])
     var key, results, state, states;
     states = {};
     states['submissions'] = {
-      url: '/',
+      url: '/:workId/submissions/:phase',
       templateUrl: 'views/submissions.html'
     };
     states['final-fixes'] = {
@@ -43,11 +43,11 @@ angular.module("app.constants", [])
       templateUrl: 'views/final-fixes.html'
     };
     states['submission-detail'] = {
-      url: '/detail/:submissionId',
+      url: '/:workId/detail/:submissionId',
       templateUrl: 'views/submission-detail.html'
     };
     states['submission-slides'] = {
-      url: '/slides/:submissionId/:fileId',
+      url: '/:workId/slides/:submissionId/:fileId',
       templateUrl: 'views/submission-slides.html'
     };
     results = [];
