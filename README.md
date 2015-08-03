@@ -3,7 +3,15 @@
 [![Coverage Status](https://coveralls.io/repos/appirio-tech/ng-submissions/badge.svg?branch=master&service=github&t=UHjCEN)](https://coveralls.io/github/appirio-tech/ng-submissions?branch=master)
 
 ## Docs
-### API
+### Examples
+```jade
+final-fixes(work-id="leonardo")
+
+submission-detail(work-id="123" submission-id="123")
+
+submission-slides(work-id="123" submission-id="123")
+submissions(work-id="leonardo" phase="Final")
+```
 
 
 ### Designs
