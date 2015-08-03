@@ -1,10 +1,11 @@
 'use strict'
 
-SubmissionSlidesController = ($scope, SubmissionDetailAPIService, SubmissionSlidesService, $stateParams) ->
+SubmissionSlidesController = ($scope, $state, SubmissionDetailAPIService, SubmissionSlidesService) ->
   vm                      = this
   vm.selectedPreview      = null
   vm.selectedPreviewIndex = null
-  vm.fileId               = $stateParams.fileId
+  vm.showComments = false
+  vm.fileId               = $state.params.fileId
   vm.workId               = $scope.workId
   vm.submissionId         = $scope.submissionId
 
@@ -27,6 +28,7 @@ SubmissionSlidesController = ($scope, SubmissionDetailAPIService, SubmissionSlid
           vm.selectedPreviewIndex = 0
 
       vm.selectedPreview = vm.work?.files[vm.selectedPreviewIndex]
+      vm.showComments = true
 
     resource.$promise.catch (error)->
       # TODO: add error handling
@@ -50,6 +52,11 @@ SubmissionSlidesController = ($scope, SubmissionDetailAPIService, SubmissionSlid
 
   vm.previewSelected = (index) ->
     vm.selectedPreviewIndex = index
+    # change url without full page reload
+    if ($state.current.name)
+      submissionId = vm.submissionId
+      fileId = vm.selectedPreview.id
+      $state.go 'submission-slides', {submissionId: submissionId, fileId: fileId}, {notify: false}
 
   watchSelectedPreviewIndex = ->
     vm.selectedPreviewIndex
@@ -61,6 +68,6 @@ SubmissionSlidesController = ($scope, SubmissionDetailAPIService, SubmissionSlid
 
   activate()
 
-SubmissionSlidesController.$inject = ['$scope', 'SubmissionDetailAPIService', 'SubmissionSlidesService', '$stateParams']
+SubmissionSlidesController.$inject = ['$scope', '$state', 'SubmissionDetailAPIService', 'SubmissionSlidesService']
 
 angular.module('appirio-tech-submissions').controller 'SubmissionSlidesController', SubmissionSlidesController

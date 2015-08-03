@@ -11,13 +11,16 @@ ul.header
     button.clean
      .icon.download
 
-    button.clean
-     .icon.checkmark(ng-click="vm.acceptFile()")
+    button.clean(ng-click="vm.acceptFile()")
+     .icon.checkmark
 
-    button.clean
+    button.clean(ng-click="vm.showComments = !vm.showComments")
      .icon.bubble
 
+
 hr
+//- TODO: comments directive
+//- comments(thread-id="vm.selectedPreview.id" subscriber-id="vm.userId" ng-show="vm.showComments")
 
 ul.slideshow
   li
@@ -31,6 +34,7 @@ ul.slideshow
 
   li
     button.clean.icon.circle-arrow.right.biggest(ng-click="vm.previewNext()")
+
 
 ul.thumbnails
     li.thumbnail(ng-repeat="file in vm.work.files")
