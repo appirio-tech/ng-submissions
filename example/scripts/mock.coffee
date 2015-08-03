@@ -4,6 +4,12 @@ AutoConfigFakeServer.fakeServer.autoRespond = true
 
 schemas = [
   FIXTURES['bower_components/appirio-tech-api-schemas/swagger/v3-submissions.json']
+  FIXTURES['bower_components/appirio-tech-api-schemas/swagger/v3-authorizations.json']
+  FIXTURES['bower_components/appirio-tech-api-schemas/swagger/v3-messages.json']
+  FIXTURES['bower_components/appirio-tech-api-schemas/swagger/v3-threads.json']
+  FIXTURES['bower_components/appirio-tech-api-schemas/swagger/v3-users.json']
+  FIXTURES['bower_components/appirio-tech-api-schemas/swagger/v2.json']
+
 ];
 
 AutoConfigFakeServer.consume(schemas)

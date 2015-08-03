@@ -33402,6 +33402,912 @@ angular.module('ui.router.state')
   .filter('isState', $IsStateFilter)
   .filter('includedByState', $IncludedByStateFilter);
 })(window, window.angular);
+/**
+  * x is a value between 0 and 1, indicating where in the animation you are.
+  */
+var duScrollDefaultEasing = function (x) {
+  'use strict';
+
+  if(x < 0.5) {
+    return Math.pow(x*2, 2)/2;
+  }
+  return 1-Math.pow((1-x)*2, 2)/2;
+};
+
+angular.module('duScroll', [
+  'duScroll.scrollspy',
+  'duScroll.smoothScroll',
+  'duScroll.scrollContainer',
+  'duScroll.spyContext',
+  'duScroll.scrollHelpers'
+])
+  //Default animation duration for smoothScroll directive
+  .value('duScrollDuration', 350)
+  //Scrollspy debounce interval, set to 0 to disable
+  .value('duScrollSpyWait', 100)
+  //Wether or not multiple scrollspies can be active at once
+  .value('duScrollGreedy', false)
+  //Default offset for smoothScroll directive
+  .value('duScrollOffset', 0)
+  //Default easing function for scroll animation
+  .value('duScrollEasing', duScrollDefaultEasing);
+
+
+angular.module('duScroll.scrollHelpers', ['duScroll.requestAnimation'])
+.run(["$window", "$q", "cancelAnimation", "requestAnimation", "duScrollEasing", "duScrollDuration", "duScrollOffset", function($window, $q, cancelAnimation, requestAnimation, duScrollEasing, duScrollDuration, duScrollOffset) {
+  'use strict';
+
+  var proto = {};
+
+  var isDocument = function(el) {
+    return (typeof HTMLDocument !== 'undefined' && el instanceof HTMLDocument) || (el.nodeType && el.nodeType === el.DOCUMENT_NODE);
+  };
+
+  var isElement = function(el) {
+    return (typeof HTMLElement !== 'undefined' && el instanceof HTMLElement) || (el.nodeType && el.nodeType === el.ELEMENT_NODE);
+  };
+
+  var unwrap = function(el) {
+    return isElement(el) || isDocument(el) ? el : el[0];
+  };
+
+  proto.duScrollTo = function(left, top, duration, easing) {
+    var aliasFn;
+    if(angular.isElement(left)) {
+      aliasFn = this.duScrollToElement;
+    } else if(angular.isDefined(duration)) {
+      aliasFn = this.duScrollToAnimated;
+    }
+    if(aliasFn) {
+      return aliasFn.apply(this, arguments);
+    }
+    var el = unwrap(this);
+    if(isDocument(el)) {
+      return $window.scrollTo(left, top);
+    }
+    el.scrollLeft = left;
+    el.scrollTop = top;
+  };
+
+  var scrollAnimation, deferred;
+  proto.duScrollToAnimated = function(left, top, duration, easing) {
+    if(duration && !easing) {
+      easing = duScrollEasing;
+    }
+    var startLeft = this.duScrollLeft(),
+        startTop = this.duScrollTop(),
+        deltaLeft = Math.round(left - startLeft),
+        deltaTop = Math.round(top - startTop);
+
+    var startTime = null, progress = 0;
+    var el = this;
+
+    var cancelOnEvents = 'scroll mousedown mousewheel touchmove keydown';
+    var cancelScrollAnimation = function($event) {
+      if (!$event || (progress && $event.which > 0)) {
+        el.unbind(cancelOnEvents, cancelScrollAnimation);
+        cancelAnimation(scrollAnimation);
+        deferred.reject();
+        scrollAnimation = null;
+      }
+    };
+
+    if(scrollAnimation) {
+      cancelScrollAnimation();
+    }
+    deferred = $q.defer();
+
+    if(duration === 0 || (!deltaLeft && !deltaTop)) {
+      if(duration === 0) {
+        el.duScrollTo(left, top);
+      }
+      deferred.resolve();
+      return deferred.promise;
+    }
+
+    var animationStep = function(timestamp) {
+      if (startTime === null) {
+        startTime = timestamp;
+      }
+
+      progress = timestamp - startTime;
+      var percent = (progress >= duration ? 1 : easing(progress/duration));
+
+      el.scrollTo(
+        startLeft + Math.ceil(deltaLeft * percent),
+        startTop + Math.ceil(deltaTop * percent)
+      );
+      if(percent < 1) {
+        scrollAnimation = requestAnimation(animationStep);
+      } else {
+        el.unbind(cancelOnEvents, cancelScrollAnimation);
+        scrollAnimation = null;
+        deferred.resolve();
+      }
+    };
+
+    //Fix random mobile safari bug when scrolling to top by hitting status bar
+    el.duScrollTo(startLeft, startTop);
+
+    el.bind(cancelOnEvents, cancelScrollAnimation);
+
+    scrollAnimation = requestAnimation(animationStep);
+    return deferred.promise;
+  };
+
+  proto.duScrollToElement = function(target, offset, duration, easing) {
+    var el = unwrap(this);
+    if(!angular.isNumber(offset) || isNaN(offset)) {
+      offset = duScrollOffset;
+    }
+    var top = this.duScrollTop() + unwrap(target).getBoundingClientRect().top - offset;
+    if(isElement(el)) {
+      top -= el.getBoundingClientRect().top;
+    }
+    return this.duScrollTo(0, top, duration, easing);
+  };
+
+  proto.duScrollLeft = function(value, duration, easing) {
+    if(angular.isNumber(value)) {
+      return this.duScrollTo(value, this.duScrollTop(), duration, easing);
+    }
+    var el = unwrap(this);
+    if(isDocument(el)) {
+      return $window.scrollX || document.documentElement.scrollLeft || document.body.scrollLeft;
+    }
+    return el.scrollLeft;
+  };
+  proto.duScrollTop = function(value, duration, easing) {
+    if(angular.isNumber(value)) {
+      return this.duScrollTo(this.duScrollLeft(), value, duration, easing);
+    }
+    var el = unwrap(this);
+    if(isDocument(el)) {
+      return $window.scrollY || document.documentElement.scrollTop || document.body.scrollTop;
+    }
+    return el.scrollTop;
+  };
+
+  proto.duScrollToElementAnimated = function(target, offset, duration, easing) {
+    return this.duScrollToElement(target, offset, duration || duScrollDuration, easing);
+  };
+
+  proto.duScrollTopAnimated = function(top, duration, easing) {
+    return this.duScrollTop(top, duration || duScrollDuration, easing);
+  };
+
+  proto.duScrollLeftAnimated = function(left, duration, easing) {
+    return this.duScrollLeft(left, duration || duScrollDuration, easing);
+  };
+
+  angular.forEach(proto, function(fn, key) {
+    angular.element.prototype[key] = fn;
+
+    //Remove prefix if not already claimed by jQuery / ui.utils
+    var unprefixed = key.replace(/^duScroll/, 'scroll');
+    if(angular.isUndefined(angular.element.prototype[unprefixed])) {
+      angular.element.prototype[unprefixed] = fn;
+    }
+  });
+
+}]);
+
+
+//Adapted from https://gist.github.com/paulirish/1579671
+angular.module('duScroll.polyfill', [])
+.factory('polyfill', ["$window", function($window) {
+  'use strict';
+
+  var vendors = ['webkit', 'moz', 'o', 'ms'];
+
+  return function(fnName, fallback) {
+    if($window[fnName]) {
+      return $window[fnName];
+    }
+    var suffix = fnName.substr(0, 1).toUpperCase() + fnName.substr(1);
+    for(var key, i = 0; i < vendors.length; i++) {
+      key = vendors[i]+suffix;
+      if($window[key]) {
+        return $window[key];
+      }
+    }
+    return fallback;
+  };
+}]);
+
+angular.module('duScroll.requestAnimation', ['duScroll.polyfill'])
+.factory('requestAnimation', ["polyfill", "$timeout", function(polyfill, $timeout) {
+  'use strict';
+
+  var lastTime = 0;
+  var fallback = function(callback, element) {
+    var currTime = new Date().getTime();
+    var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+    var id = $timeout(function() { callback(currTime + timeToCall); },
+      timeToCall);
+    lastTime = currTime + timeToCall;
+    return id;
+  };
+
+  return polyfill('requestAnimationFrame', fallback);
+}])
+.factory('cancelAnimation', ["polyfill", "$timeout", function(polyfill, $timeout) {
+  'use strict';
+
+  var fallback = function(promise) {
+    $timeout.cancel(promise);
+  };
+
+  return polyfill('cancelAnimationFrame', fallback);
+}]);
+
+
+angular.module('duScroll.spyAPI', ['duScroll.scrollContainerAPI'])
+.factory('spyAPI', ["$rootScope", "$timeout", "$window", "$document", "scrollContainerAPI", "duScrollGreedy", "duScrollSpyWait", function($rootScope, $timeout, $window, $document, scrollContainerAPI, duScrollGreedy, duScrollSpyWait) {
+  'use strict';
+
+  var createScrollHandler = function(context) {
+    var timer = false, queued = false;
+    var handler = function() {
+      queued = false;
+      var container = context.container,
+          containerEl = container[0],
+          containerOffset = 0,
+          bottomReached;
+
+      if (typeof HTMLElement !== 'undefined' && containerEl instanceof HTMLElement || containerEl.nodeType && containerEl.nodeType === containerEl.ELEMENT_NODE) {
+        containerOffset = containerEl.getBoundingClientRect().top;
+        bottomReached = Math.round(containerEl.scrollTop + containerEl.clientHeight) >= containerEl.scrollHeight;
+      } else {
+        bottomReached = Math.round($window.pageYOffset + $window.innerHeight) >= $document[0].body.scrollHeight;
+      }
+      var compareProperty = (bottomReached ? 'bottom' : 'top');
+
+      var i, currentlyActive, toBeActive, spies, spy, pos;
+      spies = context.spies;
+      currentlyActive = context.currentlyActive;
+      toBeActive = undefined;
+
+      for(i = 0; i < spies.length; i++) {
+        spy = spies[i];
+        pos = spy.getTargetPosition();
+        if (!pos) continue;
+
+        if(bottomReached || (pos.top + spy.offset - containerOffset < 20 && (duScrollGreedy || pos.top*-1 + containerOffset) < pos.height)) {
+          //Find the one closest the viewport top or the page bottom if it's reached
+          if(!toBeActive || toBeActive[compareProperty] < pos[compareProperty]) {
+            toBeActive = {
+              spy: spy
+            };
+            toBeActive[compareProperty] = pos[compareProperty];
+          }
+        }
+      }
+
+      if(toBeActive) {
+        toBeActive = toBeActive.spy;
+      }
+      if(currentlyActive === toBeActive || (duScrollGreedy && !toBeActive)) return;
+      if(currentlyActive) {
+        currentlyActive.$element.removeClass('active');
+        $rootScope.$broadcast('duScrollspy:becameInactive', currentlyActive.$element);
+      }
+      if(toBeActive) {
+        toBeActive.$element.addClass('active');
+        $rootScope.$broadcast('duScrollspy:becameActive', toBeActive.$element);
+      }
+      context.currentlyActive = toBeActive;
+    };
+
+    if(!duScrollSpyWait) {
+      return handler;
+    }
+
+    //Debounce for potential performance savings
+    return function() {
+      if(!timer) {
+        handler();
+        timer = $timeout(function() {
+          timer = false;
+          if(queued) {
+            handler();
+          }
+        }, duScrollSpyWait, false);
+      } else {
+        queued = true;
+      }
+    };
+  };
+
+  var contexts = {};
+
+  var createContext = function($scope) {
+    var id = $scope.$id;
+    var context = {
+      spies: []
+    };
+
+    context.handler = createScrollHandler(context);
+    contexts[id] = context;
+
+    $scope.$on('$destroy', function() {
+      destroyContext($scope);
+    });
+
+    return id;
+  };
+
+  var destroyContext = function($scope) {
+    var id = $scope.$id;
+    var context = contexts[id], container = context.container;
+    if(container) {
+      container.off('scroll', context.handler);
+    }
+    delete contexts[id];
+  };
+
+  var defaultContextId = createContext($rootScope);
+
+  var getContextForScope = function(scope) {
+    if(contexts[scope.$id]) {
+      return contexts[scope.$id];
+    }
+    if(scope.$parent) {
+      return getContextForScope(scope.$parent);
+    }
+    return contexts[defaultContextId];
+  };
+
+  var getContextForSpy = function(spy) {
+    var context, contextId, scope = spy.$scope;
+    if(scope) {
+      return getContextForScope(scope);
+    }
+    //No scope, most likely destroyed
+    for(contextId in contexts) {
+      context = contexts[contextId];
+      if(context.spies.indexOf(spy) !== -1) {
+        return context;
+      }
+    }
+  };
+
+  var isElementInDocument = function(element) {
+    while (element.parentNode) {
+      element = element.parentNode;
+      if (element === document) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  var addSpy = function(spy) {
+    var context = getContextForSpy(spy);
+    if (!context) return;
+    context.spies.push(spy);
+    if (!context.container || !isElementInDocument(context.container)) {
+      if(context.container) {
+        context.container.off('scroll', context.handler);
+      }
+      context.container = scrollContainerAPI.getContainer(spy.$scope);
+      context.container.on('scroll', context.handler).triggerHandler('scroll');
+    }
+  };
+
+  var removeSpy = function(spy) {
+    var context = getContextForSpy(spy);
+    if(spy === context.currentlyActive) {
+      context.currentlyActive = null;
+    }
+    var i = context.spies.indexOf(spy);
+    if(i !== -1) {
+      context.spies.splice(i, 1);
+    }
+		spy.$element = null;
+  };
+
+  return {
+    addSpy: addSpy,
+    removeSpy: removeSpy,
+    createContext: createContext,
+    destroyContext: destroyContext,
+    getContextForScope: getContextForScope
+  };
+}]);
+
+
+angular.module('duScroll.scrollContainerAPI', [])
+.factory('scrollContainerAPI', ["$document", function($document) {
+  'use strict';
+
+  var containers = {};
+
+  var setContainer = function(scope, element) {
+    var id = scope.$id;
+    containers[id] = element;
+    return id;
+  };
+
+  var getContainerId = function(scope) {
+    if(containers[scope.$id]) {
+      return scope.$id;
+    }
+    if(scope.$parent) {
+      return getContainerId(scope.$parent);
+    }
+    return;
+  };
+
+  var getContainer = function(scope) {
+    var id = getContainerId(scope);
+    return id ? containers[id] : $document;
+  };
+
+  var removeContainer = function(scope) {
+    var id = getContainerId(scope);
+    if(id) {
+      delete containers[id];
+    }
+  };
+
+  return {
+    getContainerId:   getContainerId,
+    getContainer:     getContainer,
+    setContainer:     setContainer,
+    removeContainer:  removeContainer
+  };
+}]);
+
+
+angular.module('duScroll.smoothScroll', ['duScroll.scrollHelpers', 'duScroll.scrollContainerAPI'])
+.directive('duSmoothScroll', ["duScrollDuration", "duScrollOffset", "scrollContainerAPI", function(duScrollDuration, duScrollOffset, scrollContainerAPI) {
+  'use strict';
+
+  return {
+    link : function($scope, $element, $attr) {
+      $element.on('click', function(e) {
+        if(!$attr.href || $attr.href.indexOf('#') === -1) return;
+
+        var target = document.getElementById($attr.href.replace(/.*(?=#[^\s]+$)/, '').substring(1));
+        if(!target || !target.getBoundingClientRect) return;
+
+        if (e.stopPropagation) e.stopPropagation();
+        if (e.preventDefault) e.preventDefault();
+
+        var offset    = $attr.offset ? parseInt($attr.offset, 10) : duScrollOffset;
+        var duration  = $attr.duration ? parseInt($attr.duration, 10) : duScrollDuration;
+        var container = scrollContainerAPI.getContainer($scope);
+
+        container.duScrollToElement(
+          angular.element(target),
+          isNaN(offset) ? 0 : offset,
+          isNaN(duration) ? 0 : duration
+        );
+      });
+    }
+  };
+}]);
+
+
+angular.module('duScroll.spyContext', ['duScroll.spyAPI'])
+.directive('duSpyContext', ["spyAPI", function(spyAPI) {
+  'use strict';
+
+  return {
+    restrict: 'A',
+    scope: true,
+    compile: function compile(tElement, tAttrs, transclude) {
+      return {
+        pre: function preLink($scope, iElement, iAttrs, controller) {
+          spyAPI.createContext($scope);
+        }
+      };
+    }
+  };
+}]);
+
+
+angular.module('duScroll.scrollContainer', ['duScroll.scrollContainerAPI'])
+.directive('duScrollContainer', ["scrollContainerAPI", function(scrollContainerAPI){
+  'use strict';
+
+  return {
+    restrict: 'A',
+    scope: true,
+    compile: function compile(tElement, tAttrs, transclude) {
+      return {
+        pre: function preLink($scope, iElement, iAttrs, controller) {
+          iAttrs.$observe('duScrollContainer', function(element) {
+            if(angular.isString(element)) {
+              element = document.getElementById(element);
+            }
+
+            element = (angular.isElement(element) ? angular.element(element) : iElement);
+            scrollContainerAPI.setContainer($scope, element);
+            $scope.$on('$destroy', function() {
+              scrollContainerAPI.removeContainer($scope);
+            });
+          });
+        }
+      };
+    }
+  };
+}]);
+
+
+angular.module('duScroll.scrollspy', ['duScroll.spyAPI'])
+.directive('duScrollspy', ["spyAPI", "duScrollOffset", "$timeout", "$rootScope", function(spyAPI, duScrollOffset, $timeout, $rootScope) {
+  'use strict';
+
+  var Spy = function(targetElementOrId, $scope, $element, offset) {
+    if(angular.isElement(targetElementOrId)) {
+      this.target = targetElementOrId;
+    } else if(angular.isString(targetElementOrId)) {
+      this.targetId = targetElementOrId;
+    }
+    this.$scope = $scope;
+    this.$element = $element;
+    this.offset = offset;
+  };
+
+  Spy.prototype.getTargetElement = function() {
+    if (!this.target && this.targetId) {
+      this.target = document.getElementById(this.targetId);
+    }
+    return this.target;
+  };
+
+  Spy.prototype.getTargetPosition = function() {
+    var target = this.getTargetElement();
+    if(target) {
+      return target.getBoundingClientRect();
+    }
+  };
+
+  Spy.prototype.flushTargetCache = function() {
+    if(this.targetId) {
+      this.target = undefined;
+    }
+  };
+
+  return {
+    link: function ($scope, $element, $attr) {
+      var href = $attr.ngHref || $attr.href;
+      var targetId;
+
+      if (href && href.indexOf('#') !== -1) {
+        targetId = href.replace(/.*(?=#[^\s]+$)/, '').substring(1);
+      } else if($attr.duScrollspy) {
+        targetId = $attr.duScrollspy;
+      }
+      if(!targetId) return;
+
+      // Run this in the next execution loop so that the scroll context has a chance
+      // to initialize
+      $timeout(function() {
+        var spy = new Spy(targetId, $scope, $element, -($attr.offset ? parseInt($attr.offset, 10) : duScrollOffset));
+        spyAPI.addSpy(spy);
+
+        $scope.$on('$destroy', function() {
+          spyAPI.removeSpy(spy);
+        });
+        $scope.$on('$locationChangeSuccess', spy.flushTargetCache.bind(spy));
+        $rootScope.$on('$stateChangeSuccess', spy.flushTargetCache.bind(spy));
+      }, 0, false);
+    }
+  };
+}]);
+
+(function() {
+
+
+// Create all modules and define dependencies to make sure they exist
+// and are loaded in the correct order to satisfy dependency injection
+// before all nested files are concatenated by Grunt
+
+angular.module('angular-storage',
+    [
+      'angular-storage.store'
+    ]);
+
+angular.module('angular-storage.cookieStorage', [])
+  .service('cookieStorage', ["$injector", function ($injector) {
+    var $cookieStore = $injector.get('$cookieStore');
+
+    this.set = function (what, value) {
+      return $cookieStore.put(what, value);
+    };
+
+    this.get = function (what) {
+      return $cookieStore.get(what);
+    };
+
+    this.remove = function (what) {
+      return $cookieStore.remove(what);
+    };
+  }]);
+
+angular.module('angular-storage.internalStore', ['angular-storage.localStorage', 'angular-storage.sessionStorage'])
+  .factory('InternalStore', ["$log", "$injector", function($log, $injector) {
+
+    function InternalStore(namespace, storage, delimiter) {
+      this.namespace = namespace || null;
+      this.delimiter = delimiter || '.';
+      this.inMemoryCache = {};
+      this.storage = $injector.get(storage || 'localStorage');
+    }
+
+    InternalStore.prototype.getNamespacedKey = function(key) {
+      if (!this.namespace) {
+        return key;
+      } else {
+        return [this.namespace, key].join(this.delimiter);
+      }
+    };
+
+    InternalStore.prototype.set = function(name, elem) {
+      this.inMemoryCache[name] = elem;
+      this.storage.set(this.getNamespacedKey(name), JSON.stringify(elem));
+    };
+
+    InternalStore.prototype.get = function(name) {
+      var obj = null;
+      if (name in this.inMemoryCache) {
+        return this.inMemoryCache[name];
+      }
+      var saved = this.storage.get(this.getNamespacedKey(name));
+      try {
+
+        if (typeof saved === 'undefined' || saved === 'undefined') {
+          obj = undefined;
+        } else {
+          obj = JSON.parse(saved);
+        }
+
+        this.inMemoryCache[name] = obj;
+      } catch(e) {
+        $log.error('Error parsing saved value', e);
+        this.remove(name);
+      }
+      return obj;
+    };
+
+    InternalStore.prototype.remove = function(name) {
+      this.inMemoryCache[name] = null;
+      this.storage.remove(this.getNamespacedKey(name));
+    };
+
+    return InternalStore;
+  }]);
+
+
+angular.module('angular-storage.localStorage', ['angular-storage.cookieStorage'])
+  .service('localStorage', ["$window", "$injector", function ($window, $injector) {
+    var localStorageAvailable;
+
+    try {
+      $window.localStorage.setItem('testKey', 'test');
+      $window.localStorage.removeItem('testKey');
+      localStorageAvailable = true;
+    } catch(e) {
+      localStorageAvailable = false;
+    }
+
+    if (localStorageAvailable) {
+      this.set = function (what, value) {
+        return $window.localStorage.setItem(what, value);
+      };
+
+      this.get = function (what) {
+        return $window.localStorage.getItem(what);
+      };
+
+      this.remove = function (what) {
+        return $window.localStorage.removeItem(what);
+      };
+    } else {
+      var cookieStorage = $injector.get('cookieStorage');
+
+      this.set = cookieStorage.set;
+      this.get = cookieStorage.get;
+      this.remove = cookieStorage.remove;
+    }
+  }]);
+
+angular.module('angular-storage.sessionStorage', ['angular-storage.cookieStorage'])
+  .service('sessionStorage', ["$window", "$injector", function ($window, $injector) {
+    if ($window.sessionStorage) {
+      this.set = function (what, value) {
+        return $window.sessionStorage.setItem(what, value);
+      };
+
+      this.get = function (what) {
+        return $window.sessionStorage.getItem(what);
+      };
+
+      this.remove = function (what) {
+        return $window.sessionStorage.removeItem(what);
+      };
+    } else {
+      var cookieStorage = $injector.get('cookieStorage');
+
+      this.set = cookieStorage.set;
+      this.get = cookieStorage.get;
+      this.remove = cookieStorage.remove;
+    }
+  }]);
+
+angular.module('angular-storage.store', ['angular-storage.internalStore'])
+  .provider('store', function() {
+
+    // the default storage
+    var _storage = 'localStorage';
+
+    /**
+     * Sets the storage.
+     *
+     * @param {String} storage The storage name
+     */
+    this.setStore = function(storage) {
+      if (storage && angular.isString(storage)) {
+        _storage = storage;
+      }
+    };
+
+    this.$get = ["InternalStore", function(InternalStore) {
+      var store = new InternalStore(null, _storage);
+
+      /**
+       * Returns a namespaced store
+       *
+       * @param {String} namespace The namespace
+       * @param {String} storage The name of the storage service
+       * @param {String} key The key
+       * @returns {InternalStore}
+       */
+      store.getNamespacedStore = function(namespace, storage, key) {
+        return new InternalStore(namespace, storage, key);
+      };
+
+      return store;
+    }];
+  });
+
+
+}());
+(function() {
+
+
+// Create all modules and define dependencies to make sure they exist
+// and are loaded in the correct order to satisfy dependency injection
+// before all nested files are concatenated by Grunt
+
+// Modules
+angular.module('angular-jwt',
+    [
+        'angular-jwt.interceptor',
+        'angular-jwt.jwt'
+    ]);
+
+ angular.module('angular-jwt.interceptor', [])
+  .provider('jwtInterceptor', function() {
+
+    this.urlParam = null;
+    this.authHeader = 'Authorization';
+    this.authPrefix = 'Bearer ';
+    this.tokenGetter = function() {
+      return null;
+    }
+
+    var config = this;
+
+    this.$get = ["$q", "$injector", "$rootScope", function ($q, $injector, $rootScope) {
+      return {
+        request: function (request) {
+          if (request.skipAuthorization) {
+            return request;
+          }
+
+          if (config.urlParam) {
+            request.params = request.params || {};
+            // Already has the token in the url itself
+            if (request.params[config.urlParam]) {
+              return request;
+            }
+          } else {
+            request.headers = request.headers || {};
+            // Already has an Authorization header
+            if (request.headers[config.authHeader]) {
+              return request;
+            }
+          }
+
+          var tokenPromise = $q.when($injector.invoke(config.tokenGetter, this, {
+            config: request
+          }));
+
+          return tokenPromise.then(function(token) {
+            if (token) {
+              if (config.urlParam) {
+                request.params[config.urlParam] = token;
+              } else {
+                request.headers[config.authHeader] = config.authPrefix + token;
+              }
+            }
+            return request;
+          });
+        },
+        responseError: function (response) {
+          // handle the case where the user is not authenticated
+          if (response.status === 401) {
+            $rootScope.$broadcast('unauthenticated', response);
+          }
+          return $q.reject(response);
+        }
+      };
+    }];
+  });
+
+ angular.module('angular-jwt.jwt', [])
+  .service('jwtHelper', function() {
+
+    this.urlBase64Decode = function(str) {
+      var output = str.replace(/-/g, '+').replace(/_/g, '/');
+      switch (output.length % 4) {
+        case 0: { break; }
+        case 2: { output += '=='; break; }
+        case 3: { output += '='; break; }
+        default: {
+          throw 'Illegal base64url string!';
+        }
+      }
+      return decodeURIComponent(escape(window.atob(output))); //polifyll https://github.com/davidchambers/Base64.js
+    }
+
+
+    this.decodeToken = function(token) {
+      var parts = token.split('.');
+
+      if (parts.length !== 3) {
+        throw new Error('JWT must have 3 parts');
+      }
+
+      var decoded = this.urlBase64Decode(parts[1]);
+      if (!decoded) {
+        throw new Error('Cannot decode the token');
+      }
+
+      return JSON.parse(decoded);
+    }
+
+    this.getTokenExpirationDate = function(token) {
+      var decoded;
+      decoded = this.decodeToken(token);
+
+      if(typeof decoded.exp === "undefined") {
+        return null;
+      }
+
+      var d = new Date(0); // The 0 here is the key, which sets the date to the epoch
+      d.setUTCSeconds(decoded.exp);
+
+      return d;
+    };
+
+    this.isTokenExpired = function(token, offsetSeconds) {
+      var d = this.getTokenExpirationDate(token);
+      offsetSeconds = offsetSeconds || 0;
+      if (d === null) {
+        return false;
+      }
+
+      // Token expired?
+      return !(d.valueOf() > (new Date().valueOf() + (offsetSeconds * 1000)));
+    };
+  });
+
+}());
 (function() {
   'use strict';
   var dependencies;
@@ -36683,3 +37589,780 @@ $templateCache.put("views/loader.directive.html","<div class=\"container\"><div 
     return _moment;
 
 }));
+(function() {
+  'use strict';
+  var config, dependencies, run;
+
+  dependencies = ['ngResource', 'app.constants', 'ui.router', 'angular-storage', 'angular-jwt', 'auth0'];
+
+  config = function($httpProvider, jwtInterceptorProvider, authProvider, AUTH0_DOMAIN, AUTH0_CLIENT_ID) {
+    var jwtInterceptor, logout;
+    jwtInterceptor = function(TokenService) {
+      return TokenService.getToken();
+    };
+    jwtInterceptor.$inject = ['TokenService'];
+    jwtInterceptorProvider.tokenGetter = jwtInterceptor;
+    $httpProvider.interceptors.push('jwtInterceptor');
+    authProvider.init({
+      domain: AUTH0_DOMAIN,
+      clientID: AUTH0_CLIENT_ID,
+      loginState: 'login'
+    });
+    logout = function(TokenService) {
+      return TokenService.deleteToken();
+    };
+    logout.$inject = ['TokenService'];
+    return authProvider.on('logout', logout);
+  };
+
+  run = function($rootScope, $injector, $state, auth, TokenService, AuthService) {
+    var checkAuth, checkRedirect;
+    auth.hookEvents();
+    checkRedirect = function() {
+      var isProtected, notLoggedIn;
+      isProtected = !toState.data || (toState.data && !toState.data.noAuthRequired);
+      notLoggedIn = !AuthService.isAuthenticated();
+      if (isProtected && notLoggedIn) {
+        $rootScope.preAuthState = toState.name;
+        event.preventDefault();
+        return $state.go('login');
+      }
+    };
+    return checkAuth = function(event, toState) {
+      var isInvalidToken;
+      isInvalidToken = TokenService.getToken() && !TokenService.tokenIsValid();
+      if (isInvalidToken) {
+        AuthService.refreshToken().then(function() {
+          return checkRedirect();
+        });
+      } else {
+        checkRedirect();
+      }
+      return $rootScope.$on('$stateChangeStart', checkAuth);
+    };
+  };
+
+  config.$inject = ['$httpProvider', 'jwtInterceptorProvider', 'authProvider', 'AUTH0_DOMAIN', 'AUTH0_CLIENT_ID'];
+
+  run.$inject = ['$rootScope', '$injector', '$state', 'auth', 'TokenService', 'AuthService'];
+
+  angular.module('appirio-tech-ng-auth', dependencies).config(config).run(run);
+
+}).call(this);
+
+(function() {
+  'use strict';
+  var srv;
+
+  srv = function($resource, API_URL) {
+    var params, url;
+    url = API_URL + '/authorizations/:id';
+    params = {
+      id: '@id'
+    };
+    return $resource(url, params);
+  };
+
+  srv.$inject = ['$resource', 'API_URL'];
+
+  angular.module('appirio-tech-ng-auth').factory('AuthorizationsAPIService', srv);
+
+}).call(this);
+
+(function() {
+  'use strict';
+  var TokenService;
+
+  TokenService = function($rootScope, $http, store, AUTH0_TOKEN_NAME, jwtHelper) {
+    var decodeToken, deleteToken, getToken, setToken, tokenIsExpired, tokenIsValid;
+    getToken = function() {
+      return store.get(AUTH0_TOKEN_NAME);
+    };
+    setToken = function(token) {
+      return store.set(AUTH0_TOKEN_NAME, token);
+    };
+    deleteToken = function() {
+      return store.remove(AUTH0_TOKEN_NAME);
+    };
+    decodeToken = function() {
+      var token;
+      token = getToken();
+      if (token) {
+        return jwtHelper.decodeToken(token);
+      } else {
+        return {};
+      }
+    };
+    tokenIsExpired = function() {
+      var isString, token;
+      token = getToken();
+      isString = typeof token === 'string';
+      if (isString) {
+        return jwtHelper.isTokenExpired(token);
+      } else {
+        return true;
+      }
+    };
+    tokenIsValid = function() {
+      var isString, token;
+      token = getToken();
+      isString = typeof token === 'string';
+      return isString;
+    };
+    return {
+      getToken: getToken,
+      deleteToken: deleteToken,
+      decodeToken: decodeToken,
+      setToken: setToken,
+      tokenIsValid: tokenIsValid,
+      tokenIsExpired: tokenIsExpired
+    };
+  };
+
+  TokenService.$inject = ['$rootScope', '$http', 'store', 'AUTH0_TOKEN_NAME', 'jwtHelper'];
+
+  angular.module('appirio-tech-ng-auth').factory('TokenService', TokenService);
+
+}).call(this);
+
+(function() {
+  'use strict';
+  var AuthService;
+
+  AuthService = function($rootScope, AuthorizationsAPIService, auth, store, TokenService, $state) {
+    var exchangeToken, isAuthenticated, isLoggedIn, loggedIn, login, logout, refreshToken;
+    loggedIn = false;
+    isLoggedIn = function() {
+      return loggedIn;
+    };
+    logout = function() {
+      var request;
+      request = AuthorizationsAPIService.remove().$promise;
+      request.then(function(response, status, headers, config) {
+        auth.signout();
+        TokenService.deleteToken();
+        return loggedIn = false;
+      });
+      return request["catch"](function(message) {
+        return $state.reload();
+      });
+    };
+    login = function(options) {
+      var defaultOptions, lOptions, onError, onSuccess, params;
+      defaultOptions = {
+        retUrl: '/'
+      };
+      lOptions = angular.extend({}, options, defaultOptions);
+      params = {
+        username: lOptions.username,
+        password: lOptions.password,
+        sso: false,
+        connection: 'LDAP',
+        authParams: {
+          scope: 'openid profile offline_access'
+        }
+      };
+      onError = function(err) {
+        return options.error(err);
+      };
+      onSuccess = function(profile, idToken, accessToken, state, refreshToken) {
+        return exchangeToken(idToken, refreshToken, options != null ? options.success : void 0);
+      };
+      TokenService.deleteToken();
+      if (options != null ? options.state : void 0) {
+        store.set('login-state', options.state);
+      }
+      return auth.signin(params, onSuccess, onError);
+    };
+    exchangeToken = function(idToken, refreshToken, success, error) {
+      var newAuth, onError, onSuccess, params;
+      onSuccess = function(res) {
+        TokenService.setToken(res.result.content.token);
+        loggedIn = true;
+        return typeof success === "function" ? success(res) : void 0;
+      };
+      onError = function(res) {
+        return typeof error === "function" ? error(res) : void 0;
+      };
+      params = {
+        param: {
+          refreshToken: refreshToken,
+          externalToken: idToken
+        }
+      };
+      newAuth = new AuthorizationsAPIService(params);
+      return newAuth.$save(onSuccess, onError);
+    };
+    refreshToken = function() {
+      var onError, onSuccess, resource;
+      onSuccess = function(response) {
+        var newToken;
+        newToken = response.result.content.token;
+        TokenService.setToken(newToken);
+        return loggedIn = true;
+      };
+      onError = function(response) {
+        TokenService.deleteToken();
+        return loggedIn = false;
+      };
+      resource = AuthorizationsAPIService.get({
+        id: 1
+      }).$promise;
+      resource.then(onSuccess);
+      return resource["catch"](onError);
+    };
+    isAuthenticated = function() {
+      if (TokenService.tokenIsValid()) {
+        if (TokenService.tokenIsExpired()) {
+          refreshToken();
+        }
+        return true;
+      } else {
+        return false;
+      }
+    };
+    return {
+      login: login,
+      logout: logout,
+      isLoggedIn: isLoggedIn,
+      isAuthenticated: isAuthenticated,
+      exchangeToken: exchangeToken,
+      refreshToken: refreshToken
+    };
+  };
+
+  AuthService.$inject = ['$rootScope', 'AuthorizationsAPIService', 'auth', 'store', 'TokenService', '$state'];
+
+  angular.module('appirio-tech-ng-auth').factory('AuthService', AuthService);
+
+}).call(this);
+
+(function() {
+  'use strict';
+  var srv, transformResponse;
+
+  transformResponse = function(response) {
+    var parsed, ref;
+    parsed = JSON.parse(response);
+    return (parsed != null ? (ref = parsed.result) != null ? ref.content : void 0 : void 0) || {};
+  };
+
+  srv = function($resource, API_URL) {
+    var actions, params, url;
+    url = API_URL + '/users/:id';
+    params = {
+      id: '@id'
+    };
+    actions = {
+      get: {
+        method: 'GET',
+        isArray: false,
+        transformResponse: transformResponse
+      },
+      post: {
+        method: 'POST'
+      }
+    };
+    return $resource(url, params, actions);
+  };
+
+  srv.$inject = ['$resource', 'API_URL'];
+
+  angular.module('appirio-tech-ng-auth').factory('UserV3APIService', srv);
+
+}).call(this);
+
+(function() {
+  'use strict';
+  var srv;
+
+  srv = function(UserV3APIService, TokenService, AuthService, $rootScope) {
+    var createUser, currentUser, getCurrentUser, loadUser;
+    currentUser = null;
+    loadUser = function(callback) {
+      var decodedToken, params, resource;
+      if (callback == null) {
+        callback = null;
+      }
+      decodedToken = TokenService.decodeToken();
+      if (decodedToken.userId) {
+        params = {
+          id: decodedToken.userId
+        };
+        resource = UserV3APIService.get(params);
+        resource.$promise.then(function(response) {
+          return currentUser = response;
+        });
+        resource.$promise["catch"](function() {});
+        return resource.$promise["finally"](function() {});
+      }
+    };
+    getCurrentUser = function() {
+      return currentUser;
+    };
+    createUser = function(options, callback, onError) {
+      var resource, userParams;
+      if (options.handle && options.email && options.password) {
+        userParams = {
+          param: {
+            handle: options.handle,
+            email: options.email,
+            utmSource: options.utmSource || 'asp',
+            utmMedium: options.utmMedium || '',
+            utmCampaign: options.utmCampaign || '',
+            firstName: options.firstname || '',
+            lastName: options.lastname || '',
+            credential: {
+              password: options.password
+            }
+          }
+        };
+        if (options.afterActivationURL) {
+          userParams.options = {
+            afterActivationURL: options.afterActivationURL
+          };
+        }
+        resource = UserV3APIService.post(userParams);
+        resource.$promise.then(function(response) {
+          return typeof callback === "function" ? callback(response) : void 0;
+        });
+        resource.$promise["catch"](function(response) {
+          return typeof onError === "function" ? onError(response) : void 0;
+        });
+        return resource.$promise["finally"](function(response) {});
+      }
+    };
+    $rootScope.$watch(AuthService.isLoggedIn, function() {
+      currentUser = null;
+      if (AuthService.isLoggedIn()) {
+        return loadUser();
+      }
+    });
+    if (AuthService.isAuthenticated()) {
+      loadUser();
+    }
+    return {
+      getCurrentUser: getCurrentUser,
+      createUser: createUser
+    };
+  };
+
+  srv.$inject = ['UserV3APIService', 'TokenService', 'AuthService', '$rootScope'];
+
+  angular.module('appirio-tech-ng-auth').factory('UserV3Service', srv);
+
+}).call(this);
+
+(function() {
+  'use strict';
+  var dependencies;
+
+  dependencies = ['ui.router', 'ngResource', 'app.constants', 'duScroll', 'appirio-tech-ng-ui-components'];
+
+  angular.module('appirio-tech-messaging', dependencies);
+
+}).call(this);
+
+(function() {
+  'use strict';
+  var MessagingController;
+
+  MessagingController = function($scope, MessagingService) {
+    var activate, getUserMessages, onChange, sendMessage, vm;
+    vm = this;
+    vm.currentUser = null;
+    onChange = function(messages) {
+      return vm.messaging = messages;
+    };
+    activate = function() {
+      vm.messaging = {
+        messages: []
+      };
+      vm.newMessage = '';
+      $scope.$watch('threadId', function() {
+        return getUserMessages();
+      });
+      $scope.$watch('subscriberId', function() {
+        return getUserMessages();
+      });
+      vm.sendMessage = sendMessage;
+      return vm;
+    };
+    getUserMessages = function() {
+      var params;
+      if ($scope.threadId && $scope.subscriberId) {
+        params = {
+          id: $scope.threadId,
+          subscriberId: $scope.subscriberId
+        };
+        return MessagingService.getMessages(params, onChange);
+      }
+    };
+    sendMessage = function() {
+      var message;
+      if (vm.newMessage.length) {
+        message = {
+          threadId: $scope.threadId,
+          body: vm.newMessage,
+          publisherId: $scope.subscriberId,
+          createdAt: moment(),
+          attachments: []
+        };
+        vm.messaging.messages.push(message);
+        MessagingService.postMessage(message, onChange);
+        vm.newMessage = '';
+        return $scope.showLast = 'scroll';
+      }
+    };
+    return activate();
+  };
+
+  MessagingController.$inject = ['$scope', 'MessagingService'];
+
+  angular.module('appirio-tech-messaging').controller('MessagingController', MessagingController);
+
+}).call(this);
+
+(function() {
+  'use strict';
+  var srv;
+
+  srv = function(MessagesAPIService, AVATAR_URL, UserAPIService, ThreadsAPIService) {
+    var buildAvatar, getMessages, markMessageRead, postMessage;
+    getMessages = function(params, onChange) {
+      var messaging, resource;
+      messaging = {
+        messages: [],
+        avatars: {}
+      };
+      resource = ThreadsAPIService.get(params);
+      resource.$promise.then(function(response) {
+        var i, len, message, ref;
+        messaging.messages = response != null ? response.messages : void 0;
+        ref = messaging.messages;
+        for (i = 0, len = ref.length; i < len; i++) {
+          message = ref[i];
+          buildAvatar(message.publisherId, messaging, onChange);
+          markMessageRead(message, params);
+        }
+        return typeof onChange === "function" ? onChange(messaging) : void 0;
+      });
+      resource.$promise["catch"](function() {});
+      return resource.$promise["finally"](function() {});
+    };
+    markMessageRead = function(message, params) {
+      var putParams, queryParams;
+      queryParams = {
+        id: message.id
+      };
+      putParams = {
+        read: true,
+        subscriberId: params.subscriberId,
+        threadId: params.id
+      };
+      return MessagesAPIService.put(queryParams, putParams);
+    };
+    buildAvatar = function(handle, messaging, onChange) {
+      var params, user;
+      if (!messaging.avatars[handle]) {
+        params = {
+          handle: handle
+        };
+        user = UserAPIService.get(params);
+        user.$promise.then(function(response) {
+          messaging.avatars[handle] = AVATAR_URL + (response != null ? response.photoLink : void 0);
+          return typeof onChange === "function" ? onChange(messaging) : void 0;
+        });
+        user.$promise["catch"](function(response) {});
+        return user.$promise["finally"](function() {});
+      }
+    };
+    postMessage = function(message, onChange) {
+      var resource;
+      resource = MessagesAPIService.save(message);
+      resource.$promise.then(function(response) {});
+      resource.$promise["catch"](function(response) {});
+      return resource.$promise["finally"](function() {});
+    };
+    return {
+      getMessages: getMessages,
+      postMessage: postMessage
+    };
+  };
+
+  srv.$inject = ['MessagesAPIService', 'AVATAR_URL', 'UserAPIService', 'ThreadsAPIService'];
+
+  angular.module('appirio-tech-messaging').factory('MessagingService', srv);
+
+}).call(this);
+
+(function() {
+  'use strict';
+  var directive;
+
+  directive = function(MessagingService) {
+    var link;
+    link = function(scope, element, attrs) {
+      var showLast;
+      showLast = function(newValue, oldValue) {
+        var $messageList, bottom, messageList, uls;
+        if (newValue) {
+          scope.showLast = false;
+          uls = element.find('ul');
+          messageList = uls[0];
+          $messageList = angular.element(messageList);
+          bottom = messageList.scrollHeight;
+          if (newValue === 'scroll') {
+            return $messageList.scrollTopAnimated(bottom);
+          } else {
+            return $messageList.scrollTop(bottom);
+          }
+        }
+      };
+      showLast(true);
+      return scope.$watch('showLast', showLast);
+    };
+    return {
+      restrict: 'E',
+      templateUrl: 'views/messaging.directive.html',
+      link: link,
+      controller: 'MessagingController',
+      controllerAs: 'vm',
+      scope: {
+        threadId: '@threadId',
+        subscriberId: '@subscriberId'
+      }
+    };
+  };
+
+  directive.$inject = ['MessagingService'];
+
+  angular.module('appirio-tech-messaging').directive('messaging', directive);
+
+}).call(this);
+
+(function() {
+  'use strict';
+  var directive;
+
+  directive = function(MessagingService) {
+    return {
+      restrict: 'E',
+      templateUrl: 'views/threads.directive.html',
+      controller: 'ThreadsController',
+      controllerAs: 'vm',
+      scope: {
+        subscriberId: '@subscriberId'
+      }
+    };
+  };
+
+  directive.$inject = ['MessagingService'];
+
+  angular.module('appirio-tech-messaging').directive('threads', directive);
+
+}).call(this);
+
+(function() {
+  'use strict';
+  var srv, transformResponse;
+
+  transformResponse = function(response) {
+    var parsed, ref;
+    parsed = JSON.parse(response);
+    return (parsed != null ? (ref = parsed.result) != null ? ref.content : void 0 : void 0) || [];
+  };
+
+  srv = function($resource, API_URL) {
+    var methods, params, url;
+    url = API_URL + '/messages/:id';
+    params = {
+      id: '@id'
+    };
+    methods = {
+      put: {
+        method: 'PUT'
+      }
+    };
+    return $resource(url, {}, methods);
+  };
+
+  srv.$inject = ['$resource', 'API_URL'];
+
+  angular.module('appirio-tech-messaging').factory('MessagesAPIService', srv);
+
+}).call(this);
+
+(function() {
+  'use strict';
+  var srv;
+
+  srv = function($resource, API_URL_V2) {
+    var params, url;
+    url = API_URL_V2 + '/users/:handle';
+    params = {
+      handle: '@handle'
+    };
+    return $resource(url, params);
+  };
+
+  srv.$inject = ['$resource', 'API_URL_V2'];
+
+  angular.module('appirio-tech-messaging').factory('UserAPIService', srv);
+
+}).call(this);
+
+(function() {
+  'use strict';
+  var srv;
+
+  srv = function(ThreadsAPIService, AVATAR_URL, UserAPIService) {
+    var buildAvatar, get;
+    get = function(subscriberId, onChange) {
+      var queryParams, resource, threadsVm;
+      queryParams = {
+        subscriberId: subscriberId
+      };
+      threadsVm = {
+        threads: [],
+        totalUnreadCount: {},
+        avatars: {}
+      };
+      resource = ThreadsAPIService.query(queryParams);
+      resource.$promise.then(function(response) {
+        var i, j, len, len1, message, ref, ref1, thread;
+        threadsVm.threads = response.threads;
+        ref = threadsVm.threads;
+        for (i = 0, len = ref.length; i < len; i++) {
+          thread = ref[i];
+          ref1 = thread.messages;
+          for (j = 0, len1 = ref1.length; j < len1; j++) {
+            message = ref1[j];
+            buildAvatar(message.publisherId, threadsVm, onChange);
+          }
+        }
+        return typeof onChange === "function" ? onChange(threadsVm) : void 0;
+      });
+      resource.$promise["catch"](function() {});
+      return resource.$promise["finally"](function() {});
+    };
+    buildAvatar = function(handle, threadsVm, onChange) {
+      var user, userParams;
+      if (!threadsVm.avatars[handle]) {
+        userParams = {
+          handle: handle
+        };
+        user = UserAPIService.get(userParams);
+        user.$promise.then(function(response) {
+          threadsVm.avatars[handle] = AVATAR_URL + (response != null ? response.photoLink : void 0);
+          return typeof onChange === "function" ? onChange(threadsVm) : void 0;
+        });
+        user.$promise["catch"](function() {});
+        return user.$promise["finally"](function() {});
+      }
+    };
+    return {
+      get: get
+    };
+  };
+
+  srv.$inject = ['ThreadsAPIService', 'AVATAR_URL', 'UserAPIService'];
+
+  angular.module('appirio-tech-messaging').factory('ThreadsService', srv);
+
+}).call(this);
+
+(function() {
+  'use strict';
+  var srv, transformResponse;
+
+  transformResponse = function(response) {
+    var parsed, ref;
+    parsed = JSON.parse(response);
+    return (parsed != null ? (ref = parsed.result) != null ? ref.content : void 0 : void 0) || {};
+  };
+
+  srv = function($resource, API_URL) {
+    var actions, params, url;
+    url = API_URL + '/threads/:id';
+    params = {
+      id: '@id',
+      subscriberId: '@subscriberId'
+    };
+    actions = {
+      query: {
+        method: 'GET',
+        isArray: false,
+        transformResponse: transformResponse
+      },
+      get: {
+        method: 'GET',
+        isArray: false,
+        transformResponse: transformResponse
+      }
+    };
+    return $resource(url, params, actions);
+  };
+
+  srv.$inject = ['$resource', 'API_URL'];
+
+  angular.module('appirio-tech-messaging').factory('ThreadsAPIService', srv);
+
+}).call(this);
+
+(function() {
+  'use strict';
+  var ThreadsController;
+
+  ThreadsController = function($scope, ThreadsService) {
+    var activate, onChange, removeBlanks, vm;
+    vm = this;
+    onChange = function(threadsVm) {
+      vm.threads = removeBlanks(threadsVm.threads);
+      vm.totalUnreadCount = threadsVm.totalUnreadCount;
+      return vm.avatars = threadsVm.avatars;
+    };
+    removeBlanks = function(threads) {
+      var i, len, noBlanks, thread;
+      noBlanks = [];
+      for (i = 0, len = threads.length; i < len; i++) {
+        thread = threads[i];
+        if (thread.messages.length) {
+          noBlanks.push(thread);
+        }
+      }
+      return noBlanks;
+    };
+    activate = function() {
+      $scope.$watch('subscriberId', function() {
+        if ($scope.subscriberId.length) {
+          return ThreadsService.get($scope.subscriberId, onChange);
+        }
+      });
+      return vm;
+    };
+    return activate();
+  };
+
+  ThreadsController.$inject = ['$scope', 'ThreadsService'];
+
+  angular.module('appirio-tech-messaging').controller('ThreadsController', ThreadsController);
+
+}).call(this);
+
+(function() {
+  'use strict';
+  var filter;
+
+  filter = function() {
+    return function(createdAt) {
+      return moment(createdAt).fromNow();
+    };
+  };
+
+  angular.module('appirio-tech-messaging').filter('timeLapse', filter);
+
+}).call(this);
+
+angular.module("appirio-tech-messaging").run(["$templateCache", function($templateCache) {$templateCache.put("views/messaging.directive.html","<ul class=\"messages\"><li ng-repeat=\"message in vm.messaging.messages track by $index\"><avatar avatar-url=\"{{ vm.messaging.avatars[message.publisherId] }}\"></avatar><div class=\"message\"><p>{{ message.body }}</p><ul class=\"attachments\"><li ng-repeat=\"attachment in message.attachments track by $index\"><a href=\"#\">{{ message.attachments.originalUrl }}</a></li></ul><time>{{ message.createdAt | timeLapse }}</time></div></li><a id=\"messaging-bottom-{{ vm.threadId }}\"></a></ul><form ng-submit=\"vm.sendMessage()\"><textarea placeholder=\"Send a message&hellip;\" ng-model=\"vm.newMessage\"></textarea><button type=\"submit\" class=\"enter\">Enter</button><button type=\"button\" class=\"attach\"><div class=\"icon\"></div><span>Add Attachment</span></button></form>");
+$templateCache.put("views/threads.directive.html","<ul><li ng-repeat=\"thread in vm.threads track by $index\"><a ui-sref=\"messaging({ id: thread.id })\"><header><h4>{{ thread.subject }}</h4><time>{{ thread.messages[0].createdAt | timeLapse }}</time></header><main><avatar avatar-url=\"{{ vm.avatars[thread.messages[0].publisherId]  }}\"></avatar><div ng-show=\"thread.unreadCount &gt; 0\" class=\"notification\">{{ thread.unreadCount }}</div><div class=\"message\"><div class=\"co-pilot\">{{ thread.messages[0].publisherId }}:</div><p>{{ thread.messages[0].body }}</p></div></main></a></li></ul><div ng-show=\"vm.threads.length == 0\" class=\"none\">None</div>");}]);

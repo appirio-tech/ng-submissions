@@ -19,8 +19,8 @@ ul.header
 
 
 hr
-//- TODO: comments directive
-//- comments(thread-id="vm.selectedPreview.id" subscriber-id="vm.userId" ng-show="vm.showComments")
+
+messaging.widget(ng-show="vm.showComments" thread-id="{{vm.selectedPreview.id}}" subscriber-id="{{vm.subscriberId}}")
 
 ul.slideshow
   li

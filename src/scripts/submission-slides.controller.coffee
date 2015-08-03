@@ -1,10 +1,11 @@
 'use strict'
 
-SubmissionSlidesController = ($scope, $state, SubmissionDetailAPIService, SubmissionSlidesService) ->
+SubmissionSlidesController = ($scope, $state, UserV3Service, SubmissionDetailAPIService, SubmissionSlidesService) ->
   vm                      = this
   vm.selectedPreview      = null
   vm.selectedPreviewIndex = null
   vm.showComments = false
+  vm.subscriberId = null
   vm.fileId               = $state.params.fileId
   vm.workId               = $scope.workId
   vm.submissionId         = $scope.submissionId
@@ -66,8 +67,12 @@ SubmissionSlidesController = ($scope, $state, SubmissionDetailAPIService, Submis
 
   $scope.$watch watchSelectedPreviewIndex, setSelectedPreview
 
+  $scope.$watch UserV3Service.getCurrentUser, ->
+    user            = UserV3Service.getCurrentUser()
+    vm.subscriberId = user.id if user
+
   activate()
 
-SubmissionSlidesController.$inject = ['$scope', '$state', 'SubmissionDetailAPIService', 'SubmissionSlidesService']
+SubmissionSlidesController.$inject = ['$scope', '$state', 'UserV3Service', 'SubmissionDetailAPIService', 'SubmissionSlidesService']
 
 angular.module('appirio-tech-submissions').controller 'SubmissionSlidesController', SubmissionSlidesController
