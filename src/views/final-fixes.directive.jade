@@ -6,7 +6,7 @@ h4 Final Fixes Phase starts in &hellip;
 
 include parts/countdown
 
-h4 Give final feedback and accept each image to complate the design project.
+h4 Give final feedback and accept each image to complete the design project.
 
 p.duration You have 39 hours to give feedback
 
@@ -50,7 +50,7 @@ ul.previews
         button.clean 1
 
       li
-        button.clean
+        button.clean(ng-click="vm.toggleAcceptFile(file, $index)")
           .icon.checkmark.smallest
 
       li
