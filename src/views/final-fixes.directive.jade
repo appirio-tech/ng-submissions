@@ -50,7 +50,7 @@ ul.previews
         button.clean 1
 
       li
-        button.clean(ng-click="vm.toggleAcceptFile(file, $index)")
+        button(ng-class= "{'clean': !vm.isAccepted(file), 'success': vm.isAccepted(file)}" ng-click="vm.toggleAcceptFile(file, $index)")
           .icon.checkmark.smallest
 
       li
@@ -61,7 +61,7 @@ ul.previews
 
     p {{ file.name }}
 
-    input(type="checkbox")
+    //- input(type="checkbox")
 
-    label accepted
+    //- label accepted
 
