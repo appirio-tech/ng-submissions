@@ -5,22 +5,22 @@ srv = ->
   srv.acceptedFiles = {}
   srv.approvalConfirmed = null
 
-  srv.isAccepted = (file) ->
-    srv.acceptedFiles[file.id]
+  # srv.isAccepted = (file) ->
+  #   file.accepted
 
   srv.toggleAcceptFile = (file) ->
-    if srv.isAccepted(file)
-      delete srv.acceptedFiles[file.id]
+    if file.accepted
+      #TODO: PUT file.id, accepted = false
     else
-      srv.acceptedFiles[file.id] = true
+       #TODO: PUT file.id, accepted = true
 
   srv.approveAll = (files) ->
     files.forEach (file) ->
-      srv.acceptedFiles[file.id] = true
+      #TODO: PUT file.id, accepted = true
 
   srv.unapproveAll = (files) ->
     files.forEach (file) ->
-      delete srv.acceptedFiles[file.id]
+      #TODO: PUT file.id, accepted = false
 
   srv.confirmApproval = ->
     #Todo: PUT confirmed w/ date
