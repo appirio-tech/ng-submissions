@@ -2,14 +2,14 @@
 describe 'FinalFixesController', ->
 
   controller = null
-  FinalFixesServ = null
+  FileAcceptanceServ = null
   approveAllSpy = null
 
   beforeEach ->
-    bard.inject this, '$rootScope', '$q', '$controller', 'FinalFixesService'
+    bard.inject this, '$rootScope', '$q', '$controller', 'FileAcceptanceService'
     scope = $rootScope.$new()
-    FinalFixesServ = FinalFixesService
-    approveAllSpy = sinon.spy FinalFixesServ, 'approveAll'
+    FileAcceptanceServ = FileAcceptanceService
+    approveAllSpy = sinon.spy FileAcceptanceServ, 'approveAll'
 
     controller = $controller('FinalFixesController', $scope: scope)
     scope.vm = controller
@@ -33,18 +33,18 @@ describe 'FinalFixesController', ->
     it 'should have confirmApproval method', ->
       expect(controller.confirmApproval).to.exist
 
-    it 'should call approveAll on FinalFixesService when approveAll is selected', ->
+    it 'should call approveAll on FileAcceptanceService when approveAll is selected', ->
       controller.approveAll = true
       $rootScope.$apply()
       expect(approveAllSpy.called).to.be.ok
 
     it 'should set approvalConfirmed to true if confirmed', ->
-      FinalFixesServ.approvalConfirmed = true
+      FileAcceptanceServ.approvalConfirmed = true
       $rootScope.$apply()
       expect(controller.approvalConfirmed).to.be.true
 
     it 'should show confirm approval button if all files are accepted', ->
-      FinalFixesServ.acceptedFiles = {'1': true, '2': true}
+      FileAcceptanceServ.acceptedFiles = {'1': true, '2': true}
       controller.files = ['1', '2']
       $rootScope.$apply()
       expect(controller.showConfirmApproval).to.be.true

@@ -30,4 +30,4 @@ srv = ->
 
 srv.$inject = []
 
-angular.module('appirio-tech-submissions').factory 'FinalFixesService', srv
+angular.module('appirio-tech-submissions').factory 'FileAcceptanceService', srv

@@ -2,9 +2,9 @@
 
 srv  = null
 
-describe 'FinalFixesService', ->
-  beforeEach inject (FinalFixesService) ->
-    srv = FinalFixesService
+describe 'FileAcceptanceService', ->
+  beforeEach inject (FileAcceptanceService) ->
+    srv = FileAcceptanceService
 
   it 'should be created successfully', ->
     expect(srv).to.exist

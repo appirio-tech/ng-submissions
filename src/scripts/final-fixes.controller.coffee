@@ -1,6 +1,6 @@
 'use strict'
 
-FinalFixesController = ($scope, FinalFixesService) ->
+FinalFixesController = ($scope, FileAcceptanceService) ->
   vm = this
   vm.workId = $scope.workId
   vm.submissionId = null
@@ -10,23 +10,23 @@ FinalFixesController = ($scope, FinalFixesService) ->
   vm.acceptAllFiles = ->
     vm.submissionAccepted = true
 
-  vm.toggleAcceptFile = FinalFixesService.toggleAcceptFile
+  vm.toggleAcceptFile = FileAcceptanceService.toggleAcceptFile
 
-  vm.isAccepted = FinalFixesService.isAccepted
+  vm.isAccepted = FileAcceptanceService.isAccepted
 
-  vm.confirmApproval = FinalFixesService.confirmApproval
+  vm.confirmApproval = FileAcceptanceService.confirmApproval
 
   watchAcceptedFilesLength = ->
-    Object.keys(FinalFixesService.acceptedFiles).length
+    Object.keys(FileAcceptanceService.acceptedFiles).length
 
   watchApprovalConfirmed = ->
-    FinalFixesService.approvalConfirmed
+    FileAcceptanceService.approvalConfirmed
 
   $scope.$watch 'vm.approveAll', (approved) ->
     if approved
-      FinalFixesService.approveAll vm.files
+      FileAcceptanceService.approveAll vm.files
     else if approved == false
-      FinalFixesService.unapproveAll vm.files
+      FileAcceptanceService.unapproveAll vm.files
 
   $scope.$watch watchAcceptedFilesLength, (acceptedFilesLength) ->
     if acceptedFilesLength == vm.files.length
@@ -49,6 +49,6 @@ FinalFixesController = ($scope, FinalFixesService) ->
 
   activate()
 
-FinalFixesController.$inject = ['$scope', 'FinalFixesService']
+FinalFixesController.$inject = ['$scope', 'FileAcceptanceService']
 
 angular.module('appirio-tech-submissions').controller 'FinalFixesController', FinalFixesController
