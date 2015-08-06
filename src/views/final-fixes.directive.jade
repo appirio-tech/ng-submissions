@@ -27,21 +27,14 @@ ul.winner
 hr
 
 ul.approval
-  li.filter
-    button.clean Approved Screen
-    | 
-
-    | | 
-
-    button.clean Un-approved
 
   li.approve-all
-    input(type="checkbox")
+    input(type="checkbox" ng-model="vm.approveAll" ng-true-value="true" ng-false-value="false")
 
     label Approve all
 
   li.confirm
-    button.info Confirm final approval
+    button.info(ng-show="vm.showConfirmApproval") Confirm final approval
 
 ul.previews
   li.preview(ng-repeat="file in vm.files track by $index")
@@ -50,7 +43,7 @@ ul.previews
         button.clean 1
 
       li
-        button(ng-class= "{'clean': !vm.isAccepted(file), 'success': vm.isAccepted(file)}" ng-click="vm.toggleAcceptFile(file, $index)")
+        button(ng-class= "{'clean': !vm.isAccepted(file), 'success': vm.isAccepted(file)}" ng-click="vm.toggleAcceptFile(file)")
           .icon.checkmark.smallest
 
       li

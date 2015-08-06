@@ -2,19 +2,31 @@
 
 srv = ->
 
-  srv.acceptedFiles = []
+  srv.acceptedFiles = {}
+  srv.approvalConfirmed = null
 
   srv.acceptFile = ->
 
   srv.isAccepted = (file) ->
-    srv.acceptedFiles.indexOf(file.id) != -1
+    srv.acceptedFiles[file.id]
 
-  srv.toggleAcceptFile = (file, index) ->
+  srv.toggleAcceptFile = (file) ->
     if srv.isAccepted(file)
-      srv.acceptedFiles.splice(1, index)
+      delete srv.acceptedFiles[file.id]
     else
-      srv.acceptedFiles.push file.id
+      srv.acceptedFiles[file.id] = true
     console.log('files', srv.acceptedFiles)
+
+  srv.approveAll = (files) ->
+    files.forEach (file) ->
+      srv.acceptedFiles[file.id] = true
+
+  srv.unapproveAll = (files) ->
+    files.forEach (file) ->
+      delete srv.acceptedFiles[file.id]
+
+  srv.confirmApproval = ->
+    #Todo: PUT confirmed w/ date
 
   srv
 
