@@ -14,16 +14,16 @@ link(href="styles/main.css", rel="stylesheet")
 = "\n"
 link(href="bower_components/appirio-tech-ng-ui-components/dist/main.css", rel="stylesheet")
 = "\n"
+link(href="bower_components/appirio-tech-ng-messaging/dist/main.css", rel="stylesheet")
+= "\n"
 // endbuild
 = "\n"
 
 // build:css main.css
 = "\n"
 each path in portraitCSS
-  = "\n"
   link(href="styles/#{path}.css", rel="stylesheet")
   = "\n"
-= "\n"
 // endbuild
 = "\n"
 
@@ -40,6 +40,5 @@ each path in landscapeCSS
 each path in desktopCSS
   link(href="styles/#{path}.desktop.css", rel="stylesheet", media="(min-width: 767px)")
   = "\n"
-
 // endbuild
 = "\n"
