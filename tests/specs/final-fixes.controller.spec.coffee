@@ -4,7 +4,6 @@ describe 'FinalFixesController', ->
   controller = null
   FinalFixesServ = null
   approveAllSpy = null
-  unapproveAllSpy = null
 
   beforeEach ->
     bard.inject this, '$rootScope', '$q', '$controller', 'FinalFixesService'
