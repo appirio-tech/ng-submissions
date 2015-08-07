@@ -45,7 +45,7 @@ ul.previews
         button.clean 1
 
       li(ng-if="!vm.approvalConfirmed")
-        button(ng-class= "{'clean': !vm.isAccepted(file), 'success': vm.isAccepted(file)}" ng-click="vm.toggleAcceptFile(file)")
+        button(ng-class= "{'clean': !file.accepted, 'success': file.accepted}" ng-click="vm.toggleAcceptFile(file)")
           .icon.checkmark.smallest
 
       li

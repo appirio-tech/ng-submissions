@@ -1,54 +1,63 @@
 'use strict'
 
-FinalFixesController = ($scope, FileAcceptanceService) ->
+FinalFixesController = ($scope, FileAcceptanceService, FinalFixesAPIService, FileAcceptanceAPIService) ->
   vm = this
   vm.workId = $scope.workId
   vm.submissionId = null
   vm.showConfirmApproval = false
   vm.approveAll = null
 
-  vm.acceptAllFiles = ->
-    vm.submissionAccepted = true
+  vm.toggleAcceptFile = (file) ->
+    fileResource = FileAcceptanceService.toggleAcceptFile(file, vm.work.id).$promise
+    fileResource.then (data) ->
+      console.log('data', data)
+    fileResource.catch (error)->
+      console.log('err', error)
 
-  vm.toggleAcceptFile = FileAcceptanceService.toggleAcceptFile
-
-  vm.isAccepted = FileAcceptanceService.isAccepted
-
-  vm.confirmApproval = FileAcceptanceService.confirmApproval
+  vm.confirmApproval = ->
+    acceptResource = FileAcceptanceService.confirmApproval(vm.work.id).$promise
+    acceptResource.then (data) ->
+      vm.files = data
+      if vm.files.confirmed
+        vm.approvalConfirmed = true
+    acceptResource.catch (error) ->
+      console.log('confirm error', error)
 
   watchAcceptedFilesLength = ->
-    Object.keys(FileAcceptanceService.acceptedFiles).length
-
-  watchApprovalConfirmed = ->
-    FileAcceptanceService.approvalConfirmed
+    if vm.files
+      acceptedFiles = vm.files.filter (file) ->
+                          file.accepted
+      acceptedFiles.length
 
   $scope.$watch 'vm.approveAll', (approved) ->
     if approved
-      FileAcceptanceService.approveAll vm.files
+      FileAcceptanceService.approveAll vm.files?
     else if approved == false
-      FileAcceptanceService.unapproveAll vm.files
+      FileAcceptanceService.unapproveAll vm.files?
 
   $scope.$watch watchAcceptedFilesLength, (acceptedFilesLength) ->
-    if acceptedFilesLength == vm.files.length
+    if acceptedFilesLength == vm.files?.length
       vm.showConfirmApproval = true
     else
       vm.showConfirmApproval = false
 
-  $scope.$watch watchApprovalConfirmed, (confirmed) ->
-    if (confirmed)
-      vm.approvalConfirmed = true
-
   activate = ->
-    #TODO: GET request
-    vm.files = JSON.parse '[{"id":"abc","name":"luke-i-m-your-father.jpg","accepted":true,"thumbnailUrl":"https://i.kinja-img.com/gawker-media/image/upload/raoq6i3zhiq78kigjuam.jpg","url":"https://i.kinja-img.com/gawker-media/image/upload/raoq6i3zhiq78kigjuam.jpg"},{"id":"def","name":"luke-i-m-your-father.jpg","accepted":true,"thumbnailUrl":"https://i.kinja-img.com/gawker-media/image/upload/raoq6i3zhiq78kigjuam.jpg","url":"https://i.kinja-img.com/gawker-media/image/upload/raoq6i3zhiq78kigjuam.jpg"},{"id":"ghi","name":"luke-i-m-your-father.jpg","accepted":true,"thumbnailUrl":"https://i.kinja-img.com/gawker-media/image/upload/raoq6i3zhiq78kigjuam.jpg","url":"https://i.kinja-img.com/gawker-media/image/upload/raoq6i3zhiq78kigjuam.jpg"},{"id":"jkl","name":"luke-i-m-your-father.jpg","accepted":true,"thumbnailUrl":"https://i.kinja-img.com/gawker-media/image/upload/raoq6i3zhiq78kigjuam.jpg","url":"https://i.kinja-img.com/gawker-media/image/upload/raoq6i3zhiq78kigjuam.jpg"},{"id":"pqr","name":"luke-i-m-your-father.jpg","accepted":true,"thumbnailUrl":"https://i.kinja-img.com/gawker-media/image/upload/raoq6i3zhiq78kigjuam.jpg","url":"https://i.kinja-img.com/gawker-media/image/upload/raoq6i3zhiq78kigjuam.jpg"},{"id":"mno","name":"luke-i-m-your-father.jpg","accepted":true,"thumbnailUrl":"https://i.kinja-img.com/gawker-media/image/upload/raoq6i3zhiq78kigjuam.jpg","url":"https://i.kinja-img.com/gawker-media/image/upload/raoq6i3zhiq78kigjuam.jpg"}]'
+    params =
+      workId      : vm.workId
+
+    resource = FinalFixesAPIService.get params
+
+    resource.$promise.then (response) ->
+      vm.work             = response
+      vm.files = vm.work.files
     #TODO: set based on response
-    vm.approvalConfirmed = false
-    vm.remainingTime = 39
-    vm.submissionId = 'abc'
+      vm.approvalConfirmed = vm.work.confirmed || false
+      vm.remainingTime = 39
+      vm.submissionId = 'abc'
     vm
 
   activate()
 
-FinalFixesController.$inject = ['$scope', 'FileAcceptanceService']
+FinalFixesController.$inject = ['$scope', 'FileAcceptanceService', 'FinalFixesAPIService', 'FileAcceptanceAPIService']
 
 angular.module('appirio-tech-submissions').controller 'FinalFixesController', FinalFixesController

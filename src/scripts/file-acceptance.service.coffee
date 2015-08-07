@@ -1,18 +1,19 @@
 'use strict'
 
-srv = ->
+srv = (FileAcceptanceAPIService, FinalFixesAPIService) ->
 
-  srv.acceptedFiles = {}
-  srv.approvalConfirmed = null
-
-  # srv.isAccepted = (file) ->
-  #   file.accepted
-
-  srv.toggleAcceptFile = (file) ->
+  srv.toggleAcceptFile = (file, workId) ->
+    params =
+      fileId: file.id
+      workId: workId
+    resource = null
     if file.accepted
+      resource = FileAcceptanceAPIService.update params
       #TODO: PUT file.id, accepted = false
     else
+      resource = FileAcceptanceAPIService.update params
        #TODO: PUT file.id, accepted = true
+    resource
 
   srv.approveAll = (files) ->
     files.forEach (file) ->
@@ -22,12 +23,14 @@ srv = ->
     files.forEach (file) ->
       #TODO: PUT file.id, accepted = false
 
-  srv.confirmApproval = ->
+  srv.confirmApproval = (workId)->
+    params =
+      workId: workId
+    FinalFixesAPIService.update params
     #Todo: PUT confirmed w/ date
-    srv.approvalConfirmed = true
 
   srv
 
-srv.$inject = []
+srv.$inject = ['FileAcceptanceAPIService', 'FinalFixesAPIService']
 
 angular.module('appirio-tech-submissions').factory 'FileAcceptanceService', srv
