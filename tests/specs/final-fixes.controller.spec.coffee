@@ -2,8 +2,6 @@
 describe 'FinalFixesController', ->
 
   controller = null
-  FileAcceptanceServ = null
-  approveAllSpy = null
 
   beforeEach ->
     bard.inject this, '$rootScope', '$q', '$controller', 'FinalFixesAPIService'
@@ -15,7 +13,7 @@ describe 'FinalFixesController', ->
     controller = $controller('FinalFixesController', $scope: scope)
     scope.vm = controller
 
-  describe 'Submission Detail Controller', ->
+  describe 'Final Fixes Controller', ->
     it 'should be created successfully', ->
       expect(controller).to.be.defined
 
