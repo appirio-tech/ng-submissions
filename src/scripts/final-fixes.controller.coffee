@@ -7,40 +7,26 @@ FinalFixesController = ($scope, FileAcceptanceService, FinalFixesAPIService, Fil
   vm.showConfirmApproval = false
   vm.approveAll = null
 
-  vm.toggleAcceptFile = (file) ->
-    fileResource = FileAcceptanceService.toggleAcceptFile file, vm.workId
-    fileResource.$promise.then (data) ->
-      console.log('data', data)
-    fileResource.$promise.catch (error)->
-      console.log('err', error)
-
   vm.confirmApproval = ->
-    acceptResource = FileAcceptanceService.confirmApproval vm.workId
-    acceptResource.$promise.then (data) ->
+    params =
+      workId: vm.workId
+    body =
+      confirmed: true
+
+    resource = FinalFixesAPIService.put params, body
+
+    resource.$promise.then (response) ->
       # vm.files = data
-      console.log('accepted data', data)
-      if vm.files.confirmed
-        vm.approvalConfirmed = true
-    acceptResource.$promise.catch (error) ->
+      vm.approvalConfirmed = true
+
+    resource.$promise.catch (error) ->
       #TODO: add error handling
       console.log('confirm error', error)
 
-  watchAcceptedFilesLength = ->
-    if vm.files
-      acceptedFiles = vm.files.filter (file) ->
-        file.accepted
-      acceptedFiles.length
-
   $scope.$watch 'vm.approveAll', (approved) ->
     if approved
-      FileAcceptanceService.approveAll vm.files?
-    else if approved == false
-      FileAcceptanceService.unapproveAll vm.files?
-
-  $scope.$watch watchAcceptedFilesLength, (acceptedFilesLength) ->
-    if acceptedFilesLength == vm.files?.length
       vm.showConfirmApproval = true
-    else
+    else if approved == false
       vm.showConfirmApproval = false
 
   activate = ->
@@ -53,6 +39,7 @@ FinalFixesController = ($scope, FileAcceptanceService, FinalFixesAPIService, Fil
       vm.work             = response
       vm.submissionId = vm.work.id
       vm.files = vm.work.files
+      console.log('vm.work', vm.work)
       if vm.work.confirmed
         vm.approvalConfirmed = true
     #TODO: set based on response

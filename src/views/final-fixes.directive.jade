@@ -6,7 +6,7 @@ h4 Final Fixes Phase starts in &hellip;
 
 include parts/countdown
 
-h4(ng-if="!vm.approvalConfirmed") Give final feedback and accept each image to complete the design project.
+h4(ng-if="!vm.approvalConfirmed") Give final feedback and accept the submission to complete the design project.
 
 h4(ng-if="vm.approvalConfirmed") Project Complete! Review Final Submission.
 
@@ -43,10 +43,6 @@ ul.previews
     ul.icons
       li.notification
         button.clean 1
-
-      li(ng-if="!vm.approvalConfirmed")
-        button(ng-class= "{'clean': !file.accepted, 'success': file.accepted}" ng-click="vm.toggleAcceptFile(file)")
-          .icon.checkmark.smallest
 
       li
         button.clean
