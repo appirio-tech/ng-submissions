@@ -6,7 +6,7 @@ FinalFixesController = ($scope, FinalFixesAPIService) ->
   vm.submissionId = null
   vm.showConfirmApproval = false
   vm.approveAll = null
-  vm.loading = false
+  vm.loading = true
 
   vm.confirmApproval = ->
     vm.loading = true
@@ -50,6 +50,13 @@ FinalFixesController = ($scope, FinalFixesAPIService) ->
       #   vm.approvalConfirmed = true
       vm.approvalConfirmed = false
       vm.remainingTime = 39
+
+     resource.$promise.catch (response) ->
+       # TODO: add error handling
+
+     resource.$promise.finally ->
+       vm.loading = false
+
     vm
 
   activate()
