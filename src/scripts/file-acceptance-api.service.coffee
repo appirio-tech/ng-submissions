@@ -13,7 +13,7 @@ srv = ($resource, API_URL) ->
     workId   : '@workId'
 
   actions =
-    update:
+    put:
       method           :'PUT'
       isArray          : false
       transformResponse: transformResponse

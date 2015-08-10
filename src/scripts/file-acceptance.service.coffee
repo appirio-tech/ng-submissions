@@ -7,11 +7,17 @@ srv = (FileAcceptanceAPIService, FinalFixesAPIService) ->
       fileId: file.id
       workId: workId
     resource = null
+
     if file.accepted
-      resource = FileAcceptanceAPIService.update params
+      body =
+        "accepted": false
+      # console.log('file accepted', file)
+      resource = FileAcceptanceAPIService.put params, body
       #TODO: PUT file.id, accepted = false
     else
-      resource = FileAcceptanceAPIService.update params
+      body =
+        "accepted": true
+      resource = FileAcceptanceAPIService.put params, body
        #TODO: PUT file.id, accepted = true
     resource
 
@@ -26,8 +32,10 @@ srv = (FileAcceptanceAPIService, FinalFixesAPIService) ->
   srv.confirmApproval = (workId)->
     params =
       workId: workId
-    FinalFixesAPIService.update params
+    body =
+      confirmed: true
     #Todo: PUT confirmed w/ date
+    FinalFixesAPIService.put params, body
 
   srv
 
