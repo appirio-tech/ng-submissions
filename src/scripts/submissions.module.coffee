@@ -5,7 +5,7 @@ dependencies = [
   'ngResource'
   'app.constants'
   'appirio-tech-ng-ui-components'
-  'appirio-tech-ng-auth',
+  'appirio-tech-ng-auth'
   'appirio-tech-messaging'
 ]
 
