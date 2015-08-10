@@ -1,3 +1,5 @@
+loader(ng-show="vm.loading")
+
 include parts/header
 
 include parts/timeline
@@ -6,9 +8,11 @@ h4 Final Fixes Phase starts in &hellip;
 
 include parts/countdown
 
-h4 Give final feedback and accept each image to complate the design project.
+h4(ng-if="!vm.approvalConfirmed") Give final feedback and accept the submission to complete the design project.
 
-p.duration You have 39 hours to give feedback
+h4(ng-if="vm.approvalConfirmed") Project Complete! Review Final Submission.
+
+p.duration(ng-if="!vm.approvalConfirmed") You have {{vm.remainingTime}} hours to give feedback
 
 ul.winner
   li
@@ -21,27 +25,20 @@ ul.winner
 
     p Download final submission
 
-  li
+  li(ng-if="vm.approvalConfirmed")
     a(href="#") View previous submission comments
 
 hr
 
-ul.approval
-  li.filter
-    button.clean Approved Screen
-    | 
-
-    | | 
-
-    button.clean Un-approved
+ul.approval(ng-if="!vm.approvalConfirmed")
 
   li.approve-all
-    input(type="checkbox")
+    input(type="checkbox" ng-model="vm.approveAll" ng-true-value="true" ng-false-value="false")
 
     label Approve all
 
   li.confirm
-    button.info Confirm final approval
+    button.info(ng-show="vm.showConfirmApproval" ng-click="vm.confirmApproval()") Confirm final approval
 
 ul.previews
   li.preview(ng-repeat="file in vm.files track by $index")
@@ -51,17 +48,9 @@ ul.previews
 
       li
         button.clean
-          .icon.checkmark.smallest
-
-      li
-        button.clean
           .icon.download.smallest
 
-    img.img(ng-src="{{ file.thumbnailUrl }}" ui-sref="submission-slides")
+    img.img(ng-src="{{ file.thumbnailUrl }}" ui-sref="submission-slides({workId: vm.workId, submissionId: vm.submissionId, fileId: file.id})")
 
     p {{ file.name }}
-
-    input(type="checkbox")
-
-    label accepted
 
