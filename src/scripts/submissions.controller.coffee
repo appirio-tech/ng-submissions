@@ -42,7 +42,7 @@ SubmissionsController = ($scope, SubmissionAPIService) ->
     populateRankList vm.submissions
 
   populateTimeline = (phaseInfo) ->
-    timeline = [ 'active', '', '' ];
+    timeline = [ 'active', '', '' ]
 
     for i in [1..phaseInfo.numberOfPhases] by 1
       if (i == phaseInfo.currentPhase)
