@@ -36,7 +36,7 @@ describe 'SubmissionsController', ->
     describe 'submissions', ->
 
       it 'should have the proper length', ->
-        expect(vm.submissions.length).to.equal 6
+        expect(vm.submissions.length).to.equal 1
 
       it 'should have objects', ->
         expect(vm.submissions[0]).to.be.a 'object'
