@@ -9,7 +9,7 @@
 }).call(this);
 
 angular.module("appirio-tech-submissions").run(["$templateCache", function($templateCache) {$templateCache.put("views/submissions.directive.html","<loader ng-hide=\"vm.loaded\"></loader><ul class=\"header\"><li class=\"previous\"><a href=\"#\">&lt;</a></li><li><h1>{{ vm.phase.current.name }}</h1></li><li class=\"next\"><a href=\"#\">&gt;</a></li></ul><ul class=\"timeline\"><li ng-repeat=\"phase in vm.timeline track by $index\" ng-class=\"phase\"></li></ul><h4>Submissions for the {{ vm.phase.current.name }} Phase coming in &hellip;</h4><h4>{{ vm.phase.next.name }} Phase starts in &hellip;</h4><ul class=\"countdown\"><li><span class=\"value\">9</span><span class=\"unit\">hrs</span></li><li><span class=\"value\">12</span><span class=\"unit\">mins</span></li><li><span class=\"value\">32</span><span class=\"unit\">sec</span></li></ul><h4>Give feedback and select the top {{ vm.ranks.length }} design concepts.</h4><p class=\"duration\">You have 39 hours to give feedback</p><ul class=\"top-selection\"><li ng-repeat=\"rank in vm.ranks track by $index\"><div class=\"shell\">{{ rank.value }}</div><avatar avatar-url=\"{{ rank.avatarUrl }}\"></avatar><div class=\"rank\">{{ rank.label }}</div></li></ul><button class=\"confirm info\">Confirm your selections</button><hr/><ul class=\"submissions color-even\"><li ng-repeat=\"submission in vm.submissions track by $index\" class=\"submission\"><ul class=\"user-details\"><li><avatar avatar-url=\"{{ submission.submitter.avatarUrl }}\"></avatar></li><li><div class=\"name-time\"><div class=\"name\">{{ submission.submitter.handle }}</div><time>{{ submission.createdAt | timeLapse }}</time></div></li></ul><ul class=\"thumbnails\"><li ng-repeat=\"file in submission.files track by $index\" class=\"thumbnail\"><a ui-sref=\"submission-slides({workId: vm.workId, submissionId: submission.id, fileId: file.id})\"><img ng-src=\"{{ file.thumbnailUrl }}\" class=\"img\"/></a></li></ul><ul class=\"actions\"><li><a ui-sref=\"submission-detail({workId: vm.workId, submissionId: submission.id})\">view all (12)</a></li><li class=\"comments\">20/28<div class=\"icon bubble\"></div></li><li><select ng-model=\"submission.rank\" ng-change=\"vm.reorder(submission)\" ng-init=\"\"><option ng-repeat=\"rank in vm.rankNames\" value=\"{{ $index }}\" ng-selected=\"{{ $index == submission.rank }}\">{{ rank }}</option></select></li></ul></li></ul>");
-$templateCache.put("views/final-fixes.directive.html","<ul class=\"header\"><li class=\"previous\"><a href=\"#\">&lt;</a></li><li><h1>{{ vm.phase.current.name }}</h1></li><li class=\"next\"><a href=\"#\">&gt;</a></li></ul><ul class=\"timeline\"><li ng-repeat=\"phase in vm.timeline track by $index\" ng-class=\"phase\"></li></ul><h4>Final Fixes Phase starts in &hellip;</h4><ul class=\"countdown\"><li><span class=\"value\">9</span><span class=\"unit\">hrs</span></li><li><span class=\"value\">12</span><span class=\"unit\">mins</span></li><li><span class=\"value\">32</span><span class=\"unit\">sec</span></li></ul><h4>Give final feedback and accept each image to complate the design project.</h4><p class=\"duration\">You have 39 hours to give feedback</p><ul class=\"winner\"><li><avatar></avatar></li><li>Alpha User is the Winner!</li><li class=\"download\"><button class=\"clean icon download\"></button><p>Download final submission</p></li><li><a href=\"#\">View previous submission comments</a></li></ul><hr/><ul class=\"approval\"><li class=\"filter\"><button class=\"clean\">Approved Screen</button> \n| <button class=\"clean\">Un-approved</button></li><li class=\"approve-all\"><input type=\"checkbox\"/><label>Approve all</label></li><li class=\"confirm\"><button class=\"info\">Confirm final approval</button></li></ul><ul class=\"previews\"><li ng-repeat=\"file in vm.files track by $index\" class=\"preview\"><ul class=\"icons\"><li class=\"notification\"><button class=\"clean\">1</button></li><li><button class=\"clean\"><div class=\"icon checkmark smallest\"></div></button></li><li><button class=\"clean\"><div class=\"icon download smallest\"></div></button></li></ul><img ng-src=\"{{ file.thumbnailUrl }}\" ui-sref=\"submission-slides\" class=\"img\"/><p>{{ file.name }}</p><input type=\"checkbox\"/><label>accepted</label></li></ul>");
+$templateCache.put("views/final-fixes.directive.html","<loader ng-show=\"vm.loading\"></loader><ul class=\"header\"><li class=\"previous\"><a href=\"#\">&lt;</a></li><li><h1>{{ vm.phase.current.name }}</h1></li><li class=\"next\"><a href=\"#\">&gt;</a></li></ul><ul class=\"timeline\"><li ng-repeat=\"phase in vm.timeline track by $index\" ng-class=\"phase\"></li></ul><h4>Final Fixes Phase starts in &hellip;</h4><ul class=\"countdown\"><li><span class=\"value\">9</span><span class=\"unit\">hrs</span></li><li><span class=\"value\">12</span><span class=\"unit\">mins</span></li><li><span class=\"value\">32</span><span class=\"unit\">sec</span></li></ul><h4 ng-if=\"!vm.approvalConfirmed\">Give final feedback and accept the submission to complete the design project.</h4><h4 ng-if=\"vm.approvalConfirmed\">Project Complete! Review Final Submission.</h4><p ng-if=\"!vm.approvalConfirmed\" class=\"duration\">You have {{vm.remainingTime}} hours to give feedback</p><ul class=\"winner\"><li><avatar></avatar></li><li>Alpha User is the Winner!</li><li class=\"download\"><button class=\"clean icon download\"></button><p>Download final submission</p></li><li ng-if=\"vm.approvalConfirmed\"><a href=\"#\">View previous submission comments</a></li></ul><hr/><ul ng-if=\"!vm.approvalConfirmed\" class=\"approval\"><li class=\"approve-all\"><input type=\"checkbox\" ng-model=\"vm.approveAll\" ng-true-value=\"true\" ng-false-value=\"false\"/><label>Approve all</label></li><li class=\"confirm\"><button ng-show=\"vm.showConfirmApproval\" ng-click=\"vm.confirmApproval()\" class=\"info\">Confirm final approval</button></li></ul><ul class=\"previews\"><li ng-repeat=\"file in vm.files track by $index\" class=\"preview\"><ul class=\"icons\"><li class=\"notification\"><button class=\"clean\">1</button></li><li><button class=\"clean\"><div class=\"icon download smallest\"></div></button></li></ul><img ng-src=\"{{ file.thumbnailUrl }}\" ui-sref=\"submission-slides({workId: vm.workId, submissionId: vm.submissionId, fileId: file.id})\" class=\"img\"/><p>{{ file.name }}</p></li></ul>");
 $templateCache.put("views/submission-detail.directive.html","<ul class=\"actions\"><li class=\"submitter\"><avatar avatar-url=\"{{ vm.work.submitter.avatarUrl }}\"></avatar><div class=\"name-time\"><div class=\"name\">{{ vm.work.submitter.handle }}</div><time>{{ vm.work.createdAt | date: \'h:mm a, MMMM d, y\' }}</time></div></li><li class=\"position\"><select ng-model=\"vm.selectedPosition\"><option value=\"\">Select Position</option><option ng-repeat=\"position in vm.positions\" value=\"{{position}}\">{{ position }}</option></select><button ng-show=\"vm.selectedPosition\" ng-click=\"vm.selectPosition()\" class=\"confirm info\">Select Position</button></li><li class=\"submissionsCount\"><p>{{ vm.submissionsCount }} Submissions</p></li></ul><ul class=\"previews\"><li ng-repeat=\"file in vm.work.files track by $index\" class=\"preview\"><ul class=\"icons\"><li class=\"notification\"><button class=\"clean\">1</button></li></ul><a ui-sref=\"submission-slides({workId: vm.workId, submissionId: vm.submissionId, fileId: file.id})\"><img ng-src=\"{{ file.thumbnailUrl }}\" class=\"img\"/></a><p>{{ file.name }}</p></li></ul>");
 $templateCache.put("views/submission-slides.directive.html","<main><ul class=\"header\"><li class=\"submitter\"><avatar avatar-url=\"{{ vm.work.submitter.avatarUrl }}\"></avatar><div class=\"name-time\"><div class=\"name\">{{ vm.work.submitter.handle }}</div><time>{{ vm.work.createdAt | date: \'h:mm a, MMMM d, y\' }}</time></div></li><li class=\"icons\"><button class=\"clean\"><div class=\"icon download\"></div></button><button ng-click=\"vm.acceptFile()\" class=\"clean\"><div class=\"icon checkmark\"></div></button><button ng-click=\"vm.showComments = !vm.showComments\" class=\"clean\"><div class=\"icon bubble\"></div></button></li></ul><hr/><ul class=\"slideshow\"><li><button ng-click=\"vm.previewPrevious()\" class=\"clean icon circle-arrow biggest\"></button></li><li class=\"preview\"><div class=\"img-container\"><img ng-src=\"{{ vm.selectedPreview.url }}\"/></div><p>{{ vm.work.files[vm.selectedPreviewIndex].name }}</p></li><li><button ng-click=\"vm.previewNext()\" class=\"clean icon circle-arrow right biggest\"></button></li></ul><ul class=\"thumbnails\"><li ng-repeat=\"file in vm.work.files\" class=\"thumbnail\"><button class=\"clean thumbnail\"><img ng-src=\"{{ file.thumbnailUrl }}\" ng-click=\"vm.previewSelected($index)\"/><div class=\"notification\">1</div></button></li></ul></main><aside><messaging thread-id=\"123\" subscriber-id=\"Batman\" class=\"active\"></messaging></aside>");}]);
 (function() {
@@ -135,20 +135,62 @@ $templateCache.put("views/submission-slides.directive.html","<main><ul class=\"h
   'use strict';
   var FinalFixesController;
 
-  FinalFixesController = function($scope) {
+  FinalFixesController = function($scope, FinalFixesAPIService) {
     var activate, vm;
     vm = this;
-    vm.files = JSON.parse('[{"id":"abc","name":"luke-i-m-your-father.jpg","accepted":true,"thumbnailUrl":"https://i.kinja-img.com/gawker-media/image/upload/raoq6i3zhiq78kigjuam.jpg","url":"https://i.kinja-img.com/gawker-media/image/upload/raoq6i3zhiq78kigjuam.jpg"},{"id":"abc","name":"luke-i-m-your-father.jpg","accepted":true,"thumbnailUrl":"https://i.kinja-img.com/gawker-media/image/upload/raoq6i3zhiq78kigjuam.jpg","url":"https://i.kinja-img.com/gawker-media/image/upload/raoq6i3zhiq78kigjuam.jpg"},{"id":"abc","name":"luke-i-m-your-father.jpg","accepted":true,"thumbnailUrl":"https://i.kinja-img.com/gawker-media/image/upload/raoq6i3zhiq78kigjuam.jpg","url":"https://i.kinja-img.com/gawker-media/image/upload/raoq6i3zhiq78kigjuam.jpg"},{"id":"abc","name":"luke-i-m-your-father.jpg","accepted":true,"thumbnailUrl":"https://i.kinja-img.com/gawker-media/image/upload/raoq6i3zhiq78kigjuam.jpg","url":"https://i.kinja-img.com/gawker-media/image/upload/raoq6i3zhiq78kigjuam.jpg"},{"id":"abc","name":"luke-i-m-your-father.jpg","accepted":true,"thumbnailUrl":"https://i.kinja-img.com/gawker-media/image/upload/raoq6i3zhiq78kigjuam.jpg","url":"https://i.kinja-img.com/gawker-media/image/upload/raoq6i3zhiq78kigjuam.jpg"},{"id":"abc","name":"luke-i-m-your-father.jpg","accepted":true,"thumbnailUrl":"https://i.kinja-img.com/gawker-media/image/upload/raoq6i3zhiq78kigjuam.jpg","url":"https://i.kinja-img.com/gawker-media/image/upload/raoq6i3zhiq78kigjuam.jpg"}]');
-    vm.acceptSubmission = function() {
-      return vm.submissionAccepted = true;
+    vm.workId = $scope.workId;
+    vm.submissionId = null;
+    vm.showConfirmApproval = false;
+    vm.approveAll = null;
+    vm.loading = true;
+    vm.confirmApproval = function() {
+      var body, params, resource;
+      vm.loading = true;
+      params = {
+        workId: vm.workId
+      };
+      body = {
+        confirmed: true
+      };
+      resource = FinalFixesAPIService.put(params, body);
+      resource.$promise.then(function(response) {
+        return vm.approvalConfirmed = true;
+      });
+      resource.$promise["catch"](function(error) {});
+      return resource.$promise["finally"](function() {
+        return vm.loading = false;
+      });
     };
+    $scope.$watch('vm.approveAll', function(approved) {
+      if (approved) {
+        return vm.showConfirmApproval = true;
+      } else if (approved === false) {
+        return vm.showConfirmApproval = false;
+      }
+    });
     activate = function() {
+      var params, resource;
+      params = {
+        workId: vm.workId
+      };
+      resource = FinalFixesAPIService.get(params);
+      resource.$promise.then(function(response) {
+        vm.work = response;
+        vm.submissionId = vm.work.id;
+        vm.files = vm.work.files;
+        vm.approvalConfirmed = false;
+        return vm.remainingTime = 39;
+      });
+      resource.$promise["catch"](function(response) {});
+      resource.$promise["finally"](function() {
+        return vm.loading = false;
+      });
       return vm;
     };
     return activate();
   };
 
-  FinalFixesController.$inject = ['$scope'];
+  FinalFixesController.$inject = ['$scope', 'FinalFixesAPIService'];
 
   angular.module('appirio-tech-submissions').controller('FinalFixesController', FinalFixesController);
 
@@ -170,6 +212,43 @@ $templateCache.put("views/submission-slides.directive.html","<main><ul class=\"h
   };
 
   angular.module('appirio-tech-submissions').directive('finalFixes', directive);
+
+}).call(this);
+
+(function() {
+  'use strict';
+  var srv, transformResponse;
+
+  transformResponse = function(response) {
+    var parsed, ref;
+    parsed = JSON.parse(response);
+    return (parsed != null ? (ref = parsed.result) != null ? ref.content : void 0 : void 0) || {};
+  };
+
+  srv = function($resource, API_URL) {
+    var actions, params, url;
+    url = API_URL + '/projects/:workId/submissions/final-fixes';
+    params = {
+      workId: '@workId'
+    };
+    actions = {
+      put: {
+        method: 'PUT',
+        isArray: false,
+        transformResponse: transformResponse
+      },
+      get: {
+        method: 'GET',
+        isArray: false,
+        transformResponse: transformResponse
+      }
+    };
+    return $resource(url, params, actions);
+  };
+
+  srv.$inject = ['$resource', 'API_URL'];
+
+  angular.module('appirio-tech-submissions').factory('FinalFixesAPIService', srv);
 
 }).call(this);
 
