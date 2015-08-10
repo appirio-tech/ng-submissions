@@ -1,3 +1,4 @@
+
 include parts/header
 
 include parts/timeline
@@ -29,6 +30,7 @@ ul.winner
 hr
 
 ul.approval(ng-if="!vm.approvalConfirmed")
+  //- loader(ng-show="vm.loading")
 
   li.approve-all
     input(type="checkbox" ng-model="vm.approveAll" ng-true-value="true" ng-false-value="false")
