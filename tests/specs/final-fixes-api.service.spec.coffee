@@ -2,7 +2,6 @@
 
 srv      = null
 work = {}
-updated = {}
 
 describe 'FinalFixesAPIService', ->
   beforeEach inject (FinalFixesAPIService) ->
