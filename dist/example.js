@@ -16,6 +16,8 @@ angular.module("app.constants", [])
 
 .constant("AUTH0_TOKEN_NAME", "userJWTToken")
 
+.constant("AUTH0_REFRESH_TOKEN_NAME", "userRefreshJWTToken")
+
 ;
 (function() {
   'use strict';
