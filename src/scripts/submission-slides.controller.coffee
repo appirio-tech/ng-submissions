@@ -29,7 +29,6 @@ SubmissionSlidesController = ($scope, $state, UserV3Service, SubmissionDetailAPI
           vm.selectedPreviewIndex = 0
 
       vm.selectedPreview = vm.work?.files[vm.selectedPreviewIndex]
-      vm.showComments = true
 
     resource.$promise.catch (error)->
       # TODO: add error handling
@@ -53,17 +52,17 @@ SubmissionSlidesController = ($scope, $state, UserV3Service, SubmissionDetailAPI
 
   vm.previewSelected = (index) ->
     vm.selectedPreviewIndex = index
-    # change url without full page reload
-    if ($state.current.name)
-      submissionId = vm.submissionId
-      fileId = vm.selectedPreview.id
-      $state.go 'submission-slides', {submissionId: submissionId, fileId: fileId}, {notify: false}
 
   watchSelectedPreviewIndex = ->
     vm.selectedPreviewIndex
 
   setSelectedPreview = (index) ->
     vm.selectedPreview = vm.work.files[index] if vm.work?.files
+    # change url without full page reload
+    if ($state.current.name)
+      submissionId = vm.submissionId
+      fileId = vm.selectedPreview?.id
+      $state.go 'submission-slides', {submissionId: submissionId, fileId: fileId}, {notify: false}
 
   $scope.$watch watchSelectedPreviewIndex, setSelectedPreview
 

@@ -50,12 +50,6 @@ angular.module("app.constants", [])
       url: '/:workId/slides/:submissionId/:fileId',
       templateUrl: 'views/submission-slides.html'
     };
-    states['messaging'] = {
-      url: 'messaging/:id',
-      templateUrl: 'views/messaging.html',
-      controller: 'messagingController',
-      controllerAs: 'vm'
-    };
     results = [];
     for (key in states) {
       state = states[key];
@@ -74,23 +68,3 @@ angular.module("example").run(["$templateCache", function($templateCache) {$temp
 $templateCache.put("views/final-fixes.html","<final-fixes work-id=\"leonardo\"></final-fixes>");
 $templateCache.put("views/submission-detail.html","<h1>Submission Detail</h1><submission-detail work-id=\"123\" submission-id=\"123\"></submission-detail>");
 $templateCache.put("views/submission-slides.html","<h1>Submission Slides</h1><submission-slides work-id=\"123\" submission-id=\"123\"></submission-slides>");}]);
-(function() {
-  'use strict';
-  var MessagingController;
-
-  MessagingController = function($stateParams, $window, $scope) {
-    var vm;
-    vm = this;
-    vm.threadId = $stateParams.id;
-    vm.subscriberId = 'abc';
-    vm.back = function() {
-      return $window.history.back();
-    };
-    return vm;
-  };
-
-  MessagingController.$inject = ['$stateParams', '$window', '$scope'];
-
-  angular.module('example').controller('MessagingController', MessagingController);
-
-}).call(this);

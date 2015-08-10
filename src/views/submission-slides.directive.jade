@@ -1,45 +1,45 @@
-ul.header
-  li.submitter
-    avatar(avatar-url="{{ vm.work.submitter.avatarUrl }}")
+main
+  ul.header
+    li.submitter
+      avatar(avatar-url="{{ vm.work.submitter.avatarUrl }}")
 
-    .name-time
-      .name {{ vm.work.submitter.handle }}
+      .name-time
+        .name {{ vm.work.submitter.handle }}
 
-      time {{ vm.work.createdAt | date: 'h:mm a, MMMM d, y' }}
+        time {{ vm.work.createdAt | date: 'h:mm a, MMMM d, y' }}
 
-  li.icons
-    button.clean
-     .icon.download
+    li.icons
+      button.clean
+       .icon.download
 
-    button.clean(ng-click="vm.acceptFile()")
-     .icon.checkmark
+      button.clean(ng-click="vm.acceptFile()")
+       .icon.checkmark
 
-    button.clean(ng-click="vm.showComments = !vm.showComments")
-     .icon.bubble
+      button.clean(ng-click="vm.showComments = !vm.showComments")
+       .icon.bubble
 
+  hr
 
-hr
+  ul.slideshow
+    li
+      button.clean.icon.circle-arrow.biggest(ng-click="vm.previewPrevious()")
 
-messaging.widget(ng-show="vm.showComments" thread-id="{{vm.selectedPreview.id}}" subscriber-id="{{vm.subscriberId}}")
+    li.preview
+      .img-container
+        img(ng-src="{{ vm.selectedPreview.url }}")
 
-ul.slideshow
-  li
-    button.clean.icon.circle-arrow.biggest(ng-click="vm.previewPrevious()")
+      p {{ vm.work.files[vm.selectedPreviewIndex].name }}
 
-  li.preview
-    .img-container
-      img(ng-src="{{ vm.selectedPreview.url }}")
+    li
+      button.clean.icon.circle-arrow.right.biggest(ng-click="vm.previewNext()")
 
-    p {{ vm.work.files[vm.selectedPreviewIndex].name }}
+  ul.thumbnails
+      li.thumbnail(ng-repeat="file in vm.work.files")
+        button.clean.thumbnail
+          img(ng-src="{{ file.thumbnailUrl }}" ng-click="vm.previewSelected($index)")
 
-  li
-    button.clean.icon.circle-arrow.right.biggest(ng-click="vm.previewNext()")
+          .notification 1
 
-
-ul.thumbnails
-    li.thumbnail(ng-repeat="file in vm.work.files")
-      button.clean.thumbnail
-        img(ng-src="{{ file.thumbnailUrl }}", ng-click="vm.previewSelected($index)")
-
-        .notification 1
+aside
+  messaging.active(ng-show="vm.showComments" thread-id="{{vm.selectedPreview.id}}" subscriber-id="{{vm.subscriberId}}")
 

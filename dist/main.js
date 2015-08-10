@@ -304,7 +304,7 @@ $templateCache.put("views/submission-slides.directive.html","<ul class=\"header\
     vm.selectedPreview = null;
     vm.selectedPreviewIndex = null;
     vm.showComments = false;
-    vm.subscriberId = 'abc';
+    vm.subscriberId = null;
     vm.fileId = $state.params.fileId;
     vm.workId = $scope.workId;
     vm.submissionId = $scope.submissionId;
@@ -327,8 +327,7 @@ $templateCache.put("views/submission-slides.directive.html","<ul class=\"header\
             }
           });
         }
-        vm.selectedPreview = (ref1 = vm.work) != null ? ref1.files[vm.selectedPreviewIndex] : void 0;
-        return vm.showComments = true;
+        return vm.selectedPreview = (ref1 = vm.work) != null ? ref1.files[vm.selectedPreviewIndex] : void 0;
       });
       resource.$promise["catch"](function(error) {});
     };

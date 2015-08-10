@@ -19,12 +19,6 @@ config = ($stateProvider) ->
     url         : '/:workId/slides/:submissionId/:fileId'
     templateUrl : 'views/submission-slides.html'
 
-  states['messaging'] =
-    url : 'messaging/:id'
-    templateUrl: 'views/messaging.html'
-    controller: 'messagingController'
-    controllerAs: 'vm'
-
   for key, state of states
     $stateProvider.state key, state
 
