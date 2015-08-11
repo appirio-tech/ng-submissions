@@ -9,8 +9,10 @@ SubmissionSlidesController = ($scope, $state, UserV3Service, SubmissionDetailAPI
   vm.fileId               = $state.params.fileId
   vm.workId               = $scope.workId
   vm.submissionId         = $scope.submissionId
+  vm.loading = false
 
   activate = ->
+    vm.loading = true
     params =
       workId      : vm.workId
       submissionId: vm.submissionId
@@ -32,6 +34,9 @@ SubmissionSlidesController = ($scope, $state, UserV3Service, SubmissionDetailAPI
 
     resource.$promise.catch (error)->
       # TODO: add error handling
+
+    resource.$promise.finally ->
+      vm.loading = false
     return
 
   vm.acceptFile = ->
