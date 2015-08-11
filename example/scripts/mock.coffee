@@ -9,7 +9,7 @@ schemas = [
   FIXTURES['bower_components/appirio-tech-api-schemas/swagger/v3-threads.json']
   FIXTURES['bower_components/appirio-tech-api-schemas/swagger/v3-users.json']
   FIXTURES['bower_components/appirio-tech-api-schemas/swagger/v2.json']
-
+  FIXTURES['bower_components/appirio-tech-api-schemas/apiary/submissiondraft.json']
 ];
 
 AutoConfigFakeServer.consume(schemas)

@@ -1,11 +1,11 @@
 'use strict'
 
 SubmissionsController = ($scope, SubmissionAPIService) ->
-  vm               = this
-  vm.loaded        = false
-  vm.submissions   = []
-  vm.ranks         = []
-  vm.timeline      = []
+  vm             = this
+  vm.loaded      = false
+  vm.submissions = []
+  vm.ranks       = []
+  vm.timeline    = []
 
   vm.rankNames = [
     '1st Place'
@@ -21,11 +21,13 @@ SubmissionsController = ($scope, SubmissionAPIService) ->
   ]
   
   vm.phase =
+    numberOfPhases: 3
+    currentPhase: 1
     current:
-      name: ''
+      name: 'Design Concepts'
       status: 'scheduled'
     next:
-      null
+      name: 'Final Designs'
 
   activate = ->
     params =
@@ -40,7 +42,7 @@ SubmissionsController = ($scope, SubmissionAPIService) ->
     populateRankList vm.submissions
 
   populateTimeline = (phaseInfo) ->
-    timeline = []
+    timeline = [ 'active', '', '' ]
 
     for i in [1..phaseInfo.numberOfPhases] by 1
       if (i == phaseInfo.currentPhase)
@@ -66,47 +68,23 @@ SubmissionsController = ($scope, SubmissionAPIService) ->
 
     vm.ranks = ranks
 
-  # TODO: Update schema
-  useMockData = (data) ->
-    data.submissions = data.screeningSubmissions
-
-    data.submissions[0].rank = 0;
-    data.submissions[1].rank = 1;
-    data.submissions[2].rank = 2;
-
-    data.numberOfRanks = 5
-    
-    data.phase =
-      numberOfPhases: 3
-      currentPhase: 1
-      current:
-        name: 'Design Concepts'
-      next:
-        name: 'Final Designs'
-
-    data
-
   onChange = (data) ->
-    data = useMockData data
     vm.numberOfRanks = data.numberOfRanks
     vm.submissions = data.submissions
-    vm.phase = data.phase
+
+    vm.phase.current.startDate = data.phase.startDate
+    vm.phase.current.endDate = data.phase.endDate
+    vm.phase.next.startDate = data.phase.nextStartDate
 
     trimRankNames data.numberOfRanks
     populateRankList data.submissions
     populateTimeline data.phase
 
   getSubmissions = (params) ->
-    submissions =
-      submissions: []
-      avatars    : {}
-
     resource = SubmissionAPIService.get params
 
     resource.$promise.then (response) ->
-      submissions = response
-
-      onChange submissions
+      onChange response
 
     resource.$promise.catch (response) ->
       # TODO: do something intelligent
