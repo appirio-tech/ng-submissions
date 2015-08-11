@@ -1,10 +1,10 @@
 angular.module("app.constants", [])
 
-.constant("apiUrl", "https://api.topcoder-dev.com/v3/")
+.constant("apiUrl", "http://api.topcoder.com/v3/")
 
-.constant("API_URL", "https://api.topcoder-dev.com/v3")
+.constant("API_URL", "http://api.topcoder.com/v3")
 
-.constant("API_URL_V2", "https://api.topcoder-dev.com/v2")
+.constant("API_URL_V2", "https://api.topcoder.com/v2")
 
 .constant("AVATAR_URL", "http://www.topcoder.com")
 
@@ -12,7 +12,7 @@ angular.module("app.constants", [])
 
 .constant("AUTH0_CLIENT_ID", "abc123")
 
-.constant("AUTH0_DOMAIN", "topcoder-dev.auth0.com")
+.constant("AUTH0_DOMAIN", "topcoder.auth0.com")
 
 .constant("AUTH0_TOKEN_NAME", "userJWTToken")
 
