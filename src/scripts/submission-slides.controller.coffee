@@ -1,15 +1,18 @@
 'use strict'
 
-SubmissionSlidesController = ($scope, $state, SubmissionDetailAPIService, SubmissionSlidesService) ->
+SubmissionSlidesController = ($scope, $state, UserV3Service, SubmissionDetailAPIService, SubmissionSlidesService) ->
   vm                      = this
   vm.selectedPreview      = null
   vm.selectedPreviewIndex = null
   vm.showComments = false
+  vm.subscriberId = null
   vm.fileId               = $state.params.fileId
   vm.workId               = $scope.workId
   vm.submissionId         = $scope.submissionId
+  vm.loading = false
 
   activate = ->
+    vm.loading = true
     params =
       workId      : vm.workId
       submissionId: vm.submissionId
@@ -28,10 +31,12 @@ SubmissionSlidesController = ($scope, $state, SubmissionDetailAPIService, Submis
           vm.selectedPreviewIndex = 0
 
       vm.selectedPreview = vm.work?.files[vm.selectedPreviewIndex]
-      vm.showComments = true
 
     resource.$promise.catch (error)->
       # TODO: add error handling
+
+    resource.$promise.finally ->
+      vm.loading = false
     return
 
   vm.acceptFile = ->
@@ -52,22 +57,28 @@ SubmissionSlidesController = ($scope, $state, SubmissionDetailAPIService, Submis
 
   vm.previewSelected = (index) ->
     vm.selectedPreviewIndex = index
-    # change url without full page reload
-    if ($state.current.name)
-      submissionId = vm.submissionId
-      fileId = vm.selectedPreview.id
-      $state.go 'submission-slides', {submissionId: submissionId, fileId: fileId}, {notify: false}
 
   watchSelectedPreviewIndex = ->
     vm.selectedPreviewIndex
 
   setSelectedPreview = (index) ->
     vm.selectedPreview = vm.work.files[index] if vm.work?.files
+    # change url without reloading view
+    if $state.current.name
+      params =
+        submissionId: vm.submissionId
+        fileId: vm.selectedPreview?.id
+
+      $state.go 'submission-slides', params, {notify: false}
 
   $scope.$watch watchSelectedPreviewIndex, setSelectedPreview
 
+  $scope.$watch UserV3Service.getCurrentUser, ->
+    user            = UserV3Service.getCurrentUser()
+    vm.subscriberId = user.id if user
+
   activate()
 
-SubmissionSlidesController.$inject = ['$scope', '$state', 'SubmissionDetailAPIService', 'SubmissionSlidesService']
+SubmissionSlidesController.$inject = ['$scope', '$state', 'UserV3Service', 'SubmissionDetailAPIService', 'SubmissionSlidesService']
 
 angular.module('appirio-tech-submissions').controller 'SubmissionSlidesController', SubmissionSlidesController

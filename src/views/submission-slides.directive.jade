@@ -1,4 +1,5 @@
 main
+  loader(ng-show="vm.loading")
   ul.header
     li.submitter
       avatar(avatar-url="{{ vm.work.submitter.avatarUrl }}")
@@ -41,5 +42,6 @@ main
           .notification 1
 
 aside
-  messaging.active(thread-id="123" subscriber-id="Batman")
+  messaging(ng-class="{active:vm.showComments}" thread-id="{{vm.selectedPreview.id}}" subscriber-id="{{vm.subscriberId}}")
+
 
