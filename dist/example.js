@@ -36,9 +36,13 @@ angular.module("app.constants", [])
   config = function($stateProvider) {
     var key, results, state, states;
     states = {};
-    states['submissions'] = {
-      url: '/:workId/submissions/:phase',
-      templateUrl: 'views/submissions.html'
+    states['design-concepts'] = {
+      url: '/design-concepts',
+      templateUrl: 'views/design-concepts.html'
+    };
+    states['complete-designs'] = {
+      url: '/complete-designs',
+      templateUrl: 'views/complete-designs.html'
     };
     states['final-fixes'] = {
       url: '/final-fixes',
@@ -66,7 +70,6 @@ angular.module("app.constants", [])
 
 }).call(this);
 
-angular.module("example").run(["$templateCache", function($templateCache) {$templateCache.put("views/submissions.html","<submissions work-id=\"leonardo\" phase=\"Final\"></submissions>");
-$templateCache.put("views/final-fixes.html","<final-fixes work-id=\"leonardo\"></final-fixes>");
-$templateCache.put("views/submission-detail.html","<h1>Submission Detail</h1><submission-detail work-id=\"123\" submission-id=\"123\"></submission-detail>");
-$templateCache.put("views/submission-slides.html","<h1>Submission Slides</h1><submission-slides work-id=\"123\" submission-id=\"123\"></submission-slides>");}]);
+angular.module("example").run(["$templateCache", function($templateCache) {$templateCache.put("views/final-fixes.html","<final-fixes work-id=\"leonardo\"></final-fixes>");
+$templateCache.put("views/submission-detail.html","<submission-detail work-id=\"123\" submission-id=\"123\"></submission-detail>");
+$templateCache.put("views/submission-slides.html","<submission-slides work-id=\"123\" submission-id=\"123\"></submission-slides>");}]);
