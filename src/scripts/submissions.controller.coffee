@@ -104,7 +104,8 @@ SubmissionsController = ($scope, SubmissionAPIService) ->
     data
 
   onChange = (data) ->
-    data = mockify data
+    # Uncomment for development
+    # data = mockify data
     vm.numberOfRanks           = data.numberOfRanks
     vm.submissions             = data.submissions
     vm.phase.current.startDate = data.phase.startDate
