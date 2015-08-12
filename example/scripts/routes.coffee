@@ -3,9 +3,13 @@
 config = ($stateProvider) ->
   states = {}
 
-  states['submissions'] =
-    url         : '/:workId/submissions/:phase'
-    templateUrl : 'views/submissions.html'
+  states['design-concepts'] =
+    url         : '/design-concepts'
+    templateUrl : 'views/design-concepts.html'
+
+  states['complete-designs'] =
+    url         : '/complete-designs'
+    templateUrl : 'views/complete-designs.html'
 
   states['final-fixes'] =
     url         : '/final-fixes'

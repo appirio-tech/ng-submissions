@@ -6,6 +6,8 @@ SubmissionsController = ($scope, SubmissionAPIService) ->
   vm.submissions = []
   vm.ranks       = []
   vm.timeline    = []
+  vm.open        = false
+  vm.showConfirm = false
 
   vm.rankNames = [
     '1st Place'
@@ -19,15 +21,6 @@ SubmissionsController = ($scope, SubmissionAPIService) ->
     '9th Place'
     '10th Place'
   ]
-  
-  vm.phase =
-    numberOfPhases: 3
-    currentPhase: 1
-    current:
-      name: 'Design Concepts'
-      status: 'scheduled'
-    next:
-      name: 'Final Designs'
 
   activate = ->
     params =
@@ -36,21 +29,33 @@ SubmissionsController = ($scope, SubmissionAPIService) ->
 
     getSubmissions params
 
-    vm
+    if $scope.phase == 'design-concepts'
+      vm.timeline = [ 'active', '', '' ]
+      vm.phase =
+        previous:
+          name: null
+          sref: null
+        current:
+          name: 'Design Concepts'
+        next:
+          name: 'Complete Designs'
+          sref: 'complete-designs'
 
-  vm.reorder = (changedSubmission) ->
+
+    if $scope.phase == 'complete-designs'
+      vm.timeline = [ '', 'active', '' ]
+      vm.phase =
+        previous:
+          name: 'Design Concepts'
+          sref: 'design-concepts'
+        current:
+          name: 'Complete Designs'
+        next:
+          name: 'Final Fixes'
+          sref: 'final-fixes'
+
+  vm.reorder = () ->
     populateRankList vm.submissions
-
-  populateTimeline = (phaseInfo) ->
-    timeline = [ 'active', '', '' ]
-
-    for i in [1..phaseInfo.numberOfPhases] by 1
-      if (i == phaseInfo.currentPhase)
-        timeline.push 'active'
-      else
-        timeline.push ''
-
-    vm.timeline = timeline
 
   trimRankNames = (limit) ->
     vm.rankNames = vm.rankNames.slice 0, limit
@@ -59,26 +64,57 @@ SubmissionsController = ($scope, SubmissionAPIService) ->
     ranks = []
 
     for i in [0...vm.numberOfRanks] by 1
-      ranks.push { value: i, label: vm.rankNames[i], avatar: null }
+      ranks.push
+        value: i
+        label: vm.rankNames[i]
+        avatarUrl: null
 
     submissions.forEach (submission) ->
-      rank = submission.rank
-      if (rank <= vm.numberOfRanks)
-        ranks[rank].avatarUrl = submission.submitter.avatarUrl
+      if (submission.rank < vm.numberOfRanks)
+        ranks[submission.rank].avatarUrl = submission.submitter.avatarUrl
 
     vm.ranks = ranks
 
-  onChange = (data) ->
-    vm.numberOfRanks = data.numberOfRanks
-    vm.submissions = data.submissions
+  evaluateRanks = () ->
+    count = 0
 
+    vm.ranks.forEach (rank) ->
+      if rank.avatarUrl != null
+        count = count + 1
+
+    vm.showConfirm = count == parseInt(vm.numberOfRanks)
+
+  $scope.$watch 'vm.ranks', evaluateRanks, true
+
+  # TODO: Remove me
+  mockify = (data) ->
+    if $scope.phase == 'design-concepts'
+      data.phase.endDate = '2015-08-14T00:55:38.152Z'
+
+    if $scope.phase == 'complete-designs' 
+      data.phase.startDate = '2015-08-14T00:55:38.152Z'
+
+    for i in [1..11] by 1
+      data.submissions[0].files[i] = angular.copy data.submissions[0].files[0]
+
+    for i in [1..5] by 1
+      data.submissions[i] = angular.copy data.submissions[0]
+      data.submissions[i].rank = i
+
+    data
+
+  onChange = (data) ->
+    data = mockify data
+    vm.numberOfRanks           = data.numberOfRanks
+    vm.submissions             = data.submissions
     vm.phase.current.startDate = data.phase.startDate
-    vm.phase.current.endDate = data.phase.endDate
-    vm.phase.next.startDate = data.phase.nextStartDate
+    vm.phase.current.endDate   = data.phase.endDate
+
+    if Date.now() > new Date(vm.phase.current.startDate)
+      vm.open = true
 
     trimRankNames data.numberOfRanks
     populateRankList data.submissions
-    populateTimeline data.phase
 
   getSubmissions = (params) ->
     resource = SubmissionAPIService.get params
@@ -93,8 +129,9 @@ SubmissionsController = ($scope, SubmissionAPIService) ->
       vm.loaded = true
       # TODO: do something intelligent
 
-
   activate()
+
+  vm
 
 SubmissionsController.$inject = ['$scope', 'SubmissionAPIService']
 

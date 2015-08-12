@@ -1,9 +1,9 @@
 ul.header
   li.previous
-    a(href="#") &lt;
+    a(ui-sref="{{ vm.phase.previous.sref }}") &lt;
 
   li
     h1 {{ vm.phase.current.name }}
 
   li.next
-    a(href="#") &gt;
+    a(ui-sref="{{ vm.phase.next.sref }}") &gt;

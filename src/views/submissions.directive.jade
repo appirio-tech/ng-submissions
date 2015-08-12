@@ -4,55 +4,56 @@ include parts/header
 
 include parts/timeline
 
-h4 Submissions for the {{ vm.phase.current.name }} Phase coming in &hellip;
+section(ng-if="!vm.open")
+  h4 Submissions for the {{ vm.phase.current.name }} Phase coming in &hellip;
+  countdown(end="{{ vm.phase.current.startDate }}")
 
-h4 {{ vm.phase.next.name }} Phase starts in &hellip;
+section(ng-if="vm.open")
+  h4 Give feedback and select the top {{ vm.ranks.length }} designs.
 
-include parts/countdown
+  countdown(end="{{ vm.phase.current.endDate }}")
 
-h4 Give feedback and select the top {{ vm.ranks.length }} design concepts.
+  p.duration remaining to give feedback
 
-p.duration You have 39 hours to give feedback
+  ul.top-selection
+    li(ng-repeat="rank in vm.ranks track by $index")
+      .shell {{ rank.value + 1 }}
 
-ul.top-selection
-  li(ng-repeat="rank in vm.ranks track by $index")
-    .shell {{ rank.value }}
+      avatar(avatar-url="{{ rank.avatarUrl }}", ng-show="rank.avatarUrl")
 
-    avatar(avatar-url="{{ rank.avatarUrl }}")
+      .rank {{ rank.label }}
 
-    .rank {{ rank.label }}
+  button.confirm.info(ng-show="vm.showConfirm") Confirm your selections
 
-button.confirm.info Confirm your selections
+  hr
 
-hr
+  ul.submissions.color-even
+    li.submission(ng-repeat="submission in vm.submissions track by $index")
+      ul.user-details
+        li
+          avatar(avatar-url="{{ submission.submitter.avatarUrl }}")
 
-ul.submissions.color-even
-  li.submission(ng-repeat="submission in vm.submissions track by $index")
-    ul.user-details
-      li
-        avatar(avatar-url="{{ submission.submitter.avatarUrl }}")
+        li
+          .name-time
+            .name {{ submission.submitter.handle }}
 
-      li
-        .name-time
-          .name {{ submission.submitter.handle }}
+            time {{ submission.createdAt | timeLapse }}
 
-          time {{ submission.createdAt | timeLapse }}
+      ul.thumbnails
+        li.thumbnail(ng-repeat="file in submission.files track by $index")
+          a(ui-sref="submission-slides({workId: vm.workId, submissionId: submission.id, fileId: file.id})")
+            img.img(ng-src="{{ file.thumbnailUrl }}")
 
-    ul.thumbnails
-      li.thumbnail(ng-repeat="file in submission.files track by $index")
-        a(ui-sref="submission-slides({workId: vm.workId, submissionId: submission.id, fileId: file.id})")
-          img.img(ng-src="{{ file.thumbnailUrl }}")
+      ul.actions
+        li
+          a(ui-sref="submission-detail({workId: vm.workId, submissionId: submission.id})") view all ({{ submission.files.length }})
 
-    ul.actions
-      li
-        a(ui-sref="submission-detail({workId: vm.workId, submissionId: submission.id})") view all (12)
+        li.comments
+          | 20/28
 
-      li.comments
-        | 20/28
+          .icon.bubble
 
-        .icon.bubble
-
-      li
-        select(ng-model="submission.rank", ng-change="vm.reorder(submission)", ng-init="")
-          option(ng-repeat="rank in vm.rankNames", value="{{ $index }}", ng-selected="{{ $index == submission.rank }}") {{ rank }}
+        li
+          select(ng-model="submission.rank", ng-change="vm.reorder(submission)", ng-init="")
+            option(ng-repeat="rank in vm.rankNames", value="{{ $index }}", ng-selected="{{ $index == submission.rank }}") {{ rank }}
 
