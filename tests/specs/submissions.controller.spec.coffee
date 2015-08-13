@@ -35,10 +35,10 @@ describe 'SubmissionsController', ->
     it 'should should trim rank list down', ->
       expect(vm.ranks.length).to.equal 5
 
-    describe 'submissions', ->
+    it 'should have a collection of submissions', ->
+      expect(vm.submissions.length).to.be.above 0
 
-      it 'should have the proper length', ->
-        expect(vm.submissions.length).to.equal 4
+    describe 'submissions', ->
 
       it 'should have objects', ->
         expect(vm.submissions[0]).to.be.a 'object'
