@@ -1,9 +1,9 @@
 ul.header
   li.previous
-    a(href="#") &lt;
+    a(ng-if="vm.phase.previous.sref", ui-sref="{{ vm.phase.previous.sref }}") &lt;
 
   li
     h1 {{ vm.phase.current.name }}
 
   li.next
-    a(href="#") &gt;
+    a(ng-if="vm.phase.next.sref", ui-sref="{{ vm.phase.next.sref }}") &gt;

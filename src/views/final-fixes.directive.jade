@@ -6,7 +6,7 @@ include parts/timeline
 
 h4 Final Fixes Phase starts in &hellip;
 
-include parts/countdown
+countdown(end="{{ vm.phase.current.startDate }}")
 
 h4(ng-if="!vm.approvalConfirmed") Give final feedback and accept the submission to complete the design project.
 
