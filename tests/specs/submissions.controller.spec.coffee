@@ -8,6 +8,7 @@ describe 'SubmissionsController', ->
     beforeEach inject ($rootScope, $controller, $httpBackend) ->
       scope        = $rootScope.$new()
       scope.workId = '123'
+      scope.phase = 'design-concepts'
       vm           = $controller 'SubmissionsController', $scope: scope
 
     it 'should have a view model', ->
@@ -17,12 +18,13 @@ describe 'SubmissionsController', ->
       expect(vm.phase.current.name).to.be.a 'string'
 
     it 'should have a status', ->
-      expect(vm.phase.current.status).to.be.a 'string'
+      expect(vm.open).to.be.a 'boolean'
 
   describe 'after activation', ->
     beforeEach inject ($rootScope, $controller, $httpBackend) ->
       scope        = $rootScope.$new()
       scope.workId = '123'
+      scope.phase = 'design-concepts'
       vm           = $controller 'SubmissionsController', $scope: scope
 
       $httpBackend.flush()
@@ -36,7 +38,7 @@ describe 'SubmissionsController', ->
     describe 'submissions', ->
 
       it 'should have the proper length', ->
-        expect(vm.submissions.length).to.equal 1
+        expect(vm.submissions.length).to.equal 4
 
       it 'should have objects', ->
         expect(vm.submissions[0]).to.be.a 'object'
