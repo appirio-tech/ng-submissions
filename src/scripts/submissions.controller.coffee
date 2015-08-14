@@ -1,6 +1,6 @@
 'use strict'
 
-SubmissionsController = ($scope, SubmissionAPIService) ->
+SubmissionsController = ($scope, SubmissionAPIService, SubmissionDetailAPIService) ->
   vm             = this
   vm.loaded      = false
   vm.submissions = []
@@ -22,13 +22,16 @@ SubmissionsController = ($scope, SubmissionAPIService) ->
     '10th Place'
   ]
 
+  vm.reorder = (changedSubmission) ->
+    updateSubmissionRank changedSubmission
+    populateRankList()
+    evaluateRanks()
+
   activate = ->
-    params =
-      workId: $scope.workId
-      phase : $scope.phase
+    applyPhaseData()
+    getSubmissionsData()
 
-    getSubmissions params
-
+  applyPhaseData = () ->
     if $scope.phase == 'design-concepts'
       vm.timeline = [ 'active', '', '' ]
       vm.phase =
@@ -54,13 +57,10 @@ SubmissionsController = ($scope, SubmissionAPIService) ->
           name: 'Final Fixes'
           sref: 'final-fixes'
 
-  vm.reorder = () ->
-    populateRankList vm.submissions
-
   trimRankNames = (limit) ->
     vm.rankNames = vm.rankNames.slice 0, limit
 
-  populateRankList = (submissions) ->
+  populateRankList = () ->
     ranks = []
 
     for i in [0...vm.numberOfRanks] by 1
@@ -69,43 +69,31 @@ SubmissionsController = ($scope, SubmissionAPIService) ->
         label: vm.rankNames[i]
         avatarUrl: null
 
-    submissions.forEach (submission) ->
-      if (submission.rank < vm.numberOfRanks)
+    vm.submissions.forEach (submission) ->
+      if submission.rank < vm.numberOfRanks
         ranks[submission.rank].avatarUrl = submission.submitter.avatarUrl
 
     vm.ranks = ranks
 
+  # check if all available ranks are filled and toggle showConfirm
   evaluateRanks = () ->
-    count = 0
+    filledRanks = {}
+    for i in [0...vm.numberOfRanks] by 1
+      filledRanks[i] = false
 
-    vm.ranks.forEach (rank) ->
-      if rank.avatarUrl != null
-        count = count + 1
+    vm.submissions.forEach (submission) ->
+      if submission.rank < vm.numberOfRanks
+        filledRanks[submission.rank] = true
 
-    vm.showConfirm = count == parseInt(vm.numberOfRanks)
+    allFilled = true
 
-  $scope.$watch 'vm.ranks', evaluateRanks, true
+    for rank, filled of filledRanks
+      if !filled
+        allFilled = false
 
-  # TODO: Remove me
-  mockify = (data) ->
-    if $scope.phase == 'design-concepts'
-      data.phase.endDate = '2015-08-14T00:55:38.152Z'
+    vm.showConfirm = allFilled
 
-    if $scope.phase == 'complete-designs' 
-      data.phase.startDate = '2015-08-14T00:55:38.152Z'
-
-    for i in [1..11] by 1
-      data.submissions[0].files[i] = angular.copy data.submissions[0].files[0]
-
-    for i in [1..5] by 1
-      data.submissions[i] = angular.copy data.submissions[0]
-      data.submissions[i].rank = i
-
-    data
-
-  onChange = (data) ->
-    # Uncomment for development
-    # data = mockify data
+  applySubmissionsData = (data) ->
     vm.numberOfRanks           = data.numberOfRanks
     vm.submissions             = data.submissions
     vm.phase.current.startDate = data.phase.startDate
@@ -115,25 +103,35 @@ SubmissionsController = ($scope, SubmissionAPIService) ->
       vm.open = true
 
     trimRankNames data.numberOfRanks
-    populateRankList data.submissions
+    populateRankList()
 
-  getSubmissions = (params) ->
+  getSubmissionsData = () ->
+    params =
+      workId: $scope.workId
+      phase : $scope.phase
+
     resource = SubmissionAPIService.get params
 
-    resource.$promise.then (response) ->
-      onChange response
+    resource.$promise.then (res) ->
+      applySubmissionsData res
 
-    resource.$promise.catch (response) ->
+    resource.$promise.catch (res) ->
       # TODO: do something intelligent
 
     resource.$promise.finally ->
       vm.loaded = true
-      # TODO: do something intelligent
+
+  updateSubmissionRank = (submission) ->
+    params =
+      workId       : $scope.workId
+      submissionId : submission.id
+
+    resource = SubmissionDetailAPIService.updateRank params, submission
 
   activate()
 
   vm
 
-SubmissionsController.$inject = ['$scope', 'SubmissionAPIService']
+SubmissionsController.$inject = ['$scope', 'SubmissionAPIService', 'SubmissionDetailAPIService']
 
 angular.module('appirio-tech-submissions').controller 'SubmissionsController', SubmissionsController

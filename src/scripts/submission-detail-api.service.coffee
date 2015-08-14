@@ -5,6 +5,12 @@ transformResponse = (response) ->
 
   parsed?.result?.content || {}
 
+updateRank = (submission) ->
+  dataToUpdate =
+    rank: submission.rank
+
+  dataToUpdate
+
 srv = ($resource, API_URL) ->
   url = API_URL + '/v3/projects/:workId/submissions/:submissionId'
 
@@ -14,13 +20,16 @@ srv = ($resource, API_URL) ->
 
   actions =
     query:
-      method           :'GET'
+      method           : 'GET'
       isArray          : false
       transformResponse: transformResponse
     get:
-      method           :'GET'
+      method           : 'GET'
       isArray          : false
       transformResponse: transformResponse
+    updateRank:
+      method           : 'PUT'
+      transformRequest : updateRank
 
   $resource url, params, actions
 
