@@ -4,53 +4,57 @@ include parts/header
 
 include parts/timeline
 
-h4 Final Fixes Phase starts in &hellip;
+section(ng-if="!vm.open")
+  h4 Final Fixes Phase starts in &hellip;
 
-countdown(end="{{ vm.phase.current.startDate }}")
+  countdown(end="{{ vm.work.phase.startDate }}")
 
-h4(ng-if="!vm.approvalConfirmed") Give final feedback and accept the submission to complete the design project.
+section(ng-if="vm.open")
+  h4(ng-if="!vm.approvalConfirmed") Give final feedback and accept the submission to complete the design project.
 
-h4(ng-if="vm.approvalConfirmed") Project Complete! Review Final Submission.
+  h4(ng-if="vm.approvalConfirmed") Project Complete! Review Final Submission.
 
-p.duration(ng-if="!vm.approvalConfirmed") You have {{vm.remainingTime}} hours to give feedback
+  countdown(ng-if="!vm.approvalConfirmed" end="{{ vm.work.phase.endDate }}")
 
-ul.winner
-  li
-    avatar
+  p.duration(ng-if="!vm.approvalConfirmed") remaining to give feedback
 
-  li Alpha User is the Winner!
+  ul.winner
+    li
+      avatar
 
-  li.download
-    button.clean.icon.download
+    li Alpha User is the Winner!
 
-    p Download final submission
+    li.download
+      button.clean.icon.download
 
-  li(ng-if="vm.approvalConfirmed")
-    a(href="#") View previous submission comments
+      p Download final submission
 
-hr
+    li(ng-if="vm.approvalConfirmed")
+      a(ui-sref="submission-slides({workId: vm.workId, submissionId: vm.submissionId})") View previous submission comments
 
-ul.approval(ng-if="!vm.approvalConfirmed")
+  hr
 
-  li.approve-all
-    input(type="checkbox" ng-model="vm.approveAll" ng-true-value="true" ng-false-value="false")
+  ul.approval(ng-if="!vm.approvalConfirmed")
 
-    label Approve all
+    li.approve-all
+      input(type="checkbox" ng-model="vm.approveAll" ng-true-value="true" ng-false-value="false")
 
-  li.confirm
-    button.info(ng-show="vm.showConfirmApproval" ng-click="vm.confirmApproval()") Confirm final approval
+      label Approve all
 
-ul.previews
-  li.preview(ng-repeat="file in vm.files track by $index")
-    ul.icons
-      li.notification
-        button.clean 1
+    li.confirm
+      button.info(ng-show="vm.showConfirmApproval" ng-click="vm.confirmApproval()") Confirm final approval
 
-      li
-        button.clean
-          .icon.download.smallest
+  ul.previews
+    li.preview(ng-repeat="file in vm.files track by $index")
+      ul.icons
+        li.notification
+          button.clean 1
 
-    img.img(ng-src="{{ file.thumbnailUrl }}" ui-sref="submission-slides({workId: vm.workId, submissionId: vm.submissionId, fileId: file.id})")
+        li
+          button.clean
+            .icon.download.smallest
 
-    p {{ file.name }}
+      img.img(ng-src="{{ file.thumbnailUrl }}" ui-sref="submission-slides({workId: vm.workId, submissionId: vm.submissionId, fileId: file.id})")
+
+      p {{ file.name }}
 
