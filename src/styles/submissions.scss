@@ -1,6 +1,8 @@
 @import "work-includes";
 
 submissions {
+  width: 100%;
+
   button.confirm {
     @include block-center();
 
@@ -40,7 +42,10 @@ submissions {
   }
 
   .submission {
-    @include flex-center;
+    display  : flex;
+    flex-wrap: nowrap;
+    height   : 60px;
+    padding  : $spacing-small;
 
     &:first-child {
       margin-top: 0;
@@ -48,6 +53,8 @@ submissions {
 
     ul.user-details {
       @include flex-center(flex-start, $spacing-big);
+      flex-grow: 0;
+      min-width: 200px;
 
       .name-time {
         min-width: 120px;
@@ -65,6 +72,8 @@ submissions {
 
     ul.actions {
       @include flex-center(space-between, $spacing-big);
+      flex-grow: 0;
+      min-width: 250px;
 
       .comments {
         .icon {
@@ -74,13 +83,17 @@ submissions {
     }
 
     ul.thumbnails {
-      @include flex-center(flex-start, $spacing-small);
+      display  : flex;
+      flex-wrap: wrap;
+      flex-grow: 1;
+      overflow : hidden;
 
       .thumbnail {
         .img {
           width           : 50px;
           height          : 40px;
           background-color: purple;
+          margin          : 0 $spacing-small $spacing-small 0;
         }
       }
     }
