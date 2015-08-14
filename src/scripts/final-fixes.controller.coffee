@@ -2,11 +2,12 @@
 
 FinalFixesController = ($scope, FinalFixesAPIService) ->
   vm = this
+  vm.loading = true
   vm.workId = $scope.workId
   vm.submissionId = null
   vm.showConfirmApproval = false
   vm.approveAll = null
-  vm.loading = true
+  vm.timeline = []
 
   vm.confirmApproval = ->
     vm.loading = true
@@ -35,6 +36,20 @@ FinalFixesController = ($scope, FinalFixesAPIService) ->
       vm.showConfirmApproval = false
 
   activate = ->
+
+    if $scope.phase == 'final-fixes'
+      vm.timeline = [ '', '', 'active' ]
+      vm.phase =
+        previous:
+          name: 'Complete Concepts'
+          sref: 'complete-designs'
+        current:
+          name: 'Final Fixes'
+        next:
+          name: null
+          sref: null
+
+
     params =
       workId      : vm.workId
 
@@ -42,6 +57,7 @@ FinalFixesController = ($scope, FinalFixesAPIService) ->
 
     resource.$promise.then (response) ->
       vm.work             = response
+      console.log('the response', response)
       vm.submissionId = vm.work.id
       vm.files = vm.work.files
     #TODO: set based on response
@@ -49,7 +65,8 @@ FinalFixesController = ($scope, FinalFixesAPIService) ->
       # if vm.work.confirmed
       #   vm.approvalConfirmed = true
       vm.approvalConfirmed = false
-      vm.remainingTime = 39
+      if Date.now() > new Date(vm.work.phase.startDate)
+        vm.open = true
 
      resource.$promise.catch (response) ->
        # TODO: add error handling
