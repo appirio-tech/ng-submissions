@@ -66,6 +66,6 @@ angular.module("app.constants", [])
 
 }).call(this);
 
-angular.module("example").run(["$templateCache", function($templateCache) {$templateCache.put("views/final-fixes.html","<final-fixes work-id=\"leonardo\"></final-fixes>");
+angular.module("example").run(["$templateCache", function($templateCache) {$templateCache.put("views/final-fixes.html","<final-fixes work-id=\"leonardo\" phase=\"final-fixes\"></final-fixes>");
 $templateCache.put("views/submission-detail.html","<submission-detail work-id=\"123\" submission-id=\"123\"></submission-detail>");
 $templateCache.put("views/submission-slides.html","<submission-slides work-id=\"123\" submission-id=\"123\"></submission-slides>");}]);
