@@ -16,8 +16,8 @@ $templateCache.put("views/submission-slides.directive.html","<main><loader ng-sh
   'use strict';
   var SubmissionsController;
 
-  SubmissionsController = function($scope, SubmissionAPIService) {
-    var activate, evaluateRanks, getSubmissions, mockify, onChange, populateRankList, trimRankNames, vm;
+  SubmissionsController = function($scope, SubmissionAPIService, SubmissionDetailAPIService) {
+    var activate, applyPhaseData, applySubmissionsData, evaluateRanks, getSubmissionsData, populateRankList, trimRankNames, updateSubmissionRank, vm;
     vm = this;
     vm.loaded = false;
     vm.submissions = [];
@@ -26,13 +26,16 @@ $templateCache.put("views/submission-slides.directive.html","<main><loader ng-sh
     vm.open = false;
     vm.showConfirm = false;
     vm.rankNames = ['1st Place', '2nd Place', '3rd Place', '4th Place', '5th Place', '6th Place', '7th Place', '8th Place', '9th Place', '10th Place'];
+    vm.reorder = function(changedSubmission) {
+      updateSubmissionRank(changedSubmission);
+      populateRankList();
+      return evaluateRanks();
+    };
     activate = function() {
-      var params;
-      params = {
-        workId: $scope.workId,
-        phase: $scope.phase
-      };
-      getSubmissions(params);
+      applyPhaseData();
+      return getSubmissionsData();
+    };
+    applyPhaseData = function() {
       if ($scope.phase === 'design-concepts') {
         vm.timeline = ['active', '', ''];
         vm.phase = {
@@ -66,13 +69,10 @@ $templateCache.put("views/submission-slides.directive.html","<main><loader ng-sh
         };
       }
     };
-    vm.reorder = function() {
-      return populateRankList(vm.submissions);
-    };
     trimRankNames = function(limit) {
       return vm.rankNames = vm.rankNames.slice(0, limit);
     };
-    populateRankList = function(submissions) {
+    populateRankList = function() {
       var i, j, ranks, ref;
       ranks = [];
       for (i = j = 0, ref = vm.numberOfRanks; j < ref; i = j += 1) {
@@ -82,7 +82,7 @@ $templateCache.put("views/submission-slides.directive.html","<main><loader ng-sh
           avatarUrl: null
         });
       }
-      submissions.forEach(function(submission) {
+      vm.submissions.forEach(function(submission) {
         if (submission.rank < vm.numberOfRanks) {
           return ranks[submission.rank].avatarUrl = submission.submitter.avatarUrl;
         }
@@ -90,34 +90,26 @@ $templateCache.put("views/submission-slides.directive.html","<main><loader ng-sh
       return vm.ranks = ranks;
     };
     evaluateRanks = function() {
-      var count;
-      count = 0;
-      vm.ranks.forEach(function(rank) {
-        if (rank.avatarUrl !== null) {
-          return count = count + 1;
+      var allFilled, filled, filledRanks, i, j, rank, ref;
+      filledRanks = {};
+      for (i = j = 0, ref = vm.numberOfRanks; j < ref; i = j += 1) {
+        filledRanks[i] = false;
+      }
+      vm.submissions.forEach(function(submission) {
+        if (submission.rank < vm.numberOfRanks) {
+          return filledRanks[submission.rank] = true;
         }
       });
-      return vm.showConfirm = count === parseInt(vm.numberOfRanks);
+      allFilled = true;
+      for (rank in filledRanks) {
+        filled = filledRanks[rank];
+        if (!filled) {
+          allFilled = false;
+        }
+      }
+      return vm.showConfirm = allFilled;
     };
-    $scope.$watch('vm.ranks', evaluateRanks, true);
-    mockify = function(data) {
-      var i, j, k;
-      if ($scope.phase === 'design-concepts') {
-        data.phase.endDate = '2015-08-14T00:55:38.152Z';
-      }
-      if ($scope.phase === 'complete-designs') {
-        data.phase.startDate = '2015-08-14T00:55:38.152Z';
-      }
-      for (i = j = 1; j <= 11; i = j += 1) {
-        data.submissions[0].files[i] = angular.copy(data.submissions[0].files[0]);
-      }
-      for (i = k = 1; k <= 5; i = k += 1) {
-        data.submissions[i] = angular.copy(data.submissions[0]);
-        data.submissions[i].rank = i;
-      }
-      return data;
-    };
-    onChange = function(data) {
+    applySubmissionsData = function(data) {
       vm.numberOfRanks = data.numberOfRanks;
       vm.submissions = data.submissions;
       vm.phase.current.startDate = data.phase.startDate;
@@ -126,24 +118,36 @@ $templateCache.put("views/submission-slides.directive.html","<main><loader ng-sh
         vm.open = true;
       }
       trimRankNames(data.numberOfRanks);
-      return populateRankList(data.submissions);
+      return populateRankList();
     };
-    getSubmissions = function(params) {
-      var resource;
+    getSubmissionsData = function() {
+      var params, resource;
+      params = {
+        workId: $scope.workId,
+        phase: $scope.phase
+      };
       resource = SubmissionAPIService.get(params);
-      resource.$promise.then(function(response) {
-        return onChange(response);
+      resource.$promise.then(function(res) {
+        return applySubmissionsData(res);
       });
-      resource.$promise["catch"](function(response) {});
+      resource.$promise["catch"](function(res) {});
       return resource.$promise["finally"](function() {
         return vm.loaded = true;
       });
+    };
+    updateSubmissionRank = function(submission) {
+      var params, resource;
+      params = {
+        workId: $scope.workId,
+        submissionId: submission.id
+      };
+      return resource = SubmissionDetailAPIService.updateRank(params, submission);
     };
     activate();
     return vm;
   };
 
-  SubmissionsController.$inject = ['$scope', 'SubmissionAPIService'];
+  SubmissionsController.$inject = ['$scope', 'SubmissionAPIService', 'SubmissionDetailAPIService'];
 
   angular.module('appirio-tech-submissions').controller('SubmissionsController', SubmissionsController);
 
@@ -513,12 +517,20 @@ $templateCache.put("views/submission-slides.directive.html","<main><loader ng-sh
 
 (function() {
   'use strict';
-  var srv, transformResponse;
+  var srv, transformResponse, updateRank;
 
   transformResponse = function(response) {
     var parsed, ref;
     parsed = JSON.parse(response);
     return (parsed != null ? (ref = parsed.result) != null ? ref.content : void 0 : void 0) || {};
+  };
+
+  updateRank = function(submission) {
+    var dataToUpdate;
+    dataToUpdate = {
+      rank: submission.rank
+    };
+    return dataToUpdate;
   };
 
   srv = function($resource, API_URL) {
@@ -538,6 +550,10 @@ $templateCache.put("views/submission-slides.directive.html","<main><loader ng-sh
         method: 'GET',
         isArray: false,
         transformResponse: transformResponse
+      },
+      updateRank: {
+        method: 'PUT',
+        transformRequest: updateRank
       }
     };
     return $resource(url, params, actions);
