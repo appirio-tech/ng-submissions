@@ -2,6 +2,7 @@
 
 FinalFixesController = ($scope, FinalFixesAPIService) ->
   vm = this
+  vm.work = null
   vm.loading = true
   vm.workId = $scope.workId
   vm.submissionId = null
@@ -49,7 +50,6 @@ FinalFixesController = ($scope, FinalFixesAPIService) ->
           name: null
           sref: null
 
-
     params =
       workId      : vm.workId
 
@@ -57,7 +57,6 @@ FinalFixesController = ($scope, FinalFixesAPIService) ->
 
     resource.$promise.then (response) ->
       vm.work             = response
-      console.log('the response', response)
       vm.submissionId = vm.work.id
       vm.files = vm.work.files
     #TODO: set based on response
@@ -65,7 +64,8 @@ FinalFixesController = ($scope, FinalFixesAPIService) ->
       # if vm.work.confirmed
       #   vm.approvalConfirmed = true
       vm.approvalConfirmed = false
-      if Date.now() > new Date(vm.work.phase.startDate)
+
+      if Date.now() > new Date(response.phase?.startDate)
         vm.open = true
 
      resource.$promise.catch (response) ->
