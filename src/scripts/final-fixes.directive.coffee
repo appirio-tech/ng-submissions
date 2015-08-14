@@ -6,6 +6,5 @@ directive = ->
   templateUrl : 'views/final-fixes.directive.html'
   scope       :
     workId    : '@workId'
-    phase     : '@phase'
 
 angular.module('appirio-tech-submissions').directive 'finalFixes', directive

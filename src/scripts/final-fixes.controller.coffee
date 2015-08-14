@@ -38,17 +38,16 @@ FinalFixesController = ($scope, FinalFixesAPIService) ->
 
   activate = ->
 
-    if $scope.phase == 'final-fixes'
-      vm.timeline = [ '', '', 'active' ]
-      vm.phase =
-        previous:
-          name: 'Complete Concepts'
-          sref: 'complete-designs'
-        current:
-          name: 'Final Fixes'
-        next:
-          name: null
-          sref: null
+    vm.timeline = [ '', '', 'active' ]
+    vm.phase =
+      previous:
+        name: 'Complete Designs'
+        sref: 'complete-designs'
+      current:
+        name: 'Final Fixes'
+      next:
+        name: null
+        sref: null
 
     params =
       workId      : vm.workId
