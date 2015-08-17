@@ -17,7 +17,7 @@ section(ng-if="vm.open")
 
   ul.top-selection
     li(ng-repeat="rank in vm.ranks track by $index")
-      .shell(class="hasAvatar" ng-if="rank.avatarUrl")
+      .shell.hasAvatar(ng-if="rank.avatarUrl")
         avatar(avatar-url="{{ rank.avatarUrl }}")
         span {{rank.label.slice(0, -6)}}
       .shell(ng-if="!rank.avatarUrl") {{rank.value + 1}}
