@@ -5,7 +5,6 @@ SubmissionDetailController = ($scope, SubmissionDetailAPIService) ->
   vm.work             = null
   vm.positions        = null
   vm.submissionsCount = null
-  vm.showConfirmButton = false
   vm.workId           = $scope.workId
   vm.submissionId     = $scope.submissionId
 
@@ -18,13 +17,10 @@ SubmissionDetailController = ($scope, SubmissionDetailAPIService) ->
     resource = SubmissionDetailAPIService.updateRank params, submission
 
     resource.$promise.then (response) ->
-      vm.showConfirmButton = false
 
     resource.$promise.catch (error)->
       # TODO: add error handling
 
-  vm.showConfirm = ->
-    vm.showConfirmButton = true
 
   activate = ->
     params =
