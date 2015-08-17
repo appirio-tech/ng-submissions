@@ -83,13 +83,15 @@ SubmissionsController = ($scope, SubmissionAPIService, SubmissionDetailAPIServic
 
     for i in [0...vm.numberOfRanks] by 1
       ranks.push
-        value: i
-        label: vm.rankNames[i]
+        value    : i
+        label    : vm.rankNames[i]
+        id       : null
         avatarUrl: null
 
     vm.submissions.forEach (submission) ->
       if submission.rank < vm.numberOfRanks
         ranks[submission.rank].avatarUrl = submission.submitter.avatarUrl
+        ranks[submission.rank].id = submission.id
 
     vm.ranks = ranks
 

@@ -1,5 +1,6 @@
 'use strict'
 
+scope = null
 spy = null
 vm  = null
 
@@ -12,7 +13,7 @@ describe 'SubmissionsController', ->
       vm           = $controller 'SubmissionsController', $scope: scope
 
     it 'should have a view model', ->
-      expect(vm).to.be.ok
+      expect(vm).to.exist
 
     it 'should have a current phase name', ->
       expect(vm.phase.current.name).to.be.a 'string'
@@ -33,20 +34,21 @@ describe 'SubmissionsController', ->
       expect(vm.loaded).to.be.true
 
     it 'should should trim rank list down', ->
-      expect(vm.ranks.length).to.equal 5
+      expect(vm.rankNames.length).to.equal parseInt(vm.numberOfRanks)
 
     it 'should have a collection of submissions', ->
       expect(vm.submissions.length).to.be.above 0
 
     describe 'submissions', ->
 
-      it 'should have objects', ->
-        expect(vm.submissions[0]).to.be.a 'object'
+      it 'should have lists of files', ->
+        vm.submissions.forEach (submission) ->
+          expect(submission.files.length).to.be.above 0
 
     describe 'timeline', ->
 
-      it 'should have the proper length', ->
-        expect(vm.timeline.length).to.equal 3
+      it 'should have nodes', ->
+        expect(vm.timeline.length).to.be.above 0
 
       it 'should have an active node', ->
         expect(vm.timeline).to.contain 'active'
@@ -54,13 +56,47 @@ describe 'SubmissionsController', ->
     describe 'ranks', ->
 
       it 'should have the proper length', ->
-        expect(vm.ranks.length).to.equal 5
+        expect(vm.ranks.length).to.equal parseInt(vm.numberOfRanks)
 
       it 'should have values', ->
-        expect(vm.ranks[0].value).to.be.a 'number'
+        vm.ranks.forEach (rank) ->
+          expect(rank).to.include.keys 'value'
 
       it 'should have labels', ->
-        expect(vm.ranks[0].label).to.be.a 'string'
+        vm.ranks.forEach (rank) ->
+          expect(rank).to.include.keys 'label'
 
       it 'should have avatar urls', ->
-        expect(vm.ranks[0].avatarUrl).to.be.a 'string'
+        vm.ranks.forEach (rank) ->
+          expect(rank).to.include.keys 'avatarUrl'
+
+    describe 'changing rank property of a submission', ->
+
+      it 'should update ranks', ->
+        vm.submissions[0].rank = 0
+        vm.reorder vm.submissions[0]
+
+        expect(vm.ranks[0].id).to.equal vm.submissions[0].id
+
+    describe 'changing rank property of a submission to an existing rank', ->
+
+      it 'should update ranks in a cascade', ->
+        vm.submissions[0].rank = 0
+        vm.reorder vm.submissions[0]
+
+        expect(vm.ranks[0].id).to.equal vm.submissions[0].id
+
+        vm.submissions[1].rank = 0
+        vm.reorder vm.submissions[1]
+
+        expect(vm.ranks[1].id).to.equal vm.submissions[0].id
+
+
+
+
+
+
+
+
+
+
