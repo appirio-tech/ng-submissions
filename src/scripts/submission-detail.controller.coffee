@@ -5,7 +5,7 @@ SubmissionDetailController = ($scope, SubmissionDetailAPIService) ->
   vm.work             = null
   vm.positions        = null
   vm.submissionsCount = null
-  vm.selectedPosition = null
+  vm.showConfirmButton = false
   vm.workId           = $scope.workId
   vm.submissionId     = $scope.submissionId
 
@@ -18,7 +18,13 @@ SubmissionDetailController = ($scope, SubmissionDetailAPIService) ->
     resource = SubmissionDetailAPIService.updateRank params, submission
 
     resource.$promise.then (response) ->
-    vm.selectedPosition = false
+      vm.showConfirmButton = false
+
+    resource.$promise.catch (error)->
+      # TODO: add error handling
+
+  vm.showConfirm = ->
+    vm.showConfirmButton = true
 
   activate = ->
     params =
@@ -30,7 +36,7 @@ SubmissionDetailController = ($scope, SubmissionDetailAPIService) ->
     resource.$promise.then (response) ->
       vm.work             = response
       vm.submissionsCount = vm.work.files.length - 1
-      #TODO: Dynamic positions count based on number of positions payload
+      #TODO: Dynamic positions count based on number of positions in payload
       vm.positions = [
         '1st Place'
         '2nd Place'
