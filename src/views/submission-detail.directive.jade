@@ -8,10 +8,10 @@ ul.actions
       time {{ vm.work.createdAt | date: 'h:mm a, MMMM d, y' }}
 
   li.position
-    select(ng-model="vm.selectedPosition")
+    select(ng-model="vm.work.rank")
       option(value="") Select Position
 
-      option(ng-repeat="position in vm.positions" value="{{position}}") {{ position }}
+      option(ng-repeat="position in vm.positions" value="{{$index}}"  ng-selected="{{ $index == vm.work.rank }}") {{ position }}
 
     button.confirm.info(ng-show="vm.selectedPosition" ng-click="vm.selectPosition()") Select Position
 

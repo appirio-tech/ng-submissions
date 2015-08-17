@@ -30,12 +30,12 @@ SubmissionDetailController = ($scope, SubmissionDetailAPIService) ->
     resource.$promise.then (response) ->
       vm.work             = response
       vm.submissionsCount = vm.work.files.length - 1
-      #TODO: Dynamic positions count based on data
+      #TODO: Dynamic positions count based on number of positions payload
       vm.positions = [
-      '1st Place'
-      '2nd Place'
-      '3rd Place'
-      '4th Place'
+        '1st Place'
+        '2nd Place'
+        '3rd Place'
+        '4th Place'
       ]
 
     resource.$promise.catch (error)->
