@@ -23,6 +23,15 @@ SubmissionsController = ($scope, SubmissionAPIService, SubmissionDetailAPIServic
   ]
 
   vm.reorder = (changedSubmission) ->
+    submissionsOfThisRank = getSubmissionsByRank changedSubmission.rank
+
+    submissionsOfThisRank = submissionsOfThisRank.filter (submission) ->
+      submission != changedSubmission
+
+    submissionsOfThisRank.forEach (submission) ->
+      submission.rank = (parseInt(submission.rank) + 1) + ''
+      vm.reorder submission
+
     updateSubmissionRank changedSubmission
     populateRankList()
     evaluateRanks()
@@ -30,6 +39,15 @@ SubmissionsController = ($scope, SubmissionAPIService, SubmissionDetailAPIServic
   activate = ->
     applyPhaseData()
     getSubmissionsData()
+
+  getSubmissionsByRank = (rank) ->
+    submissions = []
+
+    vm.submissions.forEach (submission) ->
+      if `submission.rank == rank`
+        submissions.push submission
+
+    submissions
 
   applyPhaseData = () ->
     if $scope.phase == 'design-concepts'
