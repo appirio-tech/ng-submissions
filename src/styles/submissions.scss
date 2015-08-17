@@ -18,8 +18,8 @@ submissions {
       $radius: 40px;
 
       avatar, .shell {
-        max-width : $radius;
-        max-height: $radius;
+        width : $radius;
+        height: $radius;
       }
 
       avatar {
@@ -35,6 +35,27 @@ submissions {
         border-radius : 50%;
         text-align    : center;
         vertical-align: middle;
+        position: relative;
+
+        &.hasAvatar{
+          border: none;
+          span {
+            display: none;
+          }
+            &:hover {
+            background-color: $primary-color-darkest;
+            color: white;
+            span {
+              display: inline;
+              position: absolute;
+              top: 0;
+              left: 8px;
+            }
+            avatar {
+              opacity: 0.1;
+            }
+          }
+        }
       }
     }
   }
