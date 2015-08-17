@@ -36,6 +36,26 @@ SubmissionsController = ($scope, SubmissionAPIService, SubmissionDetailAPIServic
     populateRankList()
     evaluateRanks()
 
+
+  handleRankDrop = (el, target, source) ->
+    oldRank = target[0].textContent.substring 0, 1
+    oldRank = oldRank - 1
+
+    for child, index in source[0].children
+      if child == target[0]
+        newRank = index
+
+    newRank = newRank + ''
+
+    movedSubmission = getSubmissionsByRank oldRank
+    movedSubmission = movedSubmission[0]
+    
+    movedSubmission.rank = newRank
+
+    vm.reorder movedSubmission
+
+  $scope.$on 'ranked-submissions.drop', handleRankDrop
+
   activate = ->
     applyPhaseData()
     getSubmissionsData()

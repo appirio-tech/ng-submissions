@@ -5,6 +5,7 @@ dependencies = [
   'ngResource'
   'app.constants'
   'appirio-tech-submissions'
+  angularDragula(angular)
 ]
 
 angular.module 'example', dependencies

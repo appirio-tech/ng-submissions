@@ -15,7 +15,7 @@ section(ng-if="vm.open")
 
   p.duration remaining to give feedback
 
-  ul.top-selection
+  ul.top-selection(dragula="'ranked-submissions'")
     li(ng-repeat="rank in vm.ranks track by $index")
       .shell {{ rank.value + 1 }}
 
