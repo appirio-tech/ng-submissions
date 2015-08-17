@@ -17,11 +17,12 @@ section(ng-if="vm.open")
 
   ul.top-selection
     li(ng-repeat="rank in vm.ranks track by $index")
-      .shell {{ rank.value + 1 }}
+      .shell.hasAvatar(ng-if="rank.avatarUrl")
+        avatar(avatar-url="{{ rank.avatarUrl }}")
+        span {{rank.label.slice(0, -6)}}
 
-      avatar(avatar-url="{{ rank.avatarUrl }}", ng-show="rank.avatarUrl")
+      .shell(ng-if="!rank.avatarUrl") {{rank.value + 1}}
 
-      .rank {{ rank.label }}
 
   button.confirm.info(ng-show="vm.showConfirm") Confirm your selections
 
