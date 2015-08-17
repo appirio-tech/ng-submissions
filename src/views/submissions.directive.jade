@@ -20,6 +20,7 @@ section(ng-if="vm.open")
       .shell.hasAvatar(ng-if="rank.avatarUrl")
         avatar(avatar-url="{{ rank.avatarUrl }}")
         span {{rank.label.slice(0, -6)}}
+
       .shell(ng-if="!rank.avatarUrl") {{rank.value + 1}}
 
 
