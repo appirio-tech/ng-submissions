@@ -8,7 +8,6 @@ SubmissionsController = ($scope, SubmissionAPIService, SubmissionDetailAPIServic
   vm.timeline    = []
   vm.open        = false
   vm.showConfirm = false
-  vm.showExtraSubmissions = false
 
   vm.rankNames = [
     '1st Place'
@@ -22,9 +21,6 @@ SubmissionsController = ($scope, SubmissionAPIService, SubmissionDetailAPIServic
     '9th Place'
     '10th Place'
   ]
-
-  vm.revealExtraSubmissions = ->
-    vm.showExtraSubmissions = true
 
   vm.reorder = (changedSubmission) ->
     submissionsOfThisRank = getSubmissionsByRank changedSubmission.rank
@@ -78,7 +74,7 @@ SubmissionsController = ($scope, SubmissionAPIService, SubmissionDetailAPIServic
       submission.rank == null
 
     orderedByRank = ranked.sort (previousSubmission, nextSubmission) ->
-      previousSubmission.rank - nextSubmission.rank
+      return previousSubmission.rank - nextSubmission.rank
 
     orderedBySubmitter = unRanked.sort (previousSubmission, nextSubmission) ->
       previousSubmission.submitter.id - nextSubmission.submitter.id
@@ -126,7 +122,7 @@ SubmissionsController = ($scope, SubmissionAPIService, SubmissionDetailAPIServic
         avatarUrl: null
 
     vm.submissions.forEach (submission) ->
-      if submission.rank && submission.rank< vm.numberOfRanks
+      if submission.rank && submission.rank < vm.numberOfRanks
         ranks[submission.rank].avatarUrl = submission.submitter.avatarUrl
         ranks[submission.rank].id = submission.id
 
