@@ -8,6 +8,7 @@ SubmissionsController = ($scope, SubmissionAPIService, SubmissionDetailAPIServic
   vm.timeline    = []
   vm.open        = false
   vm.showConfirm = false
+  vm.showExtraSubmissions = false
 
   vm.rankNames = [
     '1st Place'
@@ -21,6 +22,9 @@ SubmissionsController = ($scope, SubmissionAPIService, SubmissionDetailAPIServic
     '9th Place'
     '10th Place'
   ]
+
+  vm.revealExtraSubmissions = ->
+    vm.showExtraSubmissions = true
 
   vm.reorder = (changedSubmission) ->
     submissionsOfThisRank = getSubmissionsByRank changedSubmission.rank
@@ -65,6 +69,18 @@ SubmissionsController = ($scope, SubmissionAPIService, SubmissionDetailAPIServic
         submissions.push submission
 
     submissions
+
+  getSubmissionsBySubmitter = (allSubmissions, userSubmission) ->
+    submissions = []
+
+    allSubmissions.forEach (submission) ->
+      if submission.submitter.id == userSubmission.submitter.id
+        submissions.push submission
+
+    filtered = submissions.filter (filteredSubmission) ->
+      filteredSubmission != userSubmission
+
+    filtered
 
   applyPhaseData = () ->
     if $scope.phase == 'design-concepts'
@@ -130,7 +146,19 @@ SubmissionsController = ($scope, SubmissionAPIService, SubmissionDetailAPIServic
 
     vm.showConfirm = allFilled
 
+  mockify = (data) ->
+
+    fakeId = 4567
+
+    for i in [2..5] by 1
+      data.submissions[i] = angular.copy data.submissions[0]
+      data.submissions[i].id = fakeId++ + ""
+      data.submissions[i].rank = i
+
+    data
+
   applySubmissionsData = (data) ->
+    data = mockify data
     vm.numberOfRanks           = data.numberOfRanks
     vm.submissions             = data.submissions
     vm.phase.current.startDate = data.phase.startDate
@@ -141,6 +169,26 @@ SubmissionsController = ($scope, SubmissionAPIService, SubmissionDetailAPIServic
 
     trimRankNames data.numberOfRanks
     populateRankList()
+    #group submissions by user for view
+    vm.orderedSubmissions = orderSubmissionsBySubmitter data.submissions
+
+  orderSubmissionsBySubmitter = (submissions) ->
+    pastSubmitters = {}
+    orderedSubmissions = []
+
+    submissions.forEach (submission) ->
+
+      if (!pastSubmitters[submission.submitter.id])
+        pastSubmitters[submission.submitter.id] = true
+        extraSubmissionsOfThisUser = getSubmissionsBySubmitter(submissions, submission)
+
+        if extraSubmissionsOfThisUser.length
+          submission.extraSubmissions = extraSubmissionsOfThisUser
+          orderedSubmissions.push(submission)
+        else
+          orderedSubmissions.push(submission)
+
+    orderedSubmissions
 
   getSubmissionsData = () ->
     params =
