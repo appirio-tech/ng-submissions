@@ -78,7 +78,7 @@ SubmissionsController = ($scope, SubmissionAPIService, SubmissionDetailAPIServic
       submission.rank == null
 
     orderedByRank = ranked.sort (previousSubmission, nextSubmission) ->
-      return previousSubmission.rank - nextSubmission.rank
+      previousSubmission.rank - nextSubmission.rank
 
     orderedBySubmitter = unRanked.sort (previousSubmission, nextSubmission) ->
       previousSubmission.submitter.id - nextSubmission.submitter.id
@@ -150,25 +150,7 @@ SubmissionsController = ($scope, SubmissionAPIService, SubmissionDetailAPIServic
 
     vm.showConfirm = allFilled
 
-  mockify = (data) ->
-
-    fakeId = 4567
-    fakeRank = 1
-
-    for i in [2..5] by 1
-      data.submissions[i] = angular.copy data.submissions[0]
-      data.submissions[i].id = fakeId++ + ""
-      data.submissions[i].rank = i
-
-    data.submissions[1].rank = null
-    data.submissions[2].rank = null
-    data.submissions[3].rank = null
-
-    data
-
   applySubmissionsData = (data) ->
-    #uncomment for development
-    # data = mockify data
     vm.numberOfRanks           = data.numberOfRanks
     vm.submissions             = data.submissions
     vm.phase.current.startDate = data.phase.startDate
