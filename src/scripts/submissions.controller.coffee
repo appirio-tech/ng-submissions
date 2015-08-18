@@ -86,6 +86,22 @@ SubmissionsController = ($scope, SubmissionAPIService, SubmissionDetailAPIServic
 
     submissions
 
+  sortSubmissions = (submissions) ->
+    ranked = submissions.filter (submission) ->
+      submission.rank != null
+
+    unRanked = submissions.filter (submission) ->
+      submission.rank == null
+
+    orderedByRank = ranked.sort (previousSubmission, nextSubmission) ->
+      return previousSubmission.rank - nextSubmission.rank
+
+    orderedBySubmitter = unRanked.sort (previousSubmission, nextSubmission) ->
+      previousSubmission.submitter.id - nextSubmission.submitter.id
+
+    orderedSubmissions = orderedByRank.concat orderedBySubmitter
+    orderedSubmissions
+
   applyPhaseData = () ->
     if $scope.phase == 'design-concepts'
       vm.timeline = [ 'active', '', '' ]
@@ -164,6 +180,8 @@ SubmissionsController = ($scope, SubmissionAPIService, SubmissionDetailAPIServic
     trimRankNames data.numberOfRanks
     populateRankList()
     checkShowConfirm()
+    vm.sortedSubmissions = sortSubmissions data.submissions
+
 
   getSubmissionsData = () ->
     params =

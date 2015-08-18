@@ -35,7 +35,7 @@ section(ng-if="vm.open")
   hr
 
   ul.submissions.color-even
-    li.submission(ng-repeat="submission in vm.submissions track by $index")
+    li.submission(ng-repeat="submission in vm.sortedSubmissions track by $index")
       ul.user-details
         li
           avatar(avatar-url="{{ submission.submitter.avatarUrl }}")
@@ -63,4 +63,3 @@ section(ng-if="vm.open")
         li
           select(ng-model="submission.rank", ng-change="vm.reorder(submission, true)", ng-init="")
             option(ng-repeat="rank in vm.rankNames", value="{{ $index }}", ng-selected="{{ $index == submission.rank }}") {{ rank }}
-
