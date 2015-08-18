@@ -30,8 +30,6 @@ section(ng-if="vm.open")
         .overlay(ng-if="!rank.avatarUrl")
           span {{ rank.value + 1 }}
 
-  pre {{ vm.ranks | json }}
-
   button.confirm.info(ng-show="vm.showConfirm") Confirm your selections
 
   hr
