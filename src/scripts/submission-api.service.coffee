@@ -5,6 +5,15 @@ transformResponse = (response) ->
 
   parsed?.result?.content || []
 
+confirm = () ->
+  date = new Date()
+  date = date.toISOString()
+
+  payload = 
+    confirmed: date
+
+  payload
+
 srv = ($resource, API_URL) ->
   url = API_URL + '/v3/projects/:workId/submissions'
 
@@ -17,11 +26,13 @@ srv = ($resource, API_URL) ->
       method           : 'GET'
       isArray          : false
       transformResponse: transformResponse
-
     get:
       method           : 'GET'
       isArray          : false
       transformResponse: transformResponse
+    confirm:
+      method           : 'PUT'
+      transformRequest : confirm
 
   $resource url, params, methods
 
