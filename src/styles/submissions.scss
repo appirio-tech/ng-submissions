@@ -26,9 +26,10 @@ submissions {
       }
 
       avatar {
-        @include block-center;
-
         margin-bottom: $spacing-smallest;
+        position: absolute;
+        top: 0;
+        left: 0;
       }
 
       .shell {

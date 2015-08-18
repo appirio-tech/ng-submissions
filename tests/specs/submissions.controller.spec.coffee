@@ -74,7 +74,7 @@ describe 'SubmissionsController', ->
 
       it 'should update ranks', ->
         vm.submissions[0].rank = 0
-        vm.reorder vm.submissions[0]
+        vm.reorder vm.submissions[0], true
 
         expect(vm.ranks[0].id).to.equal vm.submissions[0].id
 
@@ -82,12 +82,12 @@ describe 'SubmissionsController', ->
 
       it 'should update ranks in a cascade', ->
         vm.submissions[0].rank = 0
-        vm.reorder vm.submissions[0]
+        vm.reorder vm.submissions[0], true
 
         expect(vm.ranks[0].id).to.equal vm.submissions[0].id
 
         vm.submissions[1].rank = 0
-        vm.reorder vm.submissions[1]
+        vm.reorder vm.submissions[1], true
 
         expect(vm.ranks[1].id).to.equal vm.submissions[0].id
 

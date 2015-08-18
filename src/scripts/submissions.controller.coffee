@@ -1,6 +1,6 @@
 'use strict'
 
-SubmissionsController = ($scope, SubmissionAPIService, SubmissionDetailAPIService) ->
+SubmissionsController = ($scope, SubmissionAPIService, SubmissionDetailAPIService, dragulaService) ->
   vm             = this
   vm.loaded      = false
   vm.submissions = []
@@ -22,7 +22,7 @@ SubmissionsController = ($scope, SubmissionAPIService, SubmissionDetailAPIServic
     '10th Place'
   ]
 
-  vm.reorder = (changedSubmission) ->
+  vm.reorder = (changedSubmission, first) ->
     submissionsOfThisRank = getSubmissionsByRank changedSubmission.rank
 
     submissionsOfThisRank = submissionsOfThisRank.filter (submission) ->
@@ -30,13 +30,29 @@ SubmissionsController = ($scope, SubmissionAPIService, SubmissionDetailAPIServic
 
     submissionsOfThisRank.forEach (submission) ->
       submission.rank = (parseInt(submission.rank) + 1) + ''
-      vm.reorder submission
+      if submission.rank >= vm.numberOfRanks
+        submission.rank = null
+      vm.reorder submission, false
 
     updateSubmissionRank changedSubmission
-    populateRankList()
-    evaluateRanks()
+
+    if first
+      populateRankList()
+      checkShowConfirm()
+
+  isDraggable = (el, source, handle) ->
+    source.classList.contains 'has-avatar'
+
+  dragulaOptions =
+    moves: isDraggable
+    copy: true
+
+  dragulaService.options $scope, 'ranked-submissions', dragulaOptions
 
   handleRankDrop = (el, target, source) ->
+    if !source
+      return false
+
     oldRank = target[0].textContent - 1
 
     for li, index in source[0].parentElement.parentElement.children
@@ -49,7 +65,7 @@ SubmissionsController = ($scope, SubmissionAPIService, SubmissionDetailAPIServic
     movedSubmission = movedSubmission[0]
     movedSubmission.rank = newRank
 
-    vm.reorder movedSubmission
+    vm.reorder movedSubmission, true
 
   $scope.$on 'ranked-submissions.drop', handleRankDrop
 
@@ -122,14 +138,16 @@ SubmissionsController = ($scope, SubmissionAPIService, SubmissionDetailAPIServic
         avatarUrl: null
 
     vm.submissions.forEach (submission) ->
-      if submission.rank && submission.rank < vm.numberOfRanks
+      if submission.rank != null && submission.rank < vm.numberOfRanks
         ranks[submission.rank].avatarUrl = submission.submitter.avatarUrl
         ranks[submission.rank].id = submission.id
 
     vm.ranks = ranks
 
-  # check if all available ranks are filled and toggle showConfirm
-  evaluateRanks = () ->
+  checkShowConfirm = () ->
+    vm.showConfirm = allRanksFilled()
+
+  allRanksFilled = () ->
     filledRanks = {}
     for i in [0...vm.numberOfRanks] by 1
       filledRanks[i] = false
@@ -144,7 +162,7 @@ SubmissionsController = ($scope, SubmissionAPIService, SubmissionDetailAPIServic
       if !filled
         allFilled = false
 
-    vm.showConfirm = allFilled
+    allFilled
 
   applySubmissionsData = (data) ->
     vm.numberOfRanks           = data.numberOfRanks
@@ -186,6 +204,6 @@ SubmissionsController = ($scope, SubmissionAPIService, SubmissionDetailAPIServic
 
   vm
 
-SubmissionsController.$inject = ['$scope', 'SubmissionAPIService', 'SubmissionDetailAPIService']
+SubmissionsController.$inject = ['$scope', 'SubmissionAPIService', 'SubmissionDetailAPIService', 'dragulaService']
 
 angular.module('appirio-tech-submissions').controller 'SubmissionsController', SubmissionsController

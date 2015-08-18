@@ -16,7 +16,7 @@ section(ng-if="vm.open")
   p.duration remaining to give feedback
 
   ul.top-selection
-    li(ng-repeat="rank in vm.ranks track by $index")
+    li(ng-repeat="rank in vm.ranks")
       .shell(
         dragula="'ranked-submissions'",
         dragula-scope="$parent",
@@ -29,8 +29,6 @@ section(ng-if="vm.open")
 
         .overlay(ng-if="!rank.avatarUrl")
           span {{ rank.value + 1 }}
-
-  pre {{ vm.ranks | json }}
 
   button.confirm.info(ng-show="vm.showConfirm") Confirm your selections
 
@@ -63,7 +61,7 @@ section(ng-if="vm.open")
           .icon.bubble
 
         li
-          select(ng-model="submission.rank", ng-change="vm.reorder(submission)", ng-init="")
+          select(ng-model="submission.rank", ng-change="vm.reorder(submission, true)", ng-init="")
             option(ng-repeat="rank in vm.rankNames", value="{{ $index }}", ng-selected="{{ $index == submission.rank }}") {{ rank }}
 
         li
