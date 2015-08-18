@@ -6,10 +6,10 @@ transformResponse = (response) ->
   parsed?.result?.content || {}
 
 updateRank = (submission) ->
-  dataToUpdate =
+  payload =
     rank: submission.rank
 
-  dataToUpdate
+  payload
 
 srv = ($resource, API_URL) ->
   url = API_URL + '/v3/projects/:workId/submissions/:submissionId'

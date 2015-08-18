@@ -30,7 +30,7 @@ section(ng-if="vm.open")
         .overlay(ng-if="!rank.avatarUrl")
           span {{ rank.value + 1 }}
 
-  button.confirm.info(ng-show="vm.showConfirm") Confirm your selections
+  button.confirm.info(ng-show="vm.showConfirm", ng-click="vm.confirmRanks()") Confirm your selections
 
   hr
 

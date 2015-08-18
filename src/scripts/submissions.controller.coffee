@@ -40,6 +40,10 @@ SubmissionsController = ($scope, SubmissionAPIService, SubmissionDetailAPIServic
       populateRankList()
       checkShowConfirm()
 
+  vm.confirmRanks = () ->
+    if allRanksFilled()
+      confirmRanks()
+
   isDraggable = (el, source, handle) ->
     source.classList.contains 'has-avatar'
 
@@ -159,6 +163,7 @@ SubmissionsController = ($scope, SubmissionAPIService, SubmissionDetailAPIServic
 
     trimRankNames data.numberOfRanks
     populateRankList()
+    checkShowConfirm()
 
   getSubmissionsData = () ->
     params =
@@ -182,6 +187,13 @@ SubmissionsController = ($scope, SubmissionAPIService, SubmissionDetailAPIServic
       submissionId : submission.id
 
     resource = SubmissionDetailAPIService.updateRank params, submission
+
+  confirmRanks = () ->
+    params =
+      workId: $scope.workId
+      phase : $scope.phase
+
+    SubmissionAPIService.confirm params
 
   activate()
 
