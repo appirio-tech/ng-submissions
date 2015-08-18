@@ -63,6 +63,3 @@ section(ng-if="vm.open")
         li
           select(ng-model="submission.rank", ng-change="vm.reorder(submission, true)", ng-init="")
             option(ng-repeat="rank in vm.rankNames", value="{{ $index }}", ng-selected="{{ $index == submission.rank }}") {{ rank }}
-
-        li
-          button(ng-if="submission.extraSubmissions" ng-click="vm.revealExtraSubmissions()") View More Submissions From This User
