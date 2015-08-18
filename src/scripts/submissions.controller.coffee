@@ -70,17 +70,21 @@ SubmissionsController = ($scope, SubmissionAPIService, SubmissionDetailAPIServic
 
     submissions
 
-  getSubmissionsBySubmitter = (allSubmissions, userSubmission) ->
-    submissions = []
+  sortSubmissions = (submissions) ->
+    ranked = submissions.filter (submission) ->
+      submission.rank != null
 
-    allSubmissions.forEach (submission) ->
-      if submission.submitter.id == userSubmission.submitter.id
-        submissions.push submission
+    unRanked = submissions.filter (submission) ->
+      submission.rank == null
 
-    filtered = submissions.filter (filteredSubmission) ->
-      filteredSubmission != userSubmission
+    orderedByRank = ranked.sort (previousSubmission, nextSubmission) ->
+      return previousSubmission.rank - nextSubmission.rank
 
-    filtered
+    orderedBySubmitter = unRanked.sort (previousSubmission, nextSubmission) ->
+      previousSubmission.submitter.id - nextSubmission.submitter.id
+
+    orderedSubmissions = orderedByRank.concat orderedBySubmitter
+    orderedSubmissions
 
   applyPhaseData = () ->
     if $scope.phase == 'design-concepts'
@@ -122,7 +126,7 @@ SubmissionsController = ($scope, SubmissionAPIService, SubmissionDetailAPIServic
         avatarUrl: null
 
     vm.submissions.forEach (submission) ->
-      if submission.rank < vm.numberOfRanks
+      if submission.rank && submission.rank< vm.numberOfRanks
         ranks[submission.rank].avatarUrl = submission.submitter.avatarUrl
         ranks[submission.rank].id = submission.id
 
@@ -149,16 +153,22 @@ SubmissionsController = ($scope, SubmissionAPIService, SubmissionDetailAPIServic
   mockify = (data) ->
 
     fakeId = 4567
+    fakeRank = 1
 
     for i in [2..5] by 1
       data.submissions[i] = angular.copy data.submissions[0]
       data.submissions[i].id = fakeId++ + ""
       data.submissions[i].rank = i
 
+    data.submissions[1].rank = null
+    data.submissions[2].rank = null
+    data.submissions[3].rank = null
+
     data
 
   applySubmissionsData = (data) ->
-    data = mockify data
+    #uncomment for development
+    # data = mockify data
     vm.numberOfRanks           = data.numberOfRanks
     vm.submissions             = data.submissions
     vm.phase.current.startDate = data.phase.startDate
@@ -169,26 +179,7 @@ SubmissionsController = ($scope, SubmissionAPIService, SubmissionDetailAPIServic
 
     trimRankNames data.numberOfRanks
     populateRankList()
-    #group submissions by user for view
-    vm.orderedSubmissions = orderSubmissionsBySubmitter data.submissions
-
-  orderSubmissionsBySubmitter = (submissions) ->
-    pastSubmitters = {}
-    orderedSubmissions = []
-
-    submissions.forEach (submission) ->
-
-      if (!pastSubmitters[submission.submitter.id])
-        pastSubmitters[submission.submitter.id] = true
-        extraSubmissionsOfThisUser = getSubmissionsBySubmitter(submissions, submission)
-
-        if extraSubmissionsOfThisUser.length
-          submission.extraSubmissions = extraSubmissionsOfThisUser
-          orderedSubmissions.push(submission)
-        else
-          orderedSubmissions.push(submission)
-
-    orderedSubmissions
+    vm.sortedSubmissions = sortSubmissions data.submissions
 
   getSubmissionsData = () ->
     params =

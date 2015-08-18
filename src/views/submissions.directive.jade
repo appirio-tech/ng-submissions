@@ -37,7 +37,7 @@ section(ng-if="vm.open")
   hr
 
   ul.submissions.color-even
-    li.submission(ng-repeat="submission in vm.orderedSubmissions track by $index")
+    li.submission(ng-repeat="submission in vm.sortedSubmissions track by $index")
       ul.user-details
         li
           avatar(avatar-url="{{ submission.submitter.avatarUrl }}")
@@ -68,33 +68,3 @@ section(ng-if="vm.open")
 
         li
           button(ng-if="submission.extraSubmissions" ng-click="vm.revealExtraSubmissions()") View More Submissions From This User
-
-      ul.submissions(ng-show="vm.showExtraSubmissions")
-          li.submission(ng-repeat="submission in submission.extraSubmissions track by $index")
-            ul.user-details
-              li
-                avatar(avatar-url="{{ submission.submitter.avatarUrl }}")
-
-              li
-                .name-time
-                  .name {{ submission.submitter.handle }}
-
-                  time {{ submission.createdAt | timeLapse }}
-
-            ul.thumbnails
-              li.thumbnail(ng-repeat="file in submission.files track by $index")
-                a(ui-sref="submission-slides({workId: vm.workId, submissionId: submission.id, fileId: file.id})")
-                  img.img(ng-src="{{ file.thumbnailUrl }}")
-
-            ul.actions
-              li
-                a(ui-sref="submission-detail({workId: vm.workId, submissionId: submission.id})") view all ({{ submission.files.length }})
-
-              li.comments
-                | 20/28
-
-                .icon.bubble
-
-              li
-                select(ng-model="submission.rank", ng-change="vm.reorder(submission)", ng-init="")
-                  option(ng-repeat="rank in vm.rankNames", value="{{ $index }}", ng-selected="{{ $index == submission.rank }}") {{ rank }}
