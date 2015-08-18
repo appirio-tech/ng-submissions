@@ -50,6 +50,9 @@ SubmissionsController = ($scope, SubmissionAPIService, SubmissionDetailAPIServic
   dragulaService.options $scope, 'ranked-submissions', dragulaOptions
 
   handleRankDrop = (el, target, source) ->
+    if !source
+      return false
+
     oldRank = target[0].textContent - 1
 
     for li, index in source[0].parentElement.parentElement.children
