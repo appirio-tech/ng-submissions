@@ -19,9 +19,10 @@ submissions {
     li {
       $radius: 40px;
 
-      avatar, .shell {
+      .shell, avatar, .overlay {
         width : $radius;
         height: $radius;
+        border-radius : 50%;
       }
 
       avatar {
@@ -32,29 +33,39 @@ submissions {
 
       .shell {
         font-size     : $font-size-big;
-        line-height   : $radius - 2px * 2;
         border        : 2px dashed $primary-color;
-        border-radius : 50%;
-        text-align    : center;
-        vertical-align: middle;
         position: relative;
 
-        &.hasAvatar{
-          border: none;
+        .overlay {
+          position: absolute;
+          top: 0;
+          left: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background-color: transparent;
+
           span {
-            display: none;
+            display: block;
+            color: $primary-color-darkest;
           }
-            &:hover {
+        }
+
+        &.has-avatar {
+          border-color: #fff;
+          cursor: pointer;
+
+          .overlay {
             background-color: $primary-color-darkest;
-            color: white;
-            span {
-              display: inline;
-              position: absolute;
-              top: 0;
-              left: 8px;
-            }
-            avatar {
-              opacity: 0.1;
+            opacity: 0;
+
+            &:hover {
+              opacity: 0.9;
+
+              span {
+                display: block;
+                color: #fff;
+              }
             }
           }
         }

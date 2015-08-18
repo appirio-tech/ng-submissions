@@ -36,20 +36,17 @@ SubmissionsController = ($scope, SubmissionAPIService, SubmissionDetailAPIServic
     populateRankList()
     evaluateRanks()
 
-
   handleRankDrop = (el, target, source) ->
-    oldRank = target[0].textContent.substring 0, 1
-    oldRank = oldRank - 1
+    oldRank = target[0].textContent - 1
 
-    for child, index in source[0].children
-      if child == target[0]
+    for li, index in source[0].parentElement.parentElement.children
+      if li.children[0] == source[0]
         newRank = index
 
     newRank = newRank + ''
 
     movedSubmission = getSubmissionsByRank oldRank
     movedSubmission = movedSubmission[0]
-    
     movedSubmission.rank = newRank
 
     vm.reorder movedSubmission

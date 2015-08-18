@@ -15,14 +15,22 @@ section(ng-if="vm.open")
 
   p.duration remaining to give feedback
 
-  ul.top-selection(dragula="'ranked-submissions'")
+  ul.top-selection
     li(ng-repeat="rank in vm.ranks track by $index")
-      .shell.hasAvatar(ng-if="rank.avatarUrl")
-        avatar(avatar-url="{{ rank.avatarUrl }}")
-        span {{rank.label.slice(0, -6)}}
+      .shell(
+        dragula="'ranked-submissions'",
+        dragula-scope="$parent",
+        ng-class="{ 'has-avatar': rank.avatarUrl }")
 
-      .shell(ng-if="!rank.avatarUrl") {{rank.value + 1}}
+        .draggable(ng-if="rank.avatarUrl")
+          avatar(avatar-url="{{ rank.avatarUrl }}")
+          .overlay
+            span {{ rank.value + 1 }}
 
+        .overlay(ng-if="!rank.avatarUrl")
+          span {{ rank.value + 1 }}
+
+  pre {{ vm.ranks | json }}
 
   button.confirm.info(ng-show="vm.showConfirm") Confirm your selections
 
