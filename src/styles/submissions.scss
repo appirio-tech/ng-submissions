@@ -73,6 +73,11 @@ submissions {
     }
   }
 
+  ul.submissions {
+    max-height: 400px;
+    overflow-y: scroll;
+  }
+
   .submission {
     display  : flex;
     flex-wrap: nowrap;
