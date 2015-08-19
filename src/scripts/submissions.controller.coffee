@@ -6,7 +6,7 @@ SubmissionsController = ($scope, SubmissionAPIService, SubmissionDetailAPIServic
   vm.submissions = []
   vm.ranks       = []
   vm.timeline    = []
-  vm.open        = false
+  vm.status      = 'scheduled'
   vm.showConfirm = false
 
   vm.rankNames = [
@@ -177,13 +177,17 @@ SubmissionsController = ($scope, SubmissionAPIService, SubmissionDetailAPIServic
     vm.phase.current.endDate   = data.phase.endDate
 
     if Date.now() > new Date(vm.phase.current.startDate)
-      vm.open = true
+      vm.status = 'open'
+
+    if data.confirmed
+      vm.status = 'closed'
+
+    vm.closed = 'closed'
 
     trimRankNames data.numberOfRanks
     populateRankList()
     checkShowConfirm()
     vm.sortedSubmissions = sortSubmissions data.submissions
-
 
   getSubmissionsData = () ->
     params =

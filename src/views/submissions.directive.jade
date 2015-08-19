@@ -4,11 +4,14 @@ include parts/header
 
 include parts/timeline
 
-section(ng-if="!vm.open")
+section(ng-if="vm.status == 'scheduled'")
   h4 Submissions for the {{ vm.phase.current.name }} Phase coming in &hellip;
   countdown(end="{{ vm.phase.current.startDate }}")
 
-section(ng-if="vm.open")
+section(ng-if="vm.status == 'closed'")
+  h4 Congratulations! These are your {{ vm.phase.current.name }} winners.
+
+section(ng-if="vm.status == 'open'")
   h4 Give feedback and select the top {{ vm.ranks.length }} designs.
 
   countdown(end="{{ vm.phase.current.endDate }}")
