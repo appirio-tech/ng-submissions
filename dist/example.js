@@ -8,7 +8,7 @@ angular.module("app.constants", [])
 
 .constant("AUTH0_CLIENT_ID", "abc123")
 
-.constant("AUTH0_DOMAIN", "topcoder-dev.auth0.com")
+.constant("AUTH0_DOMAIN", "topcoder.auth0.com")
 
 .constant("AUTH0_TOKEN_NAME", "userJWTToken")
 
@@ -19,7 +19,7 @@ angular.module("app.constants", [])
   'use strict';
   var dependencies;
 
-  dependencies = ['ui.router', 'ngResource', 'app.constants', 'appirio-tech-submissions'];
+  dependencies = ['ui.router', 'ngResource', 'app.constants', 'appirio-tech-submissions', angularDragula(angular)];
 
   angular.module('example', dependencies);
 
@@ -66,6 +66,6 @@ angular.module("app.constants", [])
 
 }).call(this);
 
-angular.module("example").run(["$templateCache", function($templateCache) {$templateCache.put("views/final-fixes.html","<final-fixes work-id=\"leonardo\" phase=\"final-fixes\"></final-fixes>");
+angular.module("example").run(["$templateCache", function($templateCache) {$templateCache.put("views/final-fixes.html","<final-fixes work-id=\"leonardo\"></final-fixes>");
 $templateCache.put("views/submission-detail.html","<submission-detail work-id=\"123\" submission-id=\"123\"></submission-detail>");
 $templateCache.put("views/submission-slides.html","<submission-slides work-id=\"123\" submission-id=\"123\"></submission-slides>");}]);
