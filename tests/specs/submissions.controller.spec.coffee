@@ -19,7 +19,7 @@ describe 'SubmissionsController', ->
       expect(vm.phase.current.name).to.be.a 'string'
 
     it 'should have a status', ->
-      expect(vm.open).to.be.a 'boolean'
+      expect(vm.status).to.be.a 'string'
 
   describe 'after activation', ->
     beforeEach inject ($rootScope, $controller, $httpBackend) ->
