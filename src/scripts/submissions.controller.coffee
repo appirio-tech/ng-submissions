@@ -29,10 +29,12 @@ SubmissionsController = ($scope, SubmissionAPIService, SubmissionDetailAPIServic
       submission != changedSubmission
 
     submissionsOfThisRank.forEach (submission) ->
-      submission.rank = (parseInt(submission.rank) + 1) + ''
-      if submission.rank >= vm.numberOfRanks
+      newRank = (parseInt(submission.rank) + 1) + ''
+      if newRank >= vm.numberOfRanks
         submission.rank = null
-      vm.reorder submission, false
+      else
+        submission.rank = newRank
+        vm.reorder submission, false
 
     updateSubmissionRank changedSubmission
 
