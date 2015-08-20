@@ -10,22 +10,8 @@ window.unstashIt = (obj, key) ->
 
   delete stash[key]
 
-window.__karma__.loaded = ->
-  # prevent karma from starting
-  AutoConfigFakeServer.init()
-
-  AutoConfigFakeServer.fakeServer.respondImmediately = true
-
-  schemas = []
-
-  for path, fixture of FIXTURES
-    schemas.push fixture
-
-  AutoConfigFakeServer.consume schemas
-
-  window.__karma__.start()
-
 beforeEach ->
+  module 'appirio-tech-ng-api-services'
   module 'appirio-tech-submissions'
 
 # Transfer fakeserver responses to $httpBackend

@@ -4,7 +4,7 @@ config = ($stateProvider) ->
   states = {}
 
   states['design-concepts'] =
-    url         : '/design-concepts'
+    url         : '/'
     templateUrl : 'views/design-concepts.html'
 
   states['complete-designs'] =
