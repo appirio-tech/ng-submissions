@@ -16,7 +16,6 @@ submissions {
     width : 260px;
     margin: $spacing-big auto;
 
-
     li {
       $radius: 40px;
 
@@ -25,7 +24,6 @@ submissions {
         height: $radius;
         border-radius : 50%;
       }
-
 
       avatar {
         margin-bottom: $spacing-smallest;
@@ -77,8 +75,7 @@ submissions {
   }
 
   ul.submissions {
-    max-height: 400px;
-    // overflow-y: scroll;
+    max-height: 800px;
   }
 
   .submission {
@@ -125,6 +122,7 @@ submissions {
     ul.thumbnails {
       display  : flex;
       flex-wrap: wrap;
+      flex-grow: 1;
 
       .pop-over {
         height: 500px;
@@ -173,6 +171,7 @@ submissions {
         a {
           flex-grow: 2;
         }
+
         .img {
           width           : 50px;
           height          : 40px;
