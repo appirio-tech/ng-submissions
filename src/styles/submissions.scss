@@ -127,7 +127,7 @@ submissions {
       .pop-over {
         height: 500px;
         width: 300px;
-        padding: 20px;
+        padding: $spacing-big;
         background-color: #fff;
         position: absolute;
         top: -50px;
@@ -150,25 +150,24 @@ submissions {
       }
 
       .thumbnail {
-        display: flex;
         position: relative;
 
         &:hover {
           .pop-over {
             @include flex-center;
+
             flex-direction: column;
 
             .previewActions {
-             display: flex;
-             justify-content: space-between;
-             flex-direction: row;
-             align-items: center;
-             width: 100px;
+              @include flex-center(space-between);
+              width: 100px;
             }
           }
         }
 
         a {
+          @include flex-center;
+
           flex-grow: 2;
         }
 
