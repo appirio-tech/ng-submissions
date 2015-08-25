@@ -1,5 +1,9 @@
 @import "work-includes";
 
+//variables
+$pop-over-top: -50px;
+$pop-over-left: 30px;
+
 submissions {
   width: 100%;
 
@@ -130,8 +134,8 @@ submissions {
         padding: $spacing-big;
         background-color: #fff;
         position: absolute;
-        top: -50px;
-        left: 30px;
+        top: $pop-over-top;
+        left: $pop-over-left;
         z-index: 1000;
         box-shadow: 6px 7px 64px -4px rgba(0,0,0,0.21);
         display: none;
@@ -144,8 +148,8 @@ submissions {
           border-width: 10px;
           border-style: solid;
           border-color: transparent #fff transparent transparent;
-          top: 55px;
-          left: -20px;
+          top: $pop-over-top + 105px;
+          left: $pop-over-left - 50px;
         }
       }
 
