@@ -1,5 +1,9 @@
 @import "work-includes";
 
+//variables
+$pop-over-top: -50px;
+$pop-over-left: 30px;
+
 submissions {
   width: 100%;
 
@@ -41,9 +45,7 @@ submissions {
           position: absolute;
           top: 0;
           left: 0;
-          display: flex;
-          align-items: center;
-          justify-content: center;
+          @include flex-center(center);
           background-color: transparent;
 
           span {
@@ -75,13 +77,12 @@ submissions {
   }
 
   ul.submissions {
-    max-height: 400px;
-    overflow-y: scroll;
+    max-height: 800px;
   }
 
   .submission {
-    display  : flex;
-    flex-wrap: nowrap;
+    @include display(flex);
+    @include flex-wrap(nowrap);
     height   : 60px;
     padding  : $spacing-small;
 
@@ -110,7 +111,7 @@ submissions {
 
     ul.actions {
       @include flex-center(space-between, $spacing-big);
-      flex-grow: 0;
+      @include flex-grow(0);
       min-width: 250px;
 
       .comments {
@@ -121,12 +122,55 @@ submissions {
     }
 
     ul.thumbnails {
-      display  : flex;
-      flex-wrap: wrap;
-      flex-grow: 1;
-      overflow : hidden;
+      @include display(flex);
+      @include flex-wrap(wrap);
+      @include flex-grow(1);
+
+      .pop-over {
+        height: 450px;
+        width: 250px;
+        padding: $spacing-big;
+        background-color: #fff;
+        position: absolute;
+        top: $pop-over-top;
+        left: $pop-over-left;
+        z-index: 1;
+        box-shadow: 6px 7px 64px -4px rgba(0,0,0,0.21);
+        display: none;
+
+        &:before {
+          content: "";
+          position: absolute;
+          width: 0;
+          height: 0;
+          border-width: 10px;
+          border-style: solid;
+          border-color: transparent #fff transparent transparent;
+          top: $pop-over-top + 105px;
+          left: $pop-over-left - 50px;
+        }
+      }
 
       .thumbnail {
+        position: relative;
+
+        &:hover {
+          .pop-over {
+            @include flex-center;
+            @include flex-direction(column);
+
+            .previewActions {
+              @include flex-center(space-between);
+              width: 100px;
+            }
+          }
+        }
+
+        a {
+          @include flex-center;
+          @include flex-grow(2);
+        }
+
         .img {
           width           : 50px;
           height          : 40px;

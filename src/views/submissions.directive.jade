@@ -54,6 +54,19 @@ section(ng-if="vm.status == 'open'")
           a(ui-sref="submission-slides({workId: vm.workId, submissionId: submission.id, fileId: file.id})")
             img.img(ng-src="{{ file.thumbnailUrl }}")
 
+          .pop-over
+            a(ui-sref="submission-slides({workId: vm.workId, submissionId: submission.id, fileId: file.id})")
+              img.previewImage(ng-src="{{ file.thumbnailUrl }}")
+
+            ul.previewActions
+              li.comments
+                .comments 20/28
+                  .icon.bubble
+
+              li.download
+                button.clean.icon.download
+
+
       ul.actions
         li
           a(ui-sref="submission-detail({workId: vm.workId, submissionId: submission.id})") view all ({{ submission.files.length }})
