@@ -53,6 +53,7 @@ section(ng-if="vm.status == 'open'")
         li.thumbnail(ng-repeat="file in submission.files track by $index")
           a(ui-sref="submission-slides({workId: vm.workId, submissionId: submission.id, fileId: file.id})")
             img.img(ng-src="{{ file.thumbnailUrl }}")
+
           .pop-over
             a(ui-sref="submission-slides({workId: vm.workId, submissionId: submission.id, fileId: file.id})")
               img.previewImage(ng-src="{{ file.thumbnailUrl }}")
