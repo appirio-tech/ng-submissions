@@ -375,6 +375,79 @@ createOrderedRankList = (rankedSubmissions, numberOfRanks) ->
 
   orderedRanks
 
+updateRankedSubmissions = (rankedSubmissions, numberOfRanks, id, rank) ->
+  rankedSubmissions = angular.copy rankedSubmissions
+  rank               = rank - 1 # We're in zero-index land
+
+  orderedRanks = createOrderedRankList rankedSubmissions, numberOfRanks
+  currentRank  = orderedRanks.indexOf id
+
+  if currentRank >= 0
+    orderedRanks.splice currentRank, 1, null
+
+  orderedRanks.splice rank, 0, id
+
+  orderedRanks      = removeBlankAfterN orderedRanks, rank
+  rankedSubmissions = []
+
+  orderedRanks.forEach (id, index) ->
+    if id != null && index < numberOfRanks
+      rankedSubmission =
+        rank: (parseInt(index) + 1) + '' # Convert back to one-index land
+        submissionId: id
+
+      rankedSubmissions.push rankedSubmission
+
+  rankedSubmissions
+
+decorateSubmissionsWithRanks = (submissions, rankedSubmissions = []) ->
+  submissions.forEach (submission) ->
+    submission.rank = ''
+    rankedSubmissions.forEach (rankedSubmission) ->
+      if submission.id == rankedSubmission.submissionId
+        submission.rank = rankedSubmission.rank
+
+  submissions
+
+decorateSubmissionsWithUnreadCounts = (submissions) ->
+  submissions.forEach (submission) ->
+    submissionTotal = 0
+    submissionUnread = 0
+    submission.files.forEach (file) ->
+      fileTotal = 0
+      fileUnread = 0
+
+      file.threads[0].messages.forEach (message) ->
+        fileTotal = submissionTotal + 1
+        submissionTotal = submissionTotal + 1
+        if !message.read
+          fileUnread = submissionUnread + 1
+          submissionUnread = submissionUnread + 1
+
+      file.totalMessages = fileTotal
+      file.unreadMessages = fileUnread
+
+    submission.totalMessages = submissionTotal
+    submission.unreadMessages = submissionUnread
+
+  submissions
+
+sortSubmissions = (submissions) ->
+  ranked = submissions.filter (submission) ->
+    submission.rank != ''
+
+  unRanked = submissions.filter (submission) ->
+    submission.rank == ''
+
+  orderedByRank = ranked.sort (previousSubmission, nextSubmission) ->
+    return previousSubmission.rank - nextSubmission.rank
+
+  orderedBySubmitter = unRanked.sort (previousSubmission, nextSubmission) ->
+    previousSubmission.submitter.id - nextSubmission.submitter.id
+
+  orderedSubmissions = orderedByRank.concat orderedBySubmitter
+  orderedSubmissions
+
 srv = ($q) ->
 
   currentProjectId = null
@@ -384,6 +457,9 @@ srv = ($q) ->
     steps: []
     submissions: []
     findStepByType: findStepByType
+    decorateSubmissionsWithRanks: decorateSubmissionsWithRanks
+    decorateSubmissionsWithUnreadCounts: decorateSubmissionsWithUnreadCounts
+    sortSubmissions: sortSubmissions
 
   submissionsService.getSteps = (projectId) ->
     deferred = $q.defer()
@@ -414,28 +490,10 @@ srv = ($q) ->
     deferred.promise
 
   submissionsService.updateRank = (stepId, id, rank) ->
-    currentStep        = findStepById submissionsService.steps, stepId
-    rankedSubmissions  = angular.copy currentStep.rankedSubmissions
-    rank               = rank - 1 # We're in zero-index land
-
-    orderedRanks = createOrderedRankList rankedSubmissions, currentStep.numberOfRanks
-    currentRank  = orderedRanks.indexOf id
-
-    if currentRank >= 0
-      orderedRanks.splice currentRank, 1, null
-
-    orderedRanks.splice rank, 0, id
-
-    orderedRanks      = removeBlankAfterN orderedRanks, rank
-    rankedSubmissions = []
-
-    orderedRanks.forEach (id, index) ->
-      if id != null && index < currentStep.numberOfRanks
-        rankedSubmission =
-          rank: (parseInt(index) + 1) + '' # Convert back to one-index land
-          submissionId: id
-
-        rankedSubmissions.push rankedSubmission
+    currentStep       = findStepById submissionsService.steps, stepId
+    numberOfRanks     = currentStep.numberOfRanks
+    rankedSubmissions = currentStep.rankedSubmissions
+    rankedSubmissions = updateRankedSubmissions rankedSubmissions, numberOfRanks, id, rank
  
     currentStep.rankedSubmissions = rankedSubmissions
 
@@ -450,6 +508,16 @@ srv = ($q) ->
     step.customerConfirmedRanks = true
 
   submissionsService.confirmRanksRemote = () ->
+    deferred = $q.defer()
+
+    deferred.resolve()
+    deferred.promise
+
+  submissionsService.acceptFixes = (stepId) ->
+    step = findStepById submissionsService.steps, stepId
+    step.customerAcceptedFixes = true
+
+  submissionsService.acceptFixesRemote = () ->
     deferred = $q.defer()
 
     deferred.resolve()

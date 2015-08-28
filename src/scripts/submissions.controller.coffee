@@ -137,46 +137,6 @@ SubmissionsController = ($scope, $state, dragulaService, SubmissionsService) ->
 
     ranks
 
-  decorateSubmissionsWithRanks = (submissions, rankedSubmissions = []) ->
-    submissions.forEach (submission) ->
-      submission.rank = ''
-      rankedSubmissions.forEach (rankedSubmission) ->
-        if submission.id == rankedSubmission.submissionId
-          submission.rank = rankedSubmission.rank
-
-    submissions
-
-  decorateSubmissionsWithUnreadCounts = (submissions) ->
-    submissions.forEach (submission) ->
-      submissionTotal = 0
-      submissionUnread = 0
-      submission.files.forEach (file) ->
-        file.threads[0].messages.forEach (message) ->
-          submissionTotal = submissionTotal + 1
-          if !message.read
-            submissionUnread = submissionUnread + 1
-
-      submission.totalMessages = submissionTotal
-      submission.unreadMessages = submissionUnread
-
-    submissions
-
-  sortSubmissions = (submissions) ->
-    ranked = submissions.filter (submission) ->
-      submission.rank != ''
-
-    unRanked = submissions.filter (submission) ->
-      submission.rank == ''
-
-    orderedByRank = ranked.sort (previousSubmission, nextSubmission) ->
-      return previousSubmission.rank - nextSubmission.rank
-
-    orderedBySubmitter = unRanked.sort (previousSubmission, nextSubmission) ->
-      previousSubmission.submitter.id - nextSubmission.submitter.id
-
-    orderedSubmissions = orderedByRank.concat orderedBySubmitter
-    orderedSubmissions
-
   onChange = ->
     steps = SubmissionsService.steps
     submissions = SubmissionsService.submissions
@@ -203,9 +163,9 @@ SubmissionsController = ($scope, $state, dragulaService, SubmissionsService) ->
 
     # Handle submissions updates
     vm.submissions = angular.copy submissions
-    vm.submissions = decorateSubmissionsWithRanks vm.submissions, currentStep.rankedSubmissions
-    vm.submissions = sortSubmissions vm.submissions
-    vm.submissions = decorateSubmissionsWithUnreadCounts vm.submissions
+    vm.submissions = SubmissionsService.decorateSubmissionsWithRanks vm.submissions, currentStep.rankedSubmissions
+    vm.submissions = SubmissionsService.sortSubmissions vm.submissions
+    vm.submissions = SubmissionsService.decorateSubmissionsWithUnreadCounts vm.submissions
 
     # Handle ranks updates
     vm.rankNames = config.rankNames.slice 0, currentStep.numberOfRanks

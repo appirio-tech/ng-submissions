@@ -73,7 +73,9 @@ section(ng-if="vm.status == 'open'")
                   .icon.bubble
 
               li.download
-                button.clean.icon.download
+                button
+                  a(href="{{ file.images.full }}", target="_blank")
+                    .clean.icon.download
 
       ul.actions
         li
