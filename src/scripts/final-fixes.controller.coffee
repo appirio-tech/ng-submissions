@@ -62,8 +62,8 @@ FinalFixesController = ($scope, $state, SubmissionsService) ->
 
     vm.loaded = true
 
-    currentStep = SubmissionsService.findStepByType steps, config.stepType
-    prevStep = SubmissionsService.findStepByType steps, config.prevStepType
+    currentStep = SubmissionsService.findInCollection steps, 'stepType', config.stepType
+    prevStep = SubmissionsService.findInCollection steps, 'stepType', config.prevStepType
 
     vm.startsAt = currentStep.startsAt
     vm.endsAt = currentStep.endsAt
@@ -74,9 +74,8 @@ FinalFixesController = ($scope, $state, SubmissionsService) ->
 
     vm.prevStepRef = $state.href config.prevStepState, stepParams
 
-    vm.submissions = angular.copy submissions
-    vm.submissions = SubmissionsService.decorateSubmissionsWithUnreadCounts vm.submissions
-    vm.submission = vm.submissions[0]
+    vm.submission = angular.copy submissions[0]
+    vm.submission = SubmissionsService.decorateSubmissionWithUnreadCounts vm.submission
 
     vm.status = config.defaultStatus
 

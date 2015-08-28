@@ -147,9 +147,9 @@ SubmissionsController = ($scope, $state, dragulaService, SubmissionsService) ->
     vm.loaded = true
 
     # Handle steps updates
-    currentStep = SubmissionsService.findStepByType steps, config.stepType
-    prevStep = SubmissionsService.findStepByType steps, config.prevStepType
-    nextStep = SubmissionsService.findStepByType steps, config.nextStepType
+    currentStep = SubmissionsService.findInCollection steps, 'stepType', config.stepType
+    prevStep = SubmissionsService.findInCollection steps, 'stepType', config.prevStepType
+    nextStep = SubmissionsService.findInCollection steps, 'stepType', config.nextStepType
 
     vm.startsAt = currentStep.startsAt
     vm.endsAt = currentStep.endsAt

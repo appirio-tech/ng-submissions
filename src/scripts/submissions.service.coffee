@@ -342,27 +342,12 @@ mockSubmissions = [
   }
 ]
 
-findStepByType = (steps, stepType) ->
-  for index, step of steps
-    if step.stepType == stepType
-      return step
+findInCollection = (collection, prop, value) ->
+  for index, el of collection
+    if el[prop] == value
+      return el
 
   null
-
-findStepById = (steps, stepId) ->
-  for index, step of steps
-    if step.id == stepId
-      return step
-
-  null
-
-removeBlankAfterN = (array, n) ->
-  for i in [n...array.length] by 1
-    if array[i] == null
-      array.splice i, 1
-      return array
-
-  array
 
 createOrderedRankList = (rankedSubmissions, numberOfRanks) ->
   orderedRanks = []
@@ -400,35 +385,38 @@ updateRankedSubmissions = (rankedSubmissions, numberOfRanks, id, rank) ->
 
   rankedSubmissions
 
+decorateSubmissionWithRank = (submission, rankedSubmissions = []) ->
+  submission.rank = ''
+  rankedSubmissions.forEach (rankedSubmission) ->
+    if submission.id == rankedSubmission.submissionId
+      submission.rank = rankedSubmission.rank
+
+  submission
+
 decorateSubmissionsWithRanks = (submissions, rankedSubmissions = []) ->
   submissions.forEach (submission) ->
-    submission.rank = ''
-    rankedSubmissions.forEach (rankedSubmission) ->
-      if submission.id == rankedSubmission.submissionId
-        submission.rank = rankedSubmission.rank
+    submission = decorateSubmissionWithRank submission
 
   submissions
 
+decorateSubmissionWithUnreadCounts = (submission) ->
+  submission.files.forEach (file) ->
+    total = 0
+    unread = 0
+
+    file.threads[0].messages.forEach (message) ->
+      total = total + 1
+      if !message.read
+        unread = unread + 1
+
+    file.totalMessages = total
+    file.unreadMessages = unread
+
+  submission
+
 decorateSubmissionsWithUnreadCounts = (submissions) ->
   submissions.forEach (submission) ->
-    submissionTotal = 0
-    submissionUnread = 0
-    submission.files.forEach (file) ->
-      fileTotal = 0
-      fileUnread = 0
-
-      file.threads[0].messages.forEach (message) ->
-        fileTotal = submissionTotal + 1
-        submissionTotal = submissionTotal + 1
-        if !message.read
-          fileUnread = submissionUnread + 1
-          submissionUnread = submissionUnread + 1
-
-      file.totalMessages = fileTotal
-      file.unreadMessages = fileUnread
-
-    submission.totalMessages = submissionTotal
-    submission.unreadMessages = submissionUnread
+    submission = decorateSubmissionWithUnreadCounts submission
 
   submissions
 
@@ -456,9 +444,11 @@ srv = ($q) ->
   submissionsService =
     steps: []
     submissions: []
-    findStepByType: findStepByType
+    findInCollection: findInCollection
     decorateSubmissionsWithRanks: decorateSubmissionsWithRanks
+    decorateSubmissionWithRank: decorateSubmissionWithRank
     decorateSubmissionsWithUnreadCounts: decorateSubmissionsWithUnreadCounts
+    decorateSubmissionWithUnreadCounts: decorateSubmissionWithUnreadCounts
     sortSubmissions: sortSubmissions
 
   submissionsService.getSteps = (projectId) ->
@@ -490,7 +480,7 @@ srv = ($q) ->
     deferred.promise
 
   submissionsService.updateRank = (stepId, id, rank) ->
-    currentStep       = findStepById submissionsService.steps, stepId
+    currentStep       = findInCollection submissionsService.steps, 'id', stepId
     numberOfRanks     = currentStep.numberOfRanks
     rankedSubmissions = currentStep.rankedSubmissions
     rankedSubmissions = updateRankedSubmissions rankedSubmissions, numberOfRanks, id, rank
@@ -504,7 +494,7 @@ srv = ($q) ->
     deferred.promise
 
   submissionsService.confirmRanks = (stepId) ->
-    step = findStepById submissionsService.steps, stepId
+    step = findInCollection submissionsService.steps, 'id', stepId
     step.customerConfirmedRanks = true
 
   submissionsService.confirmRanksRemote = () ->
@@ -514,7 +504,7 @@ srv = ($q) ->
     deferred.promise
 
   submissionsService.acceptFixes = (stepId) ->
-    step = findStepById submissionsService.steps, stepId
+    step = findInCollection submissionsService.steps, 'id', stepId
     step.customerAcceptedFixes = true
 
   submissionsService.acceptFixesRemote = () ->

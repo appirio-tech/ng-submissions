@@ -1,52 +1,65 @@
 'use strict'
 
-SubmissionDetailController = ($scope, SubmissionDetailAPIService) ->
-  vm                  = this
-  vm.work             = null
-  vm.positions        = null
-  vm.submissionsCount = null
-  vm.workId           = $scope.workId
-  vm.submissionId     = $scope.submissionId
+SubmissionDetailController = ($scope, SubmissionsService) ->
+  vm     = this
+  config = {}
 
-  vm.selectPosition = ->
-    params =
-      workId: vm.workId
-      submissionId: vm.submissionId
+  config.rankNames = [
+    '1st Place'
+    '2nd Place'
+    '3rd Place'
+    '4th Place'
+    '5th Place'
+    '6th Place'
+    '7th Place'
+    '8th Place'
+    '9th Place'
+    '10th Place'
+  ]
 
-    submission = vm.work
-    resource = SubmissionDetailAPIService.updateRank params, submission
+  vm.loaded       = false
+  vm.submission   = {}
+  vm.allFilled    = false
+  vm.projectId    = $scope.projectId
+  vm.stepId       = $scope.stepId
+  vm.submissionId = $scope.submissionId
 
-    resource.$promise.then (response) ->
-
-    resource.$promise.catch (error)->
-      # TODO: add error handling
+  vm.handleRankSelect = (submission) ->
+    SubmissionsService.updateRank vm.stepId, submission.id, submission.rank
+    onChange()
+    SubmissionsService.updateRankRemote().then ->
+      onChange()
 
 
   activate = ->
-    params =
-      workId      : vm.workId
-      submissionId: vm.submissionId
+    SubmissionsService.getSteps(vm.projectId).then ->
+      onChange()
 
-    resource = SubmissionDetailAPIService.get params
+    SubmissionsService.getSubmissions(vm.projectId, vm.stepId).then ->
+      onChange()
 
-    resource.$promise.then (response) ->
-      vm.work             = response
-      vm.submissionsCount = vm.work.files.length - 1
-      #TODO: Dynamic positions count based on number of positions in payload
-      vm.positions = [
-        '1st Place'
-        '2nd Place'
-        '3rd Place'
-        '4th Place'
-      ]
+  onChange = ->
+    steps = SubmissionsService.steps
+    submissions = SubmissionsService.submissions
 
-    resource.$promise.catch (error)->
-      # TODO: add error handling
+    if steps.length <= 0 || submissions.length <= 0
+      return null
 
-    vm
+    vm.loaded = true
+    currentStep = SubmissionsService.findInCollection steps, 'id', vm.stepId
+
+    currentSubmission = SubmissionsService.findInCollection submissions, 'id', vm.submissionId
+    vm.submission = angular.copy currentSubmission
+    vm.submission = SubmissionsService.decorateSubmissionWithRank vm.submission, currentStep.rankedSubmissions
+    vm.submission = SubmissionsService.decorateSubmissionWithUnreadCounts vm.submission
+
+    vm.rankNames = config.rankNames.slice 0, currentStep.numberOfRanks
+    vm.allFilled = currentStep.rankedSubmissions.length == currentStep.numberOfRanks
 
   activate()
 
-SubmissionDetailController.$inject = ['$scope', 'SubmissionDetailAPIService']
+  vm
+
+SubmissionDetailController.$inject = ['$scope', 'SubmissionsService']
 
 angular.module('appirio-tech-submissions').controller 'SubmissionDetailController', SubmissionDetailController
