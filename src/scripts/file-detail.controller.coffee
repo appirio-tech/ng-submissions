@@ -15,8 +15,22 @@ FileDetailController = ($scope, SubmissionsService) ->
   vm.fileId       = $scope.fileId
 
   activate = ->
-    SubmissionsService.getSubmissions(vm.projectId, vm.stepId).then ->
+    submissionsPromise = SubmissionsService.fetch vm.projectId, vm.stepId
+
+    submissionsPromise.then ->
       onChange()
+
+    submissionsPromise.catch ->
+      console.log "Unable to fetch submissions from server. Data may be out of date."
+
+    onChange()
+
+  findInCollection = (collection, prop, value) ->
+    for index, el of collection
+      if el[prop] == value
+        return el
+
+    null
 
   onChange = ->
     submissions = SubmissionsService.submissions
@@ -25,10 +39,10 @@ FileDetailController = ($scope, SubmissionsService) ->
       return null
 
     vm.loaded         = true
-    currentSubmission = SubmissionsService.findInCollection submissions, 'id', vm.submissionId
+    currentSubmission = findInCollection submissions, 'id', vm.submissionId
     vm.submission     = angular.copy currentSubmission
     vm.submission     = SubmissionsService.decorateSubmissionWithUnreadCounts vm.submission
-    vm.file           = SubmissionsService.findInCollection vm.submission.files, 'id', vm.fileId
+    vm.file           = findInCollection vm.submission.files, 'id', vm.fileId
 
     currentIndex = vm.submission.files.indexOf vm.file
     vm.prevFile = vm.submission.files[currentIndex - 1]

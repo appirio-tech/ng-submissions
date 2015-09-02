@@ -1,6 +1,6 @@
 'use strict'
 
-SubmissionDetailController = ($scope, SubmissionsService) ->
+SubmissionDetailController = ($scope, StepsService, SubmissionsService) ->
   vm     = this
   config = {}
 
@@ -25,30 +25,48 @@ SubmissionDetailController = ($scope, SubmissionsService) ->
   vm.submissionId = $scope.submissionId
 
   vm.handleRankSelect = (submission) ->
-    SubmissionsService.updateRank vm.stepId, submission.id, submission.rank
+    StepsService.updateRank vm.stepId, submission.id, submission.rank
+
     onChange()
-    SubmissionsService.updateRankRemote().then ->
+
+    updatePromise = StepsService.updateRankRemote vm.projectId, vm.stepId
+
+    updatePromise.then ->
       onChange()
 
+    updatePromise.catch ->
+      console.log 'Oops. Something went wrong saving rank update!'
 
   activate = ->
-    SubmissionsService.getSteps(vm.projectId).then ->
+    stepsPromise = StepsService.fetch vm.projectId
+
+    stepsPromise.then ->
       onChange()
 
-    SubmissionsService.getSubmissions(vm.projectId, vm.stepId).then ->
+    stepsPromise.catch ->
+      console.log "Unable to fetch steps from server. Data may be out of date."
+
+    submissionsPromise = SubmissionsService.fetch vm.projectId, vm.stepId
+
+    submissionsPromise.then ->
       onChange()
+
+    submissionsPromise.catch ->
+      console.log "Unable to fetch submissions from server. Data may be out of date."
+
+    onChange()
 
   onChange = ->
-    steps = SubmissionsService.steps
+    steps = StepsService.steps
     submissions = SubmissionsService.submissions
 
     if steps.length <= 0 || submissions.length <= 0
       return null
 
     vm.loaded = true
-    currentStep = SubmissionsService.findInCollection steps, 'id', vm.stepId
+    currentStep = StepsService.findInCollection steps, 'id', vm.stepId
 
-    currentSubmission = SubmissionsService.findInCollection submissions, 'id', vm.submissionId
+    currentSubmission = StepsService.findInCollection submissions, 'id', vm.submissionId
     vm.submission = angular.copy currentSubmission
     vm.submission = SubmissionsService.decorateSubmissionWithRank vm.submission, currentStep.rankedSubmissions
     vm.submission = SubmissionsService.decorateSubmissionWithUnreadCounts vm.submission
@@ -60,6 +78,6 @@ SubmissionDetailController = ($scope, SubmissionsService) ->
 
   vm
 
-SubmissionDetailController.$inject = ['$scope', 'SubmissionsService']
+SubmissionDetailController.$inject = ['$scope', 'StepsService', 'SubmissionsService']
 
 angular.module('appirio-tech-submissions').controller 'SubmissionDetailController', SubmissionDetailController

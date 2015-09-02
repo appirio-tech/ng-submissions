@@ -1,6 +1,6 @@
 'use strict'
 
-SubmissionsController = ($scope, $state, dragulaService, SubmissionsService) ->
+SubmissionsController = ($scope, $state, dragulaService, StepsService, SubmissionsService) ->
   vm             = this
   config         = {}
 
@@ -62,27 +62,53 @@ SubmissionsController = ($scope, $state, dragulaService, SubmissionsService) ->
   ##############
 
   vm.handleRankSelect = (submission) ->
-    SubmissionsService.updateRank vm.stepId, submission.id, submission.rank
+    StepsService.updateRank vm.stepId, submission.id, submission.rank
+
     onChange()
-    SubmissionsService.updateRankRemote().then ->
+
+    updatePromise = StepsService.updateRankRemote vm.projectId, vm.stepId
+
+    updatePromise.then ->
       onChange()
 
+    updatePromise.catch ->
+      console.log 'Oops. Something went wrong saving rank update!'
+
   vm.confirmRanks = ->
-    SubmissionsService.confirmRanks vm.stepId
+    StepsService.confirmRanks vm.stepId
+
     onChange()
-    SubmissionsService.confirmRanksRemote().then ->
+
+    updatePromise = StepsService.confirmRanksRemote vm.projectId, vm.stepId
+
+    updatePromise.then ->
       onChange()
+
+    updatePromise.catch ->
+      console.log 'Oops. Something went wrong confirming ranks!'
 
   ##############
   # Activation #
   ##############
 
   activate = ->
-    SubmissionsService.getSteps(vm.projectId).then ->
+    stepsPromise = StepsService.fetch vm.projectId
+
+    stepsPromise.then ->
       onChange()
 
-    SubmissionsService.getSubmissions(vm.projectId, vm.stepId).then ->
+    stepsPromise.catch ->
+      console.log "Unable to fetch steps from server. Data may be out of date."
+
+    submissionsPromise = SubmissionsService.fetch vm.projectId, vm.stepId
+
+    submissionsPromise.then ->
       onChange()
+
+    submissionsPromise.catch ->
+      console.log "Unable to fetch submissions from server. Data may be out of date."
+
+    onChange()
 
   ###################
   # Dragula helpers #
@@ -138,7 +164,7 @@ SubmissionsController = ($scope, $state, dragulaService, SubmissionsService) ->
     ranks
 
   onChange = ->
-    steps = SubmissionsService.steps
+    steps = StepsService.steps
     submissions = SubmissionsService.submissions
 
     if steps.length <= 0 || submissions.length <= 0
@@ -147,9 +173,9 @@ SubmissionsController = ($scope, $state, dragulaService, SubmissionsService) ->
     vm.loaded = true
 
     # Handle steps updates
-    currentStep = SubmissionsService.findInCollection steps, 'stepType', config.stepType
-    prevStep = SubmissionsService.findInCollection steps, 'stepType', config.prevStepType
-    nextStep = SubmissionsService.findInCollection steps, 'stepType', config.nextStepType
+    currentStep = StepsService.findInCollection steps, 'stepType', config.stepType
+    prevStep = StepsService.findInCollection steps, 'stepType', config.prevStepType
+    nextStep = StepsService.findInCollection steps, 'stepType', config.nextStepType
 
     vm.startsAt = currentStep.startsAt
     vm.endsAt = currentStep.endsAt
@@ -187,6 +213,6 @@ SubmissionsController = ($scope, $state, dragulaService, SubmissionsService) ->
 
   vm
 
-SubmissionsController.$inject = ['$scope', '$state', 'dragulaService', 'SubmissionsService']
+SubmissionsController.$inject = ['$scope', '$state', 'dragulaService', 'StepsService', 'SubmissionsService']
 
 angular.module('appirio-tech-submissions').controller 'SubmissionsController', SubmissionsController
