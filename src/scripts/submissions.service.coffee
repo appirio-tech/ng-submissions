@@ -360,6 +360,14 @@ createOrderedRankList = (rankedSubmissions, numberOfRanks) ->
 
   orderedRanks
 
+removeBlankAfterN = (array, n) ->
+  for i in [n...array.length] by 1
+    if array[i] == null
+      array.splice i, 1
+      return array
+
+  array
+
 updateRankedSubmissions = (rankedSubmissions, numberOfRanks, id, rank) ->
   rankedSubmissions = angular.copy rankedSubmissions
   rank               = rank - 1 # We're in zero-index land
