@@ -3,13 +3,13 @@ ul.nav
     a.submissions(ui-sref="design-concepts") Design Concepts
 
   li
-    a.submissions(ui-sref="complete-designs") Complete Designs
+    a.submissions(ui-sref="complete-designs({projectId: 'abc', stepId: 'abc'})") Complete Designs
 
   li
-    a.final-fixes(ui-sref="final-fixes({workId: 123})") Final Fixes
+    a.final-fixes(ui-sref="final-fixes({projectId: 'abc', stepId: 'abc'})") Final Fixes
 
   li
-    a.detail(ui-sref="submission-detail({workId: 123, submissionId: 123})") Detail
+    a.detail(ui-sref="submission-detail({projectId: 'abc', stepId: 'abc', submissionId: 'abc'})") Submission Detail
 
   li
-    a.slides(ui-sref="submission-slides({workId: 123, submissionId: 123, fileId: 321})") Slides
+    a.slides(ui-sref="file-detail({projectId: 'abc', stepId: 'abc', submissionId: 'abc', fileId: 'abc'})") File Detail

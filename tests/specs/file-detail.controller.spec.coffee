@@ -4,15 +4,14 @@ scope = null
 spy = null
 vm  = null
 
-describe.only 'SubmissionDetailController', ->
-  beforeEach ->
-    bard.inject this, '$rootScope', '$controller'
-
+describe 'FileDetailController', ->
+  beforeEach inject ($rootScope, $controller) ->
     scope              = $rootScope.$new()
     scope.projectId    = 'abc'
     scope.stepId       = 'abc'
     scope.submissionId = 'abc'
-    vm                 = $controller 'SubmissionDetailController', $scope: scope
+    scope.fileId       = 'abc'
+    vm                 = $controller 'FileDetailController', $scope: scope
 
   it 'should have a view model', ->
     expect(vm).to.exist

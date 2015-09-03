@@ -19,7 +19,7 @@ angular.module("app.constants", [])
   'use strict';
   var dependencies;
 
-  dependencies = ['ui.router', 'ngResource', 'app.constants', 'appirio-tech-submissions', angularDragula(angular)];
+  dependencies = ['ui.router', 'ngResource', 'app.constants', 'appirio-tech-submissions', 'appirio-tech-ng-api-services', angularDragula(angular)];
 
   angular.module('example', dependencies);
 
@@ -33,24 +33,24 @@ angular.module("app.constants", [])
     var key, results, state, states;
     states = {};
     states['design-concepts'] = {
-      url: '/design-concepts',
+      url: '/',
       templateUrl: 'views/design-concepts.html'
     };
     states['complete-designs'] = {
-      url: '/complete-designs',
+      url: '/projects/:projectId/:stepId/complete-designs',
       templateUrl: 'views/complete-designs.html'
     };
     states['final-fixes'] = {
-      url: '/final-fixes',
+      url: '/projects/:projectId/:stepId/final-fixes',
       templateUrl: 'views/final-fixes.html'
     };
     states['submission-detail'] = {
-      url: '/:workId/detail/:submissionId',
+      url: '/projects/:projectId/:stepId/:submissionId',
       templateUrl: 'views/submission-detail.html'
     };
-    states['submission-slides'] = {
-      url: '/:workId/slides/:submissionId/:fileId',
-      templateUrl: 'views/submission-slides.html'
+    states['file-detail'] = {
+      url: '/projects/:projectId/:stepId/:submissionId/:fileId',
+      templateUrl: 'views/file-detail.html'
     };
     results = [];
     for (key in states) {
@@ -66,6 +66,6 @@ angular.module("app.constants", [])
 
 }).call(this);
 
-angular.module("example").run(["$templateCache", function($templateCache) {$templateCache.put("views/final-fixes.html","<final-fixes work-id=\"leonardo\"></final-fixes>");
-$templateCache.put("views/submission-detail.html","<submission-detail work-id=\"123\" submission-id=\"123\"></submission-detail>");
-$templateCache.put("views/submission-slides.html","<submission-slides work-id=\"123\" submission-id=\"123\"></submission-slides>");}]);
+angular.module("example").run(["$templateCache", function($templateCache) {$templateCache.put("views/final-fixes.html","<final-fixes project-id=\"abc\" step-id=\"ghi\"></final-fixes>");
+$templateCache.put("views/submission-detail.html","<submission-detail project-id=\"abc\" step-id=\"abc\" submission-id=\"abc\"></submission-detail>");
+$templateCache.put("views/file-detail.html","<file-detail project-id=\"abc\" step-id=\"abc\" submission-id=\"abc\" file-id=\"abc\"></file-detail>");}]);

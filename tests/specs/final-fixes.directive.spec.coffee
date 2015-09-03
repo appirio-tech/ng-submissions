@@ -1,7 +1,7 @@
 'use strict'
 
 element = null
-html    = '<final-fixes work-id="123"></final-fixes>'
+html    = '<final-fixes project-id="abc" step-id="abc"></final-fixes>'
 
 describe 'FinalFixesDirective', ->
   beforeEach inject ($compile, $rootScope) ->

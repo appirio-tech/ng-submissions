@@ -1,0 +1,49 @@
+main
+  loader(ng-show="!vm.loaded")
+  ul.header
+    li.submitter
+      avatar(avatar-url="{{ vm.submission.submitter.avatar }}")
+
+      .name-time
+        .name {{ vm.submission.submitter.handle }}
+
+        time {{ vm.submission.createdAt | timeLapse }}
+
+    li.icons
+      button.clean
+        a(href="{{ vm.file.images.full }}")
+          .icon.download
+
+      button.clean(ng-click="vm.showComments = !vm.showComments")
+       .icon.bubble
+
+  hr
+
+  ul.slideshow
+    li
+      a(ng-if="vm.prevFile", ui-sref="file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: vm.submission.id, fileId: vm.prevFile.id})")
+        button.clean.icon.circle-arrow.biggest
+
+
+    li.preview
+      .img-container
+        img(ng-src="{{ vm.file.images.large }}")
+
+      p {{ vm.submission.files[vm.selectedPreviewIndex].name }}
+
+    li
+      a(ng-if="vm.nextFile", ui-sref="file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: vm.submission.id, fileId: vm.nextFile.id})")
+        button.clean.icon.circle-arrow.right.biggest
+
+  ul.thumbnails
+      li.thumbnail(ng-repeat="file in vm.submission.files")
+        button.clean.thumbnail
+          a(ui-sref="file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: vm.submission.id, fileId: file.id})")
+            img(ng-src="{{ file.images.thumbnail }}")
+
+            .notification {{ file.unreadMessages }}
+
+aside
+  messaging(ng-class="{active:vm.showComments}" thread-id="{{vm.selectedPreview.id}}" subscriber-id="{{vm.subscriberId}}")
+
+

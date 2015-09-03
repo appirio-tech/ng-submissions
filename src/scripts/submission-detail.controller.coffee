@@ -1,52 +1,83 @@
 'use strict'
 
-SubmissionDetailController = ($scope, SubmissionDetailAPIService) ->
-  vm                  = this
-  vm.work             = null
-  vm.positions        = null
-  vm.submissionsCount = null
-  vm.workId           = $scope.workId
-  vm.submissionId     = $scope.submissionId
+SubmissionDetailController = ($scope, StepsService, SubmissionsService) ->
+  vm     = this
+  config = {}
 
-  vm.selectPosition = ->
-    params =
-      workId: vm.workId
-      submissionId: vm.submissionId
+  config.rankNames = [
+    '1st Place'
+    '2nd Place'
+    '3rd Place'
+    '4th Place'
+    '5th Place'
+    '6th Place'
+    '7th Place'
+    '8th Place'
+    '9th Place'
+    '10th Place'
+  ]
 
-    submission = vm.work
-    resource = SubmissionDetailAPIService.updateRank params, submission
+  vm.loaded       = false
+  vm.submission   = {}
+  vm.allFilled    = false
+  vm.projectId    = $scope.projectId
+  vm.stepId       = $scope.stepId
+  vm.submissionId = $scope.submissionId
 
-    resource.$promise.then (response) ->
+  vm.handleRankSelect = (submission) ->
+    StepsService.updateRank vm.stepId, submission.id, submission.rank
 
-    resource.$promise.catch (error)->
-      # TODO: add error handling
+    onChange()
 
+    updatePromise = StepsService.updateRankRemote vm.projectId, vm.stepId
+
+    updatePromise.then ->
+      onChange()
+
+    updatePromise.catch ->
+      console.log 'Oops. Something went wrong saving rank update!'
 
   activate = ->
-    params =
-      workId      : vm.workId
-      submissionId: vm.submissionId
+    stepsPromise = StepsService.fetch vm.projectId
 
-    resource = SubmissionDetailAPIService.get params
+    stepsPromise.then ->
+      onChange()
 
-    resource.$promise.then (response) ->
-      vm.work             = response
-      vm.submissionsCount = vm.work.files.length - 1
-      #TODO: Dynamic positions count based on number of positions in payload
-      vm.positions = [
-        '1st Place'
-        '2nd Place'
-        '3rd Place'
-        '4th Place'
-      ]
+    stepsPromise.catch ->
+      console.log "Unable to fetch steps from server. Data may be out of date."
 
-    resource.$promise.catch (error)->
-      # TODO: add error handling
+    submissionsPromise = SubmissionsService.fetch vm.projectId, vm.stepId
 
-    vm
+    submissionsPromise.then ->
+      onChange()
+
+    submissionsPromise.catch ->
+      console.log "Unable to fetch submissions from server. Data may be out of date."
+
+    onChange()
+
+  onChange = ->
+    steps = StepsService.steps
+    submissions = SubmissionsService.submissions
+
+    if steps.length <= 0 || submissions.length <= 0
+      return null
+
+    vm.loaded = true
+    currentStep = StepsService.findInCollection steps, 'id', vm.stepId
+
+    currentSubmission = StepsService.findInCollection submissions, 'id', vm.submissionId
+    vm.submission = angular.copy currentSubmission
+    vm.submission = SubmissionsService.decorateSubmissionWithRank vm.submission, currentStep.rankedSubmissions
+    vm.submission = SubmissionsService.decorateSubmissionWithUnreadCounts vm.submission
+
+    vm.rankNames = config.rankNames.slice 0, currentStep.numberOfRanks
+    vm.allFilled = currentStep.rankedSubmissions.length == currentStep.numberOfRanks
 
   activate()
 
-SubmissionDetailController.$inject = ['$scope', 'SubmissionDetailAPIService']
+  vm
+
+SubmissionDetailController.$inject = ['$scope', 'StepsService', 'SubmissionsService']
 
 angular.module('appirio-tech-submissions').controller 'SubmissionDetailController', SubmissionDetailController

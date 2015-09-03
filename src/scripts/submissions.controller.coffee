@@ -1,15 +1,40 @@
 'use strict'
 
-SubmissionsController = ($scope, SubmissionAPIService, SubmissionDetailAPIService, dragulaService) ->
+SubmissionsController = ($scope, $state, dragulaService, StepsService, SubmissionsService) ->
   vm             = this
-  vm.loaded      = false
-  vm.submissions = []
-  vm.ranks       = []
-  vm.timeline    = []
-  vm.status      = 'scheduled'
-  vm.showConfirm = false
+  config         = {}
 
-  vm.rankNames = [
+  if $scope.stepType == 'designConcepts'
+    config.stepType = 'designConcepts'
+    config.stepName = 'Design Concepts'
+
+    config.prevStepType = null
+    config.prevStepName = null
+    config.prevStepState = null
+
+    config.nextStepType = 'completeDesigns'
+    config.nextStepName = 'Complete Designs'
+    config.nextStepState = 'complete-designs'
+
+    config.timeline = [ 'active', '', '' ]
+    config.defaultStatus = 'scheduled'
+
+  if $scope.stepType == 'completeDesigns'
+    config.stepType = 'completeDesigns'
+    config.stepName = 'Complete Designs'
+
+    config.prevStepType = 'designConcepts'
+    config.prevStepName = 'Design Concepts'
+    config.prevStepState = 'design-concepts'
+
+    config.nextStepType = 'finalFixes'
+    config.nextStepName = 'Final Fixes'
+    config.nextStepState = 'final-fixes'
+
+    config.timeline = [ '', 'active', '' ]
+    config.defaultStatus = 'scheduled'
+
+  config.rankNames = [
     '1st Place'
     '2nd Place'
     '3rd Place'
@@ -22,29 +47,72 @@ SubmissionsController = ($scope, SubmissionAPIService, SubmissionDetailAPIServic
     '10th Place'
   ]
 
-  vm.reorder = (changedSubmission, first) ->
-    submissionsOfThisRank = getSubmissionsByRank changedSubmission.rank
+  vm.loaded      = false
+  vm.timeline    = config.timeline
+  vm.stepName    = config.stepName
+  vm.status      = config.defaultStatus
+  vm.allFilled   = false
+  vm.submissions = []
+  vm.ranks       = []
+  vm.projectId   = $scope.projectId
+  vm.stepId      = $scope.stepId
 
-    submissionsOfThisRank = submissionsOfThisRank.filter (submission) ->
-      submission != changedSubmission
+  ##############
+  # vm Methods #
+  ##############
 
-    submissionsOfThisRank.forEach (submission) ->
-      newRank = (parseInt(submission.rank) + 1) + ''
-      if newRank >= vm.numberOfRanks
-        submission.rank = null
-      else
-        submission.rank = newRank
-        vm.reorder submission, false
+  vm.handleRankSelect = (submission) ->
+    StepsService.updateRank vm.stepId, submission.id, submission.rank
 
-    updateSubmissionRank changedSubmission
+    onChange()
 
-    if first
-      populateRankList()
-      checkShowConfirm()
+    updatePromise = StepsService.updateRankRemote vm.projectId, vm.stepId
 
-  vm.confirmRanks = () ->
-    if allRanksFilled()
-      confirmRanks()
+    updatePromise.then ->
+      onChange()
+
+    updatePromise.catch ->
+      console.log 'Oops. Something went wrong saving rank update!'
+
+  vm.confirmRanks = ->
+    StepsService.confirmRanks vm.stepId
+
+    onChange()
+
+    updatePromise = StepsService.confirmRanksRemote vm.projectId, vm.stepId
+
+    updatePromise.then ->
+      onChange()
+
+    updatePromise.catch ->
+      console.log 'Oops. Something went wrong confirming ranks!'
+
+  ##############
+  # Activation #
+  ##############
+
+  activate = ->
+    stepsPromise = StepsService.fetch vm.projectId
+
+    stepsPromise.then ->
+      onChange()
+
+    stepsPromise.catch ->
+      console.log "Unable to fetch steps from server. Data may be out of date."
+
+    submissionsPromise = SubmissionsService.fetch vm.projectId, vm.stepId
+
+    submissionsPromise.then ->
+      onChange()
+
+    submissionsPromise.catch ->
+      console.log "Unable to fetch submissions from server. Data may be out of date."
+
+    onChange()
+
+  ###################
+  # Dragula helpers #
+  ###################
 
   isDraggable = (el, source, handle) ->
     source.classList.contains 'has-avatar'
@@ -59,170 +127,92 @@ SubmissionsController = ($scope, SubmissionAPIService, SubmissionDetailAPIServic
     if !source
       return false
 
-    oldRank = target[0].textContent - 1
+    movedSubmissionId = target[0].dataset.id
+    rankToAssign = (parseInt(source[0].dataset.rank) + 1) + ''
 
-    for li, index in source[0].parentElement.parentElement.children
-      if li.children[0] == source[0]
-        newRank = index
-
-    newRank = newRank + ''
-
-    movedSubmission = getSubmissionsByRank oldRank
-    movedSubmission = movedSubmission[0]
-    movedSubmission.rank = newRank
-
-    vm.reorder movedSubmission, true
+    SubmissionsService.updateRank vm.stepId, movedSubmissionId, rankToAssign
+    onChange()
+    SubmissionsService.updateRankRemote().then ->
+      onChange()
 
   $scope.$on 'ranked-submissions.drop', handleRankDrop
 
-  activate = ->
-    applyPhaseData()
-    getSubmissionsData()
+  ####################
+  # Helper functions #
+  ####################
 
-  getSubmissionsByRank = (rank) ->
-    submissions = []
-
-    vm.submissions.forEach (submission) ->
-      if `submission.rank == rank`
-        submissions.push submission
-
-    submissions
-
-  sortSubmissions = (submissions) ->
-    ranked = submissions.filter (submission) ->
-      submission.rank != null
-
-    unRanked = submissions.filter (submission) ->
-      submission.rank == null
-
-    orderedByRank = ranked.sort (previousSubmission, nextSubmission) ->
-      return previousSubmission.rank - nextSubmission.rank
-
-    orderedBySubmitter = unRanked.sort (previousSubmission, nextSubmission) ->
-      previousSubmission.submitter.id - nextSubmission.submitter.id
-
-    orderedSubmissions = orderedByRank.concat orderedBySubmitter
-    orderedSubmissions
-
-  applyPhaseData = () ->
-    if $scope.phase == 'design-concepts'
-      vm.timeline = [ 'active', '', '' ]
-      vm.phase =
-        previous:
-          name: null
-          sref: null
-        current:
-          name: 'Design Concepts'
-        next:
-          name: 'Complete Designs'
-          sref: 'complete-designs'
-
-
-    if $scope.phase == 'complete-designs'
-      vm.timeline = [ '', 'active', '' ]
-      vm.phase =
-        previous:
-          name: 'Design Concepts'
-          sref: 'design-concepts'
-        current:
-          name: 'Complete Designs'
-        next:
-          name: 'Final Fixes'
-          sref: 'final-fixes'
-
-  trimRankNames = (limit) ->
-    vm.rankNames = vm.rankNames.slice 0, limit
-
-  populateRankList = () ->
+  makeEmptyRankList = (rankNames) ->
     ranks = []
 
-    for i in [0...vm.numberOfRanks] by 1
+    for i in [1..rankNames.length] by 1
       ranks.push
         value    : i
-        label    : vm.rankNames[i]
+        label    : rankNames[i - 1]
         id       : null
         avatarUrl: null
 
-    vm.submissions.forEach (submission) ->
-      if submission.rank != null && submission.rank < vm.numberOfRanks
-        ranks[submission.rank].avatarUrl = submission.submitter.avatarUrl
-        ranks[submission.rank].id = submission.id
+    ranks
 
-    vm.ranks = ranks
+  decorateRankListWithSubmissions = (ranks = [], submissions = []) ->
+    submissions.forEach (submission) ->
+      if submission.rank != ''
+        submissionRank = submission.rank - 1
+        if submissionRank < ranks.length
+          ranks[submissionRank].avatarUrl = submission.submitter.avatar
+          ranks[submissionRank].id = submission.id
 
-  checkShowConfirm = () ->
-    vm.showConfirm = allRanksFilled()
+    ranks
 
-  allRanksFilled = () ->
-    filledRanks = {}
-    for i in [0...vm.numberOfRanks] by 1
-      filledRanks[i] = false
+  onChange = ->
+    steps = StepsService.steps
+    submissions = SubmissionsService.submissions
 
-    vm.submissions.forEach (submission) ->
-      if submission.rank < vm.numberOfRanks
-        filledRanks[submission.rank] = true
+    if steps.length <= 0 || submissions.length <= 0
+      return null
 
-    allFilled = true
+    vm.loaded = true
 
-    for rank, filled of filledRanks
-      if !filled
-        allFilled = false
+    # Handle steps updates
+    currentStep = StepsService.findInCollection steps, 'stepType', config.stepType
+    prevStep = StepsService.findInCollection steps, 'stepType', config.prevStepType
+    nextStep = StepsService.findInCollection steps, 'stepType', config.nextStepType
 
-    allFilled
+    vm.startsAt = currentStep.startsAt
+    vm.endsAt = currentStep.endsAt
 
-  applySubmissionsData = (data) ->
-    vm.numberOfRanks           = data.numberOfRanks
-    vm.submissions             = data.submissions
-    vm.phase.current.startDate = data.phase.startDate
-    vm.phase.current.endDate   = data.phase.endDate
+    stepParams =
+      projectId: $scope.projectId
+      stepId: $scope.stepId
 
-    if Date.now() > new Date(vm.phase.current.startDate)
+    vm.prevStepRef = $state.href config.prevStepState, stepParams
+    vm.nextStepRef = $state.href config.nextStepState, stepParams
+
+    # Handle submissions updates
+    vm.submissions = angular.copy submissions
+    vm.submissions = SubmissionsService.decorateSubmissionsWithRanks vm.submissions, currentStep.rankedSubmissions
+    vm.submissions = SubmissionsService.sortSubmissions vm.submissions
+    vm.submissions = SubmissionsService.decorateSubmissionsWithUnreadCounts vm.submissions
+
+    # Handle ranks updates
+    vm.rankNames = config.rankNames.slice 0, currentStep.numberOfRanks
+    vm.ranks     = makeEmptyRankList(vm.rankNames)
+    vm.ranks     = decorateRankListWithSubmissions vm.ranks, vm.submissions
+
+    vm.allFilled = currentStep.rankedSubmissions.length == currentStep.numberOfRanks
+
+    # Handle status updates
+    vm.status = config.defaultStatus
+
+    if Date.now() > new Date(currentStep.startsAt)
       vm.status = 'open'
 
-    if data.confirmed
+    if currentStep.customerConfirmedRanks
       vm.status = 'closed'
-
-    vm.closed = 'closed'
-
-    trimRankNames data.numberOfRanks
-    populateRankList()
-    checkShowConfirm()
-    vm.sortedSubmissions = sortSubmissions data.submissions
-
-  getSubmissionsData = () ->
-    params =
-      workId: $scope.workId
-      phase : $scope.phase
-
-    resource = SubmissionAPIService.get params
-
-    resource.$promise.then (res) ->
-      applySubmissionsData res
-
-    resource.$promise.catch (res) ->
-      # TODO: do something intelligent
-
-    resource.$promise.finally ->
-      vm.loaded = true
-
-  updateSubmissionRank = (submission) ->
-    params =
-      workId       : $scope.workId
-      submissionId : submission.id
-
-    resource = SubmissionDetailAPIService.updateRank params, submission
-
-  confirmRanks = () ->
-    params =
-      workId: $scope.workId
-      phase : $scope.phase
-
-    SubmissionAPIService.confirm params
 
   activate()
 
   vm
 
-SubmissionsController.$inject = ['$scope', 'SubmissionAPIService', 'SubmissionDetailAPIService', 'dragulaService']
+SubmissionsController.$inject = ['$scope', '$state', 'dragulaService', 'StepsService', 'SubmissionsService']
 
 angular.module('appirio-tech-submissions').controller 'SubmissionsController', SubmissionsController

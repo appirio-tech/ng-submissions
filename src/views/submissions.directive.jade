@@ -5,16 +5,24 @@ include parts/header
 include parts/timeline
 
 section(ng-if="vm.status == 'scheduled'")
-  h4 Submissions for the {{ vm.phase.current.name }} Phase coming in &hellip;
-  countdown(end="{{ vm.phase.current.startDate }}")
+  h4 Submissions for the {{ vm.stepName }} Phase coming in &hellip;
+  countdown(end="{{ vm.startsAt }}")
 
 section(ng-if="vm.status == 'closed'")
-  h4 Congratulations! These are your {{ vm.phase.current.name }} winners.
+  h4 Congratulations! These are your {{ vm.stepName }} winners.
+
+  ul.top-selection
+    li(ng-repeat="rank in vm.ranks")
+      .shell.has-avatar
+        .draggable
+          avatar(avatar-url="{{ rank.avatarUrl }}")
+          .overlay
+            span {{ rank.value }}
+
+  countdown(end="{{ vm.endsAt }}")
 
 section(ng-if="vm.status == 'open'")
   h4 Give feedback and select the top {{ vm.ranks.length }} designs.
-
-  countdown(end="{{ vm.phase.current.endDate }}")
 
   p.duration remaining to give feedback
 
@@ -23,25 +31,26 @@ section(ng-if="vm.status == 'open'")
       .shell(
         dragula="'ranked-submissions'",
         dragula-scope="$parent",
-        ng-class="{ 'has-avatar': rank.avatarUrl }")
+        ng-class="{ 'has-avatar': rank.avatarUrl }",
+        data-rank="{{ $index }}")
 
-        .draggable(ng-if="rank.avatarUrl")
+        .draggable(ng-if="rank.avatarUrl", data-id="{{ rank.id }}")
           avatar(avatar-url="{{ rank.avatarUrl }}")
           .overlay
-            span {{ rank.value + 1 }}
+            span {{ rank.value }}
 
         .overlay(ng-if="!rank.avatarUrl")
-          span {{ rank.value + 1 }}
+          span {{ rank.value }}
 
-  button.confirm.info(ng-show="vm.showConfirm", ng-click="vm.confirmRanks()") Confirm your selections
+  button.confirm.info(ng-show="vm.allFilled", ng-click="vm.confirmRanks()") Confirm your selections 
 
   hr
 
   ul.submissions.color-even
-    li.submission(ng-repeat="submission in vm.sortedSubmissions track by $index")
+    li.submission(ng-repeat="submission in vm.submissions track by $index")
       ul.user-details
         li
-          avatar(avatar-url="{{ submission.submitter.avatarUrl }}")
+          avatar(avatar-url="{{ submission.submitter.avatar }}")
 
         li
           .name-time
@@ -51,12 +60,12 @@ section(ng-if="vm.status == 'open'")
 
       ul.thumbnails
         li.thumbnail(ng-repeat="file in submission.files track by $index")
-          a(ui-sref="submission-slides({workId: vm.workId, submissionId: submission.id, fileId: file.id})")
-            img.img(ng-src="{{ file.thumbnailUrl }}")
+          a(ui-sref="file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: submission.id, fileId: file.id})")
+            img.img(ng-src="{{ file.images.thumbnail }}")
 
           .pop-over
-            a(ui-sref="submission-slides({workId: vm.workId, submissionId: submission.id, fileId: file.id})")
-              img.previewImage(ng-src="{{ file.thumbnailUrl }}")
+            a(ui-sref="file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: submission.id, fileId: file.id})")
+              img.previewImage(ng-src="{{ file.images.large }}")
 
             ul.previewActions
               li.comments
@@ -64,18 +73,19 @@ section(ng-if="vm.status == 'open'")
                   .icon.bubble
 
               li.download
-                button.clean.icon.download
-
+                button
+                  a(href="{{ file.images.full }}", target="_blank")
+                    .clean.icon.download
 
       ul.actions
         li
-          a(ui-sref="submission-detail({workId: vm.workId, submissionId: submission.id})") view all ({{ submission.files.length }})
+          a(ui-sref="submission-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: submission.id})") view all ({{ submission.files.length }})
 
         li.comments
-          | 20/28
+          | {{ submission.unreadMessages }}/{{ submission.totalMessages }}
 
           .icon.bubble
 
         li
-          select(ng-model="submission.rank", ng-change="vm.reorder(submission, true)", ng-init="")
-            option(ng-repeat="rank in vm.rankNames", value="{{ $index }}", ng-selected="{{ $index == submission.rank }}") {{ rank }}
+          select(ng-model="submission.rank", ng-change="vm.handleRankSelect(submission)", ng-init="")
+            option(ng-repeat="rank in vm.rankNames", value="{{ $index + 1 }}", ng-selected="{{ $index + 1 == submission.rank }}") {{ rank }}
