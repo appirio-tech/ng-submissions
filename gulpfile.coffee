@@ -7,7 +7,7 @@ configs.templateCache.push
     '.tmp/views/submissions.directive.html'
     '.tmp/views/final-fixes.directive.html'
     '.tmp/views/submission-detail.directive.html'
-    '.tmp/views/submission-slides.directive.html'
+    '.tmp/views/file-detail.directive.html'
   ]
   root  : 'views/'
   module: 'appirio-tech-submissions'
@@ -18,7 +18,7 @@ configs.templateCache.push
     '.tmp/views/submissions.html'
     '.tmp/views/final-fixes.html'
     '.tmp/views/submission-detail.html'
-    '.tmp/views/submission-slides.html'
+    '.tmp/views/file-detail.html'
   ]
   root  : 'views/'
   module: 'example'

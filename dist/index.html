@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="main.css">
 
 
-</head><body><ul class="nav"><li><a ui-sref="design-concepts" class="submissions">Design Concepts</a></li><li><a ui-sref="complete-designs" class="submissions">Complete Designs</a></li><li><a ui-sref="final-fixes({workId: 123})" class="final-fixes">Final Fixes</a></li><li><a ui-sref="submission-detail({workId: 123, submissionId: 123})" class="detail">Detail</a></li><li><a ui-sref="submission-slides({workId: 123, submissionId: 123, fileId: 321})" class="slides">Slides</a></li></ul><main role="main" ui-view="" class="layout-main submissions {{ pageClass }}"></main>
+</head><body><ul class="nav"><li><a ui-sref="design-concepts" class="submissions">Design Concepts</a></li><li><a ui-sref="complete-designs({projectId: 'abc', stepId: 'abc'})" class="submissions">Complete Designs</a></li><li><a ui-sref="final-fixes({projectId: 'abc', stepId: 'abc'})" class="final-fixes">Final Fixes</a></li><li><a ui-sref="submission-detail({projectId: 'abc', stepId: 'abc', submissionId: 'abc'})" class="detail">Submission Detail</a></li><li><a ui-sref="file-detail({projectId: 'abc', stepId: 'abc', submissionId: 'abc', fileId: 'abc'})" class="slides">File Detail</a></li></ul><main role="main" ui-view="" class="layout-main submissions {{ pageClass }}"></main>
 <script src="lib.js"></script>
 <script src="main.js"></script>
 <script src="example.js"></script>

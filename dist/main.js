@@ -8,50 +8,93 @@
 
 }).call(this);
 
-angular.module("appirio-tech-submissions").run(["$templateCache", function($templateCache) {$templateCache.put("views/submissions.directive.html","<loader ng-hide=\"vm.loaded\"></loader><ul class=\"header\"><li class=\"previous\"><a ng-if=\"vm.phase.previous.sref\" ui-sref=\"{{ vm.phase.previous.sref }}\">&lt;</a></li><li><h1>{{ vm.phase.current.name }}</h1></li><li class=\"next\"><a ng-if=\"vm.phase.next.sref\" ui-sref=\"{{ vm.phase.next.sref }}\">&gt;</a></li></ul><ul class=\"timeline\"><li ng-repeat=\"phase in vm.timeline track by $index\" ng-class=\"phase\"></li></ul><section ng-if=\"!vm.open\"><h4>Submissions for the {{ vm.phase.current.name }} Phase coming in &hellip;</h4><countdown end=\"{{ vm.phase.current.startDate }}\"></countdown></section><section ng-if=\"vm.open\"><h4>Give feedback and select the top {{ vm.ranks.length }} designs.</h4><countdown end=\"{{ vm.phase.current.endDate }}\"></countdown><p class=\"duration\">remaining to give feedback</p><ul class=\"top-selection\"><li ng-repeat=\"rank in vm.ranks\"><div dragula=\"\'ranked-submissions\'\" dragula-scope=\"$parent\" ng-class=\"{ \'has-avatar\': rank.avatarUrl }\" class=\"shell\"><div ng-if=\"rank.avatarUrl\" class=\"draggable\"><avatar avatar-url=\"{{ rank.avatarUrl }}\"></avatar><div class=\"overlay\"><span>{{ rank.value + 1 }}</span></div></div><div ng-if=\"!rank.avatarUrl\" class=\"overlay\"><span>{{ rank.value + 1 }}</span></div></div></li></ul><button ng-show=\"vm.showConfirm\" ng-click=\"vm.confirmRanks()\" class=\"confirm info\">Confirm your selections</button><hr/><ul class=\"submissions color-even\"><li ng-repeat=\"submission in vm.sortedSubmissions track by $index\" class=\"submission\"><ul class=\"user-details\"><li><avatar avatar-url=\"{{ submission.submitter.avatarUrl }}\"></avatar></li><li><div class=\"name-time\"><div class=\"name\">{{ submission.submitter.handle }}</div><time>{{ submission.createdAt | timeLapse }}</time></div></li></ul><ul class=\"thumbnails\"><li ng-repeat=\"file in submission.files track by $index\" class=\"thumbnail\"><a ui-sref=\"submission-slides({workId: vm.workId, submissionId: submission.id, fileId: file.id})\"><img ng-src=\"{{ file.thumbnailUrl }}\" class=\"img\"/></a></li></ul><ul class=\"actions\"><li><a ui-sref=\"submission-detail({workId: vm.workId, submissionId: submission.id})\">view all ({{ submission.files.length }})</a></li><li class=\"comments\">20/28<div class=\"icon bubble\"></div></li><li><select ng-model=\"submission.rank\" ng-change=\"vm.reorder(submission, true)\" ng-init=\"\"><option ng-repeat=\"rank in vm.rankNames\" value=\"{{ $index }}\" ng-selected=\"{{ $index == submission.rank }}\">{{ rank }}</option></select></li></ul></li></ul></section>");
-$templateCache.put("views/final-fixes.directive.html","<loader ng-show=\"vm.loading\"></loader><ul class=\"header\"><li class=\"previous\"><a ng-if=\"vm.phase.previous.sref\" ui-sref=\"{{ vm.phase.previous.sref }}\">&lt;</a></li><li><h1>{{ vm.phase.current.name }}</h1></li><li class=\"next\"><a ng-if=\"vm.phase.next.sref\" ui-sref=\"{{ vm.phase.next.sref }}\">&gt;</a></li></ul><ul class=\"timeline\"><li ng-repeat=\"phase in vm.timeline track by $index\" ng-class=\"phase\"></li></ul><section ng-if=\"!vm.open\"><h4>Final Fixes Phase starts in &hellip;</h4><countdown end=\"{{ vm.work.phase.startDate }}\"></countdown></section><section ng-if=\"vm.open\"><h4 ng-if=\"!vm.approvalConfirmed\">Give final feedback and accept the submission to complete the design project.</h4><h4 ng-if=\"vm.approvalConfirmed\">Project Complete! Review Final Submission.</h4><countdown ng-if=\"!vm.approvalConfirmed\" end=\"{{ vm.work.phase.endDate }}\"></countdown><p ng-if=\"!vm.approvalConfirmed\" class=\"duration\">remaining to give feedback</p><ul class=\"winner\"><li><avatar></avatar></li><li>Alpha User is the Winner!</li><li class=\"download\"><button class=\"clean icon download\"></button><p>Download final submission</p></li><li ng-if=\"vm.approvalConfirmed\"><a ui-sref=\"submission-slides({workId: vm.workId, submissionId: vm.submissionId})\">View previous submission comments</a></li></ul><hr/><ul ng-if=\"!vm.approvalConfirmed\" class=\"approval\"><li class=\"approve-all\"><input type=\"checkbox\" ng-model=\"vm.approveAll\" ng-true-value=\"true\" ng-false-value=\"false\"/><label>Approve all</label></li><li class=\"confirm\"><button ng-show=\"vm.showConfirmApproval\" ng-click=\"vm.confirmApproval()\" class=\"info\">Confirm final approval</button></li></ul><ul class=\"previews\"><li ng-repeat=\"file in vm.files track by $index\" class=\"preview\"><ul class=\"icons\"><li class=\"notification\"><button class=\"clean\">1</button></li><li><button class=\"clean\"><div class=\"icon download smallest\"></div></button></li></ul><img ng-src=\"{{ file.thumbnailUrl }}\" ui-sref=\"submission-slides({workId: vm.workId, submissionId: vm.submissionId, fileId: file.id})\" class=\"img\"/><p>{{ file.name }}</p></li></ul></section>");
-$templateCache.put("views/submission-detail.directive.html","<ul class=\"actions\"><li class=\"submitter\"><avatar avatar-url=\"{{ vm.work.submitter.avatarUrl }}\"></avatar><div class=\"name-time\"><div class=\"name\">{{ vm.work.submitter.handle }}</div><time>{{ vm.work.createdAt | date: \'h:mm a, MMMM d, y\' }}</time></div></li><li class=\"position\"><select ng-model=\"vm.work.rank\" ng-change=\"vm.selectPosition()\"><option ng-repeat=\"position in vm.positions\" value=\"{{ $index }}\" ng-selected=\"{{ $index == vm.work.rank }}\">{{ position }}</option></select></li><li class=\"submissionsCount\"><p>{{ vm.submissionsCount }} Submissions</p></li></ul><ul class=\"previews\"><li ng-repeat=\"file in vm.work.files track by $index\" class=\"preview\"><ul class=\"icons\"><li class=\"notification\"><button class=\"clean\">1</button></li></ul><a ui-sref=\"submission-slides({workId: vm.workId, submissionId: vm.submissionId, fileId: file.id})\"><img ng-src=\"{{ file.thumbnailUrl }}\" class=\"img\"/></a><p>{{ file.name }}</p></li></ul>");
-$templateCache.put("views/submission-slides.directive.html","<main><loader ng-show=\"vm.loading\"></loader><ul class=\"header\"><li class=\"submitter\"><avatar avatar-url=\"{{ vm.work.submitter.avatarUrl }}\"></avatar><div class=\"name-time\"><div class=\"name\">{{ vm.work.submitter.handle }}</div><time>{{ vm.work.createdAt | date: \'h:mm a, MMMM d, y\' }}</time></div></li><li class=\"icons\"><button class=\"clean\"><div class=\"icon download\"></div></button><button ng-click=\"vm.acceptFile()\" class=\"clean\"><div class=\"icon checkmark\"></div></button><button ng-click=\"vm.showComments = !vm.showComments\" class=\"clean\"><div class=\"icon bubble\"></div></button></li></ul><hr/><ul class=\"slideshow\"><li><button ng-click=\"vm.previewPrevious()\" class=\"clean icon circle-arrow biggest\"></button></li><li class=\"preview\"><div class=\"img-container\"><img ng-src=\"{{ vm.selectedPreview.url }}\"/></div><p>{{ vm.work.files[vm.selectedPreviewIndex].name }}</p></li><li><button ng-click=\"vm.previewNext()\" class=\"clean icon circle-arrow right biggest\"></button></li></ul><ul class=\"thumbnails\"><li ng-repeat=\"file in vm.work.files\" class=\"thumbnail\"><button class=\"clean thumbnail\"><img ng-src=\"{{ file.thumbnailUrl }}\" ng-click=\"vm.previewSelected($index)\"/><div class=\"notification\">1</div></button></li></ul></main><aside><messaging ng-class=\"{active:vm.showComments}\" thread-id=\"{{vm.selectedPreview.id}}\" subscriber-id=\"{{vm.subscriberId}}\"></messaging></aside>");}]);
+angular.module("appirio-tech-submissions").run(["$templateCache", function($templateCache) {$templateCache.put("views/submissions.directive.html","<loader ng-hide=\"vm.loaded\"></loader><ul class=\"header\"><li class=\"previous\"><a ng-if=\"vm.prevStepRef\" href=\"{{ vm.prevStepRef }}\">&lt;</a></li><li><h1>{{ vm.stepName }}</h1></li><li class=\"next\"><a ng-if=\"vm.nextStepRef\" href=\"{{ vm.nextStepRef }}\">&gt;</a></li></ul><ul class=\"timeline\"><li ng-repeat=\"phase in vm.timeline track by $index\" ng-class=\"phase\"></li></ul><section ng-if=\"vm.status == \'scheduled\'\"><h4>Submissions for the {{ vm.stepName }} Phase coming in &hellip;</h4><countdown end=\"{{ vm.startsAt }}\"></countdown></section><section ng-if=\"vm.status == \'closed\'\"><h4>Congratulations! These are your {{ vm.stepName }} winners.</h4><ul class=\"top-selection\"><li ng-repeat=\"rank in vm.ranks\"><div class=\"shell has-avatar\"><div class=\"draggable\"><avatar avatar-url=\"{{ rank.avatarUrl }}\"></avatar><div class=\"overlay\"><span>{{ rank.value }}</span></div></div></div></li></ul><countdown end=\"{{ vm.endsAt }}\"></countdown></section><section ng-if=\"vm.status == \'open\'\"><h4>Give feedback and select the top {{ vm.ranks.length }} designs.</h4><p class=\"duration\">remaining to give feedback</p><ul class=\"top-selection\"><li ng-repeat=\"rank in vm.ranks\"><div dragula=\"\'ranked-submissions\'\" dragula-scope=\"$parent\" ng-class=\"{ \'has-avatar\': rank.avatarUrl }\" data-rank=\"{{ $index }}\" class=\"shell\"><div ng-if=\"rank.avatarUrl\" data-id=\"{{ rank.id }}\" class=\"draggable\"><avatar avatar-url=\"{{ rank.avatarUrl }}\"></avatar><div class=\"overlay\"><span>{{ rank.value }}</span></div></div><div ng-if=\"!rank.avatarUrl\" class=\"overlay\"><span>{{ rank.value }}</span></div></div></li></ul><button ng-show=\"vm.allFilled\" ng-click=\"vm.confirmRanks()\" class=\"confirm info\">Confirm your selections </button><hr/><ul class=\"submissions color-even\"><li ng-repeat=\"submission in vm.submissions track by $index\" class=\"submission\"><ul class=\"user-details\"><li><avatar avatar-url=\"{{ submission.submitter.avatar }}\"></avatar></li><li><div class=\"name-time\"><div class=\"name\">{{ submission.submitter.handle }}</div><time>{{ submission.createdAt | timeLapse }}</time></div></li></ul><ul class=\"thumbnails\"><li ng-repeat=\"file in submission.files track by $index\" class=\"thumbnail\"><a ui-sref=\"file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: submission.id, fileId: file.id})\"><img ng-src=\"{{ file.images.thumbnail }}\" class=\"img\"/></a><div class=\"pop-over\"><a ui-sref=\"file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: submission.id, fileId: file.id})\"><img ng-src=\"{{ file.images.large }}\" class=\"previewImage\"/></a><ul class=\"previewActions\"><li class=\"comments\"><div class=\"comments\">20/28<div class=\"icon bubble\"></div></div></li><li class=\"download\"><button><a href=\"{{ file.images.full }}\" target=\"_blank\"><div class=\"clean icon download\"></div></a></button></li></ul></div></li></ul><ul class=\"actions\"><li><a ui-sref=\"submission-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: submission.id})\">view all ({{ submission.files.length }})</a></li><li class=\"comments\">{{ submission.unreadMessages }}/{{ submission.totalMessages }}<div class=\"icon bubble\"></div></li><li><select ng-model=\"submission.rank\" ng-change=\"vm.handleRankSelect(submission)\" ng-init=\"\"><option ng-repeat=\"rank in vm.rankNames\" value=\"{{ $index + 1 }}\" ng-selected=\"{{ $index + 1 == submission.rank }}\">{{ rank }}</option></select></li></ul></li></ul></section>");
+$templateCache.put("views/final-fixes.directive.html","<loader ng-show=\"!vm.loaded\"></loader><ul class=\"header\"><li class=\"previous\"><a ng-if=\"vm.prevStepRef\" href=\"{{ vm.prevStepRef }}\">&lt;</a></li><li><h1>{{ vm.stepName }}</h1></li><li class=\"next\"><a ng-if=\"vm.nextStepRef\" href=\"{{ vm.nextStepRef }}\">&gt;</a></li></ul><ul class=\"timeline\"><li ng-repeat=\"phase in vm.timeline track by $index\" ng-class=\"phase\"></li></ul><section ng-if=\"vm.status == \'scheduled\'\"><h4>Final Fixes Phase starts in &hellip;</h4><countdown end=\"{{ vm.work.phase.startDate }}\"></countdown></section><section ng-if=\"vm.status == \'closed\'\"><h4>Project Complete! Review final submission</h4></section><section ng-if=\"vm.status == \'open\'\"><h4 ng-if=\"!vm.approvalConfirmed\">Give final feedback and accept the submission to complete the project.</h4><countdown end=\"{{ vm.work.phase.endDate }}\"></countdown><p class=\"duration\">remaining to give feedback</p></section><section ng-if=\"vm.status == \'open\' || vm.status == \'closed\'\"><ul class=\"winner\"><li class=\"download\"><button class=\"clean\"><a href=\"{{ vm.submission.downloadUrl }}\"><div class=\"icon download\"></div></a></button></li><li><a href=\"{{ vm.submission.downloadUrl }}\">Download final submission</a></li><li><a ui-sref=\"submission-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: \'winner\' })\">View previous submission comments</a></li></ul><ul ng-if=\"vm.status == \'open\'\" class=\"approval\"><li class=\"confirm\"><button ng-click=\"vm.confirmApproval()\" class=\"info\">Confirm final approval</button></li></ul><hr/><ul class=\"previews\"><li ng-repeat=\"file in vm.submission.files track by $index\" class=\"preview\"><ul class=\"icons\"><li class=\"notification\"><button class=\"clean\"><a ui-sref=\"file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: vm.submission.id, fileId: file.id})\">{{ file.unreadMessages }}</a></button></li><li><button class=\"clean\"><a href=\"{{ file.images.full }}\" target=\"_blank\"><div class=\"icon download smallest\"></div></a></button></li></ul><img ng-src=\"{{ file.images.small }}\" ui-sref=\"file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: vm.submission.id, fileId: file.id})\" class=\"img\"/><a ui-sref=\"file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: vm.submission.id, fileId: file.id})\">{{ file.name }}</a></li></ul></section>");
+$templateCache.put("views/submission-detail.directive.html","<ul class=\"actions\"><li class=\"submitter\"><avatar avatar-url=\"{{ vm.submission.submitter.avatar }}\"></avatar><div class=\"name-time\"><div class=\"name\">{{ vm.submission.submitter.handle }}</div><time>{{ vm.submission.createdAt | timeLapse }}</time></div></li><li class=\"position\"><select ng-model=\"vm.submission.rank\" ng-change=\"vm.handleRankSelect(vm.submission)\" ng-init=\"\"><option ng-repeat=\"rank in vm.rankNames\" value=\"{{ $index + 1 }}\" ng-selected=\"{{ $index + 1 == vm.submission.rank }}\">{{ rank }}</option></select></li><li class=\"submissionsCount\"><p>{{ vm.submission.files.length }} Submissions</p></li></ul><ul class=\"previews\"><li ng-repeat=\"file in vm.submission.files track by $index\" class=\"preview\"><ul class=\"icons\"><li class=\"notification\"><button class=\"clean\"><a ui-sref=\"file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: vm.submissionId, fileId: file.id})\">{{ file.unreadMessages }}</a></button></li></ul><a ui-sref=\"file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: vm.submissionId, fileId: file.id})\"><img ng-src=\"{{ file.images.small }}\" class=\"img\"/></a><a ui-sref=\"file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: vm.submissionId, fileId: file.id})\">{{ file.name }}</a></li></ul>");
+$templateCache.put("views/file-detail.directive.html","<main><loader ng-show=\"!vm.loaded\"></loader><ul class=\"header\"><li class=\"submitter\"><avatar avatar-url=\"{{ vm.submission.submitter.avatar }}\"></avatar><div class=\"name-time\"><div class=\"name\">{{ vm.submission.submitter.handle }}</div><time>{{ vm.submission.createdAt | timeLapse }}</time></div></li><li class=\"icons\"><button class=\"clean\"><a href=\"{{ vm.file.images.full }}\"><div class=\"icon download\"></div></a></button><button ng-click=\"vm.showComments = !vm.showComments\" class=\"clean\"><div class=\"icon bubble\"></div></button></li></ul><hr/><ul class=\"slideshow\"><li><a ng-if=\"vm.prevFile\" ui-sref=\"file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: vm.submission.id, fileId: vm.prevFile.id})\"><button class=\"clean icon circle-arrow biggest\"></button></a></li><li class=\"preview\"><div class=\"img-container\"><img ng-src=\"{{ vm.file.images.large }}\"/></div><p>{{ vm.submission.files[vm.selectedPreviewIndex].name }}</p></li><li><a ng-if=\"vm.nextFile\" ui-sref=\"file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: vm.submission.id, fileId: vm.nextFile.id})\"><button class=\"clean icon circle-arrow right biggest\"></button></a></li></ul><ul class=\"thumbnails\"><li ng-repeat=\"file in vm.submission.files\" class=\"thumbnail\"><button class=\"clean thumbnail\"><a ui-sref=\"file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: vm.submission.id, fileId: file.id})\"><img ng-src=\"{{ file.images.thumbnail }}\"/><div class=\"notification\">{{ file.unreadMessages }}</div></a></button></li></ul></main><aside><messaging ng-class=\"{active:vm.showComments}\" thread-id=\"{{vm.selectedPreview.id}}\" subscriber-id=\"{{vm.subscriberId}}\"></messaging></aside>");}]);
 (function() {
   'use strict';
   var SubmissionsController;
 
-  SubmissionsController = function($scope, SubmissionAPIService, SubmissionDetailAPIService, dragulaService) {
-    var activate, allRanksFilled, applyPhaseData, applySubmissionsData, checkShowConfirm, confirmRanks, dragulaOptions, getSubmissionsByRank, getSubmissionsData, handleRankDrop, isDraggable, populateRankList, sortSubmissions, trimRankNames, updateSubmissionRank, vm;
+  SubmissionsController = function($scope, $state, dragulaService, StepsService, SubmissionsService) {
+    var activate, config, decorateRankListWithSubmissions, dragulaOptions, handleRankDrop, isDraggable, makeEmptyRankList, onChange, vm;
     vm = this;
+    config = {};
+    if ($scope.stepType === 'designConcepts') {
+      config.stepType = 'designConcepts';
+      config.stepName = 'Design Concepts';
+      config.prevStepType = null;
+      config.prevStepName = null;
+      config.prevStepState = null;
+      config.nextStepType = 'completeDesigns';
+      config.nextStepName = 'Complete Designs';
+      config.nextStepState = 'complete-designs';
+      config.timeline = ['active', '', ''];
+      config.defaultStatus = 'scheduled';
+    }
+    if ($scope.stepType === 'completeDesigns') {
+      config.stepType = 'completeDesigns';
+      config.stepName = 'Complete Designs';
+      config.prevStepType = 'designConcepts';
+      config.prevStepName = 'Design Concepts';
+      config.prevStepState = 'design-concepts';
+      config.nextStepType = 'finalFixes';
+      config.nextStepName = 'Final Fixes';
+      config.nextStepState = 'final-fixes';
+      config.timeline = ['', 'active', ''];
+      config.defaultStatus = 'scheduled';
+    }
+    config.rankNames = ['1st Place', '2nd Place', '3rd Place', '4th Place', '5th Place', '6th Place', '7th Place', '8th Place', '9th Place', '10th Place'];
     vm.loaded = false;
+    vm.timeline = config.timeline;
+    vm.stepName = config.stepName;
+    vm.status = config.defaultStatus;
+    vm.allFilled = false;
     vm.submissions = [];
     vm.ranks = [];
-    vm.timeline = [];
-    vm.open = false;
-    vm.showConfirm = false;
-    vm.rankNames = ['1st Place', '2nd Place', '3rd Place', '4th Place', '5th Place', '6th Place', '7th Place', '8th Place', '9th Place', '10th Place'];
-    vm.reorder = function(changedSubmission, first) {
-      var submissionsOfThisRank;
-      submissionsOfThisRank = getSubmissionsByRank(changedSubmission.rank);
-      submissionsOfThisRank = submissionsOfThisRank.filter(function(submission) {
-        return submission !== changedSubmission;
+    vm.projectId = $scope.projectId;
+    vm.stepId = $scope.stepId;
+    vm.handleRankSelect = function(submission) {
+      var updatePromise;
+      StepsService.updateRank(vm.stepId, submission.id, submission.rank);
+      onChange();
+      updatePromise = StepsService.updateRankRemote(vm.projectId, vm.stepId);
+      updatePromise.then(function() {
+        return onChange();
       });
-      submissionsOfThisRank.forEach(function(submission) {
-        var newRank;
-        newRank = (parseInt(submission.rank) + 1) + '';
-        if (newRank >= vm.numberOfRanks) {
-          return submission.rank = null;
-        } else {
-          submission.rank = newRank;
-          return vm.reorder(submission, false);
-        }
+      return updatePromise["catch"](function() {
+        return console.log('Oops. Something went wrong saving rank update!');
       });
-      updateSubmissionRank(changedSubmission);
-      if (first) {
-        populateRankList();
-        return checkShowConfirm();
-      }
     };
     vm.confirmRanks = function() {
-      if (allRanksFilled()) {
-        return confirmRanks();
-      }
+      var updatePromise;
+      StepsService.confirmRanks(vm.stepId);
+      onChange();
+      updatePromise = StepsService.confirmRanksRemote(vm.projectId, vm.stepId);
+      updatePromise.then(function() {
+        return onChange();
+      });
+      return updatePromise["catch"](function() {
+        return console.log('Oops. Something went wrong confirming ranks!');
+      });
+    };
+    activate = function() {
+      var stepsPromise, submissionsPromise;
+      stepsPromise = StepsService.fetch(vm.projectId);
+      stepsPromise.then(function() {
+        return onChange();
+      });
+      stepsPromise["catch"](function() {
+        return console.log("Unable to fetch steps from server. Data may be out of date.");
+      });
+      submissionsPromise = SubmissionsService.fetch(vm.projectId, vm.stepId);
+      submissionsPromise.then(function() {
+        return onChange();
+      });
+      submissionsPromise["catch"](function() {
+        return console.log("Unable to fetch submissions from server. Data may be out of date.");
+      });
+      return onChange();
     };
     isDraggable = function(el, source, handle) {
       return source.classList.contains('has-avatar');
@@ -62,184 +105,91 @@ $templateCache.put("views/submission-slides.directive.html","<main><loader ng-sh
     };
     dragulaService.options($scope, 'ranked-submissions', dragulaOptions);
     handleRankDrop = function(el, target, source) {
-      var index, j, len, li, movedSubmission, newRank, oldRank, ref;
+      var movedSubmissionId, rankToAssign;
       if (!source) {
         return false;
       }
-      oldRank = target[0].textContent - 1;
-      ref = source[0].parentElement.parentElement.children;
-      for (index = j = 0, len = ref.length; j < len; index = ++j) {
-        li = ref[index];
-        if (li.children[0] === source[0]) {
-          newRank = index;
-        }
-      }
-      newRank = newRank + '';
-      movedSubmission = getSubmissionsByRank(oldRank);
-      movedSubmission = movedSubmission[0];
-      movedSubmission.rank = newRank;
-      return vm.reorder(movedSubmission, true);
+      movedSubmissionId = target[0].dataset.id;
+      rankToAssign = (parseInt(source[0].dataset.rank) + 1) + '';
+      SubmissionsService.updateRank(vm.stepId, movedSubmissionId, rankToAssign);
+      onChange();
+      return SubmissionsService.updateRankRemote().then(function() {
+        return onChange();
+      });
     };
     $scope.$on('ranked-submissions.drop', handleRankDrop);
-    activate = function() {
-      applyPhaseData();
-      return getSubmissionsData();
-    };
-    getSubmissionsByRank = function(rank) {
-      var submissions;
-      submissions = [];
-      vm.submissions.forEach(function(submission) {
-        if (submission.rank == rank) {
-          return submissions.push(submission);
-        }
-      });
-      return submissions;
-    };
-    sortSubmissions = function(submissions) {
-      var orderedByRank, orderedBySubmitter, orderedSubmissions, ranked, unRanked;
-      ranked = submissions.filter(function(submission) {
-        return submission.rank !== null;
-      });
-      unRanked = submissions.filter(function(submission) {
-        return submission.rank === null;
-      });
-      orderedByRank = ranked.sort(function(previousSubmission, nextSubmission) {
-        return previousSubmission.rank - nextSubmission.rank;
-      });
-      orderedBySubmitter = unRanked.sort(function(previousSubmission, nextSubmission) {
-        return previousSubmission.submitter.id - nextSubmission.submitter.id;
-      });
-      orderedSubmissions = orderedByRank.concat(orderedBySubmitter);
-      return orderedSubmissions;
-    };
-    applyPhaseData = function() {
-      if ($scope.phase === 'design-concepts') {
-        vm.timeline = ['active', '', ''];
-        vm.phase = {
-          previous: {
-            name: null,
-            sref: null
-          },
-          current: {
-            name: 'Design Concepts'
-          },
-          next: {
-            name: 'Complete Designs',
-            sref: 'complete-designs'
-          }
-        };
-      }
-      if ($scope.phase === 'complete-designs') {
-        vm.timeline = ['', 'active', ''];
-        return vm.phase = {
-          previous: {
-            name: 'Design Concepts',
-            sref: 'design-concepts'
-          },
-          current: {
-            name: 'Complete Designs'
-          },
-          next: {
-            name: 'Final Fixes',
-            sref: 'final-fixes'
-          }
-        };
-      }
-    };
-    trimRankNames = function(limit) {
-      return vm.rankNames = vm.rankNames.slice(0, limit);
-    };
-    populateRankList = function() {
+    makeEmptyRankList = function(rankNames) {
       var i, j, ranks, ref;
       ranks = [];
-      for (i = j = 0, ref = vm.numberOfRanks; j < ref; i = j += 1) {
+      for (i = j = 1, ref = rankNames.length; j <= ref; i = j += 1) {
         ranks.push({
           value: i,
-          label: vm.rankNames[i],
+          label: rankNames[i - 1],
           id: null,
           avatarUrl: null
         });
       }
-      vm.submissions.forEach(function(submission) {
-        if (submission.rank !== null && submission.rank < vm.numberOfRanks) {
-          ranks[submission.rank].avatarUrl = submission.submitter.avatarUrl;
-          return ranks[submission.rank].id = submission.id;
+      return ranks;
+    };
+    decorateRankListWithSubmissions = function(ranks, submissions) {
+      if (ranks == null) {
+        ranks = [];
+      }
+      if (submissions == null) {
+        submissions = [];
+      }
+      submissions.forEach(function(submission) {
+        var submissionRank;
+        if (submission.rank !== '') {
+          submissionRank = submission.rank - 1;
+          if (submissionRank < ranks.length) {
+            ranks[submissionRank].avatarUrl = submission.submitter.avatar;
+            return ranks[submissionRank].id = submission.id;
+          }
         }
       });
-      return vm.ranks = ranks;
+      return ranks;
     };
-    checkShowConfirm = function() {
-      return vm.showConfirm = allRanksFilled();
-    };
-    allRanksFilled = function() {
-      var allFilled, filled, filledRanks, i, j, rank, ref;
-      filledRanks = {};
-      for (i = j = 0, ref = vm.numberOfRanks; j < ref; i = j += 1) {
-        filledRanks[i] = false;
+    onChange = function() {
+      var currentStep, nextStep, prevStep, stepParams, steps, submissions;
+      steps = StepsService.steps;
+      submissions = SubmissionsService.submissions;
+      if (steps.length <= 0 || submissions.length <= 0) {
+        return null;
       }
-      vm.submissions.forEach(function(submission) {
-        if (submission.rank < vm.numberOfRanks) {
-          return filledRanks[submission.rank] = true;
-        }
-      });
-      allFilled = true;
-      for (rank in filledRanks) {
-        filled = filledRanks[rank];
-        if (!filled) {
-          allFilled = false;
-        }
+      vm.loaded = true;
+      currentStep = StepsService.findInCollection(steps, 'stepType', config.stepType);
+      prevStep = StepsService.findInCollection(steps, 'stepType', config.prevStepType);
+      nextStep = StepsService.findInCollection(steps, 'stepType', config.nextStepType);
+      vm.startsAt = currentStep.startsAt;
+      vm.endsAt = currentStep.endsAt;
+      stepParams = {
+        projectId: $scope.projectId,
+        stepId: $scope.stepId
+      };
+      vm.prevStepRef = $state.href(config.prevStepState, stepParams);
+      vm.nextStepRef = $state.href(config.nextStepState, stepParams);
+      vm.submissions = angular.copy(submissions);
+      vm.submissions = SubmissionsService.decorateSubmissionsWithRanks(vm.submissions, currentStep.rankedSubmissions);
+      vm.submissions = SubmissionsService.sortSubmissions(vm.submissions);
+      vm.submissions = SubmissionsService.decorateSubmissionsWithUnreadCounts(vm.submissions);
+      vm.rankNames = config.rankNames.slice(0, currentStep.numberOfRanks);
+      vm.ranks = makeEmptyRankList(vm.rankNames);
+      vm.ranks = decorateRankListWithSubmissions(vm.ranks, vm.submissions);
+      vm.allFilled = currentStep.rankedSubmissions.length === currentStep.numberOfRanks;
+      vm.status = config.defaultStatus;
+      if (Date.now() > new Date(currentStep.startsAt)) {
+        vm.status = 'open';
       }
-      return allFilled;
-    };
-    applySubmissionsData = function(data) {
-      vm.numberOfRanks = data.numberOfRanks;
-      vm.submissions = data.submissions;
-      vm.phase.current.startDate = data.phase.startDate;
-      vm.phase.current.endDate = data.phase.endDate;
-      if (Date.now() > new Date(vm.phase.current.startDate)) {
-        vm.open = true;
+      if (currentStep.customerConfirmedRanks) {
+        return vm.status = 'closed';
       }
-      trimRankNames(data.numberOfRanks);
-      populateRankList();
-      checkShowConfirm();
-      return vm.sortedSubmissions = sortSubmissions(data.submissions);
-    };
-    getSubmissionsData = function() {
-      var params, resource;
-      params = {
-        workId: $scope.workId,
-        phase: $scope.phase
-      };
-      resource = SubmissionAPIService.get(params);
-      resource.$promise.then(function(res) {
-        return applySubmissionsData(res);
-      });
-      resource.$promise["catch"](function(res) {});
-      return resource.$promise["finally"](function() {
-        return vm.loaded = true;
-      });
-    };
-    updateSubmissionRank = function(submission) {
-      var params, resource;
-      params = {
-        workId: $scope.workId,
-        submissionId: submission.id
-      };
-      return resource = SubmissionDetailAPIService.updateRank(params, submission);
-    };
-    confirmRanks = function() {
-      var params;
-      params = {
-        workId: $scope.workId,
-        phase: $scope.phase
-      };
-      return SubmissionAPIService.confirm(params);
     };
     activate();
     return vm;
   };
 
-  SubmissionsController.$inject = ['$scope', 'SubmissionAPIService', 'SubmissionDetailAPIService', 'dragulaService'];
+  SubmissionsController.$inject = ['$scope', '$state', 'dragulaService', 'StepsService', 'SubmissionsService'];
 
   angular.module('appirio-tech-submissions').controller('SubmissionsController', SubmissionsController);
 
@@ -255,8 +205,9 @@ $templateCache.put("views/submission-slides.directive.html","<main><loader ng-sh
       controller: 'SubmissionsController as vm',
       templateUrl: 'views/submissions.directive.html',
       scope: {
-        workId: '@workId',
-        phase: '@phase'
+        projectId: '@projectId',
+        stepId: '@stepId',
+        stepType: '@stepType'
       }
     };
   };
@@ -267,83 +218,341 @@ $templateCache.put("views/submission-slides.directive.html","<main><loader ng-sh
 
 (function() {
   'use strict';
-  var FinalFixesController;
+  var createOrderedRankList, findInCollection, removeBlankAfterN, srv, updateRankedSubmissions;
 
-  FinalFixesController = function($scope, FinalFixesAPIService) {
-    var activate, vm;
-    vm = this;
-    vm.work = null;
-    vm.loading = true;
-    vm.workId = $scope.workId;
-    vm.submissionId = null;
-    vm.showConfirmApproval = false;
-    vm.approveAll = null;
-    vm.timeline = [];
-    vm.confirmApproval = function() {
-      var body, params, resource;
-      vm.loading = true;
-      params = {
-        workId: vm.workId
-      };
-      body = {
-        confirmed: true
-      };
-      resource = FinalFixesAPIService.put(params, body);
-      resource.$promise.then(function(response) {
-        return vm.approvalConfirmed = true;
-      });
-      resource.$promise["catch"](function(error) {});
-      return resource.$promise["finally"](function() {
-        return vm.loading = false;
-      });
-    };
-    $scope.$watch('vm.approveAll', function(approved) {
-      if (approved) {
-        return vm.showConfirmApproval = true;
-      } else if (approved === false) {
-        return vm.showConfirmApproval = false;
+  findInCollection = function(collection, prop, value) {
+    var el, index;
+    for (index in collection) {
+      el = collection[index];
+      if (el[prop] === value) {
+        return el;
       }
-    });
-    activate = function() {
-      var params, resource;
-      vm.timeline = ['', '', 'active'];
-      vm.phase = {
-        previous: {
-          name: 'Complete Designs',
-          sref: 'complete-designs'
-        },
-        current: {
-          name: 'Final Fixes'
-        },
-        next: {
-          name: null,
-          sref: null
-        }
-      };
-      params = {
-        workId: vm.workId
-      };
-      resource = FinalFixesAPIService.get(params);
-      resource.$promise.then(function(response) {
-        var ref;
-        vm.work = response;
-        vm.submissionId = vm.work.id;
-        vm.files = vm.work.files;
-        vm.approvalConfirmed = false;
-        if (Date.now() > new Date((ref = response.phase) != null ? ref.startDate : void 0)) {
-          return vm.open = true;
-        }
-      });
-      resource.$promise["catch"](function(response) {});
-      resource.$promise["finally"](function() {
-        return vm.loading = false;
-      });
-      return vm;
-    };
-    return activate();
+    }
+    return null;
   };
 
-  FinalFixesController.$inject = ['$scope', 'FinalFixesAPIService'];
+  createOrderedRankList = function(rankedSubmissions, numberOfRanks) {
+    var i, j, orderedRanks, ref;
+    orderedRanks = [];
+    for (i = j = 0, ref = numberOfRanks; j < ref; i = j += 1) {
+      orderedRanks[i] = null;
+    }
+    rankedSubmissions.forEach(function(submission) {
+      return orderedRanks[submission.rank - 1] = submission.submissionId;
+    });
+    return orderedRanks;
+  };
+
+  removeBlankAfterN = function(array, n) {
+    var i, j, ref, ref1;
+    for (i = j = ref = n, ref1 = array.length; j < ref1; i = j += 1) {
+      if (array[i] === null) {
+        array.splice(i, 1);
+        return array;
+      }
+    }
+    return array;
+  };
+
+  updateRankedSubmissions = function(rankedSubmissions, numberOfRanks, id, rank) {
+    var currentRank, orderedRanks;
+    rankedSubmissions = angular.copy(rankedSubmissions);
+    rank = rank - 1;
+    orderedRanks = createOrderedRankList(rankedSubmissions, numberOfRanks);
+    currentRank = orderedRanks.indexOf(id);
+    if (currentRank >= 0) {
+      orderedRanks.splice(currentRank, 1, null);
+    }
+    orderedRanks.splice(rank, 0, id);
+    orderedRanks = removeBlankAfterN(orderedRanks, rank);
+    rankedSubmissions = [];
+    orderedRanks.forEach(function(id, index) {
+      var rankedSubmission;
+      if (id !== null && index < numberOfRanks) {
+        rankedSubmission = {
+          rank: (parseInt(index) + 1) + '',
+          submissionId: id
+        };
+        return rankedSubmissions.push(rankedSubmission);
+      }
+    });
+    return rankedSubmissions;
+  };
+
+  srv = function($q, StepsAPIService) {
+    var currentProjectId, stepsService;
+    currentProjectId = null;
+    stepsService = {
+      steps: [],
+      findInCollection: findInCollection
+    };
+    stepsService.fetch = function(projectId) {
+      var params, resource;
+      if (projectId !== currentProjectId) {
+        stepsService.steps = [];
+        currentProjectId = projectId;
+      }
+      params = {
+        projectId: projectId
+      };
+      return resource = StepsAPIService.query(params).$promise.then(function(response) {
+        return stepsService.steps = response;
+      });
+    };
+    stepsService.updateRank = function(stepId, id, rank) {
+      var currentStep, numberOfRanks, rankedSubmissions;
+      currentStep = findInCollection(stepsService.steps, 'id', stepId);
+      numberOfRanks = currentStep.numberOfRanks;
+      rankedSubmissions = currentStep.rankedSubmissions;
+      rankedSubmissions = updateRankedSubmissions(rankedSubmissions, numberOfRanks, id, rank);
+      return currentStep.rankedSubmissions = rankedSubmissions;
+    };
+    stepsService.updateRankRemote = function(projectId, stepId) {
+      var params, step;
+      step = findInCollection(stepsService.steps, 'id', stepId);
+      params = {
+        projectId: projectId,
+        stepId: stepId
+      };
+      return StepsAPIService.updateRanks(params, step).$promise.then(function(response) {
+        return step = response;
+      });
+    };
+    stepsService.confirmRanks = function(stepId) {
+      var step;
+      step = findInCollection(stepsService.steps, 'id', stepId);
+      return step.customerConfirmedRanks = true;
+    };
+    stepsService.confirmRanksRemote = function(projectId, stepId) {
+      var params, step;
+      step = findInCollection(stepsService.steps, 'id', stepId);
+      params = {
+        projectId: projectId,
+        stepId: stepId
+      };
+      return StepsAPIService.confirmRanks(params, step).$promise.then(function(response) {
+        return step = response;
+      });
+    };
+    stepsService.acceptFixes = function(stepId) {
+      var step;
+      step = findInCollection(stepsService.steps, 'id', stepId);
+      return step.customerAcceptedFixes = true;
+    };
+    stepsService.acceptFixesRemote = function(projectId, stepId) {
+      var params, step;
+      step = findInCollection(stepsService.steps, 'id', stepId);
+      params = {
+        projectId: projectId,
+        stepId: stepId
+      };
+      return StepsAPIService.confirmRanks(params, step).$promise.then(function(response) {
+        return step = response;
+      });
+    };
+    return stepsService;
+  };
+
+  srv.$inject = ['$q', 'StepsAPIService'];
+
+  angular.module('appirio-tech-submissions').factory('StepsService', srv);
+
+}).call(this);
+
+(function() {
+  'use strict';
+  var decorateSubmissionWithRank, decorateSubmissionWithUnreadCounts, decorateSubmissionsWithRanks, decorateSubmissionsWithUnreadCounts, sortSubmissions, srv;
+
+  decorateSubmissionWithRank = function(submission, rankedSubmissions) {
+    if (rankedSubmissions == null) {
+      rankedSubmissions = [];
+    }
+    submission.rank = '';
+    rankedSubmissions.forEach(function(rankedSubmission) {
+      if (submission.id === rankedSubmission.submissionId) {
+        return submission.rank = rankedSubmission.rank;
+      }
+    });
+    return submission;
+  };
+
+  decorateSubmissionsWithRanks = function(submissions, rankedSubmissions) {
+    if (rankedSubmissions == null) {
+      rankedSubmissions = [];
+    }
+    submissions.forEach(function(submission) {
+      return submission = decorateSubmissionWithRank(submission, rankedSubmissions);
+    });
+    return submissions;
+  };
+
+  decorateSubmissionWithUnreadCounts = function(submission) {
+    submission.files.forEach(function(file) {
+      var total, unread;
+      total = 0;
+      unread = 0;
+      file.threads[0].messages.forEach(function(message) {
+        total = total + 1;
+        if (!message.read) {
+          return unread = unread + 1;
+        }
+      });
+      file.totalMessages = total;
+      return file.unreadMessages = unread;
+    });
+    return submission;
+  };
+
+  decorateSubmissionsWithUnreadCounts = function(submissions) {
+    submissions.forEach(function(submission) {
+      return submission = decorateSubmissionWithUnreadCounts(submission);
+    });
+    return submissions;
+  };
+
+  sortSubmissions = function(submissions) {
+    var orderedByRank, orderedBySubmitter, orderedSubmissions, ranked, unRanked;
+    ranked = submissions.filter(function(submission) {
+      return submission.rank !== '';
+    });
+    unRanked = submissions.filter(function(submission) {
+      return submission.rank === '';
+    });
+    orderedByRank = ranked.sort(function(previousSubmission, nextSubmission) {
+      return previousSubmission.rank - nextSubmission.rank;
+    });
+    orderedBySubmitter = unRanked.sort(function(previousSubmission, nextSubmission) {
+      return previousSubmission.submitter.id - nextSubmission.submitter.id;
+    });
+    orderedSubmissions = orderedByRank.concat(orderedBySubmitter);
+    return orderedSubmissions;
+  };
+
+  srv = function($q, StepsAPIService, SubmissionsAPIService) {
+    var currentProjectId, currentStepId, submissionsService;
+    currentProjectId = null;
+    currentStepId = null;
+    submissionsService = {
+      submissions: [],
+      decorateSubmissionsWithRanks: decorateSubmissionsWithRanks,
+      decorateSubmissionWithRank: decorateSubmissionWithRank,
+      decorateSubmissionsWithUnreadCounts: decorateSubmissionsWithUnreadCounts,
+      decorateSubmissionWithUnreadCounts: decorateSubmissionWithUnreadCounts,
+      sortSubmissions: sortSubmissions
+    };
+    submissionsService.fetch = function(projectId, stepId) {
+      var params;
+      if (projectId !== currentProjectId || stepId !== currentStepId) {
+        submissionsService.submissions = [];
+        currentProjectId = projectId;
+        currentStepId = stepId;
+      }
+      params = {
+        projectId: projectId,
+        stepId: stepId
+      };
+      return SubmissionsAPIService.query(params).$promise.then(function(response) {
+        return submissionsService.submissions = response;
+      });
+    };
+    return submissionsService;
+  };
+
+  srv.$inject = ['$q', 'StepsAPIService', 'SubmissionsAPIService'];
+
+  angular.module('appirio-tech-submissions').factory('SubmissionsService', srv);
+
+}).call(this);
+
+(function() {
+  'use strict';
+  var FinalFixesController;
+
+  FinalFixesController = function($scope, $state, StepsService, SubmissionsService) {
+    var activate, config, onChange, vm;
+    vm = this;
+    config = {};
+    config.stepType = 'finalFixes';
+    config.stepName = 'Final Fixes';
+    config.prevStepType = 'completeDesigns';
+    config.prevStepName = 'Complete Designs';
+    config.prevStepState = 'complete-designs';
+    config.nextStepType = null;
+    config.nextStepName = null;
+    config.nextStepState = null;
+    config.timeline = ['active', '', ''];
+    config.defaultStatus = 'scheduled';
+    config.rankNames = ['1st Place', '2nd Place', '3rd Place', '4th Place', '5th Place', '6th Place', '7th Place', '8th Place', '9th Place', '10th Place'];
+    vm.loaded = false;
+    vm.timeline = config.timeline;
+    vm.stepName = config.stepName;
+    vm.status = config.defaultStatus;
+    vm.allFilled = false;
+    vm.submission = {};
+    vm.projectId = $scope.projectId;
+    vm.stepId = $scope.stepId;
+    vm.confirmApproval = function() {
+      var updatePromise;
+      StepsService.acceptFixes(vm.stepId);
+      onChange();
+      updatePromise = StepsService.acceptFixesRemote(vm.projectId, vm.stepId);
+      updatePromise.then(function() {
+        return onChange();
+      });
+      return updatePromise["catch"](function() {
+        return console.log('Oops. Something went wrong accepting fixes!');
+      });
+    };
+    activate = function() {
+      var stepsPromise, submissionsPromise;
+      stepsPromise = StepsService.fetch(vm.projectId);
+      stepsPromise.then(function() {
+        return onChange();
+      });
+      stepsPromise["catch"](function() {
+        return console.log("Unable to fetch steps from server. Data may be out of date.");
+      });
+      submissionsPromise = SubmissionsService.fetch(vm.projectId, vm.stepId);
+      submissionsPromise.then(function() {
+        return onChange();
+      });
+      submissionsPromise["catch"](function() {
+        return console.log("Unable to fetch submissions from server. Data may be out of date.");
+      });
+      return onChange();
+    };
+    onChange = function() {
+      var currentStep, prevStep, stepParams, steps, submissions;
+      steps = StepsService.steps;
+      submissions = SubmissionsService.submissions;
+      if (steps.length <= 0 || submissions.length <= 0) {
+        return null;
+      }
+      vm.loaded = true;
+      currentStep = StepsService.findInCollection(steps, 'stepType', config.stepType);
+      prevStep = StepsService.findInCollection(steps, 'stepType', config.prevStepType);
+      vm.startsAt = currentStep.startsAt;
+      vm.endsAt = currentStep.endsAt;
+      stepParams = {
+        projectId: $scope.projectId,
+        stepId: $scope.stepId
+      };
+      vm.prevStepRef = $state.href(config.prevStepState, stepParams);
+      vm.submission = angular.copy(submissions[0]);
+      vm.submission = SubmissionsService.decorateSubmissionWithUnreadCounts(vm.submission);
+      vm.status = config.defaultStatus;
+      if (Date.now() > new Date(currentStep.startsAt)) {
+        vm.status = 'open';
+      }
+      if (currentStep.customerAcceptedFixes) {
+        return vm.status = 'closed';
+      }
+    };
+    activate();
+    return vm;
+  };
+
+  FinalFixesController.$inject = ['$scope', '$state', 'StepsService', 'SubmissionsService'];
 
   angular.module('appirio-tech-submissions').controller('FinalFixesController', FinalFixesController);
 
@@ -359,7 +568,8 @@ $templateCache.put("views/submission-slides.directive.html","<main><loader ng-sh
       controller: 'FinalFixesController as vm',
       templateUrl: 'views/final-fixes.directive.html',
       scope: {
-        workId: '@workId'
+        projectId: '@projectId',
+        stepId: '@stepId'
       }
     };
   };
@@ -370,135 +580,70 @@ $templateCache.put("views/submission-slides.directive.html","<main><loader ng-sh
 
 (function() {
   'use strict';
-  var srv, transformResponse;
-
-  transformResponse = function(response) {
-    var parsed, ref;
-    parsed = JSON.parse(response);
-    return (parsed != null ? (ref = parsed.result) != null ? ref.content : void 0 : void 0) || {};
-  };
-
-  srv = function($resource, API_URL) {
-    var actions, params, url;
-    url = API_URL + '/v3/projects/:workId/submissions/final-fixes';
-    params = {
-      workId: '@workId'
-    };
-    actions = {
-      put: {
-        method: 'PUT',
-        isArray: false,
-        transformResponse: transformResponse
-      },
-      get: {
-        method: 'GET',
-        isArray: false,
-        transformResponse: transformResponse
-      }
-    };
-    return $resource(url, params, actions);
-  };
-
-  srv.$inject = ['$resource', 'API_URL'];
-
-  angular.module('appirio-tech-submissions').factory('FinalFixesAPIService', srv);
-
-}).call(this);
-
-(function() {
-  'use strict';
-  var confirm, srv, transformResponse;
-
-  transformResponse = function(response) {
-    var parsed, ref;
-    parsed = JSON.parse(response);
-    return (parsed != null ? (ref = parsed.result) != null ? ref.content : void 0 : void 0) || [];
-  };
-
-  confirm = function() {
-    var date, payload;
-    date = new Date();
-    date = date.toISOString();
-    payload = {
-      confirmed: date
-    };
-    return payload;
-  };
-
-  srv = function($resource, API_URL) {
-    var methods, params, url;
-    url = API_URL + '/v3/projects/:workId/submissions';
-    params = {
-      workId: '@workId',
-      phase: '@phase'
-    };
-    methods = {
-      query: {
-        method: 'GET',
-        isArray: false,
-        transformResponse: transformResponse
-      },
-      get: {
-        method: 'GET',
-        isArray: false,
-        transformResponse: transformResponse
-      },
-      confirm: {
-        method: 'PUT',
-        transformRequest: confirm
-      }
-    };
-    return $resource(url, params, methods);
-  };
-
-  srv.$inject = ['$resource', 'API_URL'];
-
-  angular.module('appirio-tech-submissions').factory('SubmissionAPIService', srv);
-
-}).call(this);
-
-(function() {
-  'use strict';
   var SubmissionDetailController;
 
-  SubmissionDetailController = function($scope, SubmissionDetailAPIService) {
-    var activate, vm;
+  SubmissionDetailController = function($scope, StepsService, SubmissionsService) {
+    var activate, config, onChange, vm;
     vm = this;
-    vm.work = null;
-    vm.positions = null;
-    vm.submissionsCount = null;
-    vm.workId = $scope.workId;
+    config = {};
+    config.rankNames = ['1st Place', '2nd Place', '3rd Place', '4th Place', '5th Place', '6th Place', '7th Place', '8th Place', '9th Place', '10th Place'];
+    vm.loaded = false;
+    vm.submission = {};
+    vm.allFilled = false;
+    vm.projectId = $scope.projectId;
+    vm.stepId = $scope.stepId;
     vm.submissionId = $scope.submissionId;
-    vm.selectPosition = function() {
-      var params, resource, submission;
-      params = {
-        workId: vm.workId,
-        submissionId: vm.submissionId
-      };
-      submission = vm.work;
-      resource = SubmissionDetailAPIService.updateRank(params, submission);
-      resource.$promise.then(function(response) {});
-      return resource.$promise["catch"](function(error) {});
+    vm.handleRankSelect = function(submission) {
+      var updatePromise;
+      StepsService.updateRank(vm.stepId, submission.id, submission.rank);
+      onChange();
+      updatePromise = StepsService.updateRankRemote(vm.projectId, vm.stepId);
+      updatePromise.then(function() {
+        return onChange();
+      });
+      return updatePromise["catch"](function() {
+        return console.log('Oops. Something went wrong saving rank update!');
+      });
     };
     activate = function() {
-      var params, resource;
-      params = {
-        workId: vm.workId,
-        submissionId: vm.submissionId
-      };
-      resource = SubmissionDetailAPIService.get(params);
-      resource.$promise.then(function(response) {
-        vm.work = response;
-        vm.submissionsCount = vm.work.files.length - 1;
-        return vm.positions = ['1st Place', '2nd Place', '3rd Place', '4th Place'];
+      var stepsPromise, submissionsPromise;
+      stepsPromise = StepsService.fetch(vm.projectId);
+      stepsPromise.then(function() {
+        return onChange();
       });
-      resource.$promise["catch"](function(error) {});
-      return vm;
+      stepsPromise["catch"](function() {
+        return console.log("Unable to fetch steps from server. Data may be out of date.");
+      });
+      submissionsPromise = SubmissionsService.fetch(vm.projectId, vm.stepId);
+      submissionsPromise.then(function() {
+        return onChange();
+      });
+      submissionsPromise["catch"](function() {
+        return console.log("Unable to fetch submissions from server. Data may be out of date.");
+      });
+      return onChange();
     };
-    return activate();
+    onChange = function() {
+      var currentStep, currentSubmission, steps, submissions;
+      steps = StepsService.steps;
+      submissions = SubmissionsService.submissions;
+      if (steps.length <= 0 || submissions.length <= 0) {
+        return null;
+      }
+      vm.loaded = true;
+      currentStep = StepsService.findInCollection(steps, 'id', vm.stepId);
+      currentSubmission = StepsService.findInCollection(submissions, 'id', vm.submissionId);
+      vm.submission = angular.copy(currentSubmission);
+      vm.submission = SubmissionsService.decorateSubmissionWithRank(vm.submission, currentStep.rankedSubmissions);
+      vm.submission = SubmissionsService.decorateSubmissionWithUnreadCounts(vm.submission);
+      vm.rankNames = config.rankNames.slice(0, currentStep.numberOfRanks);
+      return vm.allFilled = currentStep.rankedSubmissions.length === currentStep.numberOfRanks;
+    };
+    activate();
+    return vm;
   };
 
-  SubmissionDetailController.$inject = ['$scope', 'SubmissionDetailAPIService'];
+  SubmissionDetailController.$inject = ['$scope', 'StepsService', 'SubmissionsService'];
 
   angular.module('appirio-tech-submissions').controller('SubmissionDetailController', SubmissionDetailController);
 
@@ -514,7 +659,8 @@ $templateCache.put("views/submission-slides.directive.html","<main><loader ng-sh
       controller: 'SubmissionDetailController as vm',
       templateUrl: 'views/submission-detail.directive.html',
       scope: {
-        workId: '@workId',
+        projectId: '@projectId',
+        stepId: '@stepId',
         submissionId: '@submissionId'
       }
     };
@@ -526,99 +672,64 @@ $templateCache.put("views/submission-slides.directive.html","<main><loader ng-sh
 
 (function() {
   'use strict';
-  var SubmissionSlidesController;
+  var FileDetailController;
 
-  SubmissionSlidesController = function($scope, $state, UserV3Service, SubmissionDetailAPIService, SubmissionSlidesService) {
-    var activate, setSelectedPreview, vm, watchSelectedPreviewIndex;
+  FileDetailController = function($scope, SubmissionsService) {
+    var activate, findInCollection, onChange, vm;
     vm = this;
-    vm.selectedPreview = null;
-    vm.selectedPreviewIndex = null;
-    vm.showComments = false;
-    vm.subscriberId = null;
-    vm.fileId = $state.params.fileId;
-    vm.workId = $scope.workId;
+    vm.loaded = false;
+    vm.submission = {};
+    vm.file = {};
+    vm.prevFile = null;
+    vm.nextFile = null;
+    vm.showMessages = false;
+    vm.projectId = $scope.projectId;
+    vm.stepId = $scope.stepId;
     vm.submissionId = $scope.submissionId;
-    vm.loading = false;
+    vm.fileId = $scope.fileId;
     activate = function() {
-      var params, resource;
-      vm.loading = true;
-      params = {
-        workId: vm.workId,
-        submissionId: vm.submissionId
-      };
-      resource = SubmissionDetailAPIService.get(params);
-      resource.$promise.then(function(response) {
-        var ref, ref1;
-        vm.work = response;
-        if ((ref = vm.work) != null) {
-          ref.files.forEach(function(file, index) {
-            if (file.id === vm.fileId) {
-              return vm.selectedPreviewIndex = index;
-            } else {
-              return vm.selectedPreviewIndex = 0;
-            }
-          });
+      var submissionsPromise;
+      submissionsPromise = SubmissionsService.fetch(vm.projectId, vm.stepId);
+      submissionsPromise.then(function() {
+        return onChange();
+      });
+      submissionsPromise["catch"](function() {
+        return console.log("Unable to fetch submissions from server. Data may be out of date.");
+      });
+      return onChange();
+    };
+    findInCollection = function(collection, prop, value) {
+      var el, index;
+      for (index in collection) {
+        el = collection[index];
+        if (el[prop] === value) {
+          return el;
         }
-        return vm.selectedPreview = (ref1 = vm.work) != null ? ref1.files[vm.selectedPreviewIndex] : void 0;
-      });
-      resource.$promise["catch"](function(error) {});
-      resource.$promise["finally"](function() {
-        return vm.loading = false;
-      });
-    };
-    vm.acceptFile = function() {
-      var body;
-      return body = {
-        fileId: vm.selectedPreview.id,
-        submissionId: $scope.submissionId,
-        accepted: true
-      };
-    };
-    vm.previewPrevious = function() {
-      var srv;
-      srv = SubmissionSlidesService;
-      return vm.selectedPreviewIndex = srv.previewPrevious(vm.selectedPreviewIndex, vm.work.files);
-    };
-    vm.previewNext = function() {
-      var srv;
-      srv = SubmissionSlidesService;
-      return vm.selectedPreviewIndex = srv.previewNext(vm.selectedPreviewIndex, vm.work.files);
-    };
-    vm.previewSelected = function(index) {
-      return vm.selectedPreviewIndex = index;
-    };
-    watchSelectedPreviewIndex = function() {
-      return vm.selectedPreviewIndex;
-    };
-    setSelectedPreview = function(index) {
-      var params, ref, ref1;
-      if ((ref = vm.work) != null ? ref.files : void 0) {
-        vm.selectedPreview = vm.work.files[index];
       }
-      if ($state.current.name) {
-        params = {
-          submissionId: vm.submissionId,
-          fileId: (ref1 = vm.selectedPreview) != null ? ref1.id : void 0
-        };
-        return $state.go('submission-slides', params, {
-          notify: false
-        });
-      }
+      return null;
     };
-    $scope.$watch(watchSelectedPreviewIndex, setSelectedPreview);
-    $scope.$watch(UserV3Service.getCurrentUser, function() {
-      var user;
-      user = UserV3Service.getCurrentUser();
-      if (user) {
-        return vm.subscriberId = user.id;
+    onChange = function() {
+      var currentIndex, currentSubmission, submissions;
+      submissions = SubmissionsService.submissions;
+      if (submissions <= 0) {
+        return null;
       }
-    });
-    return activate();
+      vm.loaded = true;
+      currentSubmission = findInCollection(submissions, 'id', vm.submissionId);
+      vm.submission = angular.copy(currentSubmission);
+      vm.submission = SubmissionsService.decorateSubmissionWithUnreadCounts(vm.submission);
+      vm.file = findInCollection(vm.submission.files, 'id', vm.fileId);
+      currentIndex = vm.submission.files.indexOf(vm.file);
+      vm.prevFile = vm.submission.files[currentIndex - 1];
+      return vm.nextFile = vm.submission.files[parseInt(currentIndex) + 1];
+    };
+    activate();
+    return vm;
   };
 
-  SubmissionSlidesController.$inject = ['$scope', '$state', 'UserV3Service', 'SubmissionDetailAPIService', 'SubmissionSlidesService'];
+  FileDetailController.$inject = ['$scope', 'SubmissionsService'];
 
-  angular.module('appirio-tech-submissions').controller('SubmissionSlidesController', SubmissionSlidesController);
+  angular.module('appirio-tech-submissions').controller('FileDetailController', FileDetailController);
 
 }).call(this);
 
@@ -629,99 +740,17 @@ $templateCache.put("views/submission-slides.directive.html","<main><loader ng-sh
   directive = function() {
     return {
       restrict: 'E',
-      controller: 'SubmissionSlidesController as vm',
-      templateUrl: 'views/submission-slides.directive.html',
+      controller: 'FileDetailController as vm',
+      templateUrl: 'views/file-detail.directive.html',
       scope: {
-        workId: '@workId',
+        projectId: '@projectId',
+        stepId: '@stepId',
+        fileId: '@fileId',
         submissionId: '@submissionId'
       }
     };
   };
 
-  angular.module('appirio-tech-submissions').directive('submissionSlides', directive);
-
-}).call(this);
-
-(function() {
-  'use strict';
-  var srv, transformResponse, updateRank;
-
-  transformResponse = function(response) {
-    var parsed, ref;
-    parsed = JSON.parse(response);
-    return (parsed != null ? (ref = parsed.result) != null ? ref.content : void 0 : void 0) || {};
-  };
-
-  updateRank = function(submission) {
-    var payload;
-    payload = {
-      rank: submission.rank
-    };
-    return payload;
-  };
-
-  srv = function($resource, API_URL) {
-    var actions, params, url;
-    url = API_URL + '/v3/projects/:workId/submissions/:submissionId';
-    params = {
-      workId: '@workId',
-      submissionId: '@submissionId'
-    };
-    actions = {
-      query: {
-        method: 'GET',
-        isArray: false,
-        transformResponse: transformResponse
-      },
-      get: {
-        method: 'GET',
-        isArray: false,
-        transformResponse: transformResponse
-      },
-      updateRank: {
-        method: 'PUT',
-        transformRequest: updateRank
-      }
-    };
-    return $resource(url, params, actions);
-  };
-
-  srv.$inject = ['$resource', 'API_URL'];
-
-  angular.module('appirio-tech-submissions').factory('SubmissionDetailAPIService', srv);
-
-}).call(this);
-
-(function() {
-  'use strict';
-  var srv;
-
-  srv = function() {
-    srv.previewPrevious = function(selectedPreviewIndex, files) {
-      var isFirst;
-      isFirst = selectedPreviewIndex === 0;
-      if (isFirst) {
-        selectedPreviewIndex = files.length - 1;
-      } else {
-        selectedPreviewIndex -= 1;
-      }
-      return selectedPreviewIndex;
-    };
-    srv.previewNext = function(selectedPreviewIndex, files) {
-      var isLast;
-      isLast = selectedPreviewIndex === files.length - 1;
-      if (isLast) {
-        selectedPreviewIndex = 0;
-      } else {
-        selectedPreviewIndex += 1;
-      }
-      return selectedPreviewIndex;
-    };
-    return srv;
-  };
-
-  srv.$inject = [];
-
-  angular.module('appirio-tech-submissions').factory('SubmissionSlidesService', srv);
+  angular.module('appirio-tech-submissions').directive('fileDetail', directive);
 
 }).call(this);
