@@ -15,7 +15,7 @@ FinalFixesController = ($scope, $state, StepsService, SubmissionsService) ->
   config.nextStepName = null
   config.nextStepState = null
 
-  config.timeline = [ 'active', '', '' ]
+  config.timeline = [ '', '', 'active' ]
   config.defaultStatus = 'scheduled'
 
   config.rankNames = [
