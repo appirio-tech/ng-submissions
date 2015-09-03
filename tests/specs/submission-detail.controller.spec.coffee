@@ -4,7 +4,7 @@ scope = null
 spy = null
 vm  = null
 
-describe.only 'SubmissionDetailController', ->
+describe 'SubmissionDetailController', ->
   beforeEach ->
     bard.inject this, '$rootScope', '$controller'
 
