@@ -1,37 +1,56 @@
 'use strict'
 
-controller = null
+scope = null
+spy = null
+vm  = null
 
 describe 'FinalFixesController', ->
-  beforeEach inject (FinalFixesAPIService) ->
-    bard.inject this, '$rootScope', '$q', '$controller', 'FinalFixesAPIService'
+  beforeEach inject ($rootScope, $controller) ->
+    scope           = $rootScope.$new()
+    scope.projectId = 'abc'
+    scope.stepId    = 'abc'
+    vm              = $controller 'FinalFixesController', $scope: scope
 
-    scope = $rootScope.$new()
+  it 'should have a view model', ->
+    expect(vm).to.exist
 
-    _default =
-      _default:
-        $promise: $q.when({})
+  it 'should have a step name', ->
+    expect(vm.stepName).to.equal 'Final Fixes'
 
-    bard.mockService FinalFixesAPIService, _default
+  describe 'before loading', ->
+    it 'should set loaded to false', ->
+      expect(vm.loaded).to.be.false
 
-    controller = $controller 'FinalFixesController', $scope: scope
-    scope.vm   = controller
+    it 'should have a status', ->
+      expect(vm.status).to.equal 'scheduled'
 
-  describe 'Final Fixes Controller', ->
-    it 'should be created successfully', ->
-      expect(controller).to.be.defined
+  describe 'after loading', ->
+    beforeEach inject ($httpBackend) ->
+      $httpBackend.flush()
 
-    it 'should have confirmApproval method', ->
-      expect(controller.confirmApproval).to.exist
+    it 'should set loaded to true', ->
+      expect(vm.loaded).to.be.true
 
-    it 'should call FinalFixesAPIService when confirming approval', ->
-      controller.confirmApproval()
+    describe 'submission', ->
+      it 'should exist', ->
+        expect(vm.submission).to.exist
 
-      expect(FinalFixesAPIService.put.called).to.be.ok
+      it 'should have lists of files', ->
+          expect(vm.submission.files.length).to.be.above 0
 
-    it 'should set showConfirmed to true when approveAll is selected', ->
-      controller.approveAll = true
+    describe 'timeline', ->
+      it 'should have nodes', ->
+        expect(vm.timeline.length).to.be.above 0
 
-      $rootScope.$apply()
+      it 'should have an active node', ->
+        expect(vm.timeline).to.contain 'active'
 
-      expect(controller.showConfirmApproval).to.be.true
+
+
+
+
+
+
+
+
+
