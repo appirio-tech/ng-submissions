@@ -20,6 +20,12 @@ describe 'SubmissionDetailController', ->
   describe 'before loading', ->
     it 'should set loaded to false', ->
       expect(vm.loaded).to.be.false
+      expect(vm.rankNames).to.be.an 'array'
+      expect(vm.allFilled).to.be.false
+      expect(vm.submission).to.be.an 'object'
+      expect(vm.projectId).to.equal 'abc'
+      expect(vm.stepId).to.equal 'abc'
+      expect(vm.submissionId).to.equal 'abc'
 
   describe 'after loading', ->
     beforeEach inject ($httpBackend) ->
@@ -27,3 +33,6 @@ describe 'SubmissionDetailController', ->
 
     it 'should set loaded to true', ->
       expect(vm.loaded).to.be.true
+      expect(vm.submission).to.be.an 'object'
+      expect(vm.allFilled).to.be.false
+      expect(vm.rankNames.length).to.be.above 0

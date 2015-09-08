@@ -1,6 +1,6 @@
 'use strict'
 
-FileDetailController = ($scope, SubmissionsService) ->
+FileDetailController = ($scope, $rootScope, SubmissionsService) ->
   vm = this
 
   vm.loaded       = false
@@ -15,15 +15,13 @@ FileDetailController = ($scope, SubmissionsService) ->
   vm.fileId       = $scope.fileId
 
   activate = ->
-    submissionsPromise = SubmissionsService.fetch vm.projectId, vm.stepId
-
-    submissionsPromise.then ->
+    destroySubmissionsListener = $rootScope.$on 'submissionsService.submissions:changed', ->
       onChange()
 
-    submissionsPromise.catch ->
-      console.log "Unable to fetch submissions from server. Data may be out of date."
+    $scope.$on '$destroy', ->
+      destroySubmissionsListener()
 
-    onChange()
+    SubmissionsService.fetch vm.projectId, vm.stepId
 
   findInCollection = (collection, prop, value) ->
     for index, el of collection
@@ -45,13 +43,22 @@ FileDetailController = ($scope, SubmissionsService) ->
     vm.file           = findInCollection vm.submission.files, 'id', vm.fileId
 
     currentIndex = vm.submission.files.indexOf vm.file
-    vm.prevFile = vm.submission.files[currentIndex - 1]
-    vm.nextFile = vm.submission.files[parseInt(currentIndex) + 1]
+
+    prevIndex = currentIndex - 1
+    if prevIndex < 0
+      prevIndex = vm.submission.files.length - 1
+
+    nextIndex = parseInt(currentIndex) + 1
+    if nextIndex >= vm.submission.files.length
+      nextIndex = 0
+
+    vm.prevFile  = vm.submission.files[prevIndex]
+    vm.nextFile  = vm.submission.files[nextIndex]
 
   activate()
 
   vm
 
-FileDetailController.$inject = ['$scope', 'SubmissionsService']
+FileDetailController.$inject = ['$scope', '$rootScope', 'SubmissionsService']
 
 angular.module('appirio-tech-submissions').controller 'FileDetailController', FileDetailController

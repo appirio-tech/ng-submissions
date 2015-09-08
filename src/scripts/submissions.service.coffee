@@ -51,7 +51,7 @@ sortSubmissions = (submissions) ->
   orderedSubmissions = orderedByRank.concat orderedBySubmitter
   orderedSubmissions
 
-srv = ($q, StepsAPIService, SubmissionsAPIService) ->
+srv = ($rootScope, StepsAPIService, SubmissionsAPIService) ->
 
   # Used for caching
   currentProjectId = null
@@ -77,9 +77,10 @@ srv = ($q, StepsAPIService, SubmissionsAPIService) ->
 
     SubmissionsAPIService.query(params).$promise.then (response) ->
       submissionsService.submissions = response
+      $rootScope.$emit 'submissionsService.submissions:changed'
 
   submissionsService
 
-srv.$inject = ['$q', 'StepsAPIService', 'SubmissionsAPIService']
+srv.$inject = ['$rootScope', 'StepsAPIService', 'SubmissionsAPIService']
 
 angular.module('appirio-tech-submissions').factory 'SubmissionsService', srv

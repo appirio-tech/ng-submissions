@@ -1,6 +1,6 @@
 'use strict'
 
-SubmissionsController = ($scope, $state, dragulaService, StepsService, SubmissionsService) ->
+SubmissionsController = ($scope, $rootScope, $state, dragulaService, StepsService, SubmissionsService) ->
   vm             = this
   config         = {}
 
@@ -63,52 +63,29 @@ SubmissionsController = ($scope, $state, dragulaService, StepsService, Submissio
 
   vm.handleRankSelect = (submission) ->
     StepsService.updateRank vm.stepId, submission.id, submission.rank
-
-    onChange()
-
-    updatePromise = StepsService.updateRankRemote vm.projectId, vm.stepId
-
-    updatePromise.then ->
-      onChange()
-
-    updatePromise.catch ->
-      console.log 'Oops. Something went wrong saving rank update!'
+    StepsService.updateRankRemote vm.projectId, vm.stepId
 
   vm.confirmRanks = ->
     StepsService.confirmRanks vm.stepId
-
-    onChange()
-
-    updatePromise = StepsService.confirmRanksRemote vm.projectId, vm.stepId
-
-    updatePromise.then ->
-      onChange()
-
-    updatePromise.catch ->
-      console.log 'Oops. Something went wrong confirming ranks!'
+    StepsService.confirmRanksRemote vm.projectId, vm.stepId
 
   ##############
   # Activation #
   ##############
 
   activate = ->
-    stepsPromise = StepsService.fetch vm.projectId
-
-    stepsPromise.then ->
+    destroyStepsListener = $rootScope.$on 'stepsService.steps:changed', ->
       onChange()
 
-    stepsPromise.catch ->
-      console.log "Unable to fetch steps from server. Data may be out of date."
-
-    submissionsPromise = SubmissionsService.fetch vm.projectId, vm.stepId
-
-    submissionsPromise.then ->
+    destroySubmissionsListener = $rootScope.$on 'submissionsService.submissions:changed', ->
       onChange()
 
-    submissionsPromise.catch ->
-      console.log "Unable to fetch submissions from server. Data may be out of date."
+    $scope.$on '$destroy', ->
+      destroyStepsListener()
+      destroySubmissionsListener()
 
-    onChange()
+    StepsService.fetch vm.projectId
+    SubmissionsService.fetch vm.projectId, vm.stepId
 
   ###################
   # Dragula helpers #
@@ -213,6 +190,6 @@ SubmissionsController = ($scope, $state, dragulaService, StepsService, Submissio
 
   vm
 
-SubmissionsController.$inject = ['$scope', '$state', 'dragulaService', 'StepsService', 'SubmissionsService']
+SubmissionsController.$inject = ['$scope', '$rootScope', '$state', 'dragulaService', 'StepsService', 'SubmissionsService']
 
 angular.module('appirio-tech-submissions').controller 'SubmissionsController', SubmissionsController

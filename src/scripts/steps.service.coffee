@@ -51,7 +51,7 @@ updateRankedSubmissions = (rankedSubmissions, numberOfRanks, id, rank) ->
 
   rankedSubmissions
 
-srv = ($q, StepsAPIService) ->
+srv = ($rootScope, StepsAPIService) ->
 
   # Used for caching
   currentProjectId = null
@@ -70,6 +70,7 @@ srv = ($q, StepsAPIService) ->
 
     resource = StepsAPIService.query(params).$promise.then (response) ->
       stepsService.steps = response
+      $rootScope.$emit 'stepsService.steps:changed'
 
   stepsService.updateRank = (stepId, id, rank) ->
     currentStep       = findInCollection stepsService.steps, 'id', stepId
@@ -78,6 +79,7 @@ srv = ($q, StepsAPIService) ->
     rankedSubmissions = updateRankedSubmissions rankedSubmissions, numberOfRanks, id, rank
  
     currentStep.rankedSubmissions = rankedSubmissions
+    $rootScope.$emit 'stepsService.steps:changed'
 
   stepsService.updateRankRemote = (projectId, stepId) ->
     step = findInCollection stepsService.steps, 'id', stepId
@@ -88,10 +90,12 @@ srv = ($q, StepsAPIService) ->
 
     StepsAPIService.updateRanks(params, step).$promise.then (response) ->
       step = response
+      $rootScope.$emit 'stepsService.steps:changed'
 
   stepsService.confirmRanks = (stepId) ->
     step = findInCollection stepsService.steps, 'id', stepId
     step.customerConfirmedRanks = true
+    $rootScope.$emit 'stepsService.steps:changed'
 
   stepsService.confirmRanksRemote = (projectId, stepId) ->
     step = findInCollection stepsService.steps, 'id', stepId
@@ -102,10 +106,12 @@ srv = ($q, StepsAPIService) ->
 
     StepsAPIService.confirmRanks(params, step).$promise.then (response) ->
       step = response
+      $rootScope.$emit 'stepsService.steps:changed'
 
   stepsService.acceptFixes = (stepId) ->
     step = findInCollection stepsService.steps, 'id', stepId
     step.customerAcceptedFixes = true
+    $rootScope.$emit 'stepsService.steps:changed'
 
   stepsService.acceptFixesRemote = (projectId, stepId) ->
     step = findInCollection stepsService.steps, 'id', stepId
@@ -116,9 +122,10 @@ srv = ($q, StepsAPIService) ->
 
     StepsAPIService.confirmRanks(params, step).$promise.then (response) ->
       step = response
+      $rootScope.$emit 'stepsService.steps:changed'
 
   stepsService
 
-srv.$inject = ['$q', 'StepsAPIService']
+srv.$inject = ['$rootScope', 'StepsAPIService']
 
 angular.module('appirio-tech-submissions').factory 'StepsService', srv

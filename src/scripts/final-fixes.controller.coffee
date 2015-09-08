@@ -1,6 +1,6 @@
 'use strict'
 
-FinalFixesController = ($scope, $state, StepsService, SubmissionsService) ->
+FinalFixesController = ($scope, $rootScope, $state, StepsService, SubmissionsService) ->
   vm = this
   config = {}
 
@@ -42,37 +42,23 @@ FinalFixesController = ($scope, $state, StepsService, SubmissionsService) ->
 
   vm.confirmApproval = ->
     StepsService.acceptFixes vm.stepId
-    
-    onChange()
-
-    updatePromise = StepsService.acceptFixesRemote vm.projectId, vm.stepId
-
-    updatePromise.then ->
-      onChange()
-
-    updatePromise.catch ->
-      console.log 'Oops. Something went wrong accepting fixes!'
+    StepsService.acceptFixesRemote vm.projectId, vm.stepId
 
   activate = ->
-    stepsPromise = StepsService.fetch vm.projectId
-
-    stepsPromise.then ->
+    destroyStepsListener = $rootScope.$on 'stepsService.steps:changed', ->
       onChange()
 
-    stepsPromise.catch ->
-      console.log "Unable to fetch steps from server. Data may be out of date."
-
-    submissionsPromise = SubmissionsService.fetch vm.projectId, vm.stepId
-
-    submissionsPromise.then ->
+    destroySubmissionsListener = $rootScope.$on 'submissionsService.submissions:changed', ->
       onChange()
 
-    submissionsPromise.catch ->
-      console.log "Unable to fetch submissions from server. Data may be out of date."
+    $scope.$on '$destroy', ->
+      destroyStepsListener()
+      destroySubmissionsListener()
 
-    onChange()
+    StepsService.fetch vm.projectId
+    SubmissionsService.fetch vm.projectId, vm.stepId
 
-  onChange = ->
+  vm.onchange = onChange = ->
     steps = StepsService.steps
     submissions = SubmissionsService.submissions
 
@@ -88,8 +74,8 @@ FinalFixesController = ($scope, $state, StepsService, SubmissionsService) ->
     vm.endsAt = currentStep.endsAt
 
     stepParams =
-      projectId: $scope.projectId
-      stepId: $scope.stepId
+      projectId: vm.projectId
+      stepId: vm.stepId
 
     vm.prevStepRef = $state.href config.prevStepState, stepParams
 
@@ -104,11 +90,10 @@ FinalFixesController = ($scope, $state, StepsService, SubmissionsService) ->
     if currentStep.customerAcceptedFixes
       vm.status = 'closed'
 
-
   activate()
 
   vm
 
-FinalFixesController.$inject = ['$scope', '$state', 'StepsService', 'SubmissionsService']
+FinalFixesController.$inject = ['$scope', '$rootScope', '$state', 'StepsService', 'SubmissionsService']
 
 angular.module('appirio-tech-submissions').controller 'FinalFixesController', FinalFixesController

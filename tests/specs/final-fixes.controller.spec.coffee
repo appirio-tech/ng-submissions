@@ -5,45 +5,43 @@ spy = null
 vm  = null
 
 describe 'FinalFixesController', ->
-  beforeEach inject ($rootScope, $controller) ->
+  beforeEach ->
+    bard.inject this, '$rootScope', '$controller', '$state'
+
     scope           = $rootScope.$new()
     scope.projectId = 'abc'
     scope.stepId    = 'abc'
-    vm              = $controller 'FinalFixesController', $scope: scope
+
+    dependencies =
+      $scope: scope
+      $state: $state
+
+    vm = $controller 'FinalFixesController', dependencies
 
   it 'should have a view model', ->
     expect(vm).to.exist
 
-  it 'should have a step name', ->
-    expect(vm.stepName).to.equal 'Final Fixes'
-
   describe 'before loading', ->
-    it 'should set loaded to false', ->
+    it 'should be initialized with values on the view-model', ->
       expect(vm.loaded).to.be.false
-
-    it 'should have a status', ->
+      expect(vm.timeline.length).to.be.above 0
+      expect(vm.stepName).to.be.a 'string'
       expect(vm.status).to.equal 'scheduled'
+      expect(vm.allFilled).to.be.false
+      expect(vm.submission).to.be.an 'object'
+      expect(vm.projectId).to.equal 'abc'
+      expect(vm.stepId).to.equal 'abc'
 
   describe 'after loading', ->
     beforeEach inject ($httpBackend) ->
       $httpBackend.flush()
 
-    it 'should set loaded to true', ->
+    it 'should update the view-model with data from services', ->
       expect(vm.loaded).to.be.true
-
-    describe 'submission', ->
-      it 'should exist', ->
-        expect(vm.submission).to.exist
-
-      it 'should have lists of files', ->
-          expect(vm.submission.files.length).to.be.above 0
-
-    describe 'timeline', ->
-      it 'should have nodes', ->
-        expect(vm.timeline.length).to.be.above 0
-
-      it 'should have an active node', ->
-        expect(vm.timeline).to.contain 'active'
+      expect(vm.startsAt).to.be.a 'string'
+      expect(vm.endsAt).to.be.a 'string'
+      expect(vm.submission).to.be.an 'object'
+      expect(vm.status).to.equal 'scheduled'
 
 
 

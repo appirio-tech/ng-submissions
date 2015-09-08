@@ -1,6 +1,6 @@
 'use strict'
 
-SubmissionDetailController = ($scope, StepsService, SubmissionsService) ->
+SubmissionDetailController = ($scope, $rootScope, StepsService, SubmissionsService) ->
   vm     = this
   config = {}
 
@@ -18,6 +18,7 @@ SubmissionDetailController = ($scope, StepsService, SubmissionsService) ->
   ]
 
   vm.loaded       = false
+  vm.rankNames    = []
   vm.submission   = {}
   vm.allFilled    = false
   vm.projectId    = $scope.projectId
@@ -26,35 +27,21 @@ SubmissionDetailController = ($scope, StepsService, SubmissionsService) ->
 
   vm.handleRankSelect = (submission) ->
     StepsService.updateRank vm.stepId, submission.id, submission.rank
-
-    onChange()
-
-    updatePromise = StepsService.updateRankRemote vm.projectId, vm.stepId
-
-    updatePromise.then ->
-      onChange()
-
-    updatePromise.catch ->
-      console.log 'Oops. Something went wrong saving rank update!'
+    StepsService.updateRankRemote vm.projectId, vm.stepId
 
   activate = ->
-    stepsPromise = StepsService.fetch vm.projectId
-
-    stepsPromise.then ->
+    destroyStepsListener = $rootScope.$on 'stepsService.steps:changed', ->
       onChange()
 
-    stepsPromise.catch ->
-      console.log "Unable to fetch steps from server. Data may be out of date."
-
-    submissionsPromise = SubmissionsService.fetch vm.projectId, vm.stepId
-
-    submissionsPromise.then ->
+    destroySubmissionsListener = $rootScope.$on 'submissionsService.submissions:changed', ->
       onChange()
 
-    submissionsPromise.catch ->
-      console.log "Unable to fetch submissions from server. Data may be out of date."
+    $scope.$on '$destroy', ->
+      destroyStepsListener()
+      destroySubmissionsListener()
 
-    onChange()
+    StepsService.fetch vm.projectId
+    SubmissionsService.fetch vm.projectId, vm.stepId
 
   onChange = ->
     steps = StepsService.steps
@@ -78,6 +65,6 @@ SubmissionDetailController = ($scope, StepsService, SubmissionsService) ->
 
   vm
 
-SubmissionDetailController.$inject = ['$scope', 'StepsService', 'SubmissionsService']
+SubmissionDetailController.$inject = ['$scope', '$rootScope', 'StepsService', 'SubmissionsService']
 
 angular.module('appirio-tech-submissions').controller 'SubmissionDetailController', SubmissionDetailController
