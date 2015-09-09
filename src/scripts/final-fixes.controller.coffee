@@ -80,7 +80,7 @@ FinalFixesController = ($scope, $rootScope, $state, StepsService, SubmissionsSer
     vm.prevStepRef = $state.href config.prevStepState, stepParams
 
     vm.submission = angular.copy submissions[0]
-    vm.submission = SubmissionsService.decorateSubmissionWithUnreadCounts vm.submission
+    vm.submission = SubmissionsService.decorateSubmissionWithMessageCounts vm.submission
 
     vm.status = config.defaultStatus
 

@@ -168,7 +168,7 @@ SubmissionsController = ($scope, $rootScope, $state, dragulaService, StepsServic
     vm.submissions = angular.copy submissions
     vm.submissions = SubmissionsService.decorateSubmissionsWithRanks vm.submissions, currentStep.rankedSubmissions
     vm.submissions = SubmissionsService.sortSubmissions vm.submissions
-    vm.submissions = SubmissionsService.decorateSubmissionsWithUnreadCounts vm.submissions
+    vm.submissions = SubmissionsService.decorateSubmissionsWithMessageCounts vm.submissions
 
     # Handle ranks updates
     vm.rankNames = config.rankNames.slice 0, currentStep.numberOfRanks
@@ -185,6 +185,8 @@ SubmissionsController = ($scope, $rootScope, $state, dragulaService, StepsServic
 
     if currentStep.customerConfirmedRanks
       vm.status = 'closed'
+
+    vm.status = 'closed'
 
   activate()
 

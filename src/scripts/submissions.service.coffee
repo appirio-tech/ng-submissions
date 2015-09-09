@@ -14,24 +14,31 @@ decorateSubmissionsWithRanks = (submissions, rankedSubmissions = []) ->
 
   submissions
 
-decorateSubmissionWithUnreadCounts = (submission) ->
+decorateFileWithMessageCounts = (file) ->
+  file.totalMessages = 0
+  file.unreadMessages = 0
+
+  file.threads[0].messages.forEach (message) ->
+    file.totalMessages = file.totalMessages + 1
+    if !message.read
+      file.unreadMessages = file.unreadMessages + 1
+
+  file
+
+decorateSubmissionWithMessageCounts = (submission) ->
+  submission.totalMessages = 0
+  submission.unreadMessages = 0
+
   submission.files.forEach (file) ->
-    total = 0
-    unread = 0
-
-    file.threads[0].messages.forEach (message) ->
-      total = total + 1
-      if !message.read
-        unread = unread + 1
-
-    file.totalMessages = total
-    file.unreadMessages = unread
+    decorateFileWithMessageCounts(file)
+    submission.totalMessages = submission.totalMessages + file.totalMessages
+    submission.unreadMessages = submission.unreadMessages + file.unreadMessages
 
   submission
 
-decorateSubmissionsWithUnreadCounts = (submissions) ->
+decorateSubmissionsWithMessageCounts = (submissions) ->
   submissions.forEach (submission) ->
-    submission = decorateSubmissionWithUnreadCounts submission
+    submission = decorateSubmissionWithMessageCounts submission
 
   submissions
 
@@ -61,8 +68,8 @@ srv = ($rootScope, StepsAPIService, SubmissionsAPIService) ->
     submissions: []
     decorateSubmissionsWithRanks: decorateSubmissionsWithRanks
     decorateSubmissionWithRank: decorateSubmissionWithRank
-    decorateSubmissionsWithUnreadCounts: decorateSubmissionsWithUnreadCounts
-    decorateSubmissionWithUnreadCounts: decorateSubmissionWithUnreadCounts
+    decorateSubmissionsWithMessageCounts: decorateSubmissionsWithMessageCounts
+    decorateSubmissionWithMessageCounts: decorateSubmissionWithMessageCounts
     sortSubmissions: sortSubmissions
 
   submissionsService.fetch = (projectId, stepId) ->

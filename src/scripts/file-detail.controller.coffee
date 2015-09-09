@@ -39,7 +39,7 @@ FileDetailController = ($scope, $rootScope, SubmissionsService) ->
     vm.loaded         = true
     currentSubmission = findInCollection submissions, 'id', vm.submissionId
     vm.submission     = angular.copy currentSubmission
-    vm.submission     = SubmissionsService.decorateSubmissionWithUnreadCounts vm.submission
+    vm.submission     = SubmissionsService.decorateSubmissionWithMessageCounts vm.submission
     vm.file           = findInCollection vm.submission.files, 'id', vm.fileId
 
     currentIndex = vm.submission.files.indexOf vm.file

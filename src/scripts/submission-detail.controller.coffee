@@ -56,7 +56,7 @@ SubmissionDetailController = ($scope, $rootScope, StepsService, SubmissionsServi
     currentSubmission = StepsService.findInCollection submissions, 'id', vm.submissionId
     vm.submission = angular.copy currentSubmission
     vm.submission = SubmissionsService.decorateSubmissionWithRank vm.submission, currentStep.rankedSubmissions
-    vm.submission = SubmissionsService.decorateSubmissionWithUnreadCounts vm.submission
+    vm.submission = SubmissionsService.decorateSubmissionWithMessageCounts vm.submission
 
     vm.rankNames = config.rankNames.slice 0, currentStep.numberOfRanks
     vm.allFilled = currentStep.rankedSubmissions.length == currentStep.numberOfRanks
