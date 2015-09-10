@@ -1,6 +1,6 @@
 'use strict'
 
-FileDetailController = (helpers, $scope, $rootScope, SubmissionsService) ->
+FileDetailController = (helpers, $scope, $rootScope, SubmissionsService, UserV3Service) ->
   vm = this
 
   vm.loaded       = false
@@ -16,7 +16,7 @@ FileDetailController = (helpers, $scope, $rootScope, SubmissionsService) ->
   vm.messages     = []
   vm.newMessage   = ''
   vm.showMessages = false
-  vm.userId   = 'sselvadurai'
+  vm.userId       = null
   vm.avatars      = {}
 
   vm.sendMessage = ->
@@ -67,13 +67,14 @@ FileDetailController = (helpers, $scope, $rootScope, SubmissionsService) ->
     vm.prevFile  = vm.submission.files[prevIndex]
     vm.nextFile  = vm.submission.files[nextIndex]
 
-    vm.userId = vm.userId
+    user      = UserV3Service.getCurrentUser() || {}
+    vm.userId = user.id
     vm.avatars[vm.userId] = 'http://www.topcoder.com/i/m/cardiboy_big.jpg'
 
   activate()
 
   vm
 
-FileDetailController.$inject = ['SubmissionsHelpers', '$scope', '$rootScope', 'SubmissionsService']
+FileDetailController.$inject = ['SubmissionsHelpers', '$scope', '$rootScope', 'SubmissionsService', 'UserV3Service']
 
 angular.module('appirio-tech-submissions').controller 'FileDetailController', FileDetailController
