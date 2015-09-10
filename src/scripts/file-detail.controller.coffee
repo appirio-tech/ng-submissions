@@ -1,6 +1,6 @@
 'use strict'
 
-FileDetailController = ($scope, $rootScope, SubmissionsService) ->
+FileDetailController = (helpers, $scope, $rootScope, SubmissionsService) ->
   vm = this
 
   vm.loaded       = false
@@ -8,11 +8,29 @@ FileDetailController = ($scope, $rootScope, SubmissionsService) ->
   vm.file         = {}
   vm.prevFile     = null
   vm.nextFile     = null
-  vm.showMessages = false
   vm.projectId    = $scope.projectId
   vm.stepId       = $scope.stepId
   vm.submissionId = $scope.submissionId
   vm.fileId       = $scope.fileId
+
+  vm.messages     = []
+  vm.newMessage   = ''
+  vm.showMessages = false
+  vm.userId   = 'sselvadurai'
+  vm.avatars      = {}
+
+  vm.sendMessage = ->
+    if vm.newMessage
+      SubmissionsService.sendMessage vm.submissionId, vm.fileId, vm.newMessage, vm.userId
+      # SubmissionsService.sendMessageRemote vm.submissionId
+      vm.newMessage = ''
+
+  vm.toggleComments = ->
+    vm.showComments = !vm.showComments
+
+    if vm.showComments && vm.file.unreadMessages > 0
+      SubmissionsService.markMessagesAsRead vm.submissionId, vm.fileId
+      SubmissionsService.markMessagesAsReadRemote vm.submissionId, vm.fileId, vm.userId
 
   activate = ->
     destroySubmissionsListener = $rootScope.$on 'submissionsService.submissions:changed', ->
@@ -23,24 +41,18 @@ FileDetailController = ($scope, $rootScope, SubmissionsService) ->
 
     SubmissionsService.fetch vm.projectId, vm.stepId
 
-  findInCollection = (collection, prop, value) ->
-    for index, el of collection
-      if el[prop] == value
-        return el
-
-    null
-
   onChange = ->
     submissions = SubmissionsService.submissions
 
-    if submissions <= 0
+    if submissions.length <= 0
       return null
 
     vm.loaded         = true
-    currentSubmission = findInCollection submissions, 'id', vm.submissionId
+    currentSubmission = helpers.findInCollection submissions, 'id', vm.submissionId
     vm.submission     = angular.copy currentSubmission
-    vm.submission     = SubmissionsService.decorateSubmissionWithMessageCounts vm.submission
-    vm.file           = findInCollection vm.submission.files, 'id', vm.fileId
+    vm.submission     = helpers.decorateSubmissionWithMessageCounts vm.submission
+    vm.file           = helpers.findInCollection vm.submission.files, 'id', vm.fileId
+    vm.messages       = vm.file.threads[0]?.messages || []
 
     currentIndex = vm.submission.files.indexOf vm.file
 
@@ -55,10 +67,13 @@ FileDetailController = ($scope, $rootScope, SubmissionsService) ->
     vm.prevFile  = vm.submission.files[prevIndex]
     vm.nextFile  = vm.submission.files[nextIndex]
 
+    vm.userId = vm.userId
+    vm.avatars[vm.userId] = 'http://www.topcoder.com/i/m/cardiboy_big.jpg'
+
   activate()
 
   vm
 
-FileDetailController.$inject = ['$scope', '$rootScope', 'SubmissionsService']
+FileDetailController.$inject = ['SubmissionsHelpers', '$scope', '$rootScope', 'SubmissionsService']
 
 angular.module('appirio-tech-submissions').controller 'FileDetailController', FileDetailController

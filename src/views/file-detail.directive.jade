@@ -14,7 +14,7 @@ main
         a(href="{{ vm.file.images.full }}")
           .icon.download
 
-      button.clean(ng-click="vm.showComments = !vm.showComments")
+      button.clean(ng-click="vm.toggleComments()")
        .icon.bubble
 
   hr
@@ -43,7 +43,7 @@ main
 
             .notification {{ file.unreadMessages }}
 
-aside
-  messaging(ng-class="{active:vm.showComments}" thread-id="{{vm.selectedPreview.id}}" subscriber-id="{{vm.subscriberId}}")
+aside.messaging(ng-show="vm.showComments")
+  include parts/messaging
 
 

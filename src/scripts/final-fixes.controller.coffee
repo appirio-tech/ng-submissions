@@ -1,6 +1,6 @@
 'use strict'
 
-FinalFixesController = ($scope, $rootScope, $state, StepsService, SubmissionsService) ->
+FinalFixesController = (helpers, $scope, $rootScope, $state, StepsService, SubmissionsService) ->
   vm = this
   config = {}
 
@@ -67,8 +67,8 @@ FinalFixesController = ($scope, $rootScope, $state, StepsService, SubmissionsSer
 
     vm.loaded = true
 
-    currentStep = StepsService.findInCollection steps, 'stepType', config.stepType
-    prevStep = StepsService.findInCollection steps, 'stepType', config.prevStepType
+    currentStep = helpers.findInCollection steps, 'stepType', config.stepType
+    prevStep = helpers.findInCollection steps, 'stepType', config.prevStepType
 
     vm.startsAt = currentStep.startsAt
     vm.endsAt = currentStep.endsAt
@@ -80,7 +80,7 @@ FinalFixesController = ($scope, $rootScope, $state, StepsService, SubmissionsSer
     vm.prevStepRef = $state.href config.prevStepState, stepParams
 
     vm.submission = angular.copy submissions[0]
-    vm.submission = SubmissionsService.decorateSubmissionWithMessageCounts vm.submission
+    vm.submission = helpers.decorateSubmissionWithMessageCounts vm.submission
 
     vm.status = config.defaultStatus
 
@@ -94,6 +94,6 @@ FinalFixesController = ($scope, $rootScope, $state, StepsService, SubmissionsSer
 
   vm
 
-FinalFixesController.$inject = ['$scope', '$rootScope', '$state', 'StepsService', 'SubmissionsService']
+FinalFixesController.$inject = ['SubmissionsHelpers', '$scope', '$rootScope', '$state', 'StepsService', 'SubmissionsService']
 
 angular.module('appirio-tech-submissions').controller 'FinalFixesController', FinalFixesController

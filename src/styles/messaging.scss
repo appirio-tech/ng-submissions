@@ -1,0 +1,59 @@
+@import "work-includes";
+
+aside.messaging {
+  @include clearfix;
+
+  display : block;
+  position: absolute;
+  width   : 200px + $spacing-small * 2;
+  padding : $spacing-small;
+  overflow: hidden;
+  top     : 0;
+  right   : 0;
+
+  box-shadow      : -3px 0px 5px 0px rgba(0,0,0,0.22);
+  background-color: $primary-color-lightest;
+
+  .messages {
+    min-height: 410px;
+    max-height: 410px;
+    overflow  : scroll;
+
+    > li {
+      @include flex-center();
+      @include flex-wrap(nowrap);
+
+      avatar {
+        min-width: 35px;
+      }
+
+      position  : relative;
+      padding   : 10px 0;
+      border-top: 1px solid #ccc;
+
+      &:first-child {
+        border-top: 0;
+      }
+
+      .message {
+        margin-left: $spacing-small;
+      }
+    }
+  }
+
+  form {
+    margin-top: 20px;
+
+    textarea {
+      width  : 100%;
+      padding: 5px;
+      height : 75px;
+      border : 0;
+    }
+
+    button.enter {
+      margin-top: 20px;
+      width: 200px;
+    }
+  }
+}

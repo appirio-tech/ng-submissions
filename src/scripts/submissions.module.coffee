@@ -6,7 +6,6 @@ dependencies = [
   'app.constants'
   'appirio-tech-ng-ui-components'
   'appirio-tech-ng-auth'
-  'appirio-tech-messaging'
   angularDragula(angular)
 ]
 

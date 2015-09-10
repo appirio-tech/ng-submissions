@@ -9,42 +9,6 @@ file-detail {
     margin: 0 auto;
   }
 
-  aside {
-    $aside-width: 200px + $spacing-small * 2;
-
-    position: absolute;
-    width   : $aside-width;
-    overflow: hidden;
-    top     : 0;
-    right   : 0;
-    padding : $spacing-small;
-
-    messaging {
-      box-shadow      : -3px 0px 5px 0px rgba(0,0,0,0.22);
-      background-color: $primary-color-lightest;
-      width           : 200px;
-      padding         : $spacing;
-      margin-left     : $aside-width;
-
-      &.active {
-        margin-left: 0;
-      }
-
-      .messages {
-        min-height: 410px;
-        max-height: 410px;
-      }
-
-      .enter {
-        width: 100%;
-      }
-
-      .attach {
-        display: none;
-      }
-    }
-  }
-
   ul.header {
     @include flex-center(space-between);
 

@@ -1,64 +1,6 @@
 'use strict'
 
-decorateSubmissionWithRank = (submission, rankedSubmissions = []) ->
-  submission.rank = ''
-  rankedSubmissions.forEach (rankedSubmission) ->
-    if submission.id == rankedSubmission.submissionId
-      submission.rank = rankedSubmission.rank
-
-  submission
-
-decorateSubmissionsWithRanks = (submissions, rankedSubmissions = []) ->
-  submissions.forEach (submission) ->
-    submission = decorateSubmissionWithRank submission, rankedSubmissions
-
-  submissions
-
-decorateFileWithMessageCounts = (file) ->
-  file.totalMessages = 0
-  file.unreadMessages = 0
-
-  file.threads[0].messages.forEach (message) ->
-    file.totalMessages = file.totalMessages + 1
-    if !message.read
-      file.unreadMessages = file.unreadMessages + 1
-
-  file
-
-decorateSubmissionWithMessageCounts = (submission) ->
-  submission.totalMessages = 0
-  submission.unreadMessages = 0
-
-  submission.files.forEach (file) ->
-    decorateFileWithMessageCounts(file)
-    submission.totalMessages = submission.totalMessages + file.totalMessages
-    submission.unreadMessages = submission.unreadMessages + file.unreadMessages
-
-  submission
-
-decorateSubmissionsWithMessageCounts = (submissions) ->
-  submissions.forEach (submission) ->
-    submission = decorateSubmissionWithMessageCounts submission
-
-  submissions
-
-sortSubmissions = (submissions) ->
-  ranked = submissions.filter (submission) ->
-    submission.rank != ''
-
-  unRanked = submissions.filter (submission) ->
-    submission.rank == ''
-
-  orderedByRank = ranked.sort (previousSubmission, nextSubmission) ->
-    return previousSubmission.rank - nextSubmission.rank
-
-  orderedBySubmitter = unRanked.sort (previousSubmission, nextSubmission) ->
-    previousSubmission.submitter.id - nextSubmission.submitter.id
-
-  orderedSubmissions = orderedByRank.concat orderedBySubmitter
-  orderedSubmissions
-
-srv = ($rootScope, StepsAPIService, SubmissionsAPIService) ->
+srv = (helpers, $rootScope, StepsAPIService, SubmissionsAPIService, MessagesAPIService) ->
 
   # Used for caching
   currentProjectId = null
@@ -66,11 +8,6 @@ srv = ($rootScope, StepsAPIService, SubmissionsAPIService) ->
 
   submissionsService =
     submissions: []
-    decorateSubmissionsWithRanks: decorateSubmissionsWithRanks
-    decorateSubmissionWithRank: decorateSubmissionWithRank
-    decorateSubmissionsWithMessageCounts: decorateSubmissionsWithMessageCounts
-    decorateSubmissionWithMessageCounts: decorateSubmissionWithMessageCounts
-    sortSubmissions: sortSubmissions
 
   submissionsService.fetch = (projectId, stepId) ->
     if projectId != currentProjectId || stepId != currentStepId
@@ -86,8 +23,52 @@ srv = ($rootScope, StepsAPIService, SubmissionsAPIService) ->
       submissionsService.submissions = response
       $rootScope.$emit 'submissionsService.submissions:changed'
 
+  submissionsService.markMessagesAsRead = (submissionId, fileId) ->
+    currentSubmissions = helpers.findInCollection submissionsService.submissions, 'id', submissionId
+    currentFile        = helpers.findInCollection currentSubmissions.files, 'id', fileId
+    messages           = currentFile.threads[0]?.messages
+
+    messages.forEach (message) ->
+      message.read = true
+
+    $rootScope.$emit 'submissionsService.submissions:changed'
+
+  submissionsService.markMessagesAsReadRemote = (submissionId, fileId, userId) ->
+    currentSubmissions = helpers.findInCollection submissionsService.submissions, 'id', submissionId
+    currentFile        = helpers.findInCollection currentSubmissions.files, 'id', fileId
+    messages           = currentFile.threads[0]?.messages
+
+    messages.forEach (message) ->
+      queryParams =
+        id: message.id
+
+      putParams =
+        read        : true
+        subscriberId: userId
+
+      MessagesAPIService.put queryParams, putParams
+
+  submissionsService.sendMessage = (submissionId, fileId, message, userId) ->
+    currentSubmissions = helpers.findInCollection submissionsService.submissions, 'id', submissionId
+    currentFile        = helpers.findInCollection currentSubmissions.files, 'id', fileId
+    messages           = currentFile.threads[0]?.messages
+    now                = new Date()
+
+    newMessage =
+      publisherId: userId
+      body: message
+      createdAt: now.toISOString()
+      read: true
+
+    messages.push newMessage
+
+    $rootScope.$emit 'submissionsService.submissions:changed'
+
+  submissionsService.postMessage = (message) ->
+    resource = MessagesAPIService.save message
+
   submissionsService
 
-srv.$inject = ['$rootScope', 'StepsAPIService', 'SubmissionsAPIService']
+srv.$inject = ['SubmissionsHelpers', '$rootScope', 'StepsAPIService', 'SubmissionsAPIService', 'MessagesAPIService']
 
 angular.module('appirio-tech-submissions').factory 'SubmissionsService', srv

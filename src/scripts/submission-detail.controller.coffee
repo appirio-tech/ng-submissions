@@ -1,6 +1,6 @@
 'use strict'
 
-SubmissionDetailController = ($scope, $rootScope, StepsService, SubmissionsService) ->
+SubmissionDetailController = (helpers, $scope, $rootScope, StepsService, SubmissionsService) ->
   vm     = this
   config = {}
 
@@ -51,12 +51,12 @@ SubmissionDetailController = ($scope, $rootScope, StepsService, SubmissionsServi
       return null
 
     vm.loaded = true
-    currentStep = StepsService.findInCollection steps, 'id', vm.stepId
+    currentStep = helpers.findInCollection steps, 'id', vm.stepId
 
-    currentSubmission = StepsService.findInCollection submissions, 'id', vm.submissionId
+    currentSubmission = helpers.findInCollection submissions, 'id', vm.submissionId
     vm.submission = angular.copy currentSubmission
-    vm.submission = SubmissionsService.decorateSubmissionWithRank vm.submission, currentStep.rankedSubmissions
-    vm.submission = SubmissionsService.decorateSubmissionWithMessageCounts vm.submission
+    vm.submission = helpers.decorateSubmissionWithRank vm.submission, currentStep.rankedSubmissions
+    vm.submission = helpers.decorateSubmissionWithMessageCounts vm.submission
 
     vm.rankNames = config.rankNames.slice 0, currentStep.numberOfRanks
     vm.allFilled = currentStep.rankedSubmissions.length == currentStep.numberOfRanks
@@ -65,6 +65,6 @@ SubmissionDetailController = ($scope, $rootScope, StepsService, SubmissionsServi
 
   vm
 
-SubmissionDetailController.$inject = ['$scope', '$rootScope', 'StepsService', 'SubmissionsService']
+SubmissionDetailController.$inject = ['SubmissionsHelpers', '$scope', '$rootScope', 'StepsService', 'SubmissionsService']
 
 angular.module('appirio-tech-submissions').controller 'SubmissionDetailController', SubmissionDetailController

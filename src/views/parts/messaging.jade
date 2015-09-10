@@ -1,0 +1,13 @@
+ul.messages
+  li(ng-repeat="message in vm.messages track by $index")
+    avatar(avatar-url="{{ vm.avatars[message.publisherId] }}")
+
+    .message
+      p {{ message.body }}
+
+      time {{ message.createdAt | timeLapse }}
+
+form(ng-submit="vm.sendMessage()")
+  textarea(placeholder!="Send a message&hellip;" ng-model="vm.newMessage")
+
+  button.enter(type="submit") Enter

@@ -1,6 +1,6 @@
 'use strict'
 
-SubmissionsController = ($scope, $rootScope, $state, dragulaService, StepsService, SubmissionsService) ->
+SubmissionsController = (helpers, $scope, $rootScope, $state, dragulaService, StepsService, SubmissionsService) ->
   vm             = this
   config         = {}
 
@@ -150,9 +150,9 @@ SubmissionsController = ($scope, $rootScope, $state, dragulaService, StepsServic
     vm.loaded = true
 
     # Handle steps updates
-    currentStep = StepsService.findInCollection steps, 'stepType', config.stepType
-    prevStep = StepsService.findInCollection steps, 'stepType', config.prevStepType
-    nextStep = StepsService.findInCollection steps, 'stepType', config.nextStepType
+    currentStep = helpers.findInCollection steps, 'stepType', config.stepType
+    prevStep = helpers.findInCollection steps, 'stepType', config.prevStepType
+    nextStep = helpers.findInCollection steps, 'stepType', config.nextStepType
 
     vm.startsAt = currentStep.startsAt
     vm.endsAt = currentStep.endsAt
@@ -166,9 +166,9 @@ SubmissionsController = ($scope, $rootScope, $state, dragulaService, StepsServic
 
     # Handle submissions updates
     vm.submissions = angular.copy submissions
-    vm.submissions = SubmissionsService.decorateSubmissionsWithRanks vm.submissions, currentStep.rankedSubmissions
-    vm.submissions = SubmissionsService.sortSubmissions vm.submissions
-    vm.submissions = SubmissionsService.decorateSubmissionsWithMessageCounts vm.submissions
+    vm.submissions = helpers.decorateSubmissionsWithRanks vm.submissions, currentStep.rankedSubmissions
+    vm.submissions = helpers.sortSubmissions vm.submissions
+    vm.submissions = helpers.decorateSubmissionsWithMessageCounts vm.submissions
 
     # Handle ranks updates
     vm.rankNames = config.rankNames.slice 0, currentStep.numberOfRanks
@@ -192,6 +192,6 @@ SubmissionsController = ($scope, $rootScope, $state, dragulaService, StepsServic
 
   vm
 
-SubmissionsController.$inject = ['$scope', '$rootScope', '$state', 'dragulaService', 'StepsService', 'SubmissionsService']
+SubmissionsController.$inject = ['SubmissionsHelpers', '$scope', '$rootScope', '$state', 'dragulaService', 'StepsService', 'SubmissionsService']
 
 angular.module('appirio-tech-submissions').controller 'SubmissionsController', SubmissionsController
