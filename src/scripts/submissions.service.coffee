@@ -64,7 +64,7 @@ srv = (helpers, $rootScope, StepsAPIService, SubmissionsAPIService, MessagesAPIS
 
     $rootScope.$emit 'submissionsService.submissions:changed'
 
-  submissionsService.postMessage = (message) ->
+  submissionsService.sendMessageRemote = (message) ->
     resource = MessagesAPIService.save message
 
   submissionsService

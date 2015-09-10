@@ -22,7 +22,7 @@ FileDetailController = (helpers, $scope, $rootScope, SubmissionsService, UserV3S
   vm.sendMessage = ->
     if vm.newMessage
       SubmissionsService.sendMessage vm.submissionId, vm.fileId, vm.newMessage, vm.userId
-      # SubmissionsService.sendMessageRemote vm.submissionId
+      SubmissionsService.sendMessageRemote vm.newMessage
       vm.newMessage = ''
 
   vm.toggleComments = ->
