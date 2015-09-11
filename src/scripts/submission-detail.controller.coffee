@@ -26,8 +26,7 @@ SubmissionDetailController = (helpers, $scope, $rootScope, StepsService, Submiss
   vm.submissionId = $scope.submissionId
 
   vm.handleRankSelect = (submission) ->
-    StepsService.updateRank vm.stepId, submission.id, submission.rank
-    StepsService.updateRankRemote vm.projectId, vm.stepId
+    StepsService.updateRank vm.projectId, vm.stepId, submission.id, submission.rank
 
   activate = ->
     destroyStepsListener = $rootScope.$on 'stepsService.steps:changed', ->

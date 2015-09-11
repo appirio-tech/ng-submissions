@@ -40,6 +40,11 @@ section(ng-if="vm.status == 'open'")
         .overlay(ng-if="!rank.avatarUrl")
           span {{ rank.value }}
 
+    li
+      .loader(ng-if="vm.rankUpdatePending")
+
+  p(ng-if="vm.rankUpdateError") {{ vm.rankUpdateError }}
+
   button.confirm.info(ng-show="vm.allFilled", ng-click="vm.confirmRanks()") Confirm your selections 
 
 hr

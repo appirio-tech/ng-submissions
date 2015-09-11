@@ -41,8 +41,7 @@ FinalFixesController = (helpers, $scope, $rootScope, $state, StepsService, Submi
   vm.stepId      = $scope.stepId
 
   vm.confirmApproval = ->
-    StepsService.acceptFixes vm.stepId
-    StepsService.acceptFixesRemote vm.projectId, vm.stepId
+    StepsService.acceptFixes vm.projectId, vm.stepId
 
   activate = ->
     destroyStepsListener = $rootScope.$on 'stepsService.steps:changed', ->

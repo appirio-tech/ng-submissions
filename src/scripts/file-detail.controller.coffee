@@ -22,15 +22,13 @@ FileDetailController = (helpers, $scope, $rootScope, SubmissionsService, UserV3S
   vm.sendMessage = ->
     if vm.newMessage
       SubmissionsService.sendMessage vm.submissionId, vm.fileId, vm.newMessage, vm.userId
-      SubmissionsService.sendMessageRemote vm.newMessage
       vm.newMessage = ''
 
   vm.toggleComments = ->
     vm.showComments = !vm.showComments
 
     if vm.showComments && vm.file.unreadMessages > 0
-      SubmissionsService.markMessagesAsRead vm.submissionId, vm.fileId
-      SubmissionsService.markMessagesAsReadRemote vm.submissionId, vm.fileId, vm.userId
+      SubmissionsService.markMessagesAsRead vm.submissionId, vm.fileId, vm.userId
 
   activate = ->
     destroySubmissionsListener = $rootScope.$on 'submissionsService.submissions:changed', ->

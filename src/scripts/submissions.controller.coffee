@@ -56,18 +56,18 @@ SubmissionsController = (helpers, $scope, $rootScope, $state, dragulaService, St
   vm.ranks       = []
   vm.projectId   = $scope.projectId
   vm.stepId      = $scope.stepId
+  vm.rankUpdatePending = false
+  vm.rankUpdateError = ''
 
   ##############
   # vm Methods #
   ##############
 
   vm.handleRankSelect = (submission) ->
-    StepsService.updateRank vm.stepId, submission.id, submission.rank
-    StepsService.updateRankRemote vm.projectId, vm.stepId
+    StepsService.updateRank vm.projectId, vm.stepId, submission.id, submission.rank
 
   vm.confirmRanks = ->
-    StepsService.confirmRanks vm.stepId
-    StepsService.confirmRanksRemote vm.projectId, vm.stepId
+    StepsService.confirmRanks vm.projectId, vm.stepId
 
   ##############
   # Activation #
@@ -107,10 +107,7 @@ SubmissionsController = (helpers, $scope, $rootScope, $state, dragulaService, St
     movedSubmissionId = target[0].dataset.id
     rankToAssign = (parseInt(source[0].dataset.rank) + 1) + ''
 
-    SubmissionsService.updateRank vm.stepId, movedSubmissionId, rankToAssign
-    onChange()
-    SubmissionsService.updateRankRemote().then ->
-      onChange()
+    StepsService.updateRank vm.projectId, vm.stepId, movedSubmissionId, rankToAssign
 
   $scope.$on 'ranked-submissions.drop', handleRankDrop
 
@@ -149,7 +146,6 @@ SubmissionsController = (helpers, $scope, $rootScope, $state, dragulaService, St
 
     vm.loaded = true
 
-    # Handle steps updates
     currentStep = helpers.findInCollection steps, 'stepType', config.stepType
     prevStep = helpers.findInCollection steps, 'stepType', config.prevStepType
     nextStep = helpers.findInCollection steps, 'stepType', config.nextStepType
@@ -164,20 +160,22 @@ SubmissionsController = (helpers, $scope, $rootScope, $state, dragulaService, St
     vm.prevStepRef = $state.href config.prevStepState, stepParams
     vm.nextStepRef = $state.href config.nextStepState, stepParams
 
-    # Handle submissions updates
     vm.submissions = angular.copy submissions
     vm.submissions = helpers.decorateSubmissionsWithRanks vm.submissions, currentStep.rankedSubmissions
     vm.submissions = helpers.sortSubmissions vm.submissions
     vm.submissions = helpers.decorateSubmissionsWithMessageCounts vm.submissions
 
-    # Handle ranks updates
     vm.rankNames = config.rankNames.slice 0, currentStep.numberOfRanks
     vm.ranks     = makeEmptyRankList(vm.rankNames)
     vm.ranks     = decorateRankListWithSubmissions vm.ranks, vm.submissions
 
+    vm.rankUpdatePending = currentStep.updating?.rankedSubmissions
+
+    if currentStep.errors?.rankedSubmissions
+      vm.rankUpdateError = currentStep.errors.rankedSubmissions
+
     vm.allFilled = currentStep.rankedSubmissions.length == currentStep.numberOfRanks
 
-    # Handle status updates
     vm.status = config.defaultStatus
 
     if Date.now() > new Date(currentStep.startsAt)
@@ -185,8 +183,6 @@ SubmissionsController = (helpers, $scope, $rootScope, $state, dragulaService, St
 
     if currentStep.customerConfirmedRanks
       vm.status = 'closed'
-
-    vm.status = 'closed'
 
   activate()
 
