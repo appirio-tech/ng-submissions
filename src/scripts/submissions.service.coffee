@@ -1,12 +1,15 @@
 'use strict'
 
-srv = (helpers, StepsAPIService, SubmissionsAPIService, MessagesAPIService, ModelHelpers) ->
+srv = ($rootScope, helpers, StepsAPIService, SubmissionsAPIService, MessagesAPIService, O) ->
   # Used for caching
   currentProjectId = null
   currentStepId = null
 
   submissionsService =
     submissions: []
+
+  emitUpdates = ->
+    $rootScope.$emit 'submissionsService.submissions:changed'
 
   submissionsService.fetch = (projectId, stepId) ->
     if projectId != currentProjectId || stepId != currentStepId
@@ -21,10 +24,10 @@ srv = (helpers, StepsAPIService, SubmissionsAPIService, MessagesAPIService, Mode
 
       SubmissionsAPIService.query(params).$promise
 
-    ModelHelpers.fetch {
+    O.fetch {
       collection: submissionsService.submissions
       apiCall: apiCall
-      eventName: 'submissionsService.submissions:changed'
+      updateCallback: emitUpdates
     }
 
   submissionsService.markMessagesAsRead = (submissionId, fileId, userId) ->
@@ -44,12 +47,12 @@ srv = (helpers, StepsAPIService, SubmissionsAPIService, MessagesAPIService, Mode
 
           MessagesAPIService.put(params, body).$promise
 
-        ModelHelpers.update {
+        O.update {
           model: message
           updates:
             read: true
           apiCall: apiCall
-          eventName: 'submissionsService.submissions:changed'
+          updateCallback: emitUpdates
           handleResponse: false
         }
 
@@ -68,15 +71,15 @@ srv = (helpers, StepsAPIService, SubmissionsAPIService, MessagesAPIService, Mode
     apiCall = (message) ->
       MessagesAPIService.save(message).$promise
 
-    ModelHelpers.addToCollection {
+    O.addToCollection {
       collection: messages
       item: newMessage
       apiCall: apiCall
-      eventName: 'submissionsService.submissions:changed'
+      updateCallback: emitUpdates
     }
 
   submissionsService
 
-srv.$inject = ['SubmissionsHelpers', 'StepsAPIService', 'SubmissionsAPIService', 'MessagesAPIService', 'ModelHelpers']
+srv.$inject = ['$rootScope', 'SubmissionsHelpers', 'StepsAPIService', 'SubmissionsAPIService', 'MessagesAPIService', 'Optimist']
 
 angular.module('appirio-tech-submissions').factory 'SubmissionsService', srv

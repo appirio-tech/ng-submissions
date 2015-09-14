@@ -1,11 +1,14 @@
 'use strict'
 
-srv = (helpers, StepsAPIService, ModelHelpers) ->
+srv = ($rootScope, helpers, StepsAPIService, O) ->
   # Used for caching
   currentProjectId = null
 
   stepsService =
     steps: []
+
+  emitUpdates = ->
+    $rootScope.$emit 'stepsService.steps:changed'
 
   stepsService.fetch = (projectId) ->
     if projectId != currentProjectId
@@ -18,10 +21,10 @@ srv = (helpers, StepsAPIService, ModelHelpers) ->
 
       StepsAPIService.query(params).$promise
 
-    ModelHelpers.fetch {
+    O.fetch {
       collection: stepsService.steps
       apiCall: apiCall
-      eventName: 'stepsService.steps:changed'
+      updateCallback: emitUpdates
     }
 
   stepsService.updateRank = (projectId, stepId, submissionId, rank) ->
@@ -37,12 +40,12 @@ srv = (helpers, StepsAPIService, ModelHelpers) ->
 
       StepsAPIService.updateRanks(params, step).$promise
 
-    ModelHelpers.update {
+    O.update {
       model: step
       updates:
         rankedSubmissions: rankedSubmissions
       apiCall: apiCall
-      eventName: 'stepsService.steps:changed'
+      updateCallback: emitUpdates
     }
 
   stepsService.confirmRanks = (projectId, stepId) ->
@@ -55,12 +58,12 @@ srv = (helpers, StepsAPIService, ModelHelpers) ->
 
       StepsAPIService.confirmRanks(params, step).$promise
 
-    ModelHelpers.update {
+    O.update {
       model: step
       updates:
         customerConfirmedRanks: true
       apiCall: apiCall
-      eventName: 'stepsService.steps:changed'
+      updateCallback: emitUpdates
     }
 
   stepsService.acceptFixes = (projectId, stepId) ->
@@ -73,16 +76,16 @@ srv = (helpers, StepsAPIService, ModelHelpers) ->
 
       StepsAPIService.confirmRanks(params, step).$promise
 
-    ModelHelpers.update {
+    O.update {
       model: step
       updates:
         customerAcceptedFixes: true
       apiCall: apiCall
-      eventName: 'stepsService.steps:changed'
+      updateCallback: emitUpdates
     }
 
   stepsService
 
-srv.$inject = ['SubmissionsHelpers', 'StepsAPIService', 'ModelHelpers']
+srv.$inject = ['$rootScope', 'SubmissionsHelpers', 'StepsAPIService', 'Optimist']
 
 angular.module('appirio-tech-submissions').factory 'StepsService', srv
