@@ -169,10 +169,10 @@ SubmissionsController = (helpers, $scope, $rootScope, $state, dragulaService, St
     vm.ranks     = makeEmptyRankList(vm.rankNames)
     vm.ranks     = decorateRankListWithSubmissions vm.ranks, vm.submissions
 
-    vm.rankUpdatePending = currentStep.updating?.rankedSubmissions
+    vm.rankUpdatePending = currentStep.o?.pending?.rankedSubmissions
 
-    if currentStep.errors?.rankedSubmissions
-      vm.rankUpdateError = currentStep.errors.rankedSubmissions
+    if currentStep.o?.errors?.rankedSubmissions
+      vm.rankUpdateError = currentStep.o?.errors?.rankedSubmissions
 
     vm.allFilled = currentStep.rankedSubmissions.length == currentStep.numberOfRanks
 
