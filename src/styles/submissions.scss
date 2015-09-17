@@ -38,7 +38,7 @@ submissions {
 
       .shell {
         font-size     : $font-size-big;
-        border        : 2px dashed $primary-color;
+        border        : 2px dashed $neutral-color;
         position: relative;
 
         .overlay {
@@ -50,7 +50,7 @@ submissions {
 
           span {
             display: block;
-            color: $primary-color-darkest;
+            color: $neutral-color-darkest;
           }
         }
 
@@ -59,7 +59,7 @@ submissions {
           cursor: pointer;
 
           .overlay {
-            background-color: $primary-color-darkest;
+            background-color: $neutral-color-darkest;
             opacity: 0;
 
             &:hover {

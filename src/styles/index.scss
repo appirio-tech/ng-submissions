@@ -3,10 +3,10 @@
 .loader {
   width: 25px;
   height: 25px;
-  border-top       : 5px solid $primary-color-light;
-  border-right     : 5px solid $primary-color-light;
-  border-bottom    : 5px solid $primary-color-light;
-  border-left      : 5px solid $primary-color-lightest ;
+  border-top       : 5px solid $neutral-color-light;
+  border-right     : 5px solid $neutral-color-light;
+  border-bottom    : 5px solid $neutral-color-light;
+  border-left      : 5px solid $neutral-color-lightest ;
   -webkit-transform: translateZ(0);
   -ms-transform    : translateZ(0);
   transform        : translateZ(0);
@@ -51,7 +51,7 @@ submissions, final-fixes {
   }
 
   h4 {
-    color: $primary-color-light;
+    color: $neutral-color-light;
   }
 
   .duration {
@@ -64,7 +64,7 @@ submissions, final-fixes {
     @include flex-center(space-between);
 
     height          : 2px;
-    background-color: $primary-color-light;
+    background-color: $neutral-color-light;
     width           : 100px;
     margin-top      : $spacing;
     margin-bottom   : $spacing;
@@ -72,11 +72,11 @@ submissions, final-fixes {
     li {
       width           : 6px;
       height          : 6px;
-      background-color: $primary-color-light;
+      background-color: $neutral-color-light;
       border-radius   : 50%;
 
       &.active {
-        background-color: $primary-color-dark;
+        background-color: $neutral-color-dark;
       }
     }
   }
