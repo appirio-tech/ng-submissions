@@ -100,6 +100,44 @@ Service.prototype.addToCollection = (options) ->
 # Models #
 ##########
 
+Service.prototype.fetchOne = (options) ->
+  model                = options.model || {}
+  updates              = options.updates || []
+  apiCall              = options.apiCall || noop
+  updateCallback       = options.updateCallback || noop
+  handleResponse       = options.handleResponse != false
+  clearErrorsOnSuccess = options.clearErrorsOnSuccess != false
+
+  # Should return a promise for a server update
+  request = apiCall()
+
+  # Restore/add metadata to the model
+  unless model.o?
+    Object.defineProperty model, 'o', enumProps()
+
+  model.o.hasPending = true
+
+  # This callback should be non-blocking and update your app state
+  updateCallback(model)
+
+  request.then (response) ->
+    now                 = new Date()
+    model.o.lastUpdated = now.toISOString()
+
+    if clearErrorsOnSuccess
+      model.o.errors = {}
+
+    if handleResponse
+      for name, prop of response
+        model[name] = response[name]
+
+  request.catch (err) ->
+    model.o.error = err
+
+  request.finally () ->
+    model.o.hasPending = false
+    updateCallback(model)
+
 Service.prototype.update = (options) ->
   model                = options.model || {}
   updates              = options.updates || []
@@ -129,9 +167,10 @@ Service.prototype.update = (options) ->
   if o
     model.o = o
   else
-    model.o =
-      pending: {}
-      errors: {}
+    model.o = {}
+
+  model.o.pending = {}
+  model.o.errors = {}
 
   for name, prop of updates
     model.o.pending[name] = true
