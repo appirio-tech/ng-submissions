@@ -19,8 +19,9 @@
 }
 
 submissions, final-fixes {
-  position: relative;
-  display : inline-block;
+  background-color: $neutral-color-lightest;
+  position        : relative;
+  display         : inline-block;
 
   .header {
     @include flex-center(center);
@@ -41,6 +42,37 @@ submissions, final-fixes {
     }
   }
 
+  .subheader {
+    text-align: center;
+    margin-top: $margin;
+
+    hr {
+      margin-bottom: 0px;
+    }
+
+    .icon {
+      margin: 0 auto;
+    }
+
+    .winners {
+      li {
+        @include vertical-align-middle();
+
+        display: inline-block;
+        margin: $margin;
+
+        > * {
+          margin-left: $margin-smallest;
+        }
+
+        .rank {
+          color: $primary-color;
+          text-transform: uppercase;
+        }
+      }
+    }
+  }
+
   h1, h3, h4  {
     text-align: center;
   }
@@ -52,11 +84,6 @@ submissions, final-fixes {
 
   h4 {
     color: $neutral-color-light;
-  }
-
-  .duration {
-    text-align: center;
-    margin-top: $spacing-smallest;
   }
 
   .timeline {
@@ -84,8 +111,16 @@ submissions, final-fixes {
   .countdown {
     @include flex-center(center, $spacing-small);
 
+    margin-top: $margin-small;
+
     .value {
       font-size: $font-size-biggest;
+      color: $primary-color;
+    }
+
+    .unit {
+      font-weight: bold;
+      text-transform: uppercase;
     }
   }
 }
@@ -124,7 +159,7 @@ final-fixes, submission-detail {
           }
 
           &.notification {
-            background-color: $color-danger;
+            background-color: $danger-color;
 
             button {
               color: white;

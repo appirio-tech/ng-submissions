@@ -2,55 +2,56 @@ loader(ng-hide="vm.loaded")
 
 include parts/header
 
-include parts/timeline
+.subheader(ng-if="vm.status == 'scheduled'")
+  .icon.warning.biggest
 
-section(ng-if="vm.status == 'scheduled'")
-  h4 Submissions for the {{ vm.stepName }} Phase coming in &hellip;
+  p Submissions for the {{ vm.stepName }} Phase coming in &hellip;
+
   countdown(end="{{ vm.startsAt }}")
 
-section(ng-if="vm.status == 'closed'")
-  h4 Congratulations! These are your {{ vm.stepName }} winners.
+.subheader(ng-if="vm.status == 'closed'")
+  p Congratulations! These are your {{ vm.stepName }} winners.
 
-  ul.top-selection
+  hr.small
+
+  ul.winners
     li(ng-repeat="rank in vm.ranks")
-      .shell.has-avatar
-        .draggable
-          avatar(avatar-url="{{ rank.avatarUrl }}")
-          .overlay
-            span {{ rank.value }}
+      .rank <strong>1st</strong><br /> place
 
-section(ng-if="vm.status == 'open'")
-  h4 Give feedback and select the top {{ vm.ranks.length }} designs.
+      avatar
 
-  p.duration remaining to give feedback
+      a.name(href="#") Bilbo Baggins
+
+  button.wider.action view submissions
+
+.subheader(ng-if="vm.status == 'open'")
+  p Give feedback and select the top {{ vm.ranks.length }} designs. You have 72 hours to give feedback.
 
   ul.top-selection
     li(ng-repeat="rank in vm.ranks")
       .shell(
-        dragula="'ranked-submissions'",
-        dragula-scope="$parent",
-        ng-class="{ 'has-avatar': rank.avatarUrl }",
-        data-rank="{{ $index }}")
-
-        .draggable(ng-if="rank.avatarUrl", data-id="{{ rank.id }}")
+        dragula="'ranked-submissions'"
+        dragula-scope="$parent"
+        ng-class="{ 'has-avatar': rank.avatarUrl }"
+        data-rank="{{ $index }}"
+      )
+        .draggable(ng-if="rank.avatarUrl" data-id="{{ rank.id }}")
           avatar(avatar-url="{{ rank.avatarUrl }}")
-          .overlay
-            span {{ rank.value }}
 
-        .overlay(ng-if="!rank.avatarUrl")
-          span {{ rank.value }}
+          .rank {{ rank.value }}
 
-    li
-      .loader(ng-if="vm.rankUpdatePending")
+        .rank(ng-if="!rank.avatarUrl") {{ rank.value }}
+
+    li(ng-if="vm.rankUpdatePending")
+      .loader
+
+    li(ng-show="vm.allFilled")
+      button.action(ng-click="vm.confirmRanks()") Confirm your selections 
 
   p(ng-if="vm.rankUpdateError") {{ vm.rankUpdateError }}
 
-  button.confirm.info(ng-show="vm.allFilled", ng-click="vm.confirmRanks()") Confirm your selections 
-
-hr
-
-ul.submissions.color-even
-  li.submission(ng-repeat="submission in vm.submissions track by $index")
+ul.submissions
+  li.submission.elevated(ng-repeat="submission in vm.submissions track by $index")
     ul.user-details
       li
         avatar(avatar-url="{{ submission.submitter.avatar }}")
@@ -67,27 +68,21 @@ ul.submissions.color-even
           img.img(ng-src="{{ file.images.thumbnail }}")
 
         .pop-over
-          a(ui-sref="file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: submission.id, fileId: file.id})")
+          a.preview(ui-sref="file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: submission.id, fileId: file.id})")
             img.previewImage(ng-src="{{ file.images.large }}")
 
-          ul.previewActions
-            li.comments
-              .comments 20/28
-                .icon.bubble
 
-            li.download
-              button
-                a(href="{{ file.images.full }}", target="_blank")
-                  .clean.icon.download
+          .icon.bubble
+
+          a(href="{{ file.images.full }}", target="_blank")
+            .clean.icon.download
 
     ul.actions
       li
-        a(ui-sref="submission-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: submission.id})") view all ({{ submission.files.length }})
+        a(ui-sref="submission-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: submission.id})") Show all
 
       li.comments
-        | {{ submission.unreadMessages }}/{{ submission.totalMessages }}
-
-        .icon.bubble
+        .icon.download.small
 
       li(ng-if="vm.status == 'closed' && submission.rank")
         a(href="#", target="_blank")

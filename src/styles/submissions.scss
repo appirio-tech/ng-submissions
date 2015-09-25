@@ -7,68 +7,55 @@ $pop-over-left: 30px;
 submissions {
   width: 100%;
 
-  button.confirm {
-    @include block-center();
-
-    text-transform: uppercase;
-  }
-
   .top-selection {
-    @include flex-center;
-    @include justify-content(space-between);
+    @include vertical-align-middle();
 
-    width : 260px;
+    max-width : 568px;
     margin: $spacing-big auto;
 
-    li {
+    > li {
       $radius: 40px;
 
-      .shell, avatar, .overlay {
-        width : $radius;
-        height: $radius;
-        border-radius : 50%;
+      margin-right: $margin-small;
+
+      &:last-child {
+        margin-right: 0;
+      }
+
+      .shell, avatar {
+        width        : $radius;
+        height       : $radius;
+        border-radius: 50%;
+        border       : 1px solid $neutral-color;
       }
 
       avatar {
-        margin-bottom: $spacing-smallest;
         position: absolute;
-        top: 0;
-        left: 0;
+        top     : -1px;
+        left    : -1px;
       }
 
       .shell {
-        font-size     : $font-size-big;
-        border        : 2px dashed $neutral-color;
-        position: relative;
+        font-size   : $font-size-big;
+        border-style: dashed;
+        position    : relative;
 
-        .overlay {
-          position: absolute;
-          top: 0;
-          left: 0;
-          @include flex-center(center);
-          background-color: transparent;
-
-          span {
-            display: block;
-            color: $neutral-color-darkest;
-          }
+        .rank {
+          position        : absolute;
+          border-radius   : 50%;
+          width           : 38px; // remember to subtract border-widths
+          line-height     : 38px; // remember to subtract border-widths
         }
 
         &.has-avatar {
-          border-color: #fff;
-          cursor: pointer;
-
-          .overlay {
+          .rank {
             background-color: $neutral-color-darkest;
-            opacity: 0;
+            opacity         : 0;
+            color           : $white;
+            cursor          : move;
 
             &:hover {
               opacity: 0.9;
-
-              span {
-                display: block;
-                color: #fff;
-              }
             }
           }
         }
@@ -83,8 +70,10 @@ submissions {
   .submission {
     @include display(flex);
     @include flex-wrap(nowrap);
-    height   : 60px;
-    padding  : $spacing-small;
+
+    padding         : $spacing-small 0 0 $spacing-small;
+    background-color: $white;
+    margin-top      : $margin-small;
 
     &:first-child {
       margin-top: 0;
@@ -92,7 +81,7 @@ submissions {
 
     ul.user-details {
       @include flex-center(flex-start, $spacing-big);
-      flex-grow: 0;
+
       min-width: 200px;
 
       .name-time {
@@ -111,7 +100,7 @@ submissions {
 
     ul.actions {
       @include flex-center(space-between, $spacing-big);
-      @include flex-grow(0);
+
       min-width: 250px;
 
       .comments {
@@ -127,27 +116,42 @@ submissions {
       @include flex-grow(1);
 
       .pop-over {
-        height: 450px;
-        width: 250px;
-        padding: $spacing-big;
-        background-color: #fff;
-        position: absolute;
-        top: $pop-over-top;
-        left: $pop-over-left;
-        z-index: 1;
-        box-shadow: 6px 7px 64px -4px rgba(0,0,0,0.21);
-        display: none;
+        background-color: $white;
+        position        : absolute;
+        top             : $pop-over-top;
+        left            : $pop-over-left;
+        z-index         : 1;
+        box-shadow      : 6px 7px 64px -4px rgba(0,0,0,0.21);
+        display         : none;
+        text-align      : center;
+        padding         : $padding;
+
+        > * {
+          display: inline-block;
+          margin: $margin-small;
+          margin-bottom: 0;
+        }
+
+        .preview {
+          margin    : 0;
+          min-width : 200px;
+          min-height: 400px;
+
+          img {
+            display: inline-block;
+          }
+        }
 
         &:before {
-          content: "";
-          position: absolute;
-          width: 0;
-          height: 0;
+          content     : "";
+          position    : absolute;
+          width       : 0;
+          height      : 0;
           border-width: 10px;
           border-style: solid;
-          border-color: transparent #fff transparent transparent;
-          top: $pop-over-top + 105px;
-          left: $pop-over-left - 50px;
+          border-color: transparent $white transparent transparent;
+          top         : $pop-over-top + 105px;
+          left        : $pop-over-left - 50px;
         }
       }
 
@@ -156,26 +160,14 @@ submissions {
 
         &:hover {
           .pop-over {
-            @include flex-center;
-            @include flex-direction(column);
-
-            .previewActions {
-              @include flex-center(space-between);
-              width: 100px;
-            }
+            display: block;
           }
         }
 
-        a {
-          @include flex-center;
-          @include flex-grow(2);
-        }
-
         .img {
-          width           : 50px;
-          height          : 40px;
-          background-color: purple;
-          margin          : 0 $spacing-small $spacing-small 0;
+          width : 50px;
+          height: 40px;
+          margin: 0 $margin-smallest $margin-smallest 0;
         }
       }
     }
