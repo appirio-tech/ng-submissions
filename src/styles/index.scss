@@ -18,17 +18,29 @@
   border-radius: 50%;
 }
 
+
+submissions, final-fixes, submission-detail {
+  display: block;
+  text-align: center;
+}
+
 submissions, final-fixes {
-  position: relative;
-  display : inline-block;
+  width           : 100%;
+  background-color: $neutral-color-lightest;
 
   .header {
     @include flex-center(center);
+
+    li:first-child, li:last-child {
+      min-width: 50px;
+      min-height: 1px;
+    }
 
     .next, .previous {
       a {
         font-size: 30px;
         text-decoration: none;
+        color: $black;
       }
     }
 
@@ -38,6 +50,38 @@ submissions, final-fixes {
 
     .previous {
       margin-right: 50px;
+    }
+  }
+
+  .subheader {
+    text-align: center;
+    margin-top: $margin;
+
+    hr {
+      margin-bottom: 0px;
+      background-color: $neutral-color-light;
+    }
+
+    .icon {
+      margin: 0 auto;
+    }
+
+    .winners {
+      > li {
+        @include vertical-align-middle();
+
+        display: inline-block;
+        margin: $margin;
+
+        > * {
+          margin-left: $margin-smallest;
+        }
+
+        .rank {
+          color: $primary-color;
+          text-transform: uppercase;
+        }
+      }
     }
   }
 
@@ -54,89 +98,59 @@ submissions, final-fixes {
     color: $neutral-color-light;
   }
 
-  .duration {
-    text-align: center;
-    margin-top: $spacing-smallest;
-  }
-
-  .timeline {
-    @include block-center();
-    @include flex-center(space-between);
-
-    height          : 2px;
-    background-color: $neutral-color-light;
-    width           : 100px;
-    margin-top      : $spacing;
-    margin-bottom   : $spacing;
-
-    li {
-      width           : 6px;
-      height          : 6px;
-      background-color: $neutral-color-light;
-      border-radius   : 50%;
-
-      &.active {
-        background-color: $neutral-color-dark;
-      }
-    }
-  }
-
   .countdown {
     @include flex-center(center, $spacing-small);
 
+    margin-top: $margin-small;
+
     .value {
       font-size: $font-size-biggest;
+      color    : $primary-color;
+    }
+
+    .unit {
+      font-weight: bold;
+      text-transform: uppercase;
     }
   }
 }
 
 final-fixes, submission-detail {
   .previews {
-    margin-top: $spacing;
+    $tile-width: 160px;
 
-    @include flex-center;
+    display: inline-block;
 
     .preview {
-      margin-right : $spacing;
-      margin-bottom: $spacing;
-      width        : 160px;
-      position     : relative;
+      position: relative;
+      margin  : $margin-smallest;
+      width   : $tile-width;
+      display : inline-block;
 
       .img {
-        width           : 160px;
+        width           : $tile-width;
         height          : 130px;
         background-color: orange;
       }
 
-      .icons {
-        position: absolute;
-        top     : 0;
-        right   : $spacing-smallest;
+      > p {
+        @include ellipsis();
 
-        li {
-          background-color: white;
-          border-radius   : $border-radius;
-          margin-top      : $spacing-smallest;
-          text-align      : center;
-
-          button {
-            padding: $spacing-smallest;
-          }
-
-          &.notification {
-            background-color: $color-danger;
-
-            button {
-              color: white;
-              font-size: $font-size;
-            }
-          }
-        }
+        position        : absolute;
+        display         : none;
+        top             : 0;
+        width           : $tile-width;
+        left            : 0;
+        background-color: rgba(61, 61, 61, .5);
+        margin          : 0;
+        padding         : $padding-small;
+        color           : $white;
       }
 
-      p {
-        padding: $spacing-smallest;
-        @include ellipsis();
+      &:hover {
+        > p {
+          display: block;
+        }
       }
     }
   }

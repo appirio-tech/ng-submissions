@@ -1,33 +1,39 @@
 @import "work-includes";
 
 submission-detail {
-  ul.actions {
-    border      : 2px solid $neutral-color-lightest;
-    border-left : none;
-    border-right: none;
-    margin-top  : $spacing-big;
+  .submitter {
+    @include vertical-align-middle();
 
-    @include flex-center(space-between);
+    text-align: left;
+    float: left;
 
-    li {
-      @include flex-center;
-
-      margin     : $spacing;
-
-      p, .name-time {
-        margin-left: $spacing;
-        max-width: 200px;
-      }
+    > * {
+      margin-right: $margin-smallest;
     }
 
-    .submitter {
-      .name {
-        @include ellipsis();
-      }
+    a {
+      text-decoration: none;
+      text-transform: uppercase;
 
-      time {
-        display: block;
-      }
     }
+
+    .arrow {
+      font-size: $font-size-big;
+      color: $neutral-color-dark;
+    }
+  }
+
+  .download {
+    float: right;
+  }
+
+  header {
+    @include clearfix();
+  }
+
+  > select {
+    clear: both;
+    display: block;
+    margin: 0 auto;
   }
 }

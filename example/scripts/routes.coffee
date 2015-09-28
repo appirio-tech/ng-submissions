@@ -21,6 +21,7 @@ config = ($stateProvider) ->
 
   states['file-detail'] =
     url         : '/projects/:projectId/:stepId/:submissionId/:fileId'
+    controller  : 'FileDetailExampleController as vm'
     templateUrl : 'views/file-detail.html'
 
   for key, state of states
