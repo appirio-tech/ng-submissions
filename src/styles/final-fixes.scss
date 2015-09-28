@@ -2,28 +2,19 @@
 @import "mixins";
 
 final-fixes {
-  .winner {
-    @include flex-center(center, $spacing);
+  button {
+    @include vertical-align-middle();
 
-    .download {
-      @include vertical-align-middle();
+    display   : block;
+    margin    : 0 auto;
+    margin-top: $margin-small;
 
-      p {
-        margin-left: $spacing-smallest;
-        line-height: 24px;
-      }
+    .icon {
+      margin-right: $margin-small;
     }
   }
 
-  .approval {
-     @include flex-center(flex-start, $spacing);
-
-     padding-left: 0;
-
-    .confirm {
-      button {
-        text-transform: uppercase;
-      }
-    }
+  .previews {
+    margin-top: $margin;
   }
 }

@@ -2,58 +2,36 @@
 
 aside.messaging {
   @include clearfix;
+  @include transition (all 0.3s ease-in-out);
 
-  display : block;
-  position: absolute;
-  width   : 200px + $spacing-small * 2;
-  padding : $spacing-small;
-  overflow: hidden;
-  top     : 0;
-  right   : 0;
-
+  position        : absolute;
+  width           : 260px;
+  right           : -260px;
+  padding         : $spacing-small;
+  overflow        : hidden;
   box-shadow      : -3px 0px 5px 0px rgba(0,0,0,0.22);
   background-color: $neutral-color-lightest;
+  z-index         : 2;
 
-  .messages {
-    min-height: 410px;
-    max-height: 410px;
-    overflow  : scroll;
+  &.active {
+    right: 0;
+  }
 
-    > li {
-      @include flex-center();
-      @include flex-wrap(nowrap);
-
-      avatar {
-        min-width: 35px;
-      }
-
-      position  : relative;
-      padding   : 10px 0;
-      border-top: 1px solid #ccc;
-
-      &:first-child {
-        border-top: 0;
-      }
-
-      .message {
-        margin-left: $spacing-small;
-      }
-    }
+  hr {
+    background-color: $neutral-color-light;
   }
 
   form {
-    margin-top: 20px;
+    margin-top: $margin-small;
 
     textarea {
       width  : 100%;
-      padding: 5px;
-      height : 75px;
       border : 0;
     }
 
     button.enter {
-      margin-top: 20px;
-      width: 200px;
+      margin-top: $margin-small;
+      width: 100%;
     }
   }
 }
