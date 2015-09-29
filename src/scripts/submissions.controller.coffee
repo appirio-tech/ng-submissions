@@ -134,6 +134,7 @@ SubmissionsController = (helpers, $scope, $rootScope, $state, dragulaService, St
         if submissionRank < ranks.length
           ranks[submissionRank].avatarUrl = submission.submitter.avatar
           ranks[submissionRank].id = submission.id
+          ranks[submissionRank].handle = submission.submitter.handle
 
     ranks
 
@@ -180,6 +181,7 @@ SubmissionsController = (helpers, $scope, $rootScope, $state, dragulaService, St
 
     if Date.now() > new Date(currentStep.startsAt)
       vm.status = 'open'
+      vm.timeRemaining = moment(Date.now() - new Date(currentStep.startsAt))
 
     if currentStep.customerConfirmedRanks
       vm.status = 'closed'
