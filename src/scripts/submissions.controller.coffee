@@ -181,7 +181,6 @@ SubmissionsController = (helpers, $scope, $rootScope, $state, dragulaService, St
 
     if Date.now() > new Date(currentStep.startsAt)
       vm.status = 'open'
-      vm.timeRemaining = moment(Date.now() - new Date(currentStep.startsAt))
 
     if currentStep.customerConfirmedRanks
       vm.status = 'closed'
