@@ -26,11 +26,11 @@ include parts/header
   button.wider.action view submissions
 
 .subheader(ng-if="vm.status == 'open'")
-  p Give feedback and select the top {{ vm.ranks.length }} designs. You have
+  p Give feedback and select the top {{ vm.ranks.length }} designs. You have 
 
-  countdown(end="{{vm.endsAt}}")
-
-  p hours to give feedback.
+    countdown(end="{{vm.endsAt}}")
+    | 
+    | to give feedback.
 
   ul.top-selection
     li(ng-repeat="rank in vm.ranks")

@@ -1,5 +1,7 @@
 @import "work-includes";
 
+
+ // TODO: remove this css
 .loader {
   width: 25px;
   height: 25px;
@@ -98,19 +100,15 @@ submissions, final-fixes {
     color: $neutral-color-light;
   }
 
-  .countdown {
-    @include flex-center(center, $spacing-small);
+  countdown {
+    display: inline;
 
-    margin-top: $margin-small;
-
-    .value {
-      font-size: $font-size-biggest;
-      color    : $primary-color;
+    * {
+      display: inline;
     }
 
-    .unit {
-      font-weight: bold;
-      text-transform: uppercase;
+    li::before {
+      content: ' '
     }
   }
 }
