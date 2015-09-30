@@ -134,6 +134,7 @@ SubmissionsController = (helpers, $scope, $rootScope, $state, dragulaService, St
         if submissionRank < ranks.length
           ranks[submissionRank].avatarUrl = submission.submitter.avatar
           ranks[submissionRank].id = submission.id
+          ranks[submissionRank].handle = submission.submitter.handle
 
     ranks
 
