@@ -15,15 +15,15 @@ include parts/header
     li
       .rank <strong>winner</strong>
 
-      avatar
+      avatar(avatar-url="{{vm.submission.submitter.avatar}}")
 
-      a.name(href="#") Bilbo Baggins
+      a.name(href="#") {{vm.submission.submitter.handle}}
 
 .subheader(ng-if="vm.status == 'closed'")
   p Project Complete! Review final submission
 
 .subheader(ng-if="vm.status == 'open'")
-  p(ng-if="!vm.approvalConfirmed") Give your final feedback to complete this design project.
+  p Give your final feedback to complete this design project.
 
   countdown(end="{{ vm.work.phase.endDate }}")
 

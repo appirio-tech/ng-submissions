@@ -12,9 +12,7 @@ p.download
     .icon.download.small
 
 select(ng-model="vm.submission.rank", ng-change="vm.handleRankSelect(vm.submission)", ng-init="")
-  option select position
-
-  option(ng-repeat="rank in vm.rankNames", value="{{ $index + 1 }}", ng-selected="{{ $index + 1 == vm.submission.rank }}") {{ rank }}
+  option(ng-repeat="rank in vm.rankNames", value="$index+1", ng-selected="{{ $index+1 == vm.submission.rank }}") {{ rank }}
 
 hr
 
