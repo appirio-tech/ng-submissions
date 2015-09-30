@@ -27,7 +27,9 @@ include parts/header
 
 .subheader(ng-if="vm.status == 'open'")
   p Give feedback and select the top {{ vm.ranks.length }} designs. You have
+
   countdown(end="{{vm.endsAt}}")
+
   p hours to give feedback.
 
   ul.top-selection
