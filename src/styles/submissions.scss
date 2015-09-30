@@ -9,7 +9,7 @@ submissions {
     @include vertical-align-middle();
 
     max-width : 568px;
-    margin: $spacing-big auto;
+    margin: $margin-small auto;
 
     > li {
       $radius: 40px;
@@ -63,13 +63,14 @@ submissions {
 
   ul.submissions {
     max-height: 800px;
+    text-align: left;
   }
 
   .submission {
     @include display(flex);
     @include flex-wrap(nowrap);
 
-    padding         : $spacing-small 0 0 $spacing-small;
+    padding         : $padding-small $padding;
     background-color: $white;
     margin-top      : $margin-small;
 
@@ -78,13 +79,14 @@ submissions {
     }
 
     ul.user-details {
-      @include flex-center(flex-start, $spacing-big);
+      @include flex-center;
 
       min-width: 200px;
 
       .name-time {
         min-width: 120px;
         max-width: 120px;
+        margin-left: $margin-smallest;
 
         .name {
           @include ellipsis();
@@ -97,9 +99,11 @@ submissions {
     }
 
     ul.actions {
-      @include flex-center(space-between, $spacing-big);
+      @include flex-center;
 
-      min-width: 250px;
+      li {
+        margin-left: $margin-small;
+      }
 
       .comments {
         .icon {
@@ -109,8 +113,7 @@ submissions {
     }
 
     ul.thumbnails {
-      @include display(flex);
-      @include flex-wrap(wrap);
+      @include vertical-align-middle();
       @include flex-grow(1);
 
       .pop-over {
@@ -119,7 +122,6 @@ submissions {
         top             : $pop-over-top;
         left            : $pop-over-left;
         z-index         : 1;
-        box-shadow      : 6px 7px 64px -4px rgba(0,0,0,0.21);
         display         : none;
         text-align      : center;
         padding         : $padding;
@@ -153,8 +155,13 @@ submissions {
         }
       }
 
-      .thumbnail {
+      li.thumbnail {
         position: relative;
+        margin: $margin-smallest;
+
+        > a {
+          display: block;
+        }
 
         &:hover {
           .pop-over {
@@ -165,7 +172,6 @@ submissions {
         .img {
           width : 50px;
           height: 40px;
-          margin: 0 $margin-smallest $margin-smallest 0;
         }
       }
     }

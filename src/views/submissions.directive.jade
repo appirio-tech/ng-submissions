@@ -51,7 +51,7 @@ include parts/header
   p(ng-if="vm.rankUpdateError") {{ vm.rankUpdateError }}
 
 ul.submissions
-  li.submission.elevated(ng-repeat="submission in vm.submissions track by $index")
+  li.submission.elevated-bottom(ng-repeat="submission in vm.submissions track by $index")
     ul.user-details
       li
         avatar(avatar-url="{{ submission.submitter.avatar }}")
@@ -67,7 +67,7 @@ ul.submissions
         a(ui-sref="file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: submission.id, fileId: file.id})")
           img.img(ng-src="{{ file.images.thumbnail }}")
 
-        .pop-over
+        .pop-over.elevated
           a.preview(ui-sref="file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: submission.id, fileId: file.id})")
             img.previewImage(ng-src="{{ file.images.large }}")
 
@@ -79,7 +79,7 @@ ul.submissions
 
     ul.actions
       li
-        a(ui-sref="submission-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: submission.id})") Show all
+        a(ui-sref="submission-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: submission.id})") view all
 
       li.comments
         .icon.download.small
