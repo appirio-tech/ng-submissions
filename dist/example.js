@@ -19,7 +19,7 @@ angular.module("app.constants", [])
   'use strict';
   var dependencies;
 
-  dependencies = ['ui.router', 'ngResource', 'app.constants', 'appirio-tech-submissions', 'appirio-tech-ng-api-services', angularDragula(angular)];
+  dependencies = ['ui.router', 'app.constants', 'appirio-tech-submissions'];
 
   angular.module('example', dependencies);
 
@@ -50,6 +50,7 @@ angular.module("app.constants", [])
     };
     states['file-detail'] = {
       url: '/projects/:projectId/:stepId/:submissionId/:fileId',
+      controller: 'FileDetailExampleController as vm',
       templateUrl: 'views/file-detail.html'
     };
     results = [];
@@ -68,4 +69,21 @@ angular.module("app.constants", [])
 
 angular.module("example").run(["$templateCache", function($templateCache) {$templateCache.put("views/final-fixes.html","<final-fixes project-id=\"abc\" step-id=\"ghi\"></final-fixes>");
 $templateCache.put("views/submission-detail.html","<submission-detail project-id=\"abc\" step-id=\"abc\" submission-id=\"abc\"></submission-detail>");
-$templateCache.put("views/file-detail.html","<file-detail project-id=\"abc\" step-id=\"abc\" submission-id=\"abc\" file-id=\"abc\"></file-detail>");}]);
+$templateCache.put("views/file-detail.html","<modal show=\"true\" background-click-close=\"background-click-close\"><file-detail project-id=\"abc\" step-id=\"abc\" submission-id=\"abc\" file-id=\"abc\"></file-detail></modal>");}]);
+(function() {
+  'use strict';
+  var controller;
+
+  controller = function() {
+    var activate, vm;
+    vm = this;
+    vm.show = true;
+    activate = function() {
+      return vm;
+    };
+    return activate();
+  };
+
+  angular.module('example').controller('FileDetailExampleController', controller);
+
+}).call(this);
