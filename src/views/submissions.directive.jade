@@ -95,6 +95,6 @@ ul.submissions
 
       li(ng-if="vm.status == 'open'")
         select(ng-model="submission.rank", ng-change="vm.handleRankSelect(submission)", ng-init="")
-          option(ng-repeat="rank in vm.ranks", value="rank.value", ng-selected="{{ rank.value == submission.rank }}") {{ rank.label }}
+          option(ng-repeat="rank in vm.ranks", value="{{rank.value}}", ng-selected="{{ rank.value == submission.rank }}") {{ rank.label }}
 
       li(ng-if="vm.status == 'closed'") {{ vm.rankNames[submission.rank -1] }}
