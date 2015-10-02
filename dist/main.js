@@ -132,6 +132,47 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-show=\"!
       var currentStep, nextStep, prevStep, ref, ref1, ref2, ref3, ref4, ref5, stepParams, steps, submissions;
       steps = StepsService.steps;
       submissions = SubmissionsService.submissions;
+      submissions = [
+        {
+          "id": "abc",
+          "createdAt": "2015-05-05T20:53:41.467Z",
+          "downloadUrl": "http://placehold.it/400x800",
+          "submitter": {
+            "id": "abc",
+            "handle": "Darth Vader",
+            "avatar": "http://www.topcoder.com/i/m/cardiboy_big.jpg"
+          },
+          "files": [
+            {
+              "id": "abc",
+              "name": "super-generic-file-1.jpg",
+              "images": {
+                "thumbnail": "http://placehold.it/50x40",
+                "small": "http://placehold.it/160x130",
+                "large": "http://placehold.it/200x400",
+                "full": "http://placehold.it/400x800"
+              },
+              "threads": [
+                {
+                  "id": "guid-or-identifier-for-thread-object",
+                  "subject": "Messages for file",
+                  "unreadCount": 1,
+                  "messages": [
+                    {
+                      "id": "guid-or-identifier-for-message-object",
+                      "threadId": "guid-or-identifier-for-thread-object",
+                      "body": "Some insightful comment about this file.",
+                      "createdAt": "2015-11-azax05T08:15:30-05:00",
+                      "publisherId": "sselvadurai",
+                      "read": false
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ];
       if (steps.length <= 0 || submissions.length <= 0) {
         return null;
       }
