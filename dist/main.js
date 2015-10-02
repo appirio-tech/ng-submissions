@@ -148,22 +148,22 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-show=\"!
       vm.prevStepRef = $state.href(config.prevStepState, stepParams);
       vm.nextStepRef = $state.href(config.nextStepState, stepParams);
       vm.submissions = angular.copy(submissions);
-      vm.submissions = helpers.decorateSubmissionsWithRanks(vm.submissions, currentStep.rankedSubmissions);
+      vm.submissions = helpers.decorateSubmissionsWithRanks(vm.submissions, currentStep.details.rankedSubmissions);
       vm.submissions = helpers.sortSubmissions(vm.submissions);
       vm.submissions = helpers.decorateSubmissionsWithMessageCounts(vm.submissions);
-      vm.rankNames = config.rankNames.slice(0, currentStep.numberOfRanks);
+      vm.rankNames = config.rankNames.slice(0, currentStep.details.numberOfRanks);
       vm.ranks = makeEmptyRankList(vm.rankNames);
       vm.ranks = decorateRankListWithSubmissions(vm.ranks, vm.submissions);
       vm.rankUpdatePending = (ref = currentStep.o) != null ? (ref1 = ref.pending) != null ? ref1.rankedSubmissions : void 0 : void 0;
       if ((ref2 = currentStep.o) != null ? (ref3 = ref2.errors) != null ? ref3.rankedSubmissions : void 0 : void 0) {
         vm.rankUpdateError = (ref4 = currentStep.o) != null ? (ref5 = ref4.errors) != null ? ref5.rankedSubmissions : void 0 : void 0;
       }
-      vm.allFilled = currentStep.rankedSubmissions.length === currentStep.numberOfRanks;
+      vm.allFilled = currentStep.details.rankedSubmissions.length === currentStep.details.numberOfRanks;
       vm.status = config.defaultStatus;
       if (Date.now() > new Date(currentStep.startsAt)) {
         vm.status = 'open';
       }
-      if (currentStep.customerConfirmedRanks) {
+      if (currentStep.details.customerConfirmedRanks) {
         return vm.status = 'closed';
       }
     };
