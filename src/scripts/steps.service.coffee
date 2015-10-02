@@ -29,8 +29,8 @@ srv = ($rootScope, helpers, StepsAPIService, O) ->
 
   stepsService.updateRank = (projectId, stepId, submissionId, rank) ->
     step              = helpers.findInCollection stepsService.steps, 'id', stepId
-    numberOfRanks     = step.numberOfRanks
-    rankedSubmissions = step.rankedSubmissions
+    numberOfRanks     = step.details.numberOfRanks
+    rankedSubmissions = step.details.rankedSubmissions
     rankedSubmissions = helpers.updateRankedSubmissions rankedSubmissions, numberOfRanks, submissionId, rank
 
     apiCall = (step) ->

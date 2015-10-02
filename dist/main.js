@@ -591,8 +591,8 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-show=\"!
     stepsService.updateRank = function(projectId, stepId, submissionId, rank) {
       var apiCall, numberOfRanks, rankedSubmissions, step;
       step = helpers.findInCollection(stepsService.steps, 'id', stepId);
-      numberOfRanks = step.numberOfRanks;
-      rankedSubmissions = step.rankedSubmissions;
+      numberOfRanks = step.details.numberOfRanks;
+      rankedSubmissions = step.details.rankedSubmissions;
       rankedSubmissions = helpers.updateRankedSubmissions(rankedSubmissions, numberOfRanks, submissionId, rank);
       apiCall = function(step) {
         var params;
