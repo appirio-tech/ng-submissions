@@ -29,8 +29,8 @@ srv = ($rootScope, helpers, StepsAPIService, O) ->
 
   stepsService.updateRank = (projectId, stepId, submissionId, rank) ->
     step              = helpers.findInCollection stepsService.steps, 'id', stepId
-    numberOfRanks     = step.numberOfRanks
-    rankedSubmissions = step.rankedSubmissions
+    numberOfRanks     = step.details.numberOfRanks
+    rankedSubmissions = step.details.rankedSubmissions
     rankedSubmissions = helpers.updateRankedSubmissions rankedSubmissions, numberOfRanks, submissionId, rank
 
     apiCall = (step) ->
@@ -41,7 +41,7 @@ srv = ($rootScope, helpers, StepsAPIService, O) ->
       StepsAPIService.updateRanks(params, step).$promise
 
     O.update {
-      model: step
+      model: step.details
       updates:
         rankedSubmissions: rankedSubmissions
       apiCall: apiCall
@@ -59,7 +59,7 @@ srv = ($rootScope, helpers, StepsAPIService, O) ->
       StepsAPIService.confirmRanks(params, step).$promise
 
     O.update {
-      model: step
+      model: step.details
       updates:
         customerConfirmedRanks: true
       apiCall: apiCall
@@ -77,7 +77,7 @@ srv = ($rootScope, helpers, StepsAPIService, O) ->
       StepsAPIService.confirmRanks(params, step).$promise
 
     O.update {
-      model: step
+      model: step.details
       updates:
         customerAcceptedFixes: true
       apiCall: apiCall
