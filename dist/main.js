@@ -603,7 +603,7 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-show=\"!
         return StepsAPIService.updateRanks(params, step).$promise;
       };
       return O.update({
-        model: step,
+        model: step.details,
         updates: {
           rankedSubmissions: rankedSubmissions
         },
@@ -623,7 +623,7 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-show=\"!
         return StepsAPIService.confirmRanks(params, step).$promise;
       };
       return O.update({
-        model: step,
+        model: step.details,
         updates: {
           customerConfirmedRanks: true
         },
@@ -643,7 +643,7 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-show=\"!
         return StepsAPIService.confirmRanks(params, step).$promise;
       };
       return O.update({
-        model: step,
+        model: step.details,
         updates: {
           customerAcceptedFixes: true
         },

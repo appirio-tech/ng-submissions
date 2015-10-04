@@ -41,7 +41,7 @@ srv = ($rootScope, helpers, StepsAPIService, O) ->
       StepsAPIService.updateRanks(params, step).$promise
 
     O.update {
-      model: step
+      model: step.details
       updates:
         rankedSubmissions: rankedSubmissions
       apiCall: apiCall
@@ -59,7 +59,7 @@ srv = ($rootScope, helpers, StepsAPIService, O) ->
       StepsAPIService.confirmRanks(params, step).$promise
 
     O.update {
-      model: step
+      model: step.details
       updates:
         customerConfirmedRanks: true
       apiCall: apiCall
@@ -77,7 +77,7 @@ srv = ($rootScope, helpers, StepsAPIService, O) ->
       StepsAPIService.confirmRanks(params, step).$promise
 
     O.update {
-      model: step
+      model: step.details
       updates:
         customerAcceptedFixes: true
       apiCall: apiCall
