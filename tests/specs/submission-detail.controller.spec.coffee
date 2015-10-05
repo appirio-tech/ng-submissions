@@ -36,3 +36,4 @@ describe 'SubmissionDetailController', ->
       expect(vm.submission).to.be.an 'object'
       expect(vm.allFilled).to.be.false
       expect(vm.rankNames.length).to.be.above 0
+
