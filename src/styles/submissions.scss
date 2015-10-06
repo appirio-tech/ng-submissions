@@ -64,12 +64,10 @@ submissions {
   ul.submissions {
     max-height: 800px;
     text-align: left;
+    margin-top: $margin;
   }
 
   .submission {
-    @include display(flex);
-    @include flex-wrap(nowrap);
-
     padding         : $padding-small $padding;
     background-color: $white;
     margin-top      : $margin-small;
@@ -114,7 +112,6 @@ submissions {
 
     ul.thumbnails {
       @include vertical-align-middle();
-      @include flex-grow(1);
 
       .pop-over {
         background-color: $white;
