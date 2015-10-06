@@ -1,19 +1,27 @@
 'use strict'
 
-srv = ($rootScope, helpers, StepsAPIService, SubmissionsAPIService, MessagesAPIService, O) ->
-  # Used for caching
+srv = ($rootScope, helpers, StepsAPIService, SubmissionsAPIService, MessagesAPIService, Optimist) ->
   currentProjectId = null
   currentStepId = null
-
-  submissionsService =
-    submissions: []
 
   emitUpdates = ->
     $rootScope.$emit 'submissionsService.submissions:changed'
 
-  submissionsService.fetch = (projectId, stepId) ->
+  createSubmissionCollection = ->
+    newSteps = new Optimist.Collection
+      updateCallback: emitUpdates
+      propsToIgnore: ['$promise', '$resolved']
+
+    newSteps
+
+  submissions = createSubmissionCollection()
+
+  get = ->
+    submissions.get()
+
+  fetch = (projectId, stepId) ->
     if projectId != currentProjectId || stepId != currentStepId
-      submissionsService.submissions = []
+      submissions = createSubmissionCollection()
       currentProjectId = projectId
       currentStepId = stepId
 
@@ -24,40 +32,38 @@ srv = ($rootScope, helpers, StepsAPIService, SubmissionsAPIService, MessagesAPIS
 
       SubmissionsAPIService.query(params).$promise
 
-    O.fetch {
-      collection: submissionsService.submissions
+    submissions.fetch
       apiCall: apiCall
-      updateCallback: emitUpdates
-    }
 
-  submissionsService.markMessagesAsRead = (submissionId, fileId, userId) ->
-    currentSubmissions = helpers.findInCollection submissionsService.submissions, 'id', submissionId
-    currentFile        = helpers.findInCollection currentSubmissions.files, 'id', fileId
-    messages           = currentFile.threads[0]?.messages
+  markMessagesAsRead = (submissionId, fileId, userId) ->
+    submission     = submissions.findWhere { id: submissionId }
+    submissionData = submission.get()
+    files          = submissionData.files
+    file           = helpers.findInCollection submission.files, 'id', fileId
+    messages       = file.threads[0]?.messages
+    updateMade     = false
 
     messages.forEach (message) ->
       if !message.read
-        apiCall = () ->
-          params =
-            id: message.id
+        updateMade = true
+        message.read = true
 
-          body =
-            read: true
-            subscriberId: userId
+        params =
+          id: message.id
 
-          MessagesAPIService.put(params, body).$promise
+        body =
+          read: true
+          subscriberId: userId
 
-        O.update {
-          model: message
-          updates:
-            read: true
-          apiCall: apiCall
-          updateCallback: emitUpdates
-          handleResponse: false
-        }
+        MessagesAPIService.put(params, body).$promise
 
-  submissionsService.sendMessage = (submissionId, fileId, message, userId) ->
-    currentSubmissions = helpers.findInCollection submissionsService.submissions, 'id', submissionId
+    if updateMade
+      submission.updateLocal
+        updates:
+          read: true
+
+  sendMessage = (submissionId, fileId, message, userId) ->
+    currentSubmissions = helpers.findInCollection submissions, 'id', submissionId
     currentFile        = helpers.findInCollection currentSubmissions.files, 'id', fileId
     messages           = currentFile.threads[0]?.messages
     now                = new Date()
@@ -71,14 +77,16 @@ srv = ($rootScope, helpers, StepsAPIService, SubmissionsAPIService, MessagesAPIS
     apiCall = (message) ->
       MessagesAPIService.save(message).$promise
 
-    O.addToCollection {
+    Optimist.addToCollection
       collection: messages
       item: newMessage
       apiCall: apiCall
       updateCallback: emitUpdates
-    }
 
-  submissionsService
+  get                : get
+  fetch              : fetch
+  markMessagesAsRead : markMessagesAsRead
+  sendMessage        : sendMessage
 
 srv.$inject = ['$rootScope', 'SubmissionsHelpers', 'StepsAPIService', 'SubmissionsAPIService', 'MessagesAPIService', 'Optimist']
 

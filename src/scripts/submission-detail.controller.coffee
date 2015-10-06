@@ -43,8 +43,8 @@ SubmissionDetailController = (helpers, $scope, $rootScope, StepsService, Submiss
     SubmissionsService.fetch vm.projectId, vm.stepId
 
   onChange = ->
-    steps = StepsService.steps
-    submissions = SubmissionsService.submissions
+    steps = StepsService.get()
+    submissions = SubmissionsService.get()
 
     if steps.length <= 0 || submissions.length <= 0
       return null

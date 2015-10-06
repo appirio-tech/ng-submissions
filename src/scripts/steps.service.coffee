@@ -1,18 +1,24 @@
 'use strict'
 
-srv = ($rootScope, helpers, StepsAPIService, O) ->
-  # Used for caching
+srv = ($rootScope, helpers, StepsAPIService, Optimist) ->
   currentProjectId = null
 
-  stepsService =
-    steps: []
+  createStepCollection = ->
+    newSteps = new Optimist.Collection
+      updateCallback: ->
+        $rootScope.$emit 'StepsService:changed'
+      propsToIgnore: ['$promise', '$resolved']
 
-  emitUpdates = ->
-    $rootScope.$emit 'stepsService.steps:changed'
+    newSteps
 
-  stepsService.fetch = (projectId) ->
+  steps = createStepCollection()
+
+  get = ->
+    steps.get()
+
+  fetch = (projectId) ->
     if projectId != currentProjectId
-      stepsService.steps = []
+      steps = createStepCollection()
       currentProjectId = projectId
 
     apiCall = () ->
@@ -21,18 +27,10 @@ srv = ($rootScope, helpers, StepsAPIService, O) ->
 
       StepsAPIService.query(params).$promise
 
-    O.fetch {
-      collection: stepsService.steps
+    steps.fetch
       apiCall: apiCall
-      updateCallback: emitUpdates
-    }
 
-  stepsService.updateRank = (projectId, stepId, submissionId, rank) ->
-    step              = helpers.findInCollection stepsService.steps, 'id', stepId
-    numberOfRanks     = step.details.numberOfRanks
-    rankedSubmissions = step.details.rankedSubmissions
-    rankedSubmissions = helpers.updateRankedSubmissions rankedSubmissions, numberOfRanks, submissionId, rank
-
+  updateStep = (projectId, stepId, step, updates) ->
     apiCall = (step) ->
       params =
         projectId: projectId
@@ -40,51 +38,47 @@ srv = ($rootScope, helpers, StepsAPIService, O) ->
 
       StepsAPIService.updateRanks(params, step).$promise
 
-    O.update {
-      model: step.details
-      updates:
-        rankedSubmissions: rankedSubmissions
+    step.update
+      updates: updates
       apiCall: apiCall
-      updateCallback: emitUpdates
-    }
 
-  stepsService.confirmRanks = (projectId, stepId) ->
-    step = helpers.findInCollection stepsService.steps, 'id', stepId
+  updateRank = (projectId, stepId, submissionId, rank) ->
+    stepsById         = steps.findWhere { id: stepId }
+    step              = stepsById[0]
+    stepData          = step.get()
+    numberOfRanks     = stepData.details.numberOfRanks
+    rankedSubmissions = stepData.details.rankedSubmissions
+    rankedSubmissions = helpers.updateRankedSubmissions rankedSubmissions, numberOfRanks, submissionId, rank
+    debugger
+    rankedSubmissionList = rankedSubmissions.map (submission) ->
+      submission.submissionId
 
-    apiCall = (step) ->
-      params =
-        projectId: projectId
-        stepId   : stepId
+    updates =
+      rankedSubmissions: rankedSubmissionList
 
-      StepsAPIService.confirmRanks(params, step).$promise
+    updateStep projectId, stepId, step, updates
 
-    O.update {
-      model: step.details
-      updates:
-        customerConfirmedRanks: true
-      apiCall: apiCall
-      updateCallback: emitUpdates
-    }
+  confirmRanks = (projectId, stepId) ->
+    stepsById = steps.findWhere { id: stepId }
+    step = stepsById[0]
+    updates =
+      customerConfirmedRanks: true
 
-  stepsService.acceptFixes = (projectId, stepId) ->
-    step = helpers.findInCollection stepsService.steps, 'id', stepId
+    updateStep projectId, stepId, step, updates
 
-    apiCall = (step) ->
-      params =
-        projectId: projectId
-        stepId   : stepId
+  acceptFixes = (projectId, stepId) ->
+    stepsById = steps.findWhere { id: stepId }
+    step = stepsById[0]
+    updates =
+      customerAcceptedFixes: true
 
-      StepsAPIService.confirmRanks(params, step).$promise
+    updateStep projectId, stepId, step, updates
 
-    O.update {
-      model: step.details
-      updates:
-        customerAcceptedFixes: true
-      apiCall: apiCall
-      updateCallback: emitUpdates
-    }
-
-  stepsService
+  get          : get
+  fetch        : fetch
+  updateRank   : updateRank
+  confirmRanks : confirmRanks
+  acceptFixes  : acceptFixes
 
 srv.$inject = ['$rootScope', 'SubmissionsHelpers', 'StepsAPIService', 'Optimist']
 

@@ -58,8 +58,8 @@ FinalFixesController = (helpers, $scope, $rootScope, $state, StepsService, Submi
     SubmissionsService.fetch vm.projectId, vm.stepId
 
   vm.onchange = onChange = ->
-    steps = StepsService.steps
-    submissions = SubmissionsService.submissions
+    steps = StepsService.get()
+    submissions = SubmissionsService.get()
 
     if steps.length <= 0 || submissions.length <= 0
       return null

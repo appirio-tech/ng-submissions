@@ -40,7 +40,7 @@ FileDetailController = (helpers, $scope, $rootScope, SubmissionsService, UserV3S
     SubmissionsService.fetch vm.projectId, vm.stepId
 
   onChange = ->
-    submissions = SubmissionsService.submissions
+    submissions = SubmissionsService.get()
 
     if submissions.length <= 0
       return null

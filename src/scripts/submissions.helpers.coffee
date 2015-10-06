@@ -69,7 +69,7 @@ decorateFileWithMessageCounts = (file) ->
   file.totalMessages = 0
   file.unreadMessages = 0
 
-  file.threads[0].messages.forEach (message) ->
+  file.threads?[0]?.messages.forEach (message) ->
     file.totalMessages = file.totalMessages + 1
     if !message.read
       file.unreadMessages = file.unreadMessages + 1
