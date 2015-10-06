@@ -31,8 +31,6 @@ submissions, final-fixes {
   background-color: $neutral-color-lightest;
 
   .header {
-    @include flex-center(center);
-
     li:first-child, li:last-child {
       min-width: 50px;
       min-height: 1px;

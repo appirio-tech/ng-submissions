@@ -71,10 +71,6 @@ file-detail {
       }
 
       .img-container {
-        @include flex-center();
-        @include flex-direction(column);
-        @include justify-content(center);
-
         width : 200px;
         height: 400px;
 
