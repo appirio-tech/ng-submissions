@@ -40516,6 +40516,12 @@ $templateCache.put("views/selected-button.directive.html","<button ng-class=\"{\
       id: '@id'
     };
     methods = {
+      post: {
+        method: 'POST'
+      },
+      patch: {
+        method: 'PATCH'
+      },
       put: {
         method: 'PUT'
       }
@@ -44452,272 +44458,6 @@ $templateCache.put("views/selected-button.directive.html","<button ng-class=\"{\
 
 }).call(this);
 
-(function() {
-  'use strict';
-  var dependencies;
-
-  dependencies = [];
-
-  angular.module('appirio-tech-ng-optimist', dependencies);
-
-}).call(this);
-
-(function() {
-  'use strict';
-  var Optimist;
-
-  Optimist = function() {
-    var Collection, Model, metaTemplate;
-    metaTemplate = {
-      pending: false,
-      error: null,
-      propsUpdated: {},
-      propsPending: {},
-      propsErrored: {}
-    };
-    Model = function(options) {
-      var applyProps, clearErrors, data, defaults, meta, timestamp;
-      if (options == null) {
-        options = {};
-      }
-      data = options.data || {};
-      data = angular.copy(data);
-      meta = angular.copy(metaTemplate);
-      defaults = {
-        updateCallback: options.updateCallback || angular.noop,
-        propsToIgnore: options.propsToIgnore || []
-      };
-      clearErrors = function() {
-        meta.error = null;
-        return meta.propsErrored = {};
-      };
-      applyProps = function(options) {
-        var enumerable, ignore, ignored, include, includeAll, included, name, prop, results, source;
-        if (options == null) {
-          options = {};
-        }
-        source = options.source || [];
-        include = options.include || [];
-        ignore = options.ignore || [];
-        if (include.length === 0) {
-          includeAll = true;
-        }
-        results = [];
-        for (name in source) {
-          prop = source[name];
-          enumerable = source.propertyIsEnumerable(name);
-          included = include.indexOf(name) >= 0;
-          ignored = ignore.indexOf(name) >= 0;
-          if ((includeAll || included) && enumerable && !ignored) {
-            results.push(data[name] = angular.copy(prop));
-          } else {
-            results.push(void 0);
-          }
-        }
-        return results;
-      };
-      timestamp = function() {
-        var now;
-        now = new Date();
-        return meta.lastUpdated = now.toISOString();
-      };
-      this.hasPending = function() {
-        return meta.pending || meta.propsPending.keys;
-      };
-      this.get = function() {
-        var snapshot;
-        snapshot = angular.copy(data);
-        snapshot.o = angular.copy(meta);
-        return snapshot;
-      };
-      this.fetch = function(options) {
-        var apiCall, clearErrorsOnSuccess, handleResponse, propsToIgnore, request, updateCallback;
-        if (options == null) {
-          options = {};
-        }
-        apiCall = options.apiCall || angular.noop;
-        updateCallback = options.updateCallback || defaults.updateCallback;
-        handleResponse = options.handleResponse !== false;
-        clearErrorsOnSuccess = options.clearErrorsOnSuccess !== false;
-        propsToIgnore = options.propsToIgnore || defaults.propsToIgnore;
-        meta.pending = true;
-        updateCallback(data);
-        request = apiCall();
-        request.then(function(response) {
-          timestamp();
-          if (clearErrorsOnSuccess) {
-            clearErrors();
-          }
-          if (handleResponse) {
-            applyProps({
-              source: response,
-              ignore: propsToIgnore
-            });
-          }
-          return response;
-        });
-        request["catch"](function(err) {
-          return meta.error = err;
-        });
-        return request["finally"](function() {
-          meta.pending = false;
-          return updateCallback(data);
-        });
-      };
-      this.updateLocal = function(options) {
-        var updateCallback, updates;
-        if (options == null) {
-          options = {};
-        }
-        updates = options.updates || [];
-        updateCallback = options.updateCallback || defaults.updateCallback;
-        applyProps({
-          source: updates
-        });
-        return updateCallback(data);
-      };
-      this.restore = function() {};
-      this.update = function(options) {
-        if (options == null) {
-          options = {};
-        }
-        this.updateLocal(options);
-        return this.save(options);
-      };
-      this.save = function(options) {
-        var apiCall, clearErrorsOnSuccess, handleResponse, name, prop, request, rollbackOnFailure, updateCallback, updates;
-        if (options == null) {
-          options = {};
-        }
-        updates = options.updates;
-        apiCall = options.apiCall || angular.noop;
-        updateCallback = options.updateCallback || defaults.updateCallback;
-        handleResponse = options.handleResponse !== false;
-        clearErrorsOnSuccess = options.clearErrorsOnSuccess !== false;
-        rollbackOnFailure = options.rollbackOnFailure || false;
-        request = apiCall(data);
-        for (name in updates) {
-          prop = updates[name];
-          meta.propsPending[name] = true;
-        }
-        updateCallback(data);
-        request.then(function(response) {
-          timestamp();
-          if (clearErrorsOnSuccess) {
-            clearErrors();
-          }
-          if (handleResponse) {
-            return applyProps({
-              source: response,
-              include: Object.keys(updates)
-            });
-          }
-        });
-        request["catch"](function(err) {
-          var results;
-          if (rollbackOnFailure) {
-            this.restore(options);
-          }
-          results = [];
-          for (name in updates) {
-            prop = updates[name];
-            results.push(meta.propsErrored[name] = err);
-          }
-          return results;
-        });
-        return request["finally"](function() {
-          for (name in updates) {
-            prop = updates[name];
-            delete meta.propsPending[name];
-          }
-          return updateCallback(data);
-        });
-      };
-      return this;
-    };
-    Collection = function(options) {
-      var clearErrors, collection, defaults, meta, timestamp;
-      if (options == null) {
-        options = {};
-      }
-      collection = [];
-      meta = angular.copy(metaTemplate);
-      defaults = {
-        updateCallback: options.updateCallback || angular.noop,
-        matchByProp: options.matchByProp || 'id'
-      };
-      timestamp = function() {
-        var now;
-        now = new Date();
-        return meta.lastUpdated = now.toISOString();
-      };
-      clearErrors = function() {
-        meta.error = null;
-        return meta.propsErrored = {};
-      };
-      this.get = function() {
-        return collection.map(function(item) {
-          return item.get();
-        });
-      };
-      this.fetch = function(options) {
-        var apiCall, clearErrorsOnSuccess, request, updateCallback;
-        if (options == null) {
-          options = {};
-        }
-        apiCall = options.apiCall || angular.noop;
-        updateCallback = options.updateCallback || defaults.updateCallback;
-        clearErrorsOnSuccess = options.clearErrorsOnSuccess !== false;
-        meta.pending = true;
-        updateCallback(collection);
-        request = apiCall();
-        request.then(function(response) {
-          timestamp();
-          if (clearErrorsOnSuccess) {
-            clearErrors();
-          }
-          collection = response.map(function(item) {
-            return new Model({
-              data: item
-            });
-          });
-          return response;
-        });
-        request["catch"](function(err) {
-          return meta.error = err;
-        });
-        return request["finally"](function() {
-          meta.pending = false;
-          return updateCallback(collection);
-        });
-      };
-      this.findWhere = function(filters) {
-        return collection.filter(function(ref) {
-          var item, name, value;
-          item = ref.get();
-          for (name in filters) {
-            value = filters[name];
-            if (item[name] !== value) {
-              return false;
-            }
-          }
-          return true;
-        });
-      };
-      return this;
-    };
-    return {
-      Model: Model,
-      Collection: Collection
-    };
-  };
-
-  Optimist.$inject = ['$rootScope'];
-
-  angular.module('appirio-tech-ng-optimist').factory('Optimist', Optimist);
-
-}).call(this);
-
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.angularDragula = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
 
@@ -47381,3 +47121,269 @@ window.$ === undefined && (window.$ = Zepto)
   }
 })(Zepto)
 ;
+
+(function() {
+  'use strict';
+  var dependencies;
+
+  dependencies = [];
+
+  angular.module('appirio-tech-ng-optimist', dependencies);
+
+}).call(this);
+
+(function() {
+  'use strict';
+  var Optimist;
+
+  Optimist = function() {
+    var Collection, Model, metaTemplate;
+    metaTemplate = {
+      pending: false,
+      error: null,
+      propsUpdated: {},
+      propsPending: {},
+      propsErrored: {}
+    };
+    Model = function(options) {
+      var applyProps, clearErrors, data, defaults, meta, timestamp;
+      if (options == null) {
+        options = {};
+      }
+      data = options.data || {};
+      data = angular.copy(data);
+      meta = angular.copy(metaTemplate);
+      defaults = {
+        updateCallback: options.updateCallback || angular.noop,
+        propsToIgnore: options.propsToIgnore || []
+      };
+      clearErrors = function() {
+        meta.error = null;
+        return meta.propsErrored = {};
+      };
+      applyProps = function(options) {
+        var enumerable, ignore, ignored, include, includeAll, included, name, prop, results, source;
+        if (options == null) {
+          options = {};
+        }
+        source = options.source || [];
+        include = options.include || [];
+        ignore = options.ignore || [];
+        if (include.length === 0) {
+          includeAll = true;
+        }
+        results = [];
+        for (name in source) {
+          prop = source[name];
+          enumerable = source.propertyIsEnumerable(name);
+          included = include.indexOf(name) >= 0;
+          ignored = ignore.indexOf(name) >= 0;
+          if ((includeAll || included) && enumerable && !ignored) {
+            results.push(data[name] = angular.copy(prop));
+          } else {
+            results.push(void 0);
+          }
+        }
+        return results;
+      };
+      timestamp = function() {
+        var now;
+        now = new Date();
+        return meta.lastUpdated = now.toISOString();
+      };
+      this.hasPending = function() {
+        return meta.pending || meta.propsPending.keys;
+      };
+      this.get = function() {
+        var snapshot;
+        snapshot = angular.copy(data);
+        snapshot.o = angular.copy(meta);
+        return snapshot;
+      };
+      this.fetch = function(options) {
+        var apiCall, clearErrorsOnSuccess, handleResponse, propsToIgnore, request, updateCallback;
+        if (options == null) {
+          options = {};
+        }
+        apiCall = options.apiCall || angular.noop;
+        updateCallback = options.updateCallback || defaults.updateCallback;
+        handleResponse = options.handleResponse !== false;
+        clearErrorsOnSuccess = options.clearErrorsOnSuccess !== false;
+        propsToIgnore = options.propsToIgnore || defaults.propsToIgnore;
+        meta.pending = true;
+        updateCallback(data);
+        request = apiCall();
+        request.then(function(response) {
+          timestamp();
+          if (clearErrorsOnSuccess) {
+            clearErrors();
+          }
+          if (handleResponse) {
+            applyProps({
+              source: response,
+              ignore: propsToIgnore
+            });
+          }
+          return response;
+        });
+        request["catch"](function(err) {
+          return meta.error = err;
+        });
+        return request["finally"](function() {
+          meta.pending = false;
+          return updateCallback(data);
+        });
+      };
+      this.updateLocal = function(options) {
+        var updateCallback, updates;
+        if (options == null) {
+          options = {};
+        }
+        updates = options.updates || [];
+        updateCallback = options.updateCallback || defaults.updateCallback;
+        applyProps({
+          source: updates
+        });
+        return updateCallback(data);
+      };
+      this.restore = function() {};
+      this.update = function(options) {
+        if (options == null) {
+          options = {};
+        }
+        this.updateLocal(options);
+        return this.save(options);
+      };
+      this.save = function(options) {
+        var apiCall, clearErrorsOnSuccess, handleResponse, name, prop, request, rollbackOnFailure, updateCallback, updates;
+        if (options == null) {
+          options = {};
+        }
+        updates = options.updates;
+        apiCall = options.apiCall || angular.noop;
+        updateCallback = options.updateCallback || defaults.updateCallback;
+        handleResponse = options.handleResponse !== false;
+        clearErrorsOnSuccess = options.clearErrorsOnSuccess !== false;
+        rollbackOnFailure = options.rollbackOnFailure || false;
+        request = apiCall(data);
+        for (name in updates) {
+          prop = updates[name];
+          meta.propsPending[name] = true;
+        }
+        updateCallback(data);
+        request.then(function(response) {
+          timestamp();
+          if (clearErrorsOnSuccess) {
+            clearErrors();
+          }
+          if (handleResponse) {
+            return applyProps({
+              source: response,
+              include: Object.keys(updates)
+            });
+          }
+        });
+        request["catch"](function(err) {
+          var results;
+          if (rollbackOnFailure) {
+            this.restore(options);
+          }
+          results = [];
+          for (name in updates) {
+            prop = updates[name];
+            results.push(meta.propsErrored[name] = err);
+          }
+          return results;
+        });
+        return request["finally"](function() {
+          for (name in updates) {
+            prop = updates[name];
+            delete meta.propsPending[name];
+          }
+          return updateCallback(data);
+        });
+      };
+      return this;
+    };
+    Collection = function(options) {
+      var clearErrors, collection, defaults, meta, timestamp;
+      if (options == null) {
+        options = {};
+      }
+      collection = [];
+      meta = angular.copy(metaTemplate);
+      defaults = {
+        updateCallback: options.updateCallback || angular.noop,
+        matchByProp: options.matchByProp || 'id'
+      };
+      timestamp = function() {
+        var now;
+        now = new Date();
+        return meta.lastUpdated = now.toISOString();
+      };
+      clearErrors = function() {
+        meta.error = null;
+        return meta.propsErrored = {};
+      };
+      this.get = function() {
+        return collection.map(function(item) {
+          return item.get();
+        });
+      };
+      this.fetch = function(options) {
+        var apiCall, clearErrorsOnSuccess, request, updateCallback;
+        if (options == null) {
+          options = {};
+        }
+        apiCall = options.apiCall || angular.noop;
+        updateCallback = options.updateCallback || defaults.updateCallback;
+        clearErrorsOnSuccess = options.clearErrorsOnSuccess !== false;
+        meta.pending = true;
+        updateCallback(collection);
+        request = apiCall();
+        request.then(function(response) {
+          timestamp();
+          if (clearErrorsOnSuccess) {
+            clearErrors();
+          }
+          collection = response.map(function(item) {
+            return new Model({
+              data: item
+            });
+          });
+          return response;
+        });
+        request["catch"](function(err) {
+          return meta.error = err;
+        });
+        return request["finally"](function() {
+          meta.pending = false;
+          return updateCallback(collection);
+        });
+      };
+      this.findWhere = function(filters) {
+        return collection.filter(function(ref) {
+          var item, name, value;
+          item = ref.get();
+          for (name in filters) {
+            value = filters[name];
+            if (item[name] !== value) {
+              return false;
+            }
+          }
+          return true;
+        });
+      };
+      return this;
+    };
+    return {
+      Model: Model,
+      Collection: Collection
+    };
+  };
+
+  Optimist.$inject = ['$rootScope'];
+
+  angular.module('appirio-tech-ng-optimist').factory('Optimist', Optimist);
+
+}).call(this);
