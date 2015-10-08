@@ -1,6 +1,6 @@
 'use strict'
 
-srv = ($rootScope, helpers, StepsAPIService, SubmissionsAPIService, MessagesAPIService, Optimist) ->
+srv = ($rootScope, helpers, StepsAPIService, SubmissionsAPIService, MessagesAPIService, SubmissionMessagesAPIService, Optimist) ->
   currentProjectId = null
   currentStepId = null
 
@@ -74,8 +74,13 @@ srv = ($rootScope, helpers, StepsAPIService, SubmissionsAPIService, MessagesAPIS
       createdAt: now.toISOString()
       read: true
 
+    params =
+      projectId: currentProjectId
+      submissionId: currentSubmission.id
+      threadId: currentFile.threads[0]?.id
+
     apiCall = (message) ->
-      MessagesAPIService.save(message).$promise
+      SubmissionMessagesAPIService.post(params, message).$promise
 
     Optimist.addToCollection
       collection: messages
@@ -88,6 +93,6 @@ srv = ($rootScope, helpers, StepsAPIService, SubmissionsAPIService, MessagesAPIS
   markMessagesAsRead : markMessagesAsRead
   sendMessage        : sendMessage
 
-srv.$inject = ['$rootScope', 'SubmissionsHelpers', 'StepsAPIService', 'SubmissionsAPIService', 'MessagesAPIService', 'Optimist']
+srv.$inject = ['$rootScope', 'SubmissionsHelpers', 'StepsAPIService', 'SubmissionsAPIService', 'MessagesAPIService', 'SubmissionMessagesAPIService', 'Optimist']
 
 angular.module('appirio-tech-submissions').factory 'SubmissionsService', srv
