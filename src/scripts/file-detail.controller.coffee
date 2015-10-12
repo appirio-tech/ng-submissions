@@ -37,10 +37,9 @@ FileDetailController = (helpers, $scope, $rootScope, SubmissionsService, UserV3S
     $scope.$on '$destroy', ->
       destroySubmissionsListener()
 
-    UserV3Service.getCurrentUser (user) ->
+    $scope.$watch UserV3Service.getCurrentUser, (user) ->
       if user
         vm.userId = user.id
-        vm.avatars[vm.userId] = 'http://www.topcoder.com/i/m/cardiboy_big.jpg'
 
     SubmissionsService.fetch vm.projectId, vm.stepId
 
