@@ -1,6 +1,6 @@
 'use strict'
 
-srv = ($rootScope, helpers, StepsAPIService, SubmissionsAPIService, MessagesAPIService, SubmissionMessagesAPIService, Optimist) ->
+srv = ($rootScope, helpers, StepsAPIService, SubmissionsAPIService, MessagesAPIService, SubmissionsMessagesAPIService, Optimist) ->
   currentProjectId = null
   currentStepId = null
 
@@ -36,10 +36,10 @@ srv = ($rootScope, helpers, StepsAPIService, SubmissionsAPIService, MessagesAPIS
       apiCall: apiCall
 
   markMessagesAsRead = (submissionId, fileId, userId) ->
-    submission     = submissions.findWhere { id: submissionId }
+    submission     = submissions.findWhere({ id: submissionId })[0]
     submissionData = submission.get()
     files          = submissionData.files
-    file           = helpers.findInCollection submission.files, 'id', fileId
+    file           = helpers.findInCollection files, 'id', fileId
     messages       = file.threads[0]?.messages
     updateMade     = false
 
@@ -63,8 +63,9 @@ srv = ($rootScope, helpers, StepsAPIService, SubmissionsAPIService, MessagesAPIS
           read: true
 
   sendMessage = (submissionId, fileId, message, userId) ->
-    currentSubmissions = helpers.findInCollection submissions, 'id', submissionId
-    currentFile        = helpers.findInCollection currentSubmissions.files, 'id', fileId
+    currentSubmissions = submissions.get()
+    currentSubmission = helpers.findInCollection currentSubmissions, 'id', submissionId
+    currentFile        = helpers.findInCollection currentSubmission.files, 'id', fileId
     messages           = currentFile.threads[0]?.messages
     now                = new Date()
 
@@ -80,7 +81,7 @@ srv = ($rootScope, helpers, StepsAPIService, SubmissionsAPIService, MessagesAPIS
       threadId: currentFile.threads[0]?.id
 
     apiCall = (message) ->
-      SubmissionMessagesAPIService.post(params, message).$promise
+      SubmissionsMessagesAPIService.post(params, message).$promise
 
     Optimist.addToCollection
       collection: messages
@@ -93,6 +94,6 @@ srv = ($rootScope, helpers, StepsAPIService, SubmissionsAPIService, MessagesAPIS
   markMessagesAsRead : markMessagesAsRead
   sendMessage        : sendMessage
 
-srv.$inject = ['$rootScope', 'SubmissionsHelpers', 'StepsAPIService', 'SubmissionsAPIService', 'MessagesAPIService', 'SubmissionMessagesAPIService', 'Optimist']
+srv.$inject = ['$rootScope', 'SubmissionsHelpers', 'StepsAPIService', 'SubmissionsAPIService', 'MessagesAPIService', 'SubmissionsMessagesAPIService', 'Optimist']
 
 angular.module('appirio-tech-submissions').factory 'SubmissionsService', srv
