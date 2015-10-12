@@ -38,11 +38,9 @@ FileDetailController = (helpers, $scope, $rootScope, SubmissionsService, UserV3S
       destroySubmissionsListener()
 
     $scope.$watch UserV3Service.getCurrentUser, (user) ->
-      if user
-        vm.userId = user.id
+      vm.userId = user?.id
 
     SubmissionsService.fetch vm.projectId, vm.stepId
-
 
   onChange = ->
     submissions = SubmissionsService.get()

@@ -36,7 +36,7 @@ srv = ($rootScope, helpers, StepsAPIService, SubmissionsAPIService, MessagesAPIS
       apiCall: apiCall
 
   markMessagesAsRead = (submissionId, fileId, userId) ->
-    submission     = submissions.findWhere({ id: submissionId })[0]
+    submission     = submissions.findWhere(id: submissionId)[0]
     submissionData = submission.get()
     files          = submissionData.files
     file           = helpers.findInCollection files, 'id', fileId
