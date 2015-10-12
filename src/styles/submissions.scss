@@ -77,8 +77,6 @@ submissions {
     }
 
     ul.user-details {
-      @include flex-center;
-
       min-width: 200px;
 
       .name-time {
@@ -97,8 +95,6 @@ submissions {
     }
 
     ul.actions {
-      @include flex-center;
-
       li {
         margin-left: $margin-small;
       }

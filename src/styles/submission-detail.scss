@@ -24,16 +24,10 @@ submission-detail {
   }
 
   .download {
-    float: right;
+    margin-left: $margin-smallest;
   }
 
-  header {
-    @include clearfix();
-  }
-
-  > select {
-    clear: both;
-    display: block;
-    margin: 0 auto;
+  hr {
+    background-color: $neutral-color;
   }
 }

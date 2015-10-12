@@ -88,12 +88,11 @@ file-detail {
     > * {
       display: inline-block;
       margin: $margin-smallest;
+      position: relative;
     }
 
 
     button {
-      position: relative;
-
       img {
         width  : 40px;
         height : 40px;
