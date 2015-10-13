@@ -473,7 +473,7 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-show=\"!
   'use strict';
   var srv;
 
-  srv = function($rootScope, helpers, StepsAPIService, SubmissionsAPIService, MessagesAPIService, Optimist) {
+  srv = function($rootScope, helpers, StepsAPIService, SubmissionsAPIService, MessagesAPIService, SubmissionsMessagesAPIService, Optimist) {
     var createSubmissionCollection, currentProjectId, currentStepId, emitUpdates, fetch, get, markMessagesAsRead, sendMessage, submissions;
     currentProjectId = null;
     currentStepId = null;
@@ -515,10 +515,10 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-show=\"!
       var file, files, messages, ref, submission, submissionData, updateMade;
       submission = submissions.findWhere({
         id: submissionId
-      });
+      })[0];
       submissionData = submission.get();
       files = submissionData.files;
-      file = helpers.findInCollection(submission.files, 'id', fileId);
+      file = helpers.findInCollection(files, 'id', fileId);
       messages = (ref = file.threads[0]) != null ? ref.messages : void 0;
       updateMade = false;
       messages.forEach(function(message) {
@@ -545,9 +545,10 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-show=\"!
       }
     };
     sendMessage = function(submissionId, fileId, message, userId) {
-      var apiCall, currentFile, currentSubmissions, messages, newMessage, now, ref;
-      currentSubmissions = helpers.findInCollection(submissions, 'id', submissionId);
-      currentFile = helpers.findInCollection(currentSubmissions.files, 'id', fileId);
+      var apiCall, currentFile, currentSubmission, currentSubmissions, messages, newMessage, now, params, ref, ref1;
+      currentSubmissions = submissions.get();
+      currentSubmission = helpers.findInCollection(currentSubmissions, 'id', submissionId);
+      currentFile = helpers.findInCollection(currentSubmission.files, 'id', fileId);
       messages = (ref = currentFile.threads[0]) != null ? ref.messages : void 0;
       now = new Date();
       newMessage = {
@@ -556,8 +557,13 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-show=\"!
         createdAt: now.toISOString(),
         read: true
       };
+      params = {
+        projectId: currentProjectId,
+        submissionId: currentSubmission.id,
+        threadId: (ref1 = currentFile.threads[0]) != null ? ref1.id : void 0
+      };
       apiCall = function(message) {
-        return MessagesAPIService.save(message).$promise;
+        return SubmissionsMessagesAPIService.post(params, message).$promise;
       };
       return Optimist.addToCollection({
         collection: messages,
@@ -574,7 +580,7 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-show=\"!
     };
   };
 
-  srv.$inject = ['$rootScope', 'SubmissionsHelpers', 'StepsAPIService', 'SubmissionsAPIService', 'MessagesAPIService', 'Optimist'];
+  srv.$inject = ['$rootScope', 'SubmissionsHelpers', 'StepsAPIService', 'SubmissionsAPIService', 'MessagesAPIService', 'SubmissionsMessagesAPIService', 'Optimist'];
 
   angular.module('appirio-tech-submissions').factory('SubmissionsService', srv);
 
@@ -804,10 +810,13 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-show=\"!
       $scope.$on('$destroy', function() {
         return destroySubmissionsListener();
       });
+      $scope.$watch(UserV3Service.getCurrentUser, function(user) {
+        return vm.userId = user != null ? user.id : void 0;
+      });
       return SubmissionsService.fetch(vm.projectId, vm.stepId);
     };
     onChange = function() {
-      var currentIndex, currentSubmission, nextIndex, prevIndex, ref, submissions, user;
+      var currentIndex, currentSubmission, nextIndex, prevIndex, ref, submissions;
       submissions = SubmissionsService.get();
       if (submissions.length <= 0) {
         return null;
@@ -828,10 +837,7 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-show=\"!
         nextIndex = 0;
       }
       vm.prevFile = vm.submission.files[prevIndex];
-      vm.nextFile = vm.submission.files[nextIndex];
-      user = UserV3Service.getCurrentUser() || {};
-      vm.userId = user.id;
-      return vm.avatars[vm.userId] = 'http://www.topcoder.com/i/m/cardiboy_big.jpg';
+      return vm.nextFile = vm.submission.files[nextIndex];
     };
     activate();
     return vm;
