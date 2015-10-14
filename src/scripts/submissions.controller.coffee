@@ -115,29 +115,6 @@ SubmissionsController = (helpers, $scope, $rootScope, $state, dragulaService, St
   # Helper functions #
   ####################
 
-  makeEmptyRankList = (rankNames) ->
-    ranks = []
-
-    for i in [1..rankNames.length] by 1
-      ranks.push
-        value    : i
-        label    : rankNames[i - 1]
-        id       : null
-        avatarUrl: null
-
-    ranks
-
-  decorateRankListWithSubmissions = (ranks = [], submissions = []) ->
-    submissions.forEach (submission) ->
-      if submission.rank != ''
-        submissionRank = submission.rank - 1
-        if submissionRank < ranks.length
-          ranks[submissionRank].avatarUrl = submission.submitter.avatar
-          ranks[submissionRank].id = submission.id
-          ranks[submissionRank].handle = submission.submitter.handle
-
-    ranks
-
   onChange = ->
     steps = StepsService.get()
     submissions = SubmissionsService.get()
@@ -167,8 +144,8 @@ SubmissionsController = (helpers, $scope, $rootScope, $state, dragulaService, St
     vm.submissions = helpers.decorateSubmissionsWithMessageCounts vm.submissions
 
     vm.rankNames = config.rankNames.slice 0, currentStep.details.numberOfRanks
-    vm.ranks     = makeEmptyRankList(vm.rankNames)
-    vm.ranks     = decorateRankListWithSubmissions vm.ranks, vm.submissions
+    vm.ranks     = helpers.makeEmptyRankList(vm.rankNames)
+    vm.ranks     = helpers.decorateRankListWithSubmissions vm.ranks, vm.submissions
 
     vm.rankUpdatePending = currentStep.details.rankedSubmissions_pending
 

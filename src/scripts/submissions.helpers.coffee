@@ -109,7 +109,30 @@ sortSubmissions = (submissions) ->
   orderedSubmissions = orderedByRank.concat orderedBySubmitter
   orderedSubmissions
 
-srv = ->
+decorateRankListWithSubmissions = (ranks = [], submissions = []) ->
+  submissions.forEach (submission) ->
+    if submission.rank != ''
+      submissionRank = submission.rank - 1
+      if submissionRank < ranks.length
+        ranks[submissionRank].avatarUrl = submission.submitter.avatar
+        ranks[submissionRank].id = submission.id
+        ranks[submissionRank].handle = submission.submitter.handle
+
+  ranks
+
+makeEmptyRankList = (rankNames) ->
+  ranks = []
+
+  for i in [1..rankNames.length] by 1
+    ranks.push
+      value    : i
+      label    : rankNames[i - 1]
+      id       : null
+      avatarUrl: null
+
+  ranks
+
+SubmissionsHelpers = ->
   submissionsHelpers =
     findInCollection: findInCollection
     createOrderedRankList: createOrderedRankList
@@ -121,9 +144,11 @@ srv = ->
     decorateSubmissionWithMessageCounts: decorateSubmissionWithMessageCounts
     decorateSubmissionsWithMessageCounts: decorateSubmissionsWithMessageCounts
     sortSubmissions: sortSubmissions
+    decorateRankListWithSubmissions: decorateRankListWithSubmissions
+    makeEmptyRankList: makeEmptyRankList
 
   submissionsHelpers
 
-srv.$inject = []
+SubmissionsHelpers.$inject = []
 
-angular.module('appirio-tech-submissions').factory 'SubmissionsHelpers', srv
+angular.module('appirio-tech-submissions').factory 'SubmissionsHelpers', SubmissionsHelpers

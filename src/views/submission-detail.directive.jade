@@ -9,10 +9,7 @@ ul.header.flex.middle
     .name {{ vm.submission.submitter.handle }}
 
   li
-    select(ng-model="vm.submission.rank" ng-change="vm.handleRankSelect(vm.submission)" ng-init="" required=true)
-      option(value="") select position
-
-      option(ng-repeat="rank in vm.rankNames" value="$index+1" ng-selected="{{ $index+1 == vm.submission.rank }}") {{ rank }}
+    select(ng-model="vm.submission.rank", ng-change="vm.handleRankSelect(vm.submission)", ng-options="rank.value as rank.label for rank in vm.ranks")
 
   li.download
     button.clean
@@ -23,6 +20,6 @@ hr
 ul.previews
   li.preview(ng-repeat="file in vm.submission.files track by $index")
     a(ui-sref="file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: vm.submissionId, fileId: file.id})")
-      img.img(ng-src="{{ file.images.small }}")
+      img.img(ng-src="{{ file.url }}")
 
     p {{ file.name }}
