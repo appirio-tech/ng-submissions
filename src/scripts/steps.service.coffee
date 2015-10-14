@@ -1,10 +1,10 @@
 'use strict'
 
-srv = ($rootScope, helpers, StepsAPIService, Optimist) ->
+srv = ($rootScope, helpers, StepsAPIService, OptimistCollection) ->
   currentProjectId = null
 
   createStepCollection = ->
-    newSteps = new Optimist.Collection
+    newSteps = new OptimistCollection
       updateCallback: ->
         $rootScope.$emit 'StepsService:changed'
       propsToIgnore: ['$promise', '$resolved']
@@ -36,41 +36,38 @@ srv = ($rootScope, helpers, StepsAPIService, Optimist) ->
         projectId: projectId
         stepId   : stepId
 
-      StepsAPIService.updateRanks(params, step).$promise
+      StepsAPIService.patch(params, updates).$promise
 
     step.update
       updates: updates
       apiCall: apiCall
 
   updateRank = (projectId, stepId, submissionId, rank) ->
-    stepsById         = steps.findWhere { id: stepId }
-    step              = stepsById[0]
+    step              = steps.findOneWhere { id: stepId }
     stepData          = step.get()
     numberOfRanks     = stepData.details.numberOfRanks
     rankedSubmissions = stepData.details.rankedSubmissions
     rankedSubmissions = helpers.updateRankedSubmissions rankedSubmissions, numberOfRanks, submissionId, rank
-    debugger
-    rankedSubmissionList = rankedSubmissions.map (submission) ->
-      submission.submissionId
 
     updates =
-      rankedSubmissions: rankedSubmissionList
+      details:
+        rankedSubmissions: rankedSubmissions
 
     updateStep projectId, stepId, step, updates
 
   confirmRanks = (projectId, stepId) ->
-    stepsById = steps.findWhere { id: stepId }
-    step = stepsById[0]
+    step = steps.findOneWhere { id: stepId }
     updates =
-      customerConfirmedRanks: true
+      details:
+        customerConfirmedRanks: true
 
     updateStep projectId, stepId, step, updates
 
   acceptFixes = (projectId, stepId) ->
-    stepsById = steps.findWhere { id: stepId }
-    step = stepsById[0]
+    step = steps.findOneWhere { id: stepId }
     updates =
-      customerAcceptedFixes: true
+      details:
+        customerAcceptedFixes: true
 
     updateStep projectId, stepId, step, updates
 
@@ -80,6 +77,6 @@ srv = ($rootScope, helpers, StepsAPIService, Optimist) ->
   confirmRanks : confirmRanks
   acceptFixes  : acceptFixes
 
-srv.$inject = ['$rootScope', 'SubmissionsHelpers', 'StepsAPIService', 'Optimist']
+srv.$inject = ['$rootScope', 'SubmissionsHelpers', 'StepsAPIService', 'OptimistCollection']
 
 angular.module('appirio-tech-submissions').factory 'StepsService', srv

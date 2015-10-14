@@ -1,14 +1,14 @@
 'use strict'
 
-srv = ($rootScope, helpers, StepsAPIService, SubmissionsAPIService, MessagesAPIService, Optimist) ->
+SubmissionsService = ($rootScope, helpers, StepsAPIService, SubmissionsAPIService, MessagesAPIService, OptimistCollection) ->
   currentProjectId = null
   currentStepId = null
 
   emitUpdates = ->
-    $rootScope.$emit 'submissionsService.submissions:changed'
+    $rootScope.$emit 'SubmissionsService:changed'
 
   createSubmissionCollection = ->
-    newSteps = new Optimist.Collection
+    newSteps = new OptimistCollection
       updateCallback: emitUpdates
       propsToIgnore: ['$promise', '$resolved']
 
@@ -77,7 +77,7 @@ srv = ($rootScope, helpers, StepsAPIService, SubmissionsAPIService, MessagesAPIS
     apiCall = (message) ->
       MessagesAPIService.save(message).$promise
 
-    Optimist.addToCollection
+    OptimistCollection.addToCollection
       collection: messages
       item: newMessage
       apiCall: apiCall
@@ -88,6 +88,6 @@ srv = ($rootScope, helpers, StepsAPIService, SubmissionsAPIService, MessagesAPIS
   markMessagesAsRead : markMessagesAsRead
   sendMessage        : sendMessage
 
-srv.$inject = ['$rootScope', 'SubmissionsHelpers', 'StepsAPIService', 'SubmissionsAPIService', 'MessagesAPIService', 'Optimist']
+SubmissionsService.$inject = ['$rootScope', 'SubmissionsHelpers', 'StepsAPIService', 'SubmissionsAPIService', 'MessagesAPIService', 'OptimistCollection']
 
-angular.module('appirio-tech-submissions').factory 'SubmissionsService', srv
+angular.module('appirio-tech-submissions').factory 'SubmissionsService', SubmissionsService

@@ -74,10 +74,10 @@ SubmissionsController = (helpers, $scope, $rootScope, $state, dragulaService, St
   ##############
 
   activate = ->
-    destroyStepsListener = $rootScope.$on 'stepsService.steps:changed', ->
+    destroyStepsListener = $rootScope.$on 'StepsService:changed', ->
       onChange()
 
-    destroySubmissionsListener = $rootScope.$on 'submissionsService.submissions:changed', ->
+    destroySubmissionsListener = $rootScope.$on 'SubmissionsService:changed', ->
       onChange()
 
     $scope.$on '$destroy', ->
@@ -170,10 +170,10 @@ SubmissionsController = (helpers, $scope, $rootScope, $state, dragulaService, St
     vm.ranks     = makeEmptyRankList(vm.rankNames)
     vm.ranks     = decorateRankListWithSubmissions vm.ranks, vm.submissions
 
-    vm.rankUpdatePending = currentStep.o?.pending?.rankedSubmissions
+    vm.rankUpdatePending = currentStep.details.rankedSubmissions_pending
 
-    if currentStep.o?.errors?.rankedSubmissions
-      vm.rankUpdateError = currentStep.o?.errors?.rankedSubmissions
+    if currentStep.rankedSubmissions_error
+      vm.rankUpdateError = currentStep.rankedSubmissions_error
 
     vm.allFilled = currentStep.details.rankedSubmissions.length == currentStep.details.numberOfRanks
 

@@ -44,7 +44,7 @@ updateRankedSubmissions = (rankedSubmissions, numberOfRanks, id, rank) ->
   orderedRanks.forEach (id, index) ->
     if id != null && index < numberOfRanks
       rankedSubmission =
-        rank: (parseInt(index) + 1) + '' # Convert back to one-index land
+        rank: index + 1 # Convert back to one-index land
         submissionId: id
 
       rankedSubmissions.push rankedSubmission
