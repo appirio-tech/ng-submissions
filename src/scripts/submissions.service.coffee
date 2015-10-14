@@ -1,6 +1,6 @@
 'use strict'
 
-SubmissionsService = ($rootScope, helpers, StepsAPIService, SubmissionsAPIService, MessagesAPIService, OptimistCollection) ->
+SubmissionsService = ($rootScope, helpers, StepsAPIService, SubmissionsAPIService, MessagesAPIService, SubmissionsMessagesAPIService, OptimistCollection) ->
   currentProjectId = null
   currentStepId = null
 
@@ -36,10 +36,10 @@ SubmissionsService = ($rootScope, helpers, StepsAPIService, SubmissionsAPIServic
       apiCall: apiCall
 
   markMessagesAsRead = (submissionId, fileId, userId) ->
-    submission     = submissions.findWhere { id: submissionId }
+    submission     = submissions.findWhere(id: submissionId)[0]
     submissionData = submission.get()
     files          = submissionData.files
-    file           = helpers.findInCollection submission.files, 'id', fileId
+    file           = helpers.findInCollection files, 'id', fileId
     messages       = file.threads[0]?.messages
     updateMade     = false
 
@@ -63,8 +63,9 @@ SubmissionsService = ($rootScope, helpers, StepsAPIService, SubmissionsAPIServic
           read: true
 
   sendMessage = (submissionId, fileId, message, userId) ->
-    currentSubmissions = helpers.findInCollection submissions, 'id', submissionId
-    currentFile        = helpers.findInCollection currentSubmissions.files, 'id', fileId
+    currentSubmissions = submissions.get()
+    currentSubmission = helpers.findInCollection currentSubmissions, 'id', submissionId
+    currentFile        = helpers.findInCollection currentSubmission.files, 'id', fileId
     messages           = currentFile.threads[0]?.messages
     now                = new Date()
 
@@ -74,8 +75,13 @@ SubmissionsService = ($rootScope, helpers, StepsAPIService, SubmissionsAPIServic
       createdAt: now.toISOString()
       read: true
 
+    params =
+      projectId: currentProjectId
+      submissionId: currentSubmission.id
+      threadId: currentFile.threads[0]?.id
+
     apiCall = (message) ->
-      MessagesAPIService.save(message).$promise
+      SubmissionsMessagesAPIService.post(params, message).$promise
 
     OptimistCollection.addToCollection
       collection: messages
@@ -88,6 +94,6 @@ SubmissionsService = ($rootScope, helpers, StepsAPIService, SubmissionsAPIServic
   markMessagesAsRead : markMessagesAsRead
   sendMessage        : sendMessage
 
-SubmissionsService.$inject = ['$rootScope', 'SubmissionsHelpers', 'StepsAPIService', 'SubmissionsAPIService', 'MessagesAPIService', 'OptimistCollection']
+SubmissionsService.$inject = ['$rootScope', 'SubmissionsHelpers', 'StepsAPIService', 'SubmissionsAPIService', 'MessagesAPIService', 'SubmissionsMessagesAPIService', 'OptimistCollection']
 
 angular.module('appirio-tech-submissions').factory 'SubmissionsService', SubmissionsService

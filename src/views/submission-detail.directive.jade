@@ -1,18 +1,22 @@
-.submitter
-  a(href="") submissions
+ul.header.flex.middle
+  li.flex-grow.submitter
+    a(href="") submissions
 
-  .arrow &rsaquo;
+    .arrow &rsaquo;
 
-  avatar(avatar-url="{{ vm.submission.submitter.avatar }}")
+    avatar(avatar-url="{{ vm.submission.submitter.avatar }}")
 
-  .name {{ vm.submission.submitter.handle }}
+    .name {{ vm.submission.submitter.handle }}
 
-p.download
-  button.clean
-    .icon.download.small
+  li
+    select(ng-model="vm.submission.rank" ng-change="vm.handleRankSelect(vm.submission)" ng-init="" required=true)
+      option(value="") select position
 
-select(ng-model="vm.submission.rank", ng-change="vm.handleRankSelect(vm.submission)", ng-init="")
-  option(ng-repeat="rank in vm.rankNames", value="$index+1", ng-selected="{{ $index+1 == vm.submission.rank }}") {{ rank }}
+      option(ng-repeat="rank in vm.rankNames" value="$index+1" ng-selected="{{ $index+1 == vm.submission.rank }}") {{ rank }}
+
+  li.download
+    button.clean
+      .icon.download.small
 
 hr
 

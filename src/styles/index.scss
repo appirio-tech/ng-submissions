@@ -1,35 +1,14 @@
 @import "work-includes";
 
-
- // TODO: remove this css
-.loader {
-  width: 25px;
-  height: 25px;
-  border-top       : 5px solid $neutral-color-light;
-  border-right     : 5px solid $neutral-color-light;
-  border-bottom    : 5px solid $neutral-color-light;
-  border-left      : 5px solid $neutral-color-lightest ;
-  -webkit-transform: translateZ(0);
-  -ms-transform    : translateZ(0);
-  transform        : translateZ(0);
-  -webkit-animation: load8 .8s infinite linear;
-  animation        : load8 .8s infinite linear;
-}
-.loader,
-.loader:after {
-  border-radius: 50%;
-}
-
-
 submissions, final-fixes, submission-detail {
-  display: block;
-  text-align: center;
+  display         : block;
+  position        : relative;
+  text-align      : center;
+  width           : 100%;
+  background-color: $neutral-color-lightest;
 }
 
 submissions, final-fixes {
-  width           : 100%;
-  background-color: $neutral-color-lightest;
-
   .header {
     li:first-child, li:last-child {
       min-width: 50px;

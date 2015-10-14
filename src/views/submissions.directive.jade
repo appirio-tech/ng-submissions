@@ -57,7 +57,7 @@ include parts/header
 
 ul.submissions
   li.submission.flex.elevated-bottom(ng-repeat="submission in vm.submissions track by $index")
-    ul.user-details
+    ul.user-details.flex.middle
       li
         avatar(avatar-url="{{ submission.submitter.avatar }}")
 
@@ -82,7 +82,7 @@ ul.submissions
           a(href="{{ file.url }}", target="_blank")
             .clean.icon.download
 
-    ul.actions
+    ul.actions.flex.middle
       li
         a(ui-sref="submission-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: submission.id})") view all
 
