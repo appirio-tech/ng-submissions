@@ -44,10 +44,10 @@ FinalFixesController = (helpers, $scope, $rootScope, $state, StepsService, Submi
     StepsService.acceptFixes vm.projectId, vm.stepId
 
   activate = ->
-    destroyStepsListener = $rootScope.$on 'stepsService.steps:changed', ->
+    destroyStepsListener = $rootScope.$on 'StepsService:changed', ->
       onChange()
 
-    destroySubmissionsListener = $rootScope.$on 'submissionsService.submissions:changed', ->
+    destroySubmissionsListener = $rootScope.$on 'SubmissionsService:changed', ->
       onChange()
 
     $scope.$on '$destroy', ->

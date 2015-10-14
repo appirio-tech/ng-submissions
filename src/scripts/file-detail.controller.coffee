@@ -31,7 +31,7 @@ FileDetailController = (helpers, $scope, $rootScope, SubmissionsService, UserV3S
       SubmissionsService.markMessagesAsRead vm.submissionId, vm.fileId, vm.userId
 
   activate = ->
-    destroySubmissionsListener = $rootScope.$on 'submissionsService.submissions:changed', ->
+    destroySubmissionsListener = $rootScope.$on 'SubmissionsService:changed', ->
       onChange()
 
     $scope.$on '$destroy', ->

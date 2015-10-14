@@ -31,7 +31,7 @@ describe 'SubmissionDetailController', ->
     beforeEach inject ($httpBackend) ->
       $httpBackend.flush()
 
-    it 'should set loaded to true', ->
+    it 'should update the view-model with data from services', ->
       expect(vm.loaded).to.be.true
       expect(vm.submission).to.be.an 'object'
       expect(vm.allFilled).to.be.false
