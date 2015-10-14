@@ -617,10 +617,10 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-show=\"!
     };
     activate = function() {
       var destroyStepsListener, destroySubmissionsListener;
-      destroyStepsListener = $rootScope.$on('stepsService.steps:changed', function() {
+      destroyStepsListener = $rootScope.$on('StepsService:changed', function() {
         return onChange();
       });
-      destroySubmissionsListener = $rootScope.$on('submissionsService.submissions:changed', function() {
+      destroySubmissionsListener = $rootScope.$on('SubmissionsService:changed', function() {
         return onChange();
       });
       $scope.$on('$destroy', function() {
@@ -708,10 +708,10 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-show=\"!
     };
     activate = function() {
       var destroyStepsListener, destroySubmissionsListener;
-      destroyStepsListener = $rootScope.$on('stepsService.steps:changed', function() {
+      destroyStepsListener = $rootScope.$on('StepsService:changed', function() {
         return onChange();
       });
-      destroySubmissionsListener = $rootScope.$on('submissionsService.submissions:changed', function() {
+      destroySubmissionsListener = $rootScope.$on('SubmissionsService:changed', function() {
         return onChange();
       });
       $scope.$on('$destroy', function() {
@@ -803,7 +803,7 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-show=\"!
     };
     activate = function() {
       var destroySubmissionsListener;
-      destroySubmissionsListener = $rootScope.$on('submissionsService.submissions:changed', function() {
+      destroySubmissionsListener = $rootScope.$on('SubmissionsService:changed', function() {
         return onChange();
       });
       $scope.$on('$destroy', function() {
