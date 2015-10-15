@@ -12,7 +12,7 @@ main
 
     li.icons
       button.clean
-        a(href="{{ vm.file.images.full }}")
+        a(href="{{ vm.file.url }}")
           .icon.download
 
       button.clean(ng-click="vm.toggleComments()")
@@ -35,7 +35,7 @@ main
 
     li.preview
       .img-container
-        img(ng-src="{{ vm.file.images.large }}")
+        img(ng-src="{{ vm.file.url }}")
 
       p {{ vm.submission.files[vm.selectedPreviewIndex].name }}
 
@@ -47,7 +47,7 @@ main
     li.thumbnail(ng-repeat="file in vm.submission.files")
       button.clean.thumbnail
         a(ui-sref="file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: vm.submission.id, fileId: file.id})")
-          img(ng-src="{{ file.images.thumbnail }}")
+          img(ng-src="{{ file.url }}")
 
           .notification {{ file.unreadMessages }}
 
