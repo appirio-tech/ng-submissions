@@ -38,4 +38,4 @@ button.action(ng-click="vm.confirmApproval()" ng-if="vm.status == 'open'") confi
 
 ul.previews(ng-if="vm.status == 'open' || vm.status == 'closed'")
   li.preview(ng-repeat="file in vm.submission.files track by $index")
-    img.img(ng-src="{{ file.images.small }}" ui-sref="file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: vm.submission.id, fileId: file.id})")
+    img.img(ng-src="{{ file.url }}" ui-sref="file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: vm.submission.id, fileId: file.id})")
