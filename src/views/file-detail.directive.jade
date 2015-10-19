@@ -49,5 +49,5 @@ main
         a(ui-sref="file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: vm.submission.id, fileId: file.id})")
           img(ng-src="{{ file.url }}")
 
-          .notification {{ file.unreadMessages }}
+          .notification(ng-if="file.unreadMessages > 0") {{ file.unreadMessages }}
 
