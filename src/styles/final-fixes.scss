@@ -5,16 +5,17 @@ final-fixes {
   button {
     @include vertical-align-middle();
 
-    display   : block;
-    margin    : 0 auto;
-    margin-top: $margin-small;
-
     .icon {
       margin-right: $margin-small;
     }
   }
 
-  .previews {
+  .buttons {
     margin-top: $margin;
   }
+
+  hr {
+    margin-top: $margin-small;
+  }
+
 }

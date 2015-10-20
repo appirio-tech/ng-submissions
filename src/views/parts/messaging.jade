@@ -1,13 +1,16 @@
-ul.messages
-  li(ng-repeat="message in vm.messages track by $index")
-    avatar(avatar-url="{{ vm.avatars[message.publisherId] }}")
+.flex.column.flex-grow
+  ul.messages.flex-grow
+    li(ng-repeat="message in vm.messages track by $index")
+      header.flex.middle
+        avatar(avatar-url="{{ vm.avatars[message.publisherId] }}")
 
-    .message
-      p {{ message.body }}
+        .name this is a very long long long name
 
-      time {{ message.createdAt | timeLapse }}
+        time {{ message.createdAt | timeLapse }}
 
-form(ng-submit="vm.sendMessage()")
-  textarea(placeholder!="Send a message&hellip;" ng-model="vm.newMessage")
+      p.message {{ message.body }}
 
-  button.enter(type="submit") Enter
+  form(ng-submit="vm.sendMessage()")
+    textarea(placeholder!="Send a message&hellip;" ng-model="vm.newMessage")
+
+    button.enter(type="submit") Enter

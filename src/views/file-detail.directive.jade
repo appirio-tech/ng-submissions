@@ -6,7 +6,7 @@ main
       avatar(avatar-url="{{ vm.submission.submitter.avatar }}")
 
       .name-time
-        .name {{ vm.submission.submitter.handle }}
+        p.name {{ vm.submission.submitter.handle }}
 
         time Submitted: {{ vm.submission.createdAt | timeLapse }}
 
@@ -20,7 +20,7 @@ main
 
   hr
 
-  aside.messaging(ng-class="{ active: vm.showComments }")
+  aside.messaging.flex.column(ng-class="{ active: vm.showComments }" flush-height=true)
     h4 Submission comments
 
     hr
@@ -49,5 +49,5 @@ main
         a(ui-sref="file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: vm.submission.id, fileId: file.id})")
           img(ng-src="{{ file.url }}")
 
-          .notification(ng-if="file.unreadMessages > 0") {{ file.unreadMessages }}
+          .notification.absolute(ng-if="file.unreadMessages > 0") {{ file.unreadMessages }}
 

@@ -1,12 +1,11 @@
 @import "work-includes";
 
 aside.messaging {
-  @include clearfix;
   @include transition (all 0.3s ease-in-out);
 
   position        : absolute;
-  width           : 260px;
-  right           : -260px;
+  width           : 300px;
+  right           : -300px;
   padding         : $spacing-small;
   overflow        : hidden;
   box-shadow      : -3px 0px 5px 0px rgba(0,0,0,0.22);
@@ -19,6 +18,37 @@ aside.messaging {
 
   hr {
     background-color: $neutral-color-light;
+    margin: $margin-small 0;
+    width: 100%;
+  }
+
+  .name {
+    @include ellipsis(120px);
+
+    margin-left: $margin-smallest;
+    font-weight: bold;
+  }
+
+  time {
+    margin-left: $margin-smallest;
+    font-size: $font-size-smallest;
+  }
+
+  .message {
+    margin: 0 0 0 42px;
+  }
+
+  .messages {
+    overflow: auto;
+
+    > li {
+      border-top: 1px solid $neutral-color-light;
+      padding: $padding-smallest;
+
+      &:first-child {
+        border-top: none;
+      }
+    }
   }
 
   form {

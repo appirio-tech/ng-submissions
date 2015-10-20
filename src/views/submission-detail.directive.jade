@@ -17,9 +17,11 @@ ul.header.flex.middle
 
 hr
 
-ul.previews
-  li.preview(ng-repeat="file in vm.submission.files track by $index")
-    a(ui-sref="file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: vm.submissionId, fileId: file.id})")
+ul.previews.flex.wrap
+  li.preview(ng-repeat="file in vm.submission.files track by $index" fitted-width=true)
+    a(
+      ui-sref="file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: vm.submissionId, fileId: file.id})"
+    )
       img.img(ng-src="{{ file.url }}")
 
     p {{ file.name }}

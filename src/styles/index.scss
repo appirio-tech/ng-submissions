@@ -5,6 +5,26 @@ submissions, final-fixes, submission-detail {
   position        : relative;
   text-align      : center;
   width           : 100%;
+
+  countdown.block {
+    li {
+      margin-left: $margin-smallest;
+
+      &:first-child {
+        margin-left: 0;
+      }
+    }
+
+    .unit {
+      font-size: 20px;
+      text-transform: uppercase;
+    }
+
+    .value {
+      font-size: 30px;
+      color: $primary-color;
+    }
+  }
 }
 
 submissions, final-fixes {
@@ -93,13 +113,12 @@ final-fixes, submission-detail {
   .previews {
     $tile-width: 160px;
 
-    display: inline-block;
+    margin: 0 auto;
 
     .preview {
       position: relative;
       margin  : $margin-smallest;
       width   : $tile-width;
-      display : inline-block;
 
       .img {
         width           : $tile-width;
@@ -128,4 +147,4 @@ final-fixes, submission-detail {
       }
     }
   }
- }
+}
