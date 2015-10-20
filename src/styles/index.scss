@@ -5,7 +5,6 @@ submissions, final-fixes, submission-detail {
   position        : relative;
   text-align      : center;
   width           : 100%;
-  background-color: $neutral-color-lightest;
 }
 
 submissions, final-fixes {
@@ -34,7 +33,7 @@ submissions, final-fixes {
 
   .subheader {
     text-align: center;
-    margin-top: $margin;
+    margin-top: $margin-small;
 
     hr {
       margin-bottom: 0px;

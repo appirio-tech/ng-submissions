@@ -9,7 +9,8 @@ submissions {
     @include vertical-align-middle();
 
     max-width : 568px;
-    margin: $margin-small auto;
+    margin: 0 auto;
+    margin-top: $margin;
 
     > li {
       $radius: 40px;
@@ -72,6 +73,11 @@ submissions {
     background-color: $white;
     margin-top      : $margin-small;
 
+    avatar {
+      width: 40px;
+      height: 40px;
+    }
+
     &:first-child {
       margin-top: 0;
     }
@@ -126,12 +132,14 @@ submissions {
         }
 
         .preview {
-          margin    : 0;
-          min-width : 200px;
-          min-height: 400px;
+          margin: 0;
 
           img {
             display: inline-block;
+            min-width : 200px;
+            min-height: 400px;
+            max-width : 300px;
+            max-height: 500px;
           }
         }
 
@@ -163,8 +171,8 @@ submissions {
         }
 
         .img {
-          width : 50px;
-          height: 40px;
+          width : 55px;
+          height: 45px;
         }
       }
     }
