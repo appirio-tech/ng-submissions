@@ -5,7 +5,7 @@ include parts/header
 .subheader(ng-if="vm.status == 'scheduled'")
   .icon.warning.biggest
 
-  p Submissions for the {{ vm.stepName }} Phase coming in &hellip;
+  p Submissions for the {{ vm.stepName }} Phase coming in
 
   countdown(end="{{ vm.startsAt }}")
 
