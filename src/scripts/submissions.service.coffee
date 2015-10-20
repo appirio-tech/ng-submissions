@@ -36,7 +36,7 @@ SubmissionsService = ($rootScope, helpers, StepsAPIService, SubmissionsAPIServic
       apiCall: apiCall
 
   markMessagesAsRead = (submissionId, fileId, userId) ->
-    submission     = submissions.findWhere(id: submissionId)[0]
+    submission     = submissions.findOneWhere(id: submissionId)
     submissionData = submission.get()
     files          = submissionData.files
     file           = helpers.findInCollection files, 'id', fileId
@@ -63,31 +63,37 @@ SubmissionsService = ($rootScope, helpers, StepsAPIService, SubmissionsAPIServic
           read: true
 
   sendMessage = (submissionId, fileId, message, userId) ->
-    currentSubmissions = submissions.get()
-    currentSubmission = helpers.findInCollection currentSubmissions, 'id', submissionId
-    currentFile        = helpers.findInCollection currentSubmission.files, 'id', fileId
-    messages           = currentFile.threads[0]?.messages
-    now                = new Date()
+    currentSubmission = submissions.findOneWhere(id: submissionId)
+    submissionData    = currentSubmission.get()
+    currentFile       = helpers.findInCollection submissionData.files, 'id', fileId
+    thread            = currentFile.threads[0]
+    messages          = thread.messages
+    now               = new Date()
 
-    newMessage =
-      publisherId: userId
-      body: message
-      createdAt: now.toISOString()
-      read: true
+    payload =
+      param:
+        publisherId: userId
+        threadId: thread.id
+        body: message
 
     params =
       projectId: currentProjectId
-      submissionId: currentSubmission.id
-      threadId: currentFile.threads[0]?.id
+      submissionId: submissionId
+      threadId: thread.id
 
-    apiCall = (message) ->
-      SubmissionsMessagesAPIService.post(params, message).$promise
+    SubmissionsMessagesAPIService.post params, payload
 
-    OptimistCollection.addToCollection
-      collection: messages
-      item: newMessage
-      apiCall: apiCall
-      updateCallback: emitUpdates
+    newMessage = payload.param
+    newMessage.read = true
+    newMessage.createdAt = now.toISOString()
+
+    # Dirty hack alert
+    privateFiles = currentSubmission._data.files
+    privateCurrentFile = helpers.findInCollection privateFiles, 'id', currentFile.id
+
+    privateCurrentFile.threads[0].messages.push newMessage
+    emitUpdates()
+
 
   get                : get
   fetch              : fetch
