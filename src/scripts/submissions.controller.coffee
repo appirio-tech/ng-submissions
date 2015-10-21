@@ -1,6 +1,6 @@
 'use strict'
 
-SubmissionsController = (helpers, $scope, $rootScope, $state, dragulaService, StepsService, SubmissionsService) ->
+SubmissionsController = (helpers, $scope, $rootScope, $state, StepsService, SubmissionsService) ->
   vm             = this
   config         = {}
 
@@ -152,6 +152,6 @@ SubmissionsController = (helpers, $scope, $rootScope, $state, dragulaService, St
 
   vm
 
-SubmissionsController.$inject = ['SubmissionsHelpers', '$scope', '$rootScope', '$state', 'dragulaService', 'StepsService', 'SubmissionsService']
+SubmissionsController.$inject = ['SubmissionsHelpers', '$scope', '$rootScope', '$state', 'StepsService', 'SubmissionsService']
 
 angular.module('appirio-tech-submissions').controller 'SubmissionsController', SubmissionsController

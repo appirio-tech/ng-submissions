@@ -16,7 +16,7 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-show=\"!
   'use strict';
   var SubmissionsController;
 
-  SubmissionsController = function(helpers, $scope, $rootScope, $state, dragulaService, StepsService, SubmissionsService) {
+  SubmissionsController = function(helpers, $scope, $rootScope, $state, StepsService, SubmissionsService) {
     var activate, config, onChange, vm;
     vm = this;
     config = {};
@@ -130,7 +130,7 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-show=\"!
     return vm;
   };
 
-  SubmissionsController.$inject = ['SubmissionsHelpers', '$scope', '$rootScope', '$state', 'dragulaService', 'StepsService', 'SubmissionsService'];
+  SubmissionsController.$inject = ['SubmissionsHelpers', '$scope', '$rootScope', '$state', 'StepsService', 'SubmissionsService'];
 
   angular.module('appirio-tech-submissions').controller('SubmissionsController', SubmissionsController);
 
