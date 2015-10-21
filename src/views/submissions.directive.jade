@@ -35,20 +35,17 @@ include parts/header
   ul.top-selection
     li(ng-repeat="rank in vm.ranks track by $index")
       .shell(
-        dragula="'ranked-submissions'"
-        dragula-scope="$parent"
         ng-class="{ 'has-avatar': rank.avatarUrl }"
-        data-rank="{{ $index }}"
+        ondragenter="return false"
+        ondragover="return false"
+        on-drop="vm.drop.handle(event, rank.value)"
       )
-        .draggable(ng-if="rank.avatarUrl" data-id="{{ rank.id }}")
+        div(ng-if="rank.id" data-id="{{ rank.id }}" draggable)
           avatar(avatar-url="{{ rank.avatarUrl }}")
 
           .rank {{ rank.value }}
 
         .rank(ng-if="!rank.avatarUrl") {{ rank.value }}
-
-    li(ng-if="vm.rankUpdatePending")
-      .loader
 
     li(ng-show="vm.allFilled")
       button.action(ng-click="vm.confirmRanks()") Confirm your selections 
@@ -56,7 +53,7 @@ include parts/header
   p(ng-if="vm.rankUpdateError") {{ vm.rankUpdateError }}
 
 ul.submissions
-  li.submission.flex.elevated-bottom(ng-repeat="submission in vm.submissions track by $index")
+  li.submission.flex.elevated-bottom(ng-repeat="submission in vm.submissions track by $index" data-id="{{ submission.id }}" draggable)
     ul.user-details.flex.middle
       li
         avatar(avatar-url="{{ submission.submitter.avatar }}")

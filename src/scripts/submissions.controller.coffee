@@ -64,7 +64,8 @@ SubmissionsController = (helpers, $scope, $rootScope, $state, dragulaService, St
   ##############
 
   vm.handleRankSelect = (submission) ->
-    StepsService.updateRank vm.projectId, vm.stepId, submission.id, submission.rank
+    if submission.id && submission.rank
+      StepsService.updateRank vm.projectId, vm.stepId, submission.id, submission.rank
 
   vm.confirmRanks = ->
     StepsService.confirmRanks vm.projectId, vm.stepId
@@ -87,29 +88,16 @@ SubmissionsController = (helpers, $scope, $rootScope, $state, dragulaService, St
     StepsService.fetch vm.projectId
     SubmissionsService.fetch vm.projectId, vm.stepId
 
-  ###################
-  # Dragula helpers #
-  ###################
+  # IMPORTANT: This must be an object for the onDrop directive to work
+  # See: https://github.com/angular/angular.js/wiki/Understanding-Scopes
+  vm.drop =
+    handle: (event, rankToAssign) ->
+      submissionId = event.dataTransfer.getData 'submissionId'
 
-  isDraggable = (el, source, handle) ->
-    source.classList.contains 'has-avatar'
-
-  dragulaOptions =
-    moves: isDraggable
-    copy: true
-
-  dragulaService.options $scope, 'ranked-submissions', dragulaOptions
-
-  handleRankDrop = (el, target, source) ->
-    if !source
-      return false
-
-    movedSubmissionId = target[0].dataset.id
-    rankToAssign = (parseInt(source[0].dataset.rank) + 1) + ''
-
-    StepsService.updateRank vm.projectId, vm.stepId, movedSubmissionId, rankToAssign
-
-  $scope.$on 'ranked-submissions.drop', handleRankDrop
+      # The dataTransfer method returns String("undefined") if item is not found
+      # Thus the seeminly bizarre check below
+      if submissionId != 'undefined' && submissionId && rankToAssign
+        StepsService.updateRank vm.projectId, vm.stepId, submissionId, rankToAssign
 
   ####################
   # Helper functions #
@@ -146,8 +134,6 @@ SubmissionsController = (helpers, $scope, $rootScope, $state, dragulaService, St
     vm.rankNames = config.rankNames.slice 0, currentStep.details.numberOfRanks
     vm.ranks     = helpers.makeEmptyRankList(vm.rankNames)
     vm.ranks     = helpers.decorateRankListWithSubmissions vm.ranks, vm.submissions
-
-    vm.rankUpdatePending = currentStep.details.rankedSubmissions_pending
 
     if currentStep.rankedSubmissions_error
       vm.rankUpdateError = currentStep.rankedSubmissions_error
