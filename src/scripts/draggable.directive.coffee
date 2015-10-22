@@ -7,6 +7,14 @@ directive = ->
   link: (scope, element, attr, ctrl) ->
     el = element[0]
 
+    noDrag = (el) ->
+      el.draggable = false
+
+      for child in el.children
+        noDrag child
+
+    noDrag(el)
+    
     el.draggable = true
 
     dragstart = (e) ->
