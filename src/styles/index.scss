@@ -29,11 +29,6 @@ submissions, final-fixes, submission-detail {
 
 submissions, final-fixes {
   .header {
-    li:first-child, li:last-child {
-      min-width: 50px;
-      min-height: 1px;
-    }
-
     .next, .previous {
       a {
         font-size: 30px;
