@@ -9,21 +9,20 @@ include parts/header
 
   countdown(end="{{ vm.startsAt }}")
 
+  p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras et iaculis felis. Ut venenatis quis risus sed mattis. Nam quis pulvinar libero.
+
 .subheader(ng-if="vm.status == 'closed'")
   p Congratulations! These are your {{ vm.stepName }} winners.
 
   hr.small
 
   ul.winners
-    li(ng-repeat="rank in vm.ranks")
+    li(ng-repeat="rank in vm.ranks" ng-if="rank.id")
       .rank <strong>{{rank.label.slice(0, -5)}}</strong><br /> place
 
       avatar(avatar-url="{{rank.avatarUrl}}")
 
       a.name(href="#") {{rank.handle}}
-
-
-  button.wider.action view submissions
 
 .subheader(ng-if="vm.status == 'open'")
   p Give feedback and select the top {{ vm.ranks.length }} designs. You have 
@@ -61,8 +60,7 @@ ul.submissions
       li
         .name-time
           .name {{ submission.submitter.handle }}
-
-          time {{ submission.createdAt | timeLapse }}
+          .count {{ submission.files.length }} Images
 
     ul.thumbnails.flex-grow
       li.thumbnail(ng-repeat="file in submission.files track by $index")
@@ -73,7 +71,6 @@ ul.submissions
           a.preview(ui-sref="file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: submission.id, fileId: file.id})")
             img.previewImage(ng-src="{{ file.url }}")
 
-
           .icon.bubble
 
           a(href="{{ file.url }}", target="_blank")
@@ -83,14 +80,15 @@ ul.submissions
       li
         a(ui-sref="submission-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: submission.id})") view all
 
-      li.comments
-        .icon.download.small
+      li.comments(ng-if="vm.status != 'closed'")
+        a(href="{{ submission.downloadUrl }}", target="_blank")
+          .icon.download.small
 
-      li(ng-if="vm.status == 'closed' && submission.rank")
-        a(href="#", target="_blank")
-          .clean.icon.download
+      li.comments(ng-if="vm.status == 'closed' && submission.rank")
+        a(href="{{ submission.downloadUrl }}", target="_blank")
+          .icon.download.small
 
       li(ng-if="vm.status == 'open'")
         select(ng-model="submission.rank", ng-change="vm.handleRankSelect(submission)", ng-options="rank.value as rank.label for rank in vm.ranks")
 
-      li(ng-if="vm.status == 'closed'") {{ vm.rankNames[submission.rank -1] }}
+      li(ng-if="vm.status == 'closed'") {{ vm.rankNames[$index] }}
