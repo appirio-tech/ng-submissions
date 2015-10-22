@@ -30,7 +30,7 @@ main
   ul.slideshow
     li
       a(ng-if="vm.prevFile", ui-sref="file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: vm.submission.id, fileId: vm.prevFile.id})")
-        button.clean.icon.circle-arrow.biggest
+        button.clean.icon.arrow.big
 
 
     li.preview
@@ -41,7 +41,7 @@ main
 
     li
       a(ng-if="vm.nextFile", ui-sref="file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: vm.submission.id, fileId: vm.nextFile.id})")
-        button.clean.icon.circle-arrow.right.biggest
+        button.clean.icon.arrow.right.big
 
   ul.thumbnails
     li.thumbnail(ng-repeat="file in vm.submission.files")
