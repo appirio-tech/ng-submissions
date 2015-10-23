@@ -1,6 +1,7 @@
 'use strict'
 
 SubmissionsService = ($rootScope, helpers, StepsAPIService, SubmissionsAPIService, MessagesAPIService, SubmissionsMessagesAPIService, OptimistCollection) ->
+  submissions = null
   currentProjectId = null
   currentStepId = null
 
@@ -14,16 +15,19 @@ SubmissionsService = ($rootScope, helpers, StepsAPIService, SubmissionsAPIServic
 
     newSteps
 
-  submissions = createSubmissionCollection()
+  get = (projectId, stepId) ->
+    unless projectId && stepId
+      throw 'SubmissionsService.get requires a projectId and a stepId'
 
-  get = ->
+    if projectId != currentProjectId || stepId != currentStepId
+      fetch(projectId, stepId)
+
     submissions.get()
 
   fetch = (projectId, stepId) ->
-    if projectId != currentProjectId || stepId != currentStepId
-      submissions = createSubmissionCollection()
-      currentProjectId = projectId
-      currentStepId = stepId
+    submissions = createSubmissionCollection()
+    currentProjectId = projectId
+    currentStepId = stepId
 
     apiCall = () ->
       params =
@@ -96,7 +100,6 @@ SubmissionsService = ($rootScope, helpers, StepsAPIService, SubmissionsAPIServic
 
 
   get                : get
-  fetch              : fetch
   markMessagesAsRead : markMessagesAsRead
   sendMessage        : sendMessage
 

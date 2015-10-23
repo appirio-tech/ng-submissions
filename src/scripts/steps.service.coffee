@@ -2,6 +2,7 @@
 
 srv = ($rootScope, helpers, StepsAPIService, OptimistCollection) ->
   currentProjectId = null
+  steps            = null
 
   createStepCollection = ->
     newSteps = new OptimistCollection
@@ -11,15 +12,35 @@ srv = ($rootScope, helpers, StepsAPIService, OptimistCollection) ->
 
     newSteps
 
-  steps = createStepCollection()
+  get = (projectId) ->
+    if projectId != currentProjectId
+      fetch(projectId)
 
-  get = ->
     steps.get()
 
-  fetch = (projectId) ->
+  getCurrentStep = (projectId) ->
+    filter = (step) ->
+      step.stepType == 'designConcepts'
+
     if projectId != currentProjectId
-      steps = createStepCollection()
-      currentProjectId = projectId
+      fetch(projectId)
+      null
+    else
+      steps.get().filter(filter)[0]
+
+  getStepById = (projectId, stepId) ->
+    filter = (step) ->
+      step.id == stepId
+
+    if projectId != currentProjectId
+      fetch(projectId)
+      null
+    else
+      steps.get().filter(filter)[0]
+
+  fetch = (projectId) ->
+    steps = createStepCollection()
+    currentProjectId = projectId
 
     apiCall = () ->
       params =
@@ -72,7 +93,8 @@ srv = ($rootScope, helpers, StepsAPIService, OptimistCollection) ->
     updateStep projectId, stepId, step, updates
 
   get          : get
-  fetch        : fetch
+  getCurrentStep : getCurrentStep
+  getStepById : getStepById
   updateRank   : updateRank
   confirmRanks : confirmRanks
   acceptFixes  : acceptFixes

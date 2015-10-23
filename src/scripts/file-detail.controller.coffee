@@ -40,12 +40,13 @@ FileDetailController = (helpers, $scope, $rootScope, SubmissionsService, UserV3S
     $scope.$watch UserV3Service.getCurrentUser, (user) ->
       vm.userId = user?.id
 
-    SubmissionsService.fetch vm.projectId, vm.stepId
+    onChange()
 
   onChange = ->
-    submissions = SubmissionsService.get()
+    submissions = SubmissionsService.get(vm.projectId, vm.stepId)
 
-    if submissions.length <= 0
+    if submissions._pending
+      vm.loaded = false
       return null
 
     vm.loaded         = true

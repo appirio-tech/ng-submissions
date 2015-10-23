@@ -56,8 +56,6 @@ SubmissionsController = (helpers, $scope, $rootScope, $state, StepsService, Subm
   vm.ranks       = []
   vm.projectId   = $scope.projectId
   vm.stepId      = $scope.stepId
-  vm.rankUpdatePending = false
-  vm.rankUpdateError = ''
 
   ##############
   # vm Methods #
@@ -85,8 +83,7 @@ SubmissionsController = (helpers, $scope, $rootScope, $state, StepsService, Subm
       destroyStepsListener()
       destroySubmissionsListener()
 
-    StepsService.fetch vm.projectId
-    SubmissionsService.fetch vm.projectId, vm.stepId
+    onChange()
 
   # IMPORTANT: This must be an object for the onDrop directive to work
   # See: https://github.com/angular/angular.js/wiki/Understanding-Scopes
@@ -104,15 +101,16 @@ SubmissionsController = (helpers, $scope, $rootScope, $state, StepsService, Subm
   ####################
 
   onChange = ->
-    steps = StepsService.get()
-    submissions = SubmissionsService.get()
+    steps = StepsService.get(vm.projectId)
+    submissions = SubmissionsService.get(vm.projectId, vm.stepId)
 
-    if steps.length <= 0 || submissions.length <= 0
+    if steps._pending || submissions._pending
+      vm.loaded = false
       return null
 
     vm.loaded = true
 
-    currentStep = helpers.findInCollection steps, 'stepType', config.stepType
+    currentStep = helpers.findInCollection steps, 'id', vm.stepId
     prevStep = helpers.findInCollection steps, 'stepType', config.prevStepType
     nextStep = helpers.findInCollection steps, 'stepType', config.nextStepType
 

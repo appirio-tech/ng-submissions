@@ -39,14 +39,14 @@ SubmissionDetailController = (helpers, $scope, $rootScope, StepsService, Submiss
       destroyStepsListener()
       destroySubmissionsListener()
 
-    StepsService.fetch vm.projectId
-    SubmissionsService.fetch vm.projectId, vm.stepId
+    onChange()
 
   onChange = ->
-    steps = StepsService.get()
-    submissions = SubmissionsService.get()
+    steps = StepsService.get(vm.projectId)
+    submissions = SubmissionsService.get(vm.projectId, vm.stepId)
 
-    if steps.length <= 0 || submissions.length <= 0
+    if steps._pending || submissions._pending
+      vm.loaded = false
       return null
 
     vm.loaded = true
