@@ -3,13 +3,11 @@ loader(ng-hide="vm.loaded")
 include parts/header
 
 .subheader(ng-if="vm.status == 'scheduled'")
-  .icon.warning.biggest
+  img.icon.biggest(src="/images/clock.svg")
 
   p Submissions for the {{ vm.stepName }} Phase coming in
 
-  countdown(end="{{ vm.startsAt }}")
-
-  p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras et iaculis felis. Ut venenatis quis risus sed mattis. Nam quis pulvinar libero.
+  countdown.block(end="{{ vm.startsAt }}")
 
 .subheader(ng-if="vm.status == 'closed'")
   p Congratulations! These are your {{ vm.stepName }} winners.
