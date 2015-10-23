@@ -8,10 +8,10 @@
 
 }).call(this);
 
-angular.module("appirio-tech-submissions").run(["$templateCache", function($templateCache) {$templateCache.put("views/submissions.directive.html","<loader ng-hide=\"vm.loaded\"></loader><ul class=\"header flex-center\"><li class=\"previous\"><a ng-class=\"{ invisible: !vm.prevStepRef }\" href=\"{{ vm.prevStepRef }}\"><div class=\"icon arrow\"></div></a></li><li><h1>{{ vm.stepName }}</h1></li><li class=\"next\"><a ng-class=\"{ invisible: !vm.nextStepRef }\" href=\"{{ vm.nextStepRef }}\"><div class=\"icon arrow right\"></div></a></li></ul><div ng-if=\"vm.status == \'scheduled\'\" class=\"subheader\"><img src=\"/images/clock.svg\" class=\"icon biggest\"/><p>Submissions for the {{ vm.stepName }} Phase coming in</p><countdown end=\"{{ vm.startsAt }}\" class=\"block\"></countdown></div><div ng-if=\"vm.status == \'closed\'\" class=\"subheader\"><p>Congratulations! These are your {{ vm.stepName }} winners.</p><hr class=\"small\"/><ul class=\"winners\"><li ng-repeat=\"rank in vm.ranks\" ng-if=\"rank.id\"><div class=\"rank\"><strong>{{rank.label.slice(0, -5)}}</strong><br /> place</div><avatar avatar-url=\"{{rank.avatarUrl}}\"></avatar><a href=\"#\" class=\"name\">{{rank.handle}}</a></li></ul></div><div ng-if=\"vm.status == \'open\'\" class=\"subheader\"><p>Give feedback and select the top {{ vm.ranks.length }} designs. You have <countdown end=\"{{vm.endsAt}}\"></countdown> \nto give feedback.</p><ul class=\"top-selection\"><li ng-repeat=\"rank in vm.ranks track by $index\"><div ng-class=\"{ \'has-avatar\': rank.avatarUrl }\" ondragenter=\"return false\" ondragover=\"return false\" on-drop=\"vm.drop.handle(event, rank.value)\" class=\"shell\"><div ng-if=\"rank.id\" data-id=\"{{ rank.id }}\" draggable=\"draggable\"><avatar avatar-url=\"{{ rank.avatarUrl }}\"></avatar><div class=\"rank\">{{ rank.value }}</div></div><div ng-if=\"!rank.avatarUrl\" class=\"rank\">{{ rank.value }}</div></div></li><li ng-show=\"vm.allFilled\"><button ng-click=\"vm.confirmRanks()\" class=\"action\">Confirm your selections </button></li></ul><p ng-if=\"vm.rankUpdateError\">{{ vm.rankUpdateError }}</p></div><ul class=\"submissions\"><li ng-repeat=\"submission in vm.submissions track by $index\" data-id=\"{{ submission.id }}\" draggable=\"draggable\" class=\"submission flex elevated-bottom\"><ul class=\"user-details flex middle\"><li><avatar avatar-url=\"{{ submission.submitter.avatar }}\"></avatar></li><li><div class=\"name-time\"><div class=\"name\">{{ submission.submitter.handle }}</div><div class=\"count\">{{ submission.files.length }} Images</div></div></li></ul><ul class=\"thumbnails flex-grow\"><li ng-repeat=\"file in submission.files track by $index\" class=\"thumbnail\"><a ui-sref=\"file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: submission.id, fileId: file.id})\"><img ng-src=\"{{ file.url }}\" class=\"img\"/></a><div class=\"pop-over elevated\"><a ui-sref=\"file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: submission.id, fileId: file.id})\" class=\"preview\"><img ng-src=\"{{ file.url }}\" class=\"previewImage\"/></a><div class=\"icon bubble\"></div><a href=\"{{ file.url }}\" target=\"_blank\"><div class=\"clean icon download\"></div></a></div></li></ul><ul class=\"actions flex middle wrap\"><li><a ui-sref=\"submission-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: submission.id})\">view all</a></li><li ng-if=\"vm.status != \'closed\'\" class=\"comments\"><a href=\"{{ submission.downloadUrl }}\" target=\"_blank\"><div class=\"icon download small\"></div></a></li><li ng-if=\"vm.status == \'closed\' &amp;&amp; submission.rank\" class=\"comments\"><a href=\"{{ submission.downloadUrl }}\" target=\"_blank\"><div class=\"icon download small\"></div></a></li><li ng-if=\"vm.status == \'open\'\"><select ng-model=\"submission.rank\" ng-change=\"vm.handleRankSelect(submission)\" ng-options=\"rank.value as rank.label for rank in vm.ranks\"></select></li><li ng-if=\"vm.status == \'closed\'\">{{ vm.rankNames[$index] }}</li></ul></li></ul>");
+angular.module("appirio-tech-submissions").run(["$templateCache", function($templateCache) {$templateCache.put("views/submissions.directive.html","<loader ng-hide=\"vm.loaded\"></loader><ul class=\"header flex-center\"><li class=\"previous\"><a ng-class=\"{ invisible: !vm.prevStepRef }\" href=\"{{ vm.prevStepRef }}\"><div class=\"icon arrow\"></div></a></li><li><h1>{{ vm.stepName }}</h1></li><li class=\"next\"><a ng-class=\"{ invisible: !vm.nextStepRef }\" href=\"{{ vm.nextStepRef }}\"><div class=\"icon arrow right\"></div></a></li></ul><div ng-if=\"vm.status == \'scheduled\'\" class=\"subheader\"><img src=\"/images/clock.svg\" class=\"icon biggest\"/><p>Submissions for the {{ vm.stepName }} Phase coming in</p><countdown end=\"{{ vm.startsAt }}\" class=\"block\"></countdown></div><div ng-if=\"vm.status == \'closed\'\" class=\"subheader\"><p>Congratulations! These are your {{ vm.stepName }} winners.</p><hr class=\"small\"/><ul class=\"winners\"><li ng-repeat=\"rank in vm.ranks\" ng-if=\"rank.id\"><div class=\"rank\"><strong>{{rank.label.slice(0, -5)}}</strong><br /> place</div><avatar avatar-url=\"{{rank.avatarUrl}}\"></avatar><a href=\"#\" class=\"name\">{{rank.handle}}</a></li></ul></div><div ng-if=\"vm.status == \'open\'\" class=\"subheader\"><p>Give feedback and select the top {{ vm.ranks.length }} designs. You have <countdown end=\"{{vm.endsAt}}\"></countdown> \nto give feedback.</p><ul class=\"top-selection\"><li ng-repeat=\"rank in vm.ranks track by $index\"><div ng-class=\"{ \'has-avatar\': rank.avatarUrl }\" ondragenter=\"return false\" ondragover=\"return false\" on-drop=\"vm.drop.handle(event, rank.value)\" class=\"shell\"><div ng-if=\"rank.id\" data-id=\"{{ rank.id }}\" draggable=\"draggable\"><avatar avatar-url=\"{{ rank.avatarUrl }}\"></avatar><div class=\"rank\">{{ rank.value }}</div></div><div ng-if=\"!rank.avatarUrl\" class=\"rank\">{{ rank.value }}</div></div></li><li ng-show=\"vm.allFilled\"><button ng-click=\"vm.confirmRanks()\" class=\"action\">Confirm your selections </button></li></ul><p ng-if=\"vm.rankUpdateError\">{{ vm.rankUpdateError }}</p></div><ul class=\"submissions\"><li ng-repeat=\"submission in vm.submissions track by $index\" data-id=\"{{ submission.id }}\" draggable=\"draggable\" class=\"submission flex elevated-bottom\"><ul class=\"user-details flex middle\"><li><avatar avatar-url=\"{{ submission.submitter.avatar }}\"></avatar></li><li><div class=\"name-time\"><div class=\"name\">{{ submission.submitter.handle }}</div><div class=\"count\">{{ submission.files.length }} Images</div></div></li></ul><ul class=\"thumbnails flex-grow\"><li ng-repeat=\"file in submission.files track by $index\" class=\"thumbnail\"><a ui-sref=\"file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: submission.id, fileId: file.id})\"><img ng-src=\"{{ file.url }}\" class=\"img\"/></a><div class=\"pop-over elevated\"><a ui-sref=\"file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: submission.id, fileId: file.id})\" class=\"preview\"><img ng-src=\"{{ file.url }}\" class=\"previewImage\"/></a><div class=\"icon envelope\"></div><a href=\"{{ file.url }}\" target=\"_blank\"><div class=\"clean icon download\"></div></a></div></li></ul><ul class=\"actions flex middle wrap\"><li><a ui-sref=\"submission-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: submission.id})\">view all</a></li><li ng-if=\"vm.status != \'closed\'\" class=\"comments\"><a href=\"{{ submission.downloadUrl }}\" target=\"_blank\"><div class=\"icon download small\"></div></a></li><li ng-if=\"vm.status == \'closed\' &amp;&amp; submission.rank\" class=\"comments\"><a href=\"{{ submission.downloadUrl }}\" target=\"_blank\"><div class=\"icon download small\"></div></a></li><li ng-if=\"vm.status == \'open\'\"><select ng-model=\"submission.rank\" ng-change=\"vm.handleRankSelect(submission)\" ng-options=\"rank.value as rank.label for rank in vm.ranks\"></select></li><li ng-if=\"vm.status == \'closed\'\">{{ vm.rankNames[$index] }}</li></ul></li></ul>");
 $templateCache.put("views/final-fixes.directive.html","<loader ng-show=\"!vm.loaded\"></loader><ul class=\"header flex-center\"><li class=\"previous\"><a ng-class=\"{ invisible: !vm.prevStepRef }\" href=\"{{ vm.prevStepRef }}\"><div class=\"icon arrow\"></div></a></li><li><h1>{{ vm.stepName }}</h1></li><li class=\"next\"><a ng-class=\"{ invisible: !vm.nextStepRef }\" href=\"{{ vm.nextStepRef }}\"><div class=\"icon arrow right\"></div></a></li></ul><div ng-if=\"vm.status == \'scheduled\'\" class=\"subheader\"><img src=\"/images/clock.svg\" class=\"icon biggest\"/><p>Final Fixes Phase starts in</p><countdown end=\"{{ vm.work.phase.startDate }}\" class=\"block\"></countdown><hr/><ul class=\"winners\"><li><div class=\"rank\"><strong>winner</strong></div><avatar avatar-url=\"{{vm.submission.submitter.avatar}}\"></avatar><a href=\"#\" class=\"name\">{{vm.submission.submitter.handle}}</a></li></ul></div><div ng-if=\"vm.status == \'closed\'\" class=\"subheader\"><p>Project Complete! Review final submission</p></div><div ng-if=\"vm.status == \'open\'\" class=\"subheader\"><p>Give your final feedback to complete this design project.</p><countdown end=\"{{ vm.work.phase.endDate }}\" class=\"block\"></countdown><p class=\"duration\">remaining to give feedback</p></div><div class=\"buttons flex space-between wrap\"><button ng-if=\"vm.status == \'open\' || vm.status == \'closed\'\" class=\"download\"><div class=\"icon download smallest\"></div><span>download files</span></button><button ng-click=\"vm.confirmApproval()\" ng-if=\"vm.status == \'open\'\" class=\"action\">confirm final approval</button></div><hr/><ul ng-if=\"vm.status == \'open\' || vm.status == \'closed\'\" class=\"flex wrap previews\"><li ng-repeat=\"file in vm.submission.files track by $index\" fitted-width=\"fitted-width\" class=\"preview\"><img ng-src=\"{{ file.url }}\" ui-sref=\"file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: vm.submission.id, fileId: file.id})\" class=\"img\"/></li></ul>");
-$templateCache.put("views/submission-detail.directive.html","<ul class=\"header flex middle\"><li class=\"flex-grow submitter\"><a href=\"\">submissions</a><div class=\"icon arrow right smallest\"></div><avatar avatar-url=\"{{ vm.submission.submitter.avatar }}\"></avatar><div class=\"name\">{{ vm.submission.submitter.handle }}</div></li><li><select ng-model=\"vm.submission.rank\" ng-change=\"vm.handleRankSelect(vm.submission)\" ng-options=\"rank.value as rank.label for rank in vm.ranks\"></select></li><li class=\"download\"><button class=\"clean\"><div class=\"icon download small\"></div></button></li></ul><hr/><ul class=\"previews flex wrap\"><li ng-repeat=\"file in vm.submission.files track by $index\" fitted-width=\"fitted-width\" class=\"preview\"><a ui-sref=\"file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: vm.submissionId, fileId: file.id})\"><img ng-src=\"{{ file.url }}\" class=\"img\"/></a><p>{{ file.name }}</p></li></ul>");
-$templateCache.put("views/file-detail.directive.html","<main><loader ng-show=\"!vm.loaded\"></loader><ul class=\"header\"><li class=\"submitter\"><avatar avatar-url=\"{{ vm.submission.submitter.avatar }}\"></avatar><div class=\"name-time\"><p class=\"name\">{{ vm.submission.submitter.handle }}</p><time>Submitted: {{ vm.submission.createdAt | timeLapse }}</time></div></li><li class=\"icons\"><button class=\"clean\"><a href=\"{{ vm.file.url }}\"><div class=\"icon download\"></div></a></button><button ng-click=\"vm.toggleComments()\" class=\"clean\"><div class=\"icon bubble\"></div></button></li></ul><hr/><aside ng-class=\"{ active: vm.showComments }\" flush-height=\"flush-height\" class=\"messaging flex column\"><h4>Submission comments</h4><hr/><div class=\"flex column flex-grow\"><ul class=\"messages flex-grow\"><li ng-repeat=\"message in vm.messages track by $index\"><header class=\"flex middle\"><avatar avatar-url=\"{{ vm.avatars[message.publisherId] }}\"></avatar><div class=\"name\">this is a very long long long name</div><time>{{ message.createdAt | timeLapse }}</time></header><p class=\"message\">{{ message.body }}</p></li></ul><form ng-submit=\"vm.sendMessage()\"><textarea placeholder=\"Send a message&hellip;\" ng-model=\"vm.newMessage\"></textarea><button type=\"submit\" class=\"enter\">Enter</button></form></div></aside><ul class=\"slideshow\"><li><a ng-if=\"vm.prevFile\" ui-sref=\"file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: vm.submission.id, fileId: vm.prevFile.id})\"><button class=\"clean icon arrow big\"></button></a></li><li class=\"preview\"><div class=\"img-container\"><img ng-src=\"{{ vm.file.url }}\"/></div><p>{{ vm.submission.files[vm.selectedPreviewIndex].name }}</p></li><li><a ng-if=\"vm.nextFile\" ui-sref=\"file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: vm.submission.id, fileId: vm.nextFile.id})\"><button class=\"clean icon arrow right big\"></button></a></li></ul><ul class=\"thumbnails\"><li ng-repeat=\"file in vm.submission.files\" class=\"thumbnail\"><button class=\"clean thumbnail\"><a ui-sref=\"file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: vm.submission.id, fileId: file.id})\"><img ng-src=\"{{ file.url }}\"/><div ng-if=\"file.unreadMessages &gt; 0\" class=\"notification absolute\">{{ file.unreadMessages }}</div></a></button></li></ul></main>");}]);
+$templateCache.put("views/submission-detail.directive.html","<loader ng-hide=\"vm.loaded\"></loader><ul class=\"header flex middle\"><li class=\"flex-grow submitter\"><a href=\"\">submissions</a><div class=\"icon arrow right smallest\"></div><avatar avatar-url=\"{{ vm.submission.submitter.avatar }}\"></avatar><div class=\"name\">{{ vm.submission.submitter.handle }}</div></li><li><select ng-model=\"vm.submission.rank\" ng-change=\"vm.handleRankSelect(vm.submission)\" ng-options=\"rank.value as rank.label for rank in vm.ranks\"></select></li><li class=\"download\"><button class=\"clean\"><div class=\"icon download small\"></div></button></li></ul><hr/><ul class=\"previews flex wrap\"><li ng-repeat=\"file in vm.submission.files track by $index\" fitted-width=\"fitted-width\" class=\"preview\"><a ui-sref=\"file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: vm.submissionId, fileId: file.id})\"><img ng-src=\"{{ file.url }}\" class=\"img\"/></a><p>{{ file.name }}</p></li></ul>");
+$templateCache.put("views/file-detail.directive.html","<main><loader ng-hide=\"vm.loaded\"></loader><ul class=\"header\"><li class=\"submitter\"><avatar avatar-url=\"{{ vm.submission.submitter.avatar }}\"></avatar><div class=\"name-time\"><p class=\"name\">{{ vm.submission.submitter.handle }}</p><time>Submitted: {{ vm.submission.createdAt | timeLapse }}</time></div></li><li class=\"icons\"><button class=\"clean\"><a href=\"{{ vm.file.url }}\"><div class=\"icon download\"></div></a></button><button ng-click=\"vm.toggleComments()\" class=\"clean\"><div class=\"icon envelope\"></div></button></li></ul><hr/><aside ng-class=\"{ active: vm.showComments }\" flush-height=\"flush-height\" class=\"messaging flex column\"><h4>Submission comments</h4><hr/><div class=\"flex column flex-grow\"><ul class=\"messages flex-grow\"><li ng-repeat=\"message in vm.messages track by $index\"><header class=\"flex middle\"><avatar avatar-url=\"{{ vm.avatars[message.publisherId] }}\"></avatar><div class=\"name\">this is a very long long long name</div><time>{{ message.createdAt | timeLapse }}</time></header><p class=\"message\">{{ message.body }}</p></li></ul><form ng-submit=\"vm.sendMessage()\"><textarea placeholder=\"Send a message&hellip;\" ng-model=\"vm.newMessage\"></textarea><button type=\"submit\" class=\"enter\">Enter</button></form></div></aside><ul class=\"slideshow\"><li><a ng-if=\"vm.prevFile\" ui-sref=\"file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: vm.submission.id, fileId: vm.prevFile.id})\"><button class=\"clean icon arrow big\"></button></a></li><li class=\"preview\"><div class=\"img-container\"><img ng-src=\"{{ vm.file.url }}\"/></div><p>{{ vm.submission.files[vm.selectedPreviewIndex].name }}</p></li><li><a ng-if=\"vm.nextFile\" ui-sref=\"file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: vm.submission.id, fileId: vm.nextFile.id})\"><button class=\"clean icon arrow right big\"></button></a></li></ul><ul class=\"thumbnails\"><li ng-repeat=\"file in vm.submission.files\" class=\"thumbnail\"><button class=\"clean thumbnail\"><a ui-sref=\"file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: vm.submission.id, fileId: file.id})\"><img ng-src=\"{{ file.url }}\"/><div ng-if=\"file.unreadMessages &gt; 0\" class=\"notification absolute\">{{ file.unreadMessages }}</div></a></button></li></ul></main>");}]);
 (function() {
   'use strict';
   var SubmissionsController;
@@ -54,8 +54,6 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-show=\"!
     vm.ranks = [];
     vm.projectId = $scope.projectId;
     vm.stepId = $scope.stepId;
-    vm.rankUpdatePending = false;
-    vm.rankUpdateError = '';
     vm.handleRankSelect = function(submission) {
       if (submission.id && submission.rank) {
         return StepsService.updateRank(vm.projectId, vm.stepId, submission.id, submission.rank);
@@ -76,8 +74,7 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-show=\"!
         destroyStepsListener();
         return destroySubmissionsListener();
       });
-      StepsService.fetch(vm.projectId);
-      return SubmissionsService.fetch(vm.projectId, vm.stepId);
+      return onChange();
     };
     vm.drop = {
       handle: function(event, rankToAssign) {
@@ -90,13 +87,14 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-show=\"!
     };
     onChange = function() {
       var currentStep, nextStep, prevStep, stepParams, steps, submissions;
-      steps = StepsService.get();
-      submissions = SubmissionsService.get();
-      if (steps.length <= 0 || submissions.length <= 0) {
+      steps = StepsService.get(vm.projectId);
+      submissions = SubmissionsService.get(vm.projectId, vm.stepId);
+      if (steps._pending || submissions._pending) {
+        vm.loaded = false;
         return null;
       }
       vm.loaded = true;
-      currentStep = helpers.findInCollection(steps, 'stepType', config.stepType);
+      currentStep = helpers.findInCollection(steps, 'id', vm.stepId);
       prevStep = helpers.findInCollection(steps, 'stepType', config.prevStepType);
       nextStep = helpers.findInCollection(steps, 'stepType', config.nextStepType);
       vm.startsAt = currentStep.startsAt;
@@ -361,8 +359,9 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-show=\"!
   var srv;
 
   srv = function($rootScope, helpers, StepsAPIService, OptimistCollection) {
-    var acceptFixes, confirmRanks, createStepCollection, currentProjectId, fetch, get, steps, updateRank, updateStep;
+    var acceptFixes, confirmRanks, createStepCollection, currentProjectId, fetch, get, getCurrentStep, getStepById, steps, updateRank, updateStep;
     currentProjectId = null;
+    steps = null;
     createStepCollection = function() {
       var newSteps;
       newSteps = new OptimistCollection({
@@ -373,16 +372,40 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-show=\"!
       });
       return newSteps;
     };
-    steps = createStepCollection();
-    get = function() {
+    get = function(projectId) {
+      if (projectId !== currentProjectId) {
+        fetch(projectId);
+      }
       return steps.get();
+    };
+    getCurrentStep = function(projectId) {
+      var filter;
+      filter = function(step) {
+        return step.stepType === 'designConcepts';
+      };
+      if (projectId !== currentProjectId) {
+        fetch(projectId);
+        return null;
+      } else {
+        return steps.get().filter(filter)[0];
+      }
+    };
+    getStepById = function(projectId, stepId) {
+      var filter;
+      filter = function(step) {
+        return step.id === stepId;
+      };
+      if (projectId !== currentProjectId) {
+        fetch(projectId);
+        return null;
+      } else {
+        return steps.get().filter(filter)[0];
+      }
     };
     fetch = function(projectId) {
       var apiCall;
-      if (projectId !== currentProjectId) {
-        steps = createStepCollection();
-        currentProjectId = projectId;
-      }
+      steps = createStepCollection();
+      currentProjectId = projectId;
       apiCall = function() {
         var params;
         params = {
@@ -451,7 +474,8 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-show=\"!
     };
     return {
       get: get,
-      fetch: fetch,
+      getCurrentStep: getCurrentStep,
+      getStepById: getStepById,
       updateRank: updateRank,
       confirmRanks: confirmRanks,
       acceptFixes: acceptFixes
@@ -470,6 +494,7 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-show=\"!
 
   SubmissionsService = function($rootScope, helpers, StepsAPIService, SubmissionsAPIService, MessagesAPIService, SubmissionsMessagesAPIService, OptimistCollection) {
     var createSubmissionCollection, currentProjectId, currentStepId, emitUpdates, fetch, get, markMessagesAsRead, sendMessage, submissions;
+    submissions = null;
     currentProjectId = null;
     currentStepId = null;
     emitUpdates = function() {
@@ -483,17 +508,20 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-show=\"!
       });
       return newSteps;
     };
-    submissions = createSubmissionCollection();
-    get = function() {
+    get = function(projectId, stepId) {
+      if (!(projectId && stepId)) {
+        throw 'SubmissionsService.get requires a projectId and a stepId';
+      }
+      if (projectId !== currentProjectId || stepId !== currentStepId) {
+        fetch(projectId, stepId);
+      }
       return submissions.get();
     };
     fetch = function(projectId, stepId) {
       var apiCall;
-      if (projectId !== currentProjectId || stepId !== currentStepId) {
-        submissions = createSubmissionCollection();
-        currentProjectId = projectId;
-        currentStepId = stepId;
-      }
+      submissions = createSubmissionCollection();
+      currentProjectId = projectId;
+      currentStepId = stepId;
       apiCall = function() {
         var params;
         params = {
@@ -572,7 +600,6 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-show=\"!
     };
     return {
       get: get,
-      fetch: fetch,
       markMessagesAsRead: markMessagesAsRead,
       sendMessage: sendMessage
     };
@@ -629,11 +656,12 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-show=\"!
       StepsService.fetch(vm.projectId);
       return SubmissionsService.fetch(vm.projectId, vm.stepId);
     };
-    vm.onchange = onChange = function() {
+    onChange = function() {
       var currentStep, prevStep, stepParams, steps, submissions;
-      steps = StepsService.get();
-      submissions = SubmissionsService.get();
-      if (steps.length <= 0 || submissions.length <= 0) {
+      steps = StepsService.get(vm.projectId);
+      submissions = SubmissionsService.get(vm.projectId, vm.stepId);
+      if (steps._pending || submissions._pending) {
+        vm.loaded = false;
         return null;
       }
       vm.loaded = true;
@@ -717,14 +745,14 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-show=\"!
         destroyStepsListener();
         return destroySubmissionsListener();
       });
-      StepsService.fetch(vm.projectId);
-      return SubmissionsService.fetch(vm.projectId, vm.stepId);
+      return onChange();
     };
     onChange = function() {
       var currentStep, currentSubmission, steps, submissions;
-      steps = StepsService.get();
-      submissions = SubmissionsService.get();
-      if (steps.length <= 0 || submissions.length <= 0) {
+      steps = StepsService.get(vm.projectId);
+      submissions = SubmissionsService.get(vm.projectId, vm.stepId);
+      if (steps._pending || submissions._pending) {
+        vm.loaded = false;
         return null;
       }
       vm.loaded = true;
@@ -814,12 +842,13 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-show=\"!
       $scope.$watch(UserV3Service.getCurrentUser, function(user) {
         return vm.userId = user != null ? user.id : void 0;
       });
-      return SubmissionsService.fetch(vm.projectId, vm.stepId);
+      return onChange();
     };
     onChange = function() {
       var currentIndex, currentSubmission, nextIndex, prevIndex, ref, submissions;
-      submissions = SubmissionsService.get();
-      if (submissions.length <= 0) {
+      submissions = SubmissionsService.get(vm.projectId, vm.stepId);
+      if (submissions._pending) {
+        vm.loaded = false;
         return null;
       }
       vm.loaded = true;
