@@ -10,11 +10,9 @@ SubmissionsController = (helpers, $scope, $rootScope, $state, StepsService, Subm
 
     config.prevStepType = null
     config.prevStepName = null
-    config.prevStepState = null
 
     config.nextStepType = 'completeDesigns'
     config.nextStepName = 'Complete Designs'
-    config.nextStepState = 'complete-designs'
 
     config.timeline = [ 'active', '', '' ]
     config.defaultStatus = 'scheduled'
@@ -25,11 +23,9 @@ SubmissionsController = (helpers, $scope, $rootScope, $state, StepsService, Subm
 
     config.prevStepType = 'designConcepts'
     config.prevStepName = 'Design Concepts'
-    config.prevStepState = 'design-concepts'
 
     config.nextStepType = 'finalFixes'
     config.nextStepName = 'Final Fixes'
-    config.nextStepState = 'final-fixes'
 
     config.timeline = [ '', 'active', '' ]
     config.defaultStatus = 'scheduled'
@@ -100,6 +96,14 @@ SubmissionsController = (helpers, $scope, $rootScope, $state, StepsService, Subm
   # Helper functions #
   ####################
 
+  getStepRef = (projectId, step) ->
+    if step
+      $state.href 'step',
+        projectId: projectId
+        stepId: step.id
+    else
+      null
+
   onChange = ->
     steps = StepsService.get(vm.projectId)
     submissions = SubmissionsService.get(vm.projectId, vm.stepId)
@@ -117,12 +121,8 @@ SubmissionsController = (helpers, $scope, $rootScope, $state, StepsService, Subm
     vm.startsAt = currentStep.startsAt
     vm.endsAt = currentStep.endsAt
 
-    stepParams =
-      projectId: $scope.projectId
-      stepId: $scope.stepId
-
-    vm.prevStepRef = $state.href config.prevStepState, stepParams
-    vm.nextStepRef = $state.href config.nextStepState, stepParams
+    vm.prevStepRef = getStepRef vm.projectId, prevStep
+    vm.nextStepRef = getStepRef vm.projectId, nextStep
 
     vm.submissions = angular.copy submissions
     vm.submissions = helpers.decorateSubmissionsWithRanks vm.submissions, currentStep.details.rankedSubmissions

@@ -2,7 +2,7 @@ loader(ng-hide="vm.loaded")
 
 ul.header.flex.middle
   li.flex-grow.submitter
-    a(href="") submissions
+    a(ui-sref="step({projectId: vm.projectId, stepId: vm.stepId})") submissions
 
     .icon.arrow.right.smallest
 
