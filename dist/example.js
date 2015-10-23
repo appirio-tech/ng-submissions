@@ -32,17 +32,10 @@ angular.module("app.constants", [])
   config = function($stateProvider) {
     var key, results, state, states;
     states = {};
-    states['design-concepts'] = {
-      url: '/',
-      templateUrl: 'views/design-concepts.html'
-    };
-    states['complete-designs'] = {
-      url: '/projects/:projectId/:stepId/complete-designs',
-      templateUrl: 'views/complete-designs.html'
-    };
-    states['final-fixes'] = {
-      url: '/projects/:projectId/:stepId/final-fixes',
-      templateUrl: 'views/final-fixes.html'
+    states['step'] = {
+      url: '/projects/:projectId/:stepId',
+      controller: 'StepController as vm',
+      templateUrl: 'views/step.html'
     };
     states['submission-detail'] = {
       url: '/projects/:projectId/:stepId/:submissionId',
@@ -67,8 +60,7 @@ angular.module("app.constants", [])
 
 }).call(this);
 
-angular.module("example").run(["$templateCache", function($templateCache) {$templateCache.put("views/final-fixes.html","<final-fixes project-id=\"abc\" step-id=\"ghi\"></final-fixes>");
-$templateCache.put("views/submission-detail.html","<submission-detail project-id=\"abc\" step-id=\"abc\" submission-id=\"abc\"></submission-detail>");
+angular.module("example").run(["$templateCache", function($templateCache) {$templateCache.put("views/submission-detail.html","<submission-detail project-id=\"abc\" step-id=\"abc\" submission-id=\"abc\"></submission-detail>");
 $templateCache.put("views/file-detail.html","<modal show=\"true\" background-click-close=\"background-click-close\"><file-detail project-id=\"abc\" step-id=\"abc\" submission-id=\"abc\" file-id=\"abc\"></file-detail></modal>");}]);
 (function() {
   'use strict';
@@ -85,5 +77,43 @@ $templateCache.put("views/file-detail.html","<modal show=\"true\" background-cli
   };
 
   angular.module('example').controller('FileDetailExampleController', controller);
+
+}).call(this);
+
+(function() {
+  'use strict';
+  var StepController;
+
+  StepController = function($scope, $stateParams, $rootScope, StepsService) {
+    var activate, onChange, vm;
+    vm = this;
+    vm.projectId = $stateParams.projectId;
+    vm.stepId = $stateParams.stepId;
+    vm.stepType = null;
+    onChange = function() {
+      var currentStep;
+      currentStep = StepsService.getStepById(vm.projectId, vm.stepId);
+      if (currentStep) {
+        vm.stepId = currentStep.id;
+        return vm.stepType = currentStep.stepType;
+      }
+    };
+    activate = function() {
+      var destroyStepsListener;
+      destroyStepsListener = $rootScope.$on('StepsService:changed', function() {
+        return onChange();
+      });
+      $scope.$on('$destroy', function() {
+        return destroyStepsListener();
+      });
+      return onChange();
+    };
+    activate();
+    return vm;
+  };
+
+  StepController.$inject = ['$scope', '$stateParams', '$rootScope', 'StepsService'];
+
+  angular.module('example').controller('StepController', StepController);
 
 }).call(this);
