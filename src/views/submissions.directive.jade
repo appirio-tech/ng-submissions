@@ -58,7 +58,8 @@ ul.submissions
       li
         .name-time
           .name {{ submission.submitter.handle }}
-          .count {{ submission.files.length }} Images
+
+          p {{ submission.files.length }} Images
 
     ul.thumbnails.flex-grow
       li.thumbnail(ng-repeat="file in submission.files track by $index")
