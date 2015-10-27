@@ -2,9 +2,9 @@
   ul.messages.flex-grow
     li(ng-repeat="message in vm.messages track by $index")
       header.flex.middle
-        avatar(avatar-url="{{ vm.avatars[message.publisherId] }}")
+        avatar(avatar-url="{{ message.publisher.avatar }}")
 
-        .name this is a very long long long name
+        .name {{ message.publisher.handle }}
 
         time {{ message.createdAt | timeLapse }}
 

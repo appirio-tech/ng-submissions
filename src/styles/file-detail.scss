@@ -27,8 +27,8 @@ file-detail {
       margin-left: $spacing;
 
       .name {
-        font-size: $font-size-big;
-        color: $neutral-color-dark;
+        font-size  : $font-size-big;
+        font-weight: $font-weight-lightest;
       }
     }
   }

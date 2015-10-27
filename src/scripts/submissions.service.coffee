@@ -1,6 +1,6 @@
 'use strict'
 
-SubmissionsService = ($rootScope, helpers, StepsAPIService, SubmissionsAPIService, MessagesAPIService, SubmissionsMessagesAPIService, OptimistCollection) ->
+SubmissionsService = ($rootScope, helpers, StepsAPIService, SubmissionsAPIService, SubmissionsMessagesAPIService, OptimistCollection, UserV3Service, MessageUpdateAPIService) ->
   submissions = null
   currentProjectId = null
   currentStepId = null
@@ -39,32 +39,29 @@ SubmissionsService = ($rootScope, helpers, StepsAPIService, SubmissionsAPIServic
     submissions.fetch
       apiCall: apiCall
 
-  markMessagesAsRead = (submissionId, fileId, userId) ->
+  markMessagesAsRead = (submissionId, fileId, userId, threadId) ->
     submission     = submissions.findOneWhere(id: submissionId)
     submissionData = submission.get()
     files          = submissionData.files
     file           = helpers.findInCollection files, 'id', fileId
     messages       = file.threads[0]?.messages
-    updateMade     = false
 
-    messages.forEach (message) ->
-      if !message.read
-        updateMade = true
-        message.read = true
+    message = messages[messages.length - 1]
+    if !message.read
+      updateMade = true
+      message.read = true
 
-        params =
-          id: message.id
+      queryParams =
+        threadId: message.threadId
+        messageId: message.id
 
-        body =
-          read: true
+      putParams =
+        param:
+          readFlag:     true
           subscriberId: userId
 
-        MessagesAPIService.put(params, body).$promise
+      resource = MessageUpdateAPIService.put queryParams, putParams
 
-    if updateMade
-      submission.updateLocal
-        updates:
-          read: true
 
   sendMessage = (submissionId, fileId, message, userId) ->
     currentSubmission = submissions.findOneWhere(id: submissionId)
@@ -87,9 +84,14 @@ SubmissionsService = ($rootScope, helpers, StepsAPIService, SubmissionsAPIServic
 
     SubmissionsMessagesAPIService.post params, payload
 
-    newMessage = payload.param
-    newMessage.read = true
-    newMessage.createdAt = now.toISOString()
+    user = UserV3Service.getCurrentUser()
+
+    newMessage = angular.merge {}, payload.param,
+      read: true
+      createdAt: now.toISOString()
+      publisher:
+        handle: user.handle
+        avatar: user.avatar
 
     # Dirty hack alert
     privateFiles = currentSubmission._data.files
@@ -103,6 +105,6 @@ SubmissionsService = ($rootScope, helpers, StepsAPIService, SubmissionsAPIServic
   markMessagesAsRead : markMessagesAsRead
   sendMessage        : sendMessage
 
-SubmissionsService.$inject = ['$rootScope', 'SubmissionsHelpers', 'StepsAPIService', 'SubmissionsAPIService', 'MessagesAPIService', 'SubmissionsMessagesAPIService', 'OptimistCollection']
+SubmissionsService.$inject = ['$rootScope', 'SubmissionsHelpers', 'StepsAPIService', 'SubmissionsAPIService', 'SubmissionsMessagesAPIService', 'OptimistCollection', 'UserV3Service', 'MessageUpdateAPIService']
 
 angular.module('appirio-tech-submissions').factory 'SubmissionsService', SubmissionsService
