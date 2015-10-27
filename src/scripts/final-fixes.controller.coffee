@@ -54,14 +54,22 @@ FinalFixesController = (helpers, $scope, $rootScope, $state, StepsService, Submi
       destroyStepsListener()
       destroySubmissionsListener()
 
-    StepsService.fetch vm.projectId
-    SubmissionsService.fetch vm.projectId, vm.stepId
+    onChange()
 
-  vm.onchange = onChange = ->
-    steps = StepsService.get()
-    submissions = SubmissionsService.get()
+  getStepRef = (projectId, step) ->
+    if step
+      $state.href 'step',
+        projectId: projectId
+        stepId: step.id
+    else
+      null
 
-    if steps.length <= 0 || submissions.length <= 0
+  onChange = ->
+    steps = StepsService.get(vm.projectId)
+    submissions = SubmissionsService.get(vm.projectId, vm.stepId)
+
+    if steps._pending || submissions._pending
+      vm.loaded = false
       return null
 
     vm.loaded = true
@@ -72,11 +80,7 @@ FinalFixesController = (helpers, $scope, $rootScope, $state, StepsService, Submi
     vm.startsAt = currentStep.startsAt
     vm.endsAt = currentStep.endsAt
 
-    stepParams =
-      projectId: vm.projectId
-      stepId: vm.stepId
-
-    vm.prevStepRef = $state.href config.prevStepState, stepParams
+    vm.prevStepRef = getStepRef vm.projectId, prevStep
 
     vm.submission = angular.copy submissions[0]
     vm.submission = helpers.decorateSubmissionWithMessageCounts vm.submission

@@ -23,11 +23,11 @@
     "appirio-tech-ng-auth": "3.x.x",
     "appirio-tech-ng-api-services": "0.x.x",
     "appirio-tech-ng-optimist": "0.x.x",
+    "appirio-tech-ng-messaging": "7.x.x",
     "moment": "^2.10.x",
     "a0-angular-storage": "0.0.x",
     "angular-jwt": "0.0.x",
-    "auth0-angular": "4.0.x",
-    "angular-dragula.js": "~1.0.6"
+    "auth0-angular": "4.0.x"
   },
   "ignore": [
     "**/*",

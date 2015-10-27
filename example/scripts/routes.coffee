@@ -3,17 +3,10 @@
 config = ($stateProvider) ->
   states = {}
 
-  states['design-concepts'] =
-    url         : '/'
-    templateUrl : 'views/design-concepts.html'
-
-  states['complete-designs'] =
-    url         : '/projects/:projectId/:stepId/complete-designs'
-    templateUrl : 'views/complete-designs.html'
-
-  states['final-fixes'] =
-    url         : '/projects/:projectId/:stepId/final-fixes'
-    templateUrl : 'views/final-fixes.html'
+  states['step'] =
+    url         : '/projects/:projectId/:stepId'
+    controller  : 'StepController as vm'
+    templateUrl : 'views/step.html'
 
   states['submission-detail'] =
     url         : '/projects/:projectId/:stepId/:submissionId'

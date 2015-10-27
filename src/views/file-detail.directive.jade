@@ -1,12 +1,12 @@
 main
-  loader(ng-show="!vm.loaded")
+  loader(ng-hide="vm.loaded")
 
   ul.header
     li.submitter
       avatar(avatar-url="{{ vm.submission.submitter.avatar }}")
 
       .name-time
-        .name {{ vm.submission.submitter.handle }}
+        p.name {{ vm.submission.submitter.handle }}
 
         time Submitted: {{ vm.submission.createdAt | timeLapse }}
 
@@ -16,11 +16,11 @@ main
           .icon.download
 
       button.clean(ng-click="vm.toggleComments()")
-       .icon.bubble
+       .icon.envelope
 
   hr
 
-  aside.messaging(ng-class="{ active: vm.showComments }")
+  aside.messaging.flex.column(ng-class="{ active: vm.showComments }" flush-height=true)
     h4 Submission comments
 
     hr
@@ -30,7 +30,7 @@ main
   ul.slideshow
     li
       a(ng-if="vm.prevFile", ui-sref="file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: vm.submission.id, fileId: vm.prevFile.id})")
-        button.clean.icon.circle-arrow.biggest
+        button.clean.icon.arrow.big
 
 
     li.preview
@@ -41,7 +41,7 @@ main
 
     li
       a(ng-if="vm.nextFile", ui-sref="file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: vm.submission.id, fileId: vm.nextFile.id})")
-        button.clean.icon.circle-arrow.right.biggest
+        button.clean.icon.arrow.right.big
 
   ul.thumbnails
     li.thumbnail(ng-repeat="file in vm.submission.files")
@@ -49,5 +49,5 @@ main
         a(ui-sref="file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: vm.submission.id, fileId: file.id})")
           img(ng-src="{{ file.url }}")
 
-          .notification(ng-if="file.unreadMessages > 0") {{ file.unreadMessages }}
+          .notification.absolute(ng-if="file.unreadMessages > 0") {{ file.unreadMessages }}
 

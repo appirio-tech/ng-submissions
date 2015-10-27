@@ -15,3 +15,8 @@ body #example-nav {
     display: inline-block;
   }
 }
+
+body > main {
+  padding: $padding-biggest;
+  background-color: $neutral-color-lightest;
+}

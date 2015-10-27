@@ -1,12 +1,12 @@
 ul#example-nav
   li
-    a.submissions(ui-sref="design-concepts") Design Concepts
+    a.submissions(ui-sref="step({projectId: 'abc', stepId: 'abc'})") Design Concepts
 
   li
-    a.submissions(ui-sref="complete-designs({projectId: 'abc', stepId: 'abc'})") Complete Designs
+    a.submissions(ui-sref="step({projectId: 'abc', stepId: 'def'})") Complete Designs
 
   li
-    a.final-fixes(ui-sref="final-fixes({projectId: 'abc', stepId: 'abc'})") Final Fixes
+    a.submissions(ui-sref="step({projectId: 'abc', stepId: 'ghi'})") Final Fixes
 
   li
     a.detail(ui-sref="submission-detail({projectId: 'abc', stepId: 'abc', submissionId: 'abc'})") Submission Detail

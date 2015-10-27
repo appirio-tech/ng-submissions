@@ -1,6 +1,6 @@
 'use strict'
 
-SubmissionsController = (helpers, $scope, $rootScope, $state, dragulaService, StepsService, SubmissionsService) ->
+SubmissionsController = (helpers, $scope, $rootScope, $state, StepsService, SubmissionsService) ->
   vm             = this
   config         = {}
 
@@ -10,11 +10,9 @@ SubmissionsController = (helpers, $scope, $rootScope, $state, dragulaService, St
 
     config.prevStepType = null
     config.prevStepName = null
-    config.prevStepState = null
 
     config.nextStepType = 'completeDesigns'
     config.nextStepName = 'Complete Designs'
-    config.nextStepState = 'complete-designs'
 
     config.timeline = [ 'active', '', '' ]
     config.defaultStatus = 'scheduled'
@@ -25,11 +23,9 @@ SubmissionsController = (helpers, $scope, $rootScope, $state, dragulaService, St
 
     config.prevStepType = 'designConcepts'
     config.prevStepName = 'Design Concepts'
-    config.prevStepState = 'design-concepts'
 
     config.nextStepType = 'finalFixes'
     config.nextStepName = 'Final Fixes'
-    config.nextStepState = 'final-fixes'
 
     config.timeline = [ '', 'active', '' ]
     config.defaultStatus = 'scheduled'
@@ -50,21 +46,20 @@ SubmissionsController = (helpers, $scope, $rootScope, $state, dragulaService, St
   vm.loaded      = false
   vm.timeline    = config.timeline
   vm.stepName    = config.stepName
-  vm.status      = config.defaultStatus
+  vm.status      = null
   vm.allFilled   = false
   vm.submissions = []
   vm.ranks       = []
   vm.projectId   = $scope.projectId
   vm.stepId      = $scope.stepId
-  vm.rankUpdatePending = false
-  vm.rankUpdateError = ''
 
   ##############
   # vm Methods #
   ##############
 
   vm.handleRankSelect = (submission) ->
-    StepsService.updateRank vm.projectId, vm.stepId, submission.id, submission.rank
+    if submission.id && submission.rank
+      StepsService.updateRank vm.projectId, vm.stepId, submission.id, submission.rank
 
   vm.confirmRanks = ->
     StepsService.confirmRanks vm.projectId, vm.stepId
@@ -84,59 +79,50 @@ SubmissionsController = (helpers, $scope, $rootScope, $state, dragulaService, St
       destroyStepsListener()
       destroySubmissionsListener()
 
-    StepsService.fetch vm.projectId
-    SubmissionsService.fetch vm.projectId, vm.stepId
+    onChange()
 
-  ###################
-  # Dragula helpers #
-  ###################
+  # IMPORTANT: This must be an object for the onDrop directive to work
+  # See: https://github.com/angular/angular.js/wiki/Understanding-Scopes
+  vm.drop =
+    handle: (event, rankToAssign) ->
+      submissionId = event.dataTransfer.getData 'submissionId'
 
-  isDraggable = (el, source, handle) ->
-    source.classList.contains 'has-avatar'
-
-  dragulaOptions =
-    moves: isDraggable
-    copy: true
-
-  dragulaService.options $scope, 'ranked-submissions', dragulaOptions
-
-  handleRankDrop = (el, target, source) ->
-    if !source
-      return false
-
-    movedSubmissionId = target[0].dataset.id
-    rankToAssign = (parseInt(source[0].dataset.rank) + 1) + ''
-
-    StepsService.updateRank vm.projectId, vm.stepId, movedSubmissionId, rankToAssign
-
-  $scope.$on 'ranked-submissions.drop', handleRankDrop
+      # The dataTransfer method returns String("undefined") if item is not found
+      # Thus the seeminly bizarre check below
+      if submissionId != 'undefined' && submissionId && rankToAssign
+        StepsService.updateRank vm.projectId, vm.stepId, submissionId, rankToAssign
 
   ####################
   # Helper functions #
   ####################
 
-  onChange = ->
-    steps = StepsService.get()
-    submissions = SubmissionsService.get()
+  getStepRef = (projectId, step) ->
+    if step
+      $state.href 'step',
+        projectId: projectId
+        stepId: step.id
+    else
+      null
 
-    if steps.length <= 0 || submissions.length <= 0
+  onChange = ->
+    steps = StepsService.get(vm.projectId)
+    submissions = SubmissionsService.get(vm.projectId, vm.stepId)
+
+    if steps._pending || submissions._pending
+      vm.loaded = false
       return null
 
     vm.loaded = true
 
-    currentStep = helpers.findInCollection steps, 'stepType', config.stepType
+    currentStep = helpers.findInCollection steps, 'id', vm.stepId
     prevStep = helpers.findInCollection steps, 'stepType', config.prevStepType
     nextStep = helpers.findInCollection steps, 'stepType', config.nextStepType
 
     vm.startsAt = currentStep.startsAt
     vm.endsAt = currentStep.endsAt
 
-    stepParams =
-      projectId: $scope.projectId
-      stepId: $scope.stepId
-
-    vm.prevStepRef = $state.href config.prevStepState, stepParams
-    vm.nextStepRef = $state.href config.nextStepState, stepParams
+    vm.prevStepRef = getStepRef vm.projectId, prevStep
+    vm.nextStepRef = getStepRef vm.projectId, nextStep
 
     vm.submissions = angular.copy submissions
     vm.submissions = helpers.decorateSubmissionsWithRanks vm.submissions, currentStep.details.rankedSubmissions
@@ -146,8 +132,6 @@ SubmissionsController = (helpers, $scope, $rootScope, $state, dragulaService, St
     vm.rankNames = config.rankNames.slice 0, currentStep.details.numberOfRanks
     vm.ranks     = helpers.makeEmptyRankList(vm.rankNames)
     vm.ranks     = helpers.decorateRankListWithSubmissions vm.ranks, vm.submissions
-
-    vm.rankUpdatePending = currentStep.details.rankedSubmissions_pending
 
     if currentStep.rankedSubmissions_error
       vm.rankUpdateError = currentStep.rankedSubmissions_error
@@ -166,6 +150,6 @@ SubmissionsController = (helpers, $scope, $rootScope, $state, dragulaService, St
 
   vm
 
-SubmissionsController.$inject = ['SubmissionsHelpers', '$scope', '$rootScope', '$state', 'dragulaService', 'StepsService', 'SubmissionsService']
+SubmissionsController.$inject = ['SubmissionsHelpers', '$scope', '$rootScope', '$state', 'StepsService', 'SubmissionsService']
 
 angular.module('appirio-tech-submissions').controller 'SubmissionsController', SubmissionsController

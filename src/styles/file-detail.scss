@@ -23,17 +23,11 @@ file-detail {
       }
     }
 
-    avatar {
-      width           : 60px;
-      height          : 60px;
-      background-color: grey;
-    }
-
     .name-time {
       margin-left: $spacing;
 
       .name {
-        font-size: $font-size-biggest;
+        font-size: $font-size-big;
         color: $neutral-color-dark;
       }
     }
@@ -61,8 +55,6 @@ file-detail {
     }
 
     .preview {
-      max-width: 200px;
-
       p {
         text-align: center;
         margin-top: $spacing-big;
@@ -71,12 +63,9 @@ file-detail {
       }
 
       .img-container {
-        width : 200px;
-        height: 400px;
-
         img {
-          max-width: 200px;
-          max-height: 400px;
+          max-width: 300px;
+          max-height: 500px;
         }
       }
     }
@@ -94,19 +83,9 @@ file-detail {
 
     button {
       img {
-        width  : 40px;
-        height : 40px;
+        width  : 60px;
+        height : 50px;
         display: block;
-      }
-
-      .notification {
-        background-color: $danger-color;
-        color           : white;
-        position        : absolute;
-        top             : -5px;
-        right           : -5px;
-        padding         : 4px;
-        border-radius   : $border-radius-small;
       }
     }
   }
