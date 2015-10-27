@@ -1,6 +1,6 @@
 'use strict'
 
-SubmissionsService = ($rootScope, helpers, StepsAPIService, SubmissionsAPIService, MessagesAPIService, SubmissionsMessagesAPIService, OptimistCollection) ->
+SubmissionsService = ($rootScope, helpers, StepsAPIService, SubmissionsAPIService, SubmissionsMessagesAPIService, OptimistCollection, UserV3Service) ->
   submissions = null
   currentProjectId = null
   currentStepId = null
@@ -87,9 +87,14 @@ SubmissionsService = ($rootScope, helpers, StepsAPIService, SubmissionsAPIServic
 
     SubmissionsMessagesAPIService.post params, payload
 
-    newMessage = payload.param
-    newMessage.read = true
-    newMessage.createdAt = now.toISOString()
+    user = UserV3Service.getCurrentUser()
+
+    newMessage = angular.merge {}, payload.param,
+      read: true
+      createdAt: now.toISOString()
+      publisher:
+        handle: user.handle
+        avatar: user.avatar
 
     # Dirty hack alert
     privateFiles = currentSubmission._data.files
@@ -103,6 +108,6 @@ SubmissionsService = ($rootScope, helpers, StepsAPIService, SubmissionsAPIServic
   markMessagesAsRead : markMessagesAsRead
   sendMessage        : sendMessage
 
-SubmissionsService.$inject = ['$rootScope', 'SubmissionsHelpers', 'StepsAPIService', 'SubmissionsAPIService', 'MessagesAPIService', 'SubmissionsMessagesAPIService', 'OptimistCollection']
+SubmissionsService.$inject = ['$rootScope', 'SubmissionsHelpers', 'StepsAPIService', 'SubmissionsAPIService', 'MessagesAPIService', 'OptimistCollection', 'UserV3Service']
 
 angular.module('appirio-tech-submissions').factory 'SubmissionsService', SubmissionsService

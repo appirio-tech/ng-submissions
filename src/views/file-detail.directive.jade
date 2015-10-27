@@ -34,10 +34,11 @@ main
 
 
     li.preview
+      p {{ vm.file.name }}
+
       .img-container
         img(ng-src="{{ vm.file.url }}")
 
-      p {{ vm.submission.files[vm.selectedPreviewIndex].name }}
 
     li
       a(ng-if="vm.nextFile", ui-sref="file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: vm.submission.id, fileId: vm.nextFile.id})")
