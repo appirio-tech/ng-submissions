@@ -107,8 +107,7 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-hide=\"v
       vm.endsAt = currentStep.endsAt;
       vm.prevStepRef = getStepRef(vm.projectId, prevStep);
       vm.nextStepRef = getStepRef(vm.projectId, nextStep);
-      vm.submissions = angular.copy(submissions);
-      vm.submissions = helpers.decorateSubmissionsWithRanks(vm.submissions, currentStep.details.rankedSubmissions);
+      vm.submissions = helpers.decorateSubmissionsWithRanks(submissions, currentStep.details.rankedSubmissions);
       vm.submissions = helpers.sortSubmissions(vm.submissions);
       vm.submissions = helpers.decorateSubmissionsWithMessageCounts(vm.submissions);
       vm.rankNames = config.rankNames.slice(0, currentStep.details.numberOfRanks);
@@ -494,87 +493,106 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-hide=\"v
   'use strict';
   var SubmissionsService;
 
-  SubmissionsService = function($rootScope, helpers, StepsAPIService, SubmissionsAPIService, SubmissionsMessagesAPIService, OptimistCollection, UserV3Service, MessageUpdateAPIService) {
-    var createSubmissionCollection, currentProjectId, currentStepId, emitUpdates, fetch, get, markMessagesAsRead, sendMessage, submissions;
+  SubmissionsService = function($rootScope, helpers, SubmissionsAPIService, SubmissionsMessagesAPIService, UserV3Service, MessageUpdateAPIService) {
+    var currentProjectId, currentStepId, emitUpdates, error, fetch, get, markMessagesAsRead, pending, sendMessage, submissions;
     submissions = null;
     currentProjectId = null;
     currentStepId = null;
+    pending = false;
+    error = false;
     emitUpdates = function() {
       return $rootScope.$emit('SubmissionsService:changed');
     };
-    createSubmissionCollection = function() {
-      var newSteps;
-      newSteps = new OptimistCollection({
-        updateCallback: emitUpdates,
-        propsToIgnore: ['$promise', '$resolved']
-      });
-      return newSteps;
-    };
     get = function(projectId, stepId) {
+      var copy, i, item, len;
       if (!(projectId && stepId)) {
         throw 'SubmissionsService.get requires a projectId and a stepId';
       }
       if (projectId !== currentProjectId || stepId !== currentStepId) {
         fetch(projectId, stepId);
       }
-      return submissions.get();
+      copy = [];
+      for (i = 0, len = submissions.length; i < len; i++) {
+        item = submissions[i];
+        copy.push(angular.merge({}, item));
+      }
+      if (pending) {
+        copy._pending = true;
+      }
+      if (error) {
+        copy._error = error;
+      }
+      return copy;
     };
     fetch = function(projectId, stepId) {
-      var apiCall;
-      submissions = createSubmissionCollection();
+      var params, promise;
       currentProjectId = projectId;
       currentStepId = stepId;
-      apiCall = function() {
-        var params;
-        params = {
-          projectId: projectId,
-          stepId: stepId
-        };
-        return SubmissionsAPIService.query(params).$promise;
+      submissions = [];
+      pending = true;
+      emitUpdates();
+      params = {
+        projectId: projectId,
+        stepId: stepId
       };
-      return submissions.fetch({
-        apiCall: apiCall
+      promise = SubmissionsAPIService.query(params).$promise;
+      promise.then(function(res) {
+        error = false;
+        submissions = res;
+        return submissions.forEach(function(submission) {
+          return submission.files.forEach(function(file) {
+            return file.threads.forEach(function(thread) {
+              return thread.messages.sort(function(a, b) {
+                var aDate, bDate;
+                aDate = new Date(a.createdAt);
+                bDate = new Date(b.createdAt);
+                return aDate - bDate;
+              });
+            });
+          });
+        });
+      });
+      promise["catch"](function(err) {
+        return error = err;
+      });
+      return promise["finally"](function() {
+        pending = false;
+        return emitUpdates();
       });
     };
     markMessagesAsRead = function(submissionId, fileId, userId, threadId) {
-      var file, files, message, messages, putParams, queryParams, ref, resource, submission, submissionData, updateMade;
-      submission = submissions.findOneWhere({
-        id: submissionId
+      var file, message, messages, putParams, queryParams, submission;
+      submission = helpers.findInCollection(submissions, 'id', submissionId);
+      file = helpers.findInCollection(submission.files, 'id', fileId);
+      messages = file.threads[0].messages;
+      messages.forEach(function(message) {
+        return message.read = true;
       });
-      submissionData = submission.get();
-      files = submissionData.files;
-      file = helpers.findInCollection(files, 'id', fileId);
-      messages = (ref = file.threads[0]) != null ? ref.messages : void 0;
+      emitUpdates();
       message = messages[messages.length - 1];
-      if (!message.read) {
-        updateMade = true;
-        message.read = true;
-        queryParams = {
-          threadId: message.threadId,
-          messageId: message.id
-        };
-        putParams = {
-          param: {
-            readFlag: true,
-            subscriberId: userId
-          }
-        };
-        return resource = MessageUpdateAPIService.put(queryParams, putParams);
-      }
+      queryParams = {
+        threadId: message.threadId,
+        messageId: message.id
+      };
+      putParams = {
+        param: {
+          readFlag: true,
+          subscriberId: userId
+        }
+      };
+      return MessageUpdateAPIService.put(queryParams, putParams);
     };
-    sendMessage = function(submissionId, fileId, message, userId) {
-      var currentFile, currentSubmission, messages, newMessage, now, params, payload, privateCurrentFile, privateFiles, submissionData, thread, user;
-      currentSubmission = submissions.findOneWhere({
-        id: submissionId
-      });
-      submissionData = currentSubmission.get();
-      currentFile = helpers.findInCollection(submissionData.files, 'id', fileId);
-      thread = currentFile.threads[0];
+    sendMessage = function(submissionId, fileId, message) {
+      var file, messages, newMessage, now, params, payload, submission, thread, user;
+      user = UserV3Service.getCurrentUser();
+      submission = helpers.findInCollection(submissions, 'id', submissionId);
+      file = helpers.findInCollection(submission.files, 'id', fileId);
+      thread = file.threads[0];
       messages = thread.messages;
       now = new Date();
       payload = {
         param: {
-          publisherId: userId,
+          publisherId: user.id,
           threadId: thread.id,
           body: message
         }
@@ -585,7 +603,6 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-hide=\"v
         threadId: thread.id
       };
       SubmissionsMessagesAPIService.post(params, payload);
-      user = UserV3Service.getCurrentUser();
       newMessage = angular.merge({}, payload.param, {
         read: true,
         createdAt: now.toISOString(),
@@ -594,9 +611,7 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-hide=\"v
           avatar: user.avatar
         }
       });
-      privateFiles = currentSubmission._data.files;
-      privateCurrentFile = helpers.findInCollection(privateFiles, 'id', currentFile.id);
-      privateCurrentFile.threads[0].messages.push(newMessage);
+      messages.push(newMessage);
       return emitUpdates();
     };
     return {
@@ -606,7 +621,7 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-hide=\"v
     };
   };
 
-  SubmissionsService.$inject = ['$rootScope', 'SubmissionsHelpers', 'StepsAPIService', 'SubmissionsAPIService', 'SubmissionsMessagesAPIService', 'OptimistCollection', 'UserV3Service', 'MessageUpdateAPIService'];
+  SubmissionsService.$inject = ['$rootScope', 'SubmissionsHelpers', 'SubmissionsAPIService', 'SubmissionsMessagesAPIService', 'UserV3Service', 'MessageUpdateAPIService'];
 
   angular.module('appirio-tech-submissions').factory('SubmissionsService', SubmissionsService);
 
@@ -680,8 +695,7 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-hide=\"v
       vm.startsAt = currentStep.startsAt;
       vm.endsAt = currentStep.endsAt;
       vm.prevStepRef = getStepRef(vm.projectId, prevStep);
-      vm.submission = angular.copy(submissions[0]);
-      vm.submission = helpers.decorateSubmissionWithMessageCounts(vm.submission);
+      vm.submission = helpers.decorateSubmissionWithMessageCounts(submissions[0]);
       vm.status = config.defaultStatus;
       if (Date.now() > new Date(currentStep.startsAt)) {
         vm.status = 'open';
@@ -754,7 +768,7 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-hide=\"v
       return onChange();
     };
     onChange = function() {
-      var currentStep, currentSubmission, steps, submissions;
+      var currentStep, steps, submissions;
       steps = StepsService.get(vm.projectId);
       submissions = SubmissionsService.get(vm.projectId, vm.stepId);
       if (steps._pending || submissions._pending) {
@@ -763,8 +777,7 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-hide=\"v
       }
       vm.loaded = true;
       currentStep = helpers.findInCollection(steps, 'id', vm.stepId);
-      currentSubmission = helpers.findInCollection(submissions, 'id', vm.submissionId);
-      vm.submission = angular.copy(currentSubmission);
+      vm.submission = helpers.findInCollection(submissions, 'id', vm.submissionId);
       vm.submission = helpers.decorateSubmissionWithRank(vm.submission, currentStep.details.rankedSubmissions);
       vm.submission = helpers.decorateSubmissionWithMessageCounts(vm.submission);
       vm.rankNames = config.rankNames.slice(0, currentStep.details.numberOfRanks);
@@ -851,15 +864,14 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-hide=\"v
       return onChange();
     };
     onChange = function() {
-      var currentIndex, currentSubmission, nextIndex, prevIndex, ref, submissions;
+      var currentIndex, nextIndex, prevIndex, ref, submissions;
       submissions = SubmissionsService.get(vm.projectId, vm.stepId);
       if (submissions._pending) {
         vm.loaded = false;
         return null;
       }
       vm.loaded = true;
-      currentSubmission = helpers.findInCollection(submissions, 'id', vm.submissionId);
-      vm.submission = angular.copy(currentSubmission);
+      vm.submission = helpers.findInCollection(submissions, 'id', vm.submissionId);
       vm.submission = helpers.decorateSubmissionWithMessageCounts(vm.submission);
       vm.file = helpers.findInCollection(vm.submission.files, 'id', vm.fileId);
       vm.messages = ((ref = vm.file.threads[0]) != null ? ref.messages : void 0) || [];
