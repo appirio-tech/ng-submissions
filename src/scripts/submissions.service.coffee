@@ -1,19 +1,14 @@
 'use strict'
 
-SubmissionsService = ($rootScope, helpers, StepsAPIService, SubmissionsAPIService, SubmissionsMessagesAPIService, OptimistCollection, UserV3Service, MessageUpdateAPIService) ->
+SubmissionsService = ($rootScope, helpers, SubmissionsAPIService, SubmissionsMessagesAPIService, UserV3Service, MessageUpdateAPIService) ->
   submissions = null
   currentProjectId = null
   currentStepId = null
+  pending = false
+  error = false
 
   emitUpdates = ->
     $rootScope.$emit 'SubmissionsService:changed'
-
-  createSubmissionCollection = ->
-    newSteps = new OptimistCollection
-      updateCallback: emitUpdates
-      propsToIgnore: ['$promise', '$resolved']
-
-    newSteps
 
   get = (projectId, stepId) ->
     unless projectId && stepId
@@ -22,58 +17,85 @@ SubmissionsService = ($rootScope, helpers, StepsAPIService, SubmissionsAPIServic
     if projectId != currentProjectId || stepId != currentStepId
       fetch(projectId, stepId)
 
-    submissions.get()
+    copy = []
+
+    for item in submissions
+      copy.push angular.merge({}, item)
+
+    copy._pending = true if pending
+    copy._error = error if error
+
+    copy
 
   fetch = (projectId, stepId) ->
-    submissions = createSubmissionCollection()
     currentProjectId = projectId
     currentStepId = stepId
 
-    apiCall = () ->
-      params =
-        projectId: projectId
-        stepId   : stepId
+    submissions          = []
+    pending = true
 
-      SubmissionsAPIService.query(params).$promise
+    emitUpdates()
 
-    submissions.fetch
-      apiCall: apiCall
+    params =
+      projectId: projectId
+      stepId   : stepId
+
+    promise = SubmissionsAPIService.query(params).$promise
+
+    promise.then (res) ->
+      error = false
+      submissions = res
+
+      submissions.forEach (submission) ->
+        submission.files.forEach (file) ->
+          file.threads.forEach (thread) ->
+            thread.messages.sort (a, b) ->
+              aDate = new Date a.createdAt
+              bDate = new Date b.createdAt
+
+              aDate - bDate
+
+    promise.catch (err) ->
+      error = err
+
+    promise.finally ->
+      pending = false
+      emitUpdates()
 
   markMessagesAsRead = (submissionId, fileId, userId, threadId) ->
-    submission     = submissions.findOneWhere(id: submissionId)
-    submissionData = submission.get()
-    files          = submissionData.files
-    file           = helpers.findInCollection files, 'id', fileId
-    messages       = file.threads[0]?.messages
+    submission     = helpers.findInCollection submissions, 'id', submissionId
+    file           = helpers.findInCollection submission.files, 'id', fileId
+    messages       = file.threads[0].messages
 
-    message = messages[messages.length - 1]
-    if !message.read
-      updateMade = true
+    messages.forEach (message) ->
       message.read = true
 
-      queryParams =
-        threadId: message.threadId
-        messageId: message.id
+    emitUpdates()
 
-      putParams =
-        param:
-          readFlag:     true
-          subscriberId: userId
+    message = messages[messages.length - 1]
 
-      resource = MessageUpdateAPIService.put queryParams, putParams
+    queryParams =
+      threadId: message.threadId
+      messageId: message.id
 
+    putParams =
+      param:
+        readFlag:     true
+        subscriberId: userId
 
-  sendMessage = (submissionId, fileId, message, userId) ->
-    currentSubmission = submissions.findOneWhere(id: submissionId)
-    submissionData    = currentSubmission.get()
-    currentFile       = helpers.findInCollection submissionData.files, 'id', fileId
-    thread            = currentFile.threads[0]
-    messages          = thread.messages
-    now               = new Date()
+    MessageUpdateAPIService.put queryParams, putParams
+
+  sendMessage = (submissionId, fileId, message) ->
+    user       = UserV3Service.getCurrentUser()
+    submission = helpers.findInCollection submissions, 'id', submissionId
+    file       = helpers.findInCollection submission.files, 'id', fileId
+    thread     = file.threads[0]
+    messages   = thread.messages
+    now        = new Date()
 
     payload =
       param:
-        publisherId: userId
+        publisherId: user.id
         threadId: thread.id
         body: message
 
@@ -84,8 +106,6 @@ SubmissionsService = ($rootScope, helpers, StepsAPIService, SubmissionsAPIServic
 
     SubmissionsMessagesAPIService.post params, payload
 
-    user = UserV3Service.getCurrentUser()
-
     newMessage = angular.merge {}, payload.param,
       read: true
       createdAt: now.toISOString()
@@ -93,18 +113,13 @@ SubmissionsService = ($rootScope, helpers, StepsAPIService, SubmissionsAPIServic
         handle: user.handle
         avatar: user.avatar
 
-    # Dirty hack alert
-    privateFiles = currentSubmission._data.files
-    privateCurrentFile = helpers.findInCollection privateFiles, 'id', currentFile.id
-
-    privateCurrentFile.threads[0].messages.push newMessage
+    messages.push newMessage
     emitUpdates()
-
 
   get                : get
   markMessagesAsRead : markMessagesAsRead
   sendMessage        : sendMessage
 
-SubmissionsService.$inject = ['$rootScope', 'SubmissionsHelpers', 'StepsAPIService', 'SubmissionsAPIService', 'SubmissionsMessagesAPIService', 'OptimistCollection', 'UserV3Service', 'MessageUpdateAPIService']
+SubmissionsService.$inject = ['$rootScope', 'SubmissionsHelpers', 'SubmissionsAPIService', 'SubmissionsMessagesAPIService', 'UserV3Service', 'MessageUpdateAPIService']
 
 angular.module('appirio-tech-submissions').factory 'SubmissionsService', SubmissionsService

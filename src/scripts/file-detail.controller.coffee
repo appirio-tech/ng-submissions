@@ -49,12 +49,11 @@ FileDetailController = (helpers, $scope, $rootScope, SubmissionsService, UserV3S
       vm.loaded = false
       return null
 
-    vm.loaded         = true
-    currentSubmission = helpers.findInCollection submissions, 'id', vm.submissionId
-    vm.submission     = angular.copy currentSubmission
-    vm.submission     = helpers.decorateSubmissionWithMessageCounts vm.submission
-    vm.file           = helpers.findInCollection vm.submission.files, 'id', vm.fileId
-    vm.messages       = vm.file.threads[0]?.messages || []
+    vm.loaded     = true
+    vm.submission = helpers.findInCollection submissions, 'id', vm.submissionId
+    vm.submission = helpers.decorateSubmissionWithMessageCounts vm.submission
+    vm.file       = helpers.findInCollection vm.submission.files, 'id', vm.fileId
+    vm.messages   = vm.file.threads[0]?.messages || []
 
     currentIndex = vm.submission.files.indexOf vm.file
 

@@ -52,8 +52,7 @@ SubmissionDetailController = (helpers, $scope, $rootScope, StepsService, Submiss
     vm.loaded = true
     currentStep = helpers.findInCollection steps, 'id', vm.stepId
 
-    currentSubmission = helpers.findInCollection submissions, 'id', vm.submissionId
-    vm.submission = angular.copy currentSubmission
+    vm.submission = helpers.findInCollection submissions, 'id', vm.submissionId
     vm.submission = helpers.decorateSubmissionWithRank vm.submission, currentStep.details.rankedSubmissions
     vm.submission = helpers.decorateSubmissionWithMessageCounts vm.submission
 

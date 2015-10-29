@@ -124,8 +124,7 @@ SubmissionsController = (helpers, $scope, $rootScope, $state, StepsService, Subm
     vm.prevStepRef = getStepRef vm.projectId, prevStep
     vm.nextStepRef = getStepRef vm.projectId, nextStep
 
-    vm.submissions = angular.copy submissions
-    vm.submissions = helpers.decorateSubmissionsWithRanks vm.submissions, currentStep.details.rankedSubmissions
+    vm.submissions = helpers.decorateSubmissionsWithRanks submissions, currentStep.details.rankedSubmissions
     vm.submissions = helpers.sortSubmissions vm.submissions
     vm.submissions = helpers.decorateSubmissionsWithMessageCounts vm.submissions
 
