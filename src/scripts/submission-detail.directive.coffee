@@ -5,8 +5,9 @@ directive = ->
   controller     : 'SubmissionDetailController as vm'
   templateUrl    : 'views/submission-detail.directive.html'
   scope          :
-    projectId    : '@projectId'
-    stepId       : '@stepId'
-    submissionId : '@submissionId'
+    projectId    : '@'
+    stepId       : '@'
+    submissionId : '@'
+    userType     : '@'
 
 angular.module('appirio-tech-submissions').directive 'submissionDetail', directive

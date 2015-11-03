@@ -5,9 +5,10 @@ directive = ->
   controller     : 'FileDetailController as vm'
   templateUrl    : 'views/file-detail.directive.html'
   scope          :
-    projectId    : '@projectId'
-    stepId       : '@stepId'
-    fileId       : '@fileId'
-    submissionId : '@submissionId'
+    projectId    : '@'
+    stepId       : '@'
+    submissionId : '@'
+    fileId       : '@'
+    userType     : '@'
 
 angular.module('appirio-tech-submissions').directive 'fileDetail', directive

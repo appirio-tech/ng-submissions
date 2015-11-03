@@ -52,34 +52,11 @@ SubmissionsController = (helpers, $scope, $rootScope, $state, StepsService, Subm
   vm.ranks       = []
   vm.projectId   = $scope.projectId
   vm.stepId      = $scope.stepId
-
-  ##############
-  # vm Methods #
-  ##############
-
-  vm.handleRankSelect = (submission) ->
-    if submission.id && submission.rank
-      StepsService.updateRank vm.projectId, vm.stepId, submission.id, submission.rank
-
-  vm.confirmRanks = ->
-    StepsService.confirmRanks vm.projectId, vm.stepId
-
-  ##############
-  # Activation #
-  ##############
+  vm.userType    = $scope.userType
 
   activate = ->
-    destroyStepsListener = $rootScope.$on 'StepsService:changed', ->
-      onChange()
-
-    destroySubmissionsListener = $rootScope.$on 'SubmissionsService:changed', ->
-      onChange()
-
-    $scope.$on '$destroy', ->
-      destroyStepsListener()
-      destroySubmissionsListener()
-
-    onChange()
+    StepsService.subscribe $scope, onChange
+    SubmissionsService.subscribe $scope, onChange
 
   # IMPORTANT: This must be an object for the onDrop directive to work
   # See: https://github.com/angular/angular.js/wiki/Understanding-Scopes
@@ -92,9 +69,12 @@ SubmissionsController = (helpers, $scope, $rootScope, $state, StepsService, Subm
       if submissionId != 'undefined' && submissionId && rankToAssign
         StepsService.updateRank vm.projectId, vm.stepId, submissionId, rankToAssign
 
-  ####################
-  # Helper functions #
-  ####################
+  vm.handleRankSelect = (submission) ->
+    if submission.id && submission.rank
+      StepsService.updateRank vm.projectId, vm.stepId, submission.id, submission.rank
+
+  vm.confirmRanks = ->
+    StepsService.confirmRanks vm.projectId, vm.stepId
 
   getStepRef = (projectId, step) ->
     if step

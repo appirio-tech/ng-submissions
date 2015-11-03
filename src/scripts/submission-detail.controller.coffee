@@ -24,22 +24,14 @@ SubmissionDetailController = (helpers, $scope, $rootScope, StepsService, Submiss
   vm.projectId    = $scope.projectId
   vm.stepId       = $scope.stepId
   vm.submissionId = $scope.submissionId
+  vm.userType     = $scope.userType
+
+  activate = ->
+    StepsService.subscribe $scope, onChange
+    SubmissionsService.subscribe $scope, onChange
 
   vm.handleRankSelect = (submission) ->
     StepsService.updateRank vm.projectId, vm.stepId, submission.id, submission.rank
-
-  activate = ->
-    destroyStepsListener = $rootScope.$on 'StepsService:changed', ->
-      onChange()
-
-    destroySubmissionsListener = $rootScope.$on 'SubmissionsService:changed', ->
-      onChange()
-
-    $scope.$on '$destroy', ->
-      destroyStepsListener()
-      destroySubmissionsListener()
-
-    onChange()
 
   onChange = ->
     steps = StepsService.get(vm.projectId)

@@ -12,12 +12,16 @@ FileDetailController = (helpers, $scope, $rootScope, SubmissionsService, UserV3S
   vm.stepId       = $scope.stepId
   vm.submissionId = $scope.submissionId
   vm.fileId       = $scope.fileId
+  vm.userType     = $scope.userType
 
   vm.messages     = []
   vm.newMessage   = ''
   vm.showMessages = false
-  vm.userId       = null
+  vm.userId       = UserV3Service.getCurrentUser().id
   vm.avatars      = {}
+
+  activate = ->
+    SubmissionsService.subscribe $scope, onChange
 
   vm.sendMessage = ->
     if vm.newMessage
@@ -29,18 +33,6 @@ FileDetailController = (helpers, $scope, $rootScope, SubmissionsService, UserV3S
 
     if vm.showComments && vm.file.unreadMessages > 0
       SubmissionsService.markMessagesAsRead vm.submissionId, vm.fileId, vm.userId
-
-  activate = ->
-    destroySubmissionsListener = $rootScope.$on 'SubmissionsService:changed', ->
-      onChange()
-
-    $scope.$on '$destroy', ->
-      destroySubmissionsListener()
-
-    $scope.$watch UserV3Service.getCurrentUser, (user) ->
-      vm.userId = user?.id
-
-    onChange()
 
   onChange = ->
     submissions = SubmissionsService.get(vm.projectId, vm.stepId)

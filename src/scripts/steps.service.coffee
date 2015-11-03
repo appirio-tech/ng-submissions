@@ -12,6 +12,15 @@ srv = ($rootScope, helpers, StepsAPIService, OptimistCollection) ->
 
     newSteps
 
+  subscribe = (scope, onChange) ->
+    destroyStepsListener = $rootScope.$on 'StepsService:changed', ->
+      onChange()
+
+    scope.$on '$destroy', ->
+      destroyStepsListener()
+
+    onChange()
+
   get = (projectId) ->
     if projectId != currentProjectId
       fetch(projectId)
@@ -93,6 +102,7 @@ srv = ($rootScope, helpers, StepsAPIService, OptimistCollection) ->
     updateStep projectId, stepId, step, updates
 
   get          : get
+  subscribe    : subscribe
   getCurrentStep : getCurrentStep
   getStepById : getStepById
   updateRank   : updateRank

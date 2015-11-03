@@ -10,6 +10,15 @@ SubmissionsService = ($rootScope, helpers, SubmissionsAPIService, SubmissionsMes
   emitUpdates = ->
     $rootScope.$emit 'SubmissionsService:changed'
 
+  subscribe = (scope, onChange) ->
+    destroySubmissionsListener = $rootScope.$on 'SubmissionsService:changed', ->
+      onChange()
+
+    scope.$on '$destroy', ->
+      destroySubmissionsListener()
+
+    onChange()
+
   get = (projectId, stepId) ->
     unless projectId && stepId
       throw 'SubmissionsService.get requires a projectId and a stepId'
@@ -116,6 +125,7 @@ SubmissionsService = ($rootScope, helpers, SubmissionsAPIService, SubmissionsMes
     messages.push newMessage
     emitUpdates()
 
+  subscribe          : subscribe
   get                : get
   markMessagesAsRead : markMessagesAsRead
   sendMessage        : sendMessage
