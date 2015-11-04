@@ -50,27 +50,10 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-hide=\"v
     vm.ranks = [];
     vm.projectId = $scope.projectId;
     vm.stepId = $scope.stepId;
-    vm.handleRankSelect = function(submission) {
-      if (submission.id && submission.rank) {
-        return StepsService.updateRank(vm.projectId, vm.stepId, submission.id, submission.rank);
-      }
-    };
-    vm.confirmRanks = function() {
-      return StepsService.confirmRanks(vm.projectId, vm.stepId);
-    };
+    vm.userType = $scope.userType;
     activate = function() {
-      var destroyStepsListener, destroySubmissionsListener;
-      destroyStepsListener = $rootScope.$on('StepsService:changed', function() {
-        return onChange();
-      });
-      destroySubmissionsListener = $rootScope.$on('SubmissionsService:changed', function() {
-        return onChange();
-      });
-      $scope.$on('$destroy', function() {
-        destroyStepsListener();
-        return destroySubmissionsListener();
-      });
-      return onChange();
+      StepsService.subscribe($scope, onChange);
+      return SubmissionsService.subscribe($scope, onChange);
     };
     vm.drop = {
       handle: function(event, rankToAssign) {
@@ -80,6 +63,14 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-hide=\"v
           return StepsService.updateRank(vm.projectId, vm.stepId, submissionId, rankToAssign);
         }
       }
+    };
+    vm.handleRankSelect = function(submission) {
+      if (submission.id && submission.rank) {
+        return StepsService.updateRank(vm.projectId, vm.stepId, submission.id, submission.rank);
+      }
+    };
+    vm.confirmRanks = function() {
+      return StepsService.confirmRanks(vm.projectId, vm.stepId);
     };
     getStepRef = function(projectId, step) {
       if (step) {
@@ -145,9 +136,10 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-hide=\"v
       controller: 'SubmissionsController as vm',
       templateUrl: 'views/submissions.directive.html',
       scope: {
-        projectId: '@projectId',
-        stepId: '@stepId',
-        stepType: '@stepType'
+        projectId: '@',
+        stepId: '@',
+        stepType: '@',
+        userType: '@'
       }
     };
   };
@@ -360,7 +352,7 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-hide=\"v
   var srv;
 
   srv = function($rootScope, helpers, StepsAPIService, OptimistCollection) {
-    var acceptFixes, confirmRanks, createStepCollection, currentProjectId, fetch, get, getCurrentStep, getStepById, steps, updateRank, updateStep;
+    var acceptFixes, confirmRanks, createStepCollection, currentProjectId, fetch, get, getCurrentStep, getStepById, steps, subscribe, updateRank, updateStep;
     currentProjectId = null;
     steps = null;
     createStepCollection = function() {
@@ -372,6 +364,16 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-hide=\"v
         propsToIgnore: ['$promise', '$resolved']
       });
       return newSteps;
+    };
+    subscribe = function(scope, onChange) {
+      var destroyStepsListener;
+      destroyStepsListener = $rootScope.$on('StepsService:changed', function() {
+        return onChange();
+      });
+      scope.$on('$destroy', function() {
+        return destroyStepsListener();
+      });
+      return onChange();
     };
     get = function(projectId) {
       if (projectId !== currentProjectId) {
@@ -475,6 +477,7 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-hide=\"v
     };
     return {
       get: get,
+      subscribe: subscribe,
       getCurrentStep: getCurrentStep,
       getStepById: getStepById,
       updateRank: updateRank,
@@ -494,7 +497,7 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-hide=\"v
   var SubmissionsService;
 
   SubmissionsService = function($rootScope, helpers, SubmissionsAPIService, SubmissionsMessagesAPIService, UserV3Service, MessageUpdateAPIService) {
-    var currentProjectId, currentStepId, emitUpdates, error, fetch, get, markMessagesAsRead, pending, sendMessage, submissions;
+    var currentProjectId, currentStepId, emitUpdates, error, fetch, get, markMessagesAsRead, pending, sendMessage, submissions, subscribe;
     submissions = null;
     currentProjectId = null;
     currentStepId = null;
@@ -502,6 +505,16 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-hide=\"v
     error = false;
     emitUpdates = function() {
       return $rootScope.$emit('SubmissionsService:changed');
+    };
+    subscribe = function(scope, onChange) {
+      var destroySubmissionsListener;
+      destroySubmissionsListener = $rootScope.$on('SubmissionsService:changed', function() {
+        return onChange();
+      });
+      scope.$on('$destroy', function() {
+        return destroySubmissionsListener();
+      });
+      return onChange();
     };
     get = function(projectId, stepId) {
       var copy, i, item, len;
@@ -615,6 +628,7 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-hide=\"v
       return emitUpdates();
     };
     return {
+      subscribe: subscribe,
       get: get,
       markMessagesAsRead: markMessagesAsRead,
       sendMessage: sendMessage
@@ -654,22 +668,13 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-hide=\"v
     vm.submission = {};
     vm.projectId = $scope.projectId;
     vm.stepId = $scope.stepId;
+    vm.userType = $scope.userType;
+    activate = function() {
+      StepsService.subscribe($scope, onChange);
+      return SubmissionsService.subscribe($scope, onChange);
+    };
     vm.confirmApproval = function() {
       return StepsService.acceptFixes(vm.projectId, vm.stepId);
-    };
-    activate = function() {
-      var destroyStepsListener, destroySubmissionsListener;
-      destroyStepsListener = $rootScope.$on('StepsService:changed', function() {
-        return onChange();
-      });
-      destroySubmissionsListener = $rootScope.$on('SubmissionsService:changed', function() {
-        return onChange();
-      });
-      $scope.$on('$destroy', function() {
-        destroyStepsListener();
-        return destroySubmissionsListener();
-      });
-      return onChange();
     };
     getStepRef = function(projectId, step) {
       if (step) {
@@ -724,8 +729,9 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-hide=\"v
       controller: 'FinalFixesController as vm',
       templateUrl: 'views/final-fixes.directive.html',
       scope: {
-        projectId: '@projectId',
-        stepId: '@stepId'
+        projectId: '@',
+        stepId: '@',
+        userType: '@'
       }
     };
   };
@@ -750,22 +756,13 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-hide=\"v
     vm.projectId = $scope.projectId;
     vm.stepId = $scope.stepId;
     vm.submissionId = $scope.submissionId;
+    vm.userType = $scope.userType;
+    activate = function() {
+      StepsService.subscribe($scope, onChange);
+      return SubmissionsService.subscribe($scope, onChange);
+    };
     vm.handleRankSelect = function(submission) {
       return StepsService.updateRank(vm.projectId, vm.stepId, submission.id, submission.rank);
-    };
-    activate = function() {
-      var destroyStepsListener, destroySubmissionsListener;
-      destroyStepsListener = $rootScope.$on('StepsService:changed', function() {
-        return onChange();
-      });
-      destroySubmissionsListener = $rootScope.$on('SubmissionsService:changed', function() {
-        return onChange();
-      });
-      $scope.$on('$destroy', function() {
-        destroyStepsListener();
-        return destroySubmissionsListener();
-      });
-      return onChange();
     };
     onChange = function() {
       var currentStep, steps, submissions;
@@ -806,9 +803,10 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-hide=\"v
       controller: 'SubmissionDetailController as vm',
       templateUrl: 'views/submission-detail.directive.html',
       scope: {
-        projectId: '@projectId',
-        stepId: '@stepId',
-        submissionId: '@submissionId'
+        projectId: '@',
+        stepId: '@',
+        submissionId: '@',
+        userType: '@'
       }
     };
   };
@@ -833,11 +831,15 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-hide=\"v
     vm.stepId = $scope.stepId;
     vm.submissionId = $scope.submissionId;
     vm.fileId = $scope.fileId;
+    vm.userType = $scope.userType;
     vm.messages = [];
     vm.newMessage = '';
     vm.showMessages = false;
-    vm.userId = null;
+    vm.userId = UserV3Service.getCurrentUser().id;
     vm.avatars = {};
+    activate = function() {
+      return SubmissionsService.subscribe($scope, onChange);
+    };
     vm.sendMessage = function() {
       if (vm.newMessage) {
         SubmissionsService.sendMessage(vm.submissionId, vm.fileId, vm.newMessage, vm.userId);
@@ -849,19 +851,6 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-hide=\"v
       if (vm.showComments && vm.file.unreadMessages > 0) {
         return SubmissionsService.markMessagesAsRead(vm.submissionId, vm.fileId, vm.userId);
       }
-    };
-    activate = function() {
-      var destroySubmissionsListener;
-      destroySubmissionsListener = $rootScope.$on('SubmissionsService:changed', function() {
-        return onChange();
-      });
-      $scope.$on('$destroy', function() {
-        return destroySubmissionsListener();
-      });
-      $scope.$watch(UserV3Service.getCurrentUser, function(user) {
-        return vm.userId = user != null ? user.id : void 0;
-      });
-      return onChange();
     };
     onChange = function() {
       var currentIndex, nextIndex, prevIndex, ref, submissions;
@@ -907,10 +896,11 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-hide=\"v
       controller: 'FileDetailController as vm',
       templateUrl: 'views/file-detail.directive.html',
       scope: {
-        projectId: '@projectId',
-        stepId: '@stepId',
-        fileId: '@fileId',
-        submissionId: '@submissionId'
+        projectId: '@',
+        stepId: '@',
+        submissionId: '@',
+        fileId: '@',
+        userType: '@'
       }
     };
   };
