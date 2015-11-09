@@ -155,7 +155,7 @@ statuses = [
 statusOf = (step) ->
   now              = Date.now()
   startsAt         = new Date(step.startsAt)
-  submissionsDueBy = new Date(step.submissionsDueBy)
+  submissionsDueBy = new Date(step.details.submissionsDueBy)
   endsAt           = new Date(step.endsAt)
 
   hasSubmissions   = step.details.rankedSubmissions.length > 0
@@ -173,8 +173,6 @@ statusOf = (step) ->
     'OPEN'
   else
     'SCHEDULED'
-
-  statuses[6]
 
 statusValueOf = (status) ->
   statuses.indexOf status
