@@ -33,16 +33,17 @@ angular.module("app.constants", [])
     var key, results, state, states;
     states = {};
     states['step'] = {
-      url: '/projects/:projectId/:stepId',
+      url: '/projects/:projectId/:stepId?userType',
       controller: 'StepController as vm',
       templateUrl: 'views/step.html'
     };
     states['submission-detail'] = {
-      url: '/projects/:projectId/:stepId/:submissionId',
+      url: '/projects/:projectId/:stepId/:submissionId?userType',
+      controller: 'SubmissionDetailExampleController as vm',
       templateUrl: 'views/submission-detail.html'
     };
     states['file-detail'] = {
-      url: '/projects/:projectId/:stepId/:submissionId/:fileId',
+      url: '/projects/:projectId/:stepId/:submissionId/:fileId?userType',
       controller: 'FileDetailExampleController as vm',
       templateUrl: 'views/file-detail.html'
     };
@@ -60,23 +61,46 @@ angular.module("app.constants", [])
 
 }).call(this);
 
-angular.module("example").run(["$templateCache", function($templateCache) {$templateCache.put("views/submission-detail.html","<submission-detail project-id=\"abc\" step-id=\"abc\" submission-id=\"abc\"></submission-detail>");
-$templateCache.put("views/file-detail.html","<modal show=\"true\" background-click-close=\"background-click-close\"><file-detail project-id=\"abc\" step-id=\"abc\" submission-id=\"abc\" file-id=\"abc\"></file-detail></modal>");}]);
+angular.module("example").run(["$templateCache", function($templateCache) {$templateCache.put("views/submission-detail.html","<submission-detail project-id=\"abc\" step-id=\"abc\" submission-id=\"abc\" user-type=\"{{ vm.userType }}\"></submission-detail>");
+$templateCache.put("views/file-detail.html","<modal show=\"true\" background-click-close=\"background-click-close\"><file-detail project-id=\"abc\" step-id=\"abc\" submission-id=\"abc\" file-id=\"abc\" user-type=\"{{ vm.userType }}\"></file-detail></modal>");}]);
 (function() {
   'use strict';
   var controller;
 
-  controller = function() {
+  controller = function($stateParams) {
     var activate, vm;
     vm = this;
     vm.show = true;
+    vm.userType = $stateParams.userType;
     activate = function() {
       return vm;
     };
     return activate();
   };
 
+  controller.$inject = ['$stateParams'];
+
   angular.module('example').controller('FileDetailExampleController', controller);
+
+}).call(this);
+
+(function() {
+  'use strict';
+  var controller;
+
+  controller = function($stateParams) {
+    var activate, vm;
+    vm = this;
+    vm.userType = $stateParams.userType;
+    activate = function() {
+      return vm;
+    };
+    return activate();
+  };
+
+  controller.$inject = ['$stateParams'];
+
+  angular.module('example').controller('SubmissionDetailExampleController', controller);
 
 }).call(this);
 
@@ -89,6 +113,7 @@ $templateCache.put("views/file-detail.html","<modal show=\"true\" background-cli
     vm = this;
     vm.projectId = $stateParams.projectId;
     vm.stepId = $stateParams.stepId;
+    vm.userType = $stateParams.userType;
     vm.stepType = null;
     onChange = function() {
       var currentStep;
