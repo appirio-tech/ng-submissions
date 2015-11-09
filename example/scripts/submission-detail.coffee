@@ -2,7 +2,6 @@
 
 controller = ($stateParams) ->
   vm = this
-  vm.show = true
   vm.userType = $stateParams.userType
 
   activate = ->
@@ -12,4 +11,4 @@ controller = ($stateParams) ->
 
 controller.$inject = ['$stateParams']
 
-angular.module('example').controller 'FileDetailExampleController', controller
+angular.module('example').controller 'SubmissionDetailExampleController', controller

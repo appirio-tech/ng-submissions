@@ -10,11 +10,14 @@ ul.header.flex.middle
 
     .name {{ vm.submission.submitter.handle }}
 
-  li
+  li(ng-if="vm.userType != 'member' && vm.status != 'CLOSED'")
     select(ng-model="vm.submission.rank", ng-change="vm.handleRankSelect(vm.submission)", ng-options="rank.value as rank.label for rank in vm.ranks")
 
+  li(ng-if="vm.status == 'CLOSED' && vm.rank") {{ vm.rank }}
+
+
   li.download
-    button.clean
+    a(href="{{ vm.submission.downloadUrl }}", target="_blank")
       .icon.download.small
 
 hr

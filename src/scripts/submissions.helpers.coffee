@@ -51,7 +51,7 @@ updateRankedSubmissions = (rankedSubmissions, numberOfRanks, id, rank) ->
 
   rankedSubmissions
 
-decorateSubmissionWithRank = (submission, rankedSubmissions = []) ->
+submissionWithRank = (submission, rankedSubmissions = []) ->
   submission.rank = ''
   rankedSubmissions.forEach (rankedSubmission) ->
     if submission.id == rankedSubmission.submissionId
@@ -59,13 +59,11 @@ decorateSubmissionWithRank = (submission, rankedSubmissions = []) ->
 
   submission
 
-decorateSubmissionsWithRanks = (submissions, rankedSubmissions = []) ->
-  submissions.forEach (submission) ->
-    submission = decorateSubmissionWithRank submission, rankedSubmissions
+submissionsWithRanks = (submissions, rankedSubmissions = []) ->
+  submissions.map (submission) ->
+    submissionWithRank submission, rankedSubmissions
 
-  submissions
-
-decorateFileWithMessageCounts = (file) ->
+fileWithMessageCounts = (file) ->
   file.totalMessages = 0
   file.unreadMessages = 0
 
@@ -76,22 +74,25 @@ decorateFileWithMessageCounts = (file) ->
 
   file
 
-decorateSubmissionWithMessageCounts = (submission) ->
+submissionWithMessageCounts = (submission) ->
   submission.totalMessages = 0
   submission.unreadMessages = 0
 
   submission.files.forEach (file) ->
-    decorateFileWithMessageCounts(file)
+    fileWithMessageCounts(file)
     submission.totalMessages = submission.totalMessages + file.totalMessages
     submission.unreadMessages = submission.unreadMessages + file.unreadMessages
 
   submission
 
-decorateSubmissionsWithMessageCounts = (submissions) ->
-  submissions.forEach (submission) ->
-    submission = decorateSubmissionWithMessageCounts submission
+submissionsWithMessageCounts = (submissions) ->
+  submissions.map (submission) ->
+    submissionWithMessageCounts submission
 
-  submissions
+submissionsWithOwnership = (submissions, userId) ->
+  submissions.map (submission) ->
+    angular.merge {}, submission,
+      belongsToUser: submission.submitter.id == userId
 
 sortSubmissions = (submissions) ->
   ranked = submissions.filter (submission) ->
@@ -109,16 +110,18 @@ sortSubmissions = (submissions) ->
   orderedSubmissions = orderedByRank.concat orderedBySubmitter
   orderedSubmissions
 
-decorateRankListWithSubmissions = (ranks = [], submissions = []) ->
+populatedRankList = (rankList, submissions = []) ->
   submissions.forEach (submission) ->
     if submission.rank != ''
       submissionRank = submission.rank - 1
-      if submissionRank < ranks.length
-        ranks[submissionRank].avatarUrl = submission.submitter.avatar
-        ranks[submissionRank].id = submission.id
-        ranks[submissionRank].handle = submission.submitter.handle
+      if submissionRank < rankList.length
+        angular.extend rankList[submissionRank],
+         avatarUrl     : submission.submitter.avatar
+         id            : submission.id
+         handle        : submission.submitter.handle
+         belongsToUser : submission.belongsToUser
 
-  ranks
+  rankList
 
 makeEmptyRankList = (rankNames) ->
   ranks = []
@@ -132,22 +135,67 @@ makeEmptyRankList = (rankNames) ->
 
   ranks
 
-SubmissionsHelpers = ->
-  submissionsHelpers =
-    findInCollection: findInCollection
-    createOrderedRankList: createOrderedRankList
-    removeBlankAfterN: removeBlankAfterN
-    updateRankedSubmissions: updateRankedSubmissions
-    decorateSubmissionWithRank: decorateSubmissionWithRank
-    decorateSubmissionsWithRanks: decorateSubmissionsWithRanks
-    decorateFileWithMessageCounts: decorateFileWithMessageCounts
-    decorateSubmissionWithMessageCounts: decorateSubmissionWithMessageCounts
-    decorateSubmissionsWithMessageCounts: decorateSubmissionsWithMessageCounts
-    sortSubmissions: sortSubmissions
-    decorateRankListWithSubmissions: decorateRankListWithSubmissions
-    makeEmptyRankList: makeEmptyRankList
+highestRank = (rankList, userId) ->
+  for i in [0...rankList.length] by 1
+    if rankList[i].id == userId
+      return rankList[i].label
 
-  submissionsHelpers
+  null
+
+statuses = [
+  'PLACEHOLDER'
+  'SCHEDULED'
+  'OPEN'
+  'OPEN_LATE'
+  'REVIEWING'
+  'REVIEWING_LATE'
+  'CLOSED'
+]
+
+statusOf = (step) ->
+  now              = Date.now()
+  startsAt         = new Date(step.startsAt)
+  submissionsDueBy = new Date(step.submissionsDueBy)
+  endsAt           = new Date(step.endsAt)
+
+  hasSubmissions   = step.details.rankedSubmissions.length > 0
+  closed = step.details.customerConfirmedRanks || step.details.customerAcceptedFixes
+
+  if closed
+    'CLOSED'
+  else if now > endsAt
+    'REVIEWING_LATE'
+  else if hasSubmissions
+    'REVIEWING'
+  else if now > submissionsDueBy
+    'OPEN_LATE'
+  else if now > startsAt
+    'OPEN'
+  else
+    'SCHEDULED'
+
+  statuses[6]
+
+statusValueOf = (status) ->
+  statuses.indexOf status
+
+SubmissionsHelpers = ->
+  findInCollection             : findInCollection
+  createOrderedRankList        : createOrderedRankList
+  removeBlankAfterN            : removeBlankAfterN
+  updateRankedSubmissions      : updateRankedSubmissions
+  submissionWithRank           : submissionWithRank
+  submissionsWithRanks         : submissionsWithRanks
+  fileWithMessageCounts        : fileWithMessageCounts
+  submissionWithMessageCounts  : submissionWithMessageCounts
+  submissionsWithMessageCounts : submissionsWithMessageCounts
+  submissionsWithOwnership     : submissionsWithOwnership
+  sortSubmissions              : sortSubmissions
+  populatedRankList            : populatedRankList
+  makeEmptyRankList            : makeEmptyRankList
+  highestRank                  : highestRank
+  statusOf                     : statusOf
+  statusValueOf                : statusValueOf
 
 SubmissionsHelpers.$inject = []
 

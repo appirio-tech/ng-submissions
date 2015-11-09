@@ -4,6 +4,7 @@ StepController = ($scope, $stateParams, $rootScope, StepsService) ->
   vm           = this
   vm.projectId = $stateParams.projectId
   vm.stepId    = $stateParams.stepId
+  vm.userType  = $stateParams.userType
   vm.stepType  = null
 
   onChange = ->

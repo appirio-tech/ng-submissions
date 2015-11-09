@@ -2,55 +2,14 @@ loader(ng-hide="vm.loaded")
 
 include parts/header
 
-.subheader(ng-if="vm.status == 'scheduled'")
-  img.icon.biggest(src="/images/clock.svg")
+include parts/subheader-member
 
-  p Submissions for the {{ vm.stepName }} Phase coming in
+include parts/subheader-customer
 
-  countdown.block(end="{{ vm.startsAt }}")
+include parts/subheader-shared
 
-.subheader(ng-if="vm.status == 'closed'")
-  p Congratulations! These are your {{ vm.stepName }} winners.
-
-  hr.small
-
-  ul.winners
-    li(ng-repeat="rank in vm.ranks" ng-if="rank.id")
-      .rank <strong>{{rank.label.slice(0, -5)}}</strong><br /> place
-
-      avatar(avatar-url="{{rank.avatarUrl}}")
-
-      a.name(href="#") {{rank.handle}}
-
-.subheader(ng-if="vm.status == 'open'")
-  p Give feedback and select the top {{ vm.ranks.length }} designs. You have 
-
-    countdown(end="{{vm.endsAt}}")
-    | 
-    | to give feedback.
-
-  ul.top-selection
-    li(ng-repeat="rank in vm.ranks track by $index")
-      .shell(
-        ng-class="{ 'has-avatar': rank.avatarUrl }"
-        ondragenter="return false"
-        ondragover="return false"
-        on-drop="vm.drop.handle(event, rank.value)"
-      )
-        div(ng-if="rank.id" data-id="{{ rank.id }}" draggable)
-          avatar(avatar-url="{{ rank.avatarUrl }}")
-
-          .rank {{ rank.value }}
-
-        .rank(ng-if="!rank.avatarUrl") {{ rank.value }}
-
-    li(ng-show="vm.allFilled")
-      button.action(ng-click="vm.confirmRanks()") Confirm your selections 
-
-  p(ng-if="vm.rankUpdateError") {{ vm.rankUpdateError }}
-
-ul.submissions
-  li.submission.flex.elevated-bottom(ng-repeat="submission in vm.submissions track by $index" data-id="{{ submission.id }}" draggable)
+ul.submissions(ng-if="vm.statusValue > 3")
+  li.submission.flex.elevated-bottom(ng-repeat="submission in vm.submissions track by $index" data-id="{{ submission.id }}" ng-class="{ 'belongs-to-user': submission.belongsToUser }" draggable)
     ul.user-details.flex.middle
       li
         avatar(avatar-url="{{ submission.submitter.avatar }}")
@@ -58,6 +17,7 @@ ul.submissions
       li
         .name-time
           .name {{ submission.submitter.handle }}
+            span(ng-if="submission.belongsToUser") &nbsp;(Me)
 
           p {{ submission.files.length }} Images
 
@@ -79,15 +39,15 @@ ul.submissions
       li
         a(ui-sref="submission-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: submission.id})") view all
 
-      li.comments(ng-if="vm.status != 'closed'")
+      li.comments(ng-if="vm.status != 'CLOSED'")
         a(href="{{ submission.downloadUrl }}", target="_blank")
           .icon.download.small
 
-      li.comments(ng-if="vm.status == 'closed' && submission.rank")
+      li.comments(ng-if="vm.status == 'CLOSED' && submission.rank")
         a(href="{{ submission.downloadUrl }}", target="_blank")
           .icon.download.small
 
-      li(ng-if="vm.status == 'open'")
+      li(ng-if="vm.userType != 'member' && vm.status != 'CLOSED'")
         select(ng-model="submission.rank", ng-change="vm.handleRankSelect(submission)", ng-options="rank.value as rank.label for rank in vm.ranks")
 
-      li(ng-if="vm.status == 'closed'") {{ vm.rankNames[$index] }}
+      li(ng-if="vm.status == 'CLOSED'") {{ vm.rankNames[$index] }}

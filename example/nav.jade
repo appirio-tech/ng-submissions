@@ -1,6 +1,10 @@
 ul#example-nav
   li
-    a.submissions(ui-sref="step({projectId: 'abc', stepId: 'abc'})") Design Concepts
+    a.submissions(ui-sref="step({projectId: 'abc', stepId: 'abc', userType: 'customer'})") Design Concepts (Customer)
+  li
+    a.submissions(ui-sref="step({projectId: 'abc', stepId: 'abc', userType: 'copilot'})") Design Concepts (Copilot)
+  li
+    a.submissions(ui-sref="step({projectId: 'abc', stepId: 'abc', userType: 'member'})") Design Concepts (Member)
 
   li
     a.submissions(ui-sref="step({projectId: 'abc', stepId: 'def'})") Complete Designs

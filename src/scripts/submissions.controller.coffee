@@ -1,6 +1,6 @@
 'use strict'
 
-SubmissionsController = (helpers, $scope, $rootScope, $state, StepsService, SubmissionsService) ->
+SubmissionsController = (helpers, $scope, $rootScope, $state, StepsService, SubmissionsService, UserV3Service) ->
   vm             = this
   config         = {}
 
@@ -15,7 +15,7 @@ SubmissionsController = (helpers, $scope, $rootScope, $state, StepsService, Subm
     config.nextStepName = 'Complete Designs'
 
     config.timeline = [ 'active', '', '' ]
-    config.defaultStatus = 'scheduled'
+    config.defaultStatus = 'PLACEHOLDER'
 
   if $scope.stepType == 'completeDesigns'
     config.stepType = 'completeDesigns'
@@ -28,7 +28,7 @@ SubmissionsController = (helpers, $scope, $rootScope, $state, StepsService, Subm
     config.nextStepName = 'Final Fixes'
 
     config.timeline = [ '', 'active', '' ]
-    config.defaultStatus = 'scheduled'
+    config.defaultStatus = 'PLACEHOLDER'
 
   config.rankNames = [
     '1st Place'
@@ -46,13 +46,17 @@ SubmissionsController = (helpers, $scope, $rootScope, $state, StepsService, Subm
   vm.loaded      = false
   vm.timeline    = config.timeline
   vm.stepName    = config.stepName
-  vm.status      = null
+  vm.stepType    = config.stepType
+  vm.status      = defaultStatus
+  vm.statusValue = 0
   vm.allFilled   = false
   vm.submissions = []
   vm.ranks       = []
   vm.projectId   = $scope.projectId
   vm.stepId      = $scope.stepId
   vm.userType    = $scope.userType
+
+  userId = UserV3Service.getCurrentUser()?.id
 
   activate = ->
     StepsService.subscribe $scope, onChange
@@ -77,12 +81,20 @@ SubmissionsController = (helpers, $scope, $rootScope, $state, StepsService, Subm
     StepsService.confirmRanks vm.projectId, vm.stepId
 
   getStepRef = (projectId, step) ->
-    if step
-      $state.href 'step',
-        projectId: projectId
-        stepId: step.id
-    else
-      null
+    unless step
+      return null
+
+    stepStatus = helpers.statusOf(step)
+
+    if vm.userType == 'member' && helpers.statusValueOf(stepStatus) < 4
+      return null
+
+    if vm.userType != 'member' && stepStatus == 'PLACEHOLDER'
+      return null
+
+    $state.href 'step',
+      projectId: projectId
+      stepId: step.id
 
   onChange = ->
     steps = StepsService.get(vm.projectId)
@@ -104,31 +116,28 @@ SubmissionsController = (helpers, $scope, $rootScope, $state, StepsService, Subm
     vm.prevStepRef = getStepRef vm.projectId, prevStep
     vm.nextStepRef = getStepRef vm.projectId, nextStep
 
-    vm.submissions = helpers.decorateSubmissionsWithRanks submissions, currentStep.details.rankedSubmissions
+    vm.submissions = helpers.submissionsWithRanks submissions, currentStep.details.rankedSubmissions
     vm.submissions = helpers.sortSubmissions vm.submissions
-    vm.submissions = helpers.decorateSubmissionsWithMessageCounts vm.submissions
+    vm.submissions = helpers.submissionsWithMessageCounts vm.submissions
+    vm.submissions = helpers.submissionsWithOwnership vm.submissions, userId
 
     vm.rankNames = config.rankNames.slice 0, currentStep.details.numberOfRanks
     vm.ranks     = helpers.makeEmptyRankList(vm.rankNames)
-    vm.ranks     = helpers.decorateRankListWithSubmissions vm.ranks, vm.submissions
+    vm.ranks     = helpers.populatedRankList vm.ranks, vm.submissions
+    vm.userRank  = helpers.highestRank vm.ranks, userId
 
     if currentStep.rankedSubmissions_error
       vm.rankUpdateError = currentStep.rankedSubmissions_error
 
     vm.allFilled = currentStep.details.rankedSubmissions.length == currentStep.details.numberOfRanks
 
-    vm.status = config.defaultStatus
-
-    if Date.now() > new Date(currentStep.startsAt)
-      vm.status = 'open'
-
-    if currentStep.details.customerConfirmedRanks
-      vm.status = 'closed'
+    vm.status = helpers.statusOf currentStep
+    vm.statusValue = helpers.statusValueOf vm.status
 
   activate()
 
   vm
 
-SubmissionsController.$inject = ['SubmissionsHelpers', '$scope', '$rootScope', '$state', 'StepsService', 'SubmissionsService']
+SubmissionsController.$inject = ['SubmissionsHelpers', '$scope', '$rootScope', '$state', 'StepsService', 'SubmissionsService', 'UserV3Service']
 
 angular.module('appirio-tech-submissions').controller 'SubmissionsController', SubmissionsController

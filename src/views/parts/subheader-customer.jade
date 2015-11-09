@@ -1,0 +1,48 @@
+.subheader(ng-if="vm.userType != 'member' && vm.status == 'PLACEHOLDER'")
+  p You will see submissions here when they are ready.
+
+.subheader(ng-if="vm.userType != 'member' && vm.status == 'SCHEDULED'")
+  img.icon.biggest(src="/images/clock.svg")
+
+  p Work will begin on {{ vm.stepName }} submissions in
+
+  countdown.block(end="{{ vm.startsAt }}")
+
+.subheader(ng-if="vm.userType != 'member' && vm.status == 'OPEN'")
+  img.icon.biggest(src="/images/clock.svg")
+
+  p Submissions for the {{ vm.stepName }} Phase coming in
+
+  countdown.block(end="{{ vm.submissionsDueBy }}")
+
+.subheader(ng-if="vm.userType != 'member' && vm.status == 'OPEN_LATE'")
+  p Submissions for the {{ vm.stepName }} Phase are overdue. Please contact your copilot.
+
+.subheader(ng-if="vm.userType != 'member' && (vm.status == 'REVIEWING' || vm.status == 'REVIEWING_LATE')")
+  p(ng-if="vm.status == 'REVIEWING'") Give feedback and select the top {{ vm.ranks.length }} designs. You have 
+
+    countdown(end="{{vm.endsAt}}")
+    | 
+    | to give feedback.
+
+  p(ng-if="vm.status == 'REVIEWING_LATE'") Your feedback is overdue. Please select the top {{ vm.ranks.length }} designs.
+
+  ul.top-selection
+    li(ng-repeat="rank in vm.ranks track by $index")
+      .shell(
+        ng-class="{ 'has-avatar': rank.avatarUrl }"
+        ondragenter="return false"
+        ondragover="return false"
+        on-drop="vm.drop.handle(event, rank.value)"
+      )
+        div(ng-if="rank.id" data-id="{{ rank.id }}" draggable)
+          avatar(avatar-url="{{ rank.avatarUrl }}")
+
+          .rank {{ rank.value }}
+
+        .rank(ng-if="!rank.avatarUrl") {{ rank.value }}
+
+    li(ng-show="vm.allFilled")
+      button.action(ng-click="vm.confirmRanks()") Confirm your selections 
+
+  p(ng-if="vm.rankUpdateError") {{ vm.rankUpdateError }}

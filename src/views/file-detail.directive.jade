@@ -12,7 +12,7 @@ main
 
     li.icons
       button.clean
-        a(href="{{ vm.file.url }}")
+        a(href="{{ vm.file.url }}" target="_blank")
           .icon.download
 
       button.clean(ng-click="vm.toggleComments()")
@@ -21,7 +21,7 @@ main
   hr
 
   aside.messaging.flex.column(ng-class="{ active: vm.showComments }" flush-height=true)
-    h4 Submission comments
+    h4 File Comments
 
     hr
 

@@ -45,15 +45,19 @@ SubmissionDetailController = (helpers, $scope, $rootScope, StepsService, Submiss
     currentStep = helpers.findInCollection steps, 'id', vm.stepId
 
     vm.submission = helpers.findInCollection submissions, 'id', vm.submissionId
-    vm.submission = helpers.decorateSubmissionWithRank vm.submission, currentStep.details.rankedSubmissions
-    vm.submission = helpers.decorateSubmissionWithMessageCounts vm.submission
+    vm.submission = helpers.submissionWithRank vm.submission, currentStep.details.rankedSubmissions
+    vm.submission = helpers.submissionWithMessageCounts vm.submission
 
     vm.rankNames = config.rankNames.slice 0, currentStep.details.numberOfRanks
     vm.ranks     = helpers.makeEmptyRankList(vm.rankNames)
-    vm.ranks     = helpers.decorateRankListWithSubmissions vm.ranks, vm.submissions
+    vm.ranks     = helpers.populatedRankList vm.ranks, vm.submissions
+
+    vm.rank = if vm.submission.rank then config.rankNames[vm.submission.rank - 1] else null
 
     vm.allFilled = currentStep.details.rankedSubmissions.length == currentStep.details.numberOfRanks
     vm.allFilled = currentStep.details.rankedSubmissions.length == currentStep.details.numberOfRanks
+
+    vm.status = helpers.statusOf currentStep
 
   activate()
 

@@ -1,6 +1,6 @@
 'use strict'
 
-FileDetailController = (helpers, $scope, $rootScope, SubmissionsService, UserV3Service) ->
+FileDetailController = (helpers, $scope, $rootScope, StepsService, SubmissionsService, UserV3Service) ->
   vm = this
 
   vm.loaded       = false
@@ -17,33 +17,37 @@ FileDetailController = (helpers, $scope, $rootScope, SubmissionsService, UserV3S
   vm.messages     = []
   vm.newMessage   = ''
   vm.showMessages = false
-  vm.userId       = UserV3Service.getCurrentUser().id
   vm.avatars      = {}
 
+  userId = UserV3Service.getCurrentUser()?.id
+
   activate = ->
+    StepsService.subscribe $scope, onChange
     SubmissionsService.subscribe $scope, onChange
 
   vm.sendMessage = ->
     if vm.newMessage
-      SubmissionsService.sendMessage vm.submissionId, vm.fileId, vm.newMessage, vm.userId
+      SubmissionsService.sendMessage vm.submissionId, vm.fileId, vm.newMessage, userId
       vm.newMessage = ''
 
   vm.toggleComments = ->
     vm.showComments = !vm.showComments
 
     if vm.showComments && vm.file.unreadMessages > 0
-      SubmissionsService.markMessagesAsRead vm.submissionId, vm.fileId, vm.userId
+      SubmissionsService.markMessagesAsRead vm.submissionId, vm.fileId, userId
 
   onChange = ->
+    steps = StepsService.get(vm.projectId)
     submissions = SubmissionsService.get(vm.projectId, vm.stepId)
 
-    if submissions._pending
+    if steps._pending || submissions._pending
       vm.loaded = false
       return null
 
     vm.loaded     = true
+    currentStep   = helpers.findInCollection steps, 'id', vm.stepId
     vm.submission = helpers.findInCollection submissions, 'id', vm.submissionId
-    vm.submission = helpers.decorateSubmissionWithMessageCounts vm.submission
+    vm.submission = helpers.submissionWithMessageCounts vm.submission
     vm.file       = helpers.findInCollection vm.submission.files, 'id', vm.fileId
     vm.messages   = vm.file.threads[0]?.messages || []
 
@@ -60,11 +64,13 @@ FileDetailController = (helpers, $scope, $rootScope, SubmissionsService, UserV3S
     vm.prevFile  = vm.submission.files[prevIndex]
     vm.nextFile  = vm.submission.files[nextIndex]
 
+    vm.status = helpers.statusOf currentStep
+
 
   activate()
 
   vm
 
-FileDetailController.$inject = ['SubmissionsHelpers', '$scope', '$rootScope', 'SubmissionsService', 'UserV3Service']
+FileDetailController.$inject = ['SubmissionsHelpers', '$scope', '$rootScope', 'StepsService', 'SubmissionsService', 'UserV3Service']
 
 angular.module('appirio-tech-submissions').controller 'FileDetailController', FileDetailController

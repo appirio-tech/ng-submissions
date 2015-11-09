@@ -74,7 +74,7 @@ FinalFixesController = (helpers, $scope, $rootScope, $state, StepsService, Submi
 
     vm.prevStepRef = getStepRef vm.projectId, prevStep
 
-    vm.submission = helpers.decorateSubmissionWithMessageCounts submissions[0]
+    vm.submission = helpers.submissionWithMessageCounts submissions[0]
 
     vm.status = config.defaultStatus
 

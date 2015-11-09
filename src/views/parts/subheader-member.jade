@@ -1,0 +1,5 @@
+.subheader(ng-if="vm.userType == 'member' && vm.statusValue < 4")
+  p There are no submissions to view at this time.
+
+.subheader(ng-if="vm.userType == 'member' && (vm.status == 'REVIEWING' || vm.status == 'REVIEWING_LATE')")
+  p Browse your competitors' files, view clients comments, and improve your designs in the finals.

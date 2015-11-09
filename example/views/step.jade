@@ -1,3 +1,3 @@
-submissions(ng-if="vm.stepType == 'designConcepts' || vm.stepType == 'completeDesigns' " project-id="{{ vm.projectId }}", step-id="{{ vm.stepId }}", step-type="{{ vm.stepType }}")
+submissions(ng-if="vm.stepType == 'designConcepts' || vm.stepType == 'completeDesigns' " project-id="{{ vm.projectId }}" step-id="{{ vm.stepId }}" step-type="{{ vm.stepType }}" user-type="{{ vm.userType }}")
 
-final-fixes(ng-if="vm.stepType == 'finalFixes' " project-id="{{ vm.projectId }}", step-id="{{ vm.stepId }}")
+final-fixes(ng-if="vm.stepType == 'finalFixes' " project-id="{{ vm.projectId }}" step-id="{{ vm.stepId }}" user-type="{{ vm.userType }}")
