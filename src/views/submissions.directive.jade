@@ -30,7 +30,8 @@ ul.submissions(ng-if="vm.statusValue > 3")
           a.preview(ui-sref="file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: submission.id, fileId: file.id})")
             img.previewImage(ng-src="{{ file.url }}")
 
-          .icon.envelope
+          a(ui-sref="file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: submission.id, fileId: file.id})")
+            .icon.envelope
 
           a(href="{{ file.url }}", target="_blank")
             .clean.icon.download
