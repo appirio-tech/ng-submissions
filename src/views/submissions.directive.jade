@@ -21,10 +21,10 @@ ul.submissions(ng-if="vm.statusValue > 3")
 
           p {{ submission.files.length }} Images
 
-    ul.thumbnails.flex-grow
-      li.thumbnail(ng-repeat="file in submission.files track by $index")
+    ul.thumbnails.flex-grow.flex
+      li(ng-repeat="file in submission.files track by $index")
         a(ui-sref="file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: submission.id, fileId: file.id})")
-          img.img(ng-src="{{ file.url }}")
+          img(ng-src="{{ file.url }}")
 
         .pop-over.elevated
           a.preview(ui-sref="file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: submission.id, fileId: file.id})")
@@ -36,10 +36,11 @@ ul.submissions(ng-if="vm.statusValue > 3")
           a(href="{{ file.url }}", target="_blank")
             .clean.icon.download
 
-    ul.actions.flex.middle.wrap
       li
-        a(ui-sref="submission-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: submission.id})") view all
+        a(ui-sref="submission-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: submission.id})")
+          p.flex.middle.center +3 <br /> more
 
+    ul.actions.flex.middle.wrap
       li.comments(ng-if="vm.status != 'CLOSED'")
         a(href="{{ submission.downloadUrl }}", target="_blank")
           .icon.download.small

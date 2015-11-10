@@ -1,4 +1,5 @@
 @import "work-includes";
+@import "variables";
 
 //variables
 $pop-over-top: -50px;
@@ -9,7 +10,7 @@ submissions {
     @include vertical-align-middle();
 
     max-width : 568px;
-    margin: 0 auto;
+    margin    : 0 auto;
     margin-top: $margin;
 
     > li {
@@ -70,13 +71,13 @@ submissions {
   }
 
   .submission {
-    padding         : $padding-small $padding;
+    padding         : 14px $horizontal-small;
     background-color: $white;
     margin-top      : $margin-small;
 
     avatar {
-      width: 40px;
-      height: 40px;
+      width: 48px;
+      height: 48px;
     }
 
     &:first-child {
@@ -87,12 +88,15 @@ submissions {
       min-width: 200px;
 
       .name-time {
-        min-width: 120px;
-        max-width: 120px;
-        margin-left: $margin-smallest;
+        min-width: 140px;
+        max-width: 140px;
+        margin-left: $horizontal-small;
 
         .name {
           @include ellipsis();
+
+          font-size: $font-size-big;
+          color: $primary-color;
         }
 
         p {
@@ -114,7 +118,7 @@ submissions {
     }
 
     ul.thumbnails {
-      @include vertical-align-middle();
+      margin-left: $horizontal-big;
 
       .pop-over {
         background-color: $white;
@@ -157,12 +161,15 @@ submissions {
         }
       }
 
-      li.thumbnail {
-        position: relative;
-        margin: $margin-smallest;
+      li {
+        position   : relative;
+        margin-left: $horizontal-smallest;
 
         > a {
-          display: block;
+          display : block;
+          width   : 82px;
+          height  : 61px;
+          overflow: hidden;
         }
 
         &:hover {
@@ -171,9 +178,21 @@ submissions {
           }
         }
 
-        .img {
-          width : 55px;
-          height: 45px;
+        img {
+          width : 82px;
+        }
+
+        &:last-child {
+          > a {
+            border          : 1px solid $primary-color;
+            background-color: $primary-color-light;
+          }
+
+          p {
+            height    : 100%;
+            text-align: center;
+            color     : $primary-color;
+          }
         }
       }
     }
