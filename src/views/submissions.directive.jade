@@ -19,7 +19,7 @@ ul.submissions(ng-if="vm.statusValue > 3")
           .name {{ submission.submitter.handle }}
             span(ng-if="submission.belongsToUser") &nbsp;(Me)
 
-          p {{ submission.files.length }} Images
+          p.secondary Project Contributor
 
     ul.thumbnails.flex-grow.flex
       li(ng-repeat="file in submission.files track by $index")

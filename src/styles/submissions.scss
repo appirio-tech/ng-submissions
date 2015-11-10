@@ -6,6 +6,11 @@ $pop-over-top: -50px;
 $pop-over-left: 30px;
 
 submissions {
+  .icon.download {
+    width: 21px;
+    height: 24px;
+  }
+
   .top-selection {
     @include vertical-align-middle();
 
@@ -107,7 +112,7 @@ submissions {
 
     ul.actions {
       li {
-        margin-left: $margin-small;
+        margin-left: $horizontal;
       }
 
       .comments {
