@@ -158,7 +158,7 @@ statusOf = (step) ->
   submissionsDueBy = new Date(step.details.submissionsDueBy)
   endsAt           = new Date(step.endsAt)
 
-  hasSubmissions   = step.details.rankedSubmissions.length > 0
+  hasSubmissions   = step.details.rankedSubmissions?.length > 0
   closed = step.details.customerConfirmedRanks || step.details.customerAcceptedFixes
 
   if closed
