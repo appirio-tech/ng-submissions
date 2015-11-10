@@ -45,7 +45,7 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-hide=\"v
     vm.timeline = config.timeline;
     vm.stepName = config.stepName;
     vm.stepType = config.stepType;
-    vm.status = defaultStatus;
+    vm.status = config.defaultStatus;
     vm.statusValue = 0;
     vm.allFilled = false;
     vm.submissions = [];
@@ -348,12 +348,12 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-hide=\"v
   statuses = ['PLACEHOLDER', 'SCHEDULED', 'OPEN', 'OPEN_LATE', 'REVIEWING', 'REVIEWING_LATE', 'CLOSED'];
 
   statusOf = function(step) {
-    var closed, endsAt, hasSubmissions, now, startsAt, submissionsDueBy;
+    var closed, endsAt, hasSubmissions, now, ref, startsAt, submissionsDueBy;
     now = Date.now();
     startsAt = new Date(step.startsAt);
     submissionsDueBy = new Date(step.details.submissionsDueBy);
     endsAt = new Date(step.endsAt);
-    hasSubmissions = step.details.rankedSubmissions.length > 0;
+    hasSubmissions = ((ref = step.details.rankedSubmissions) != null ? ref.length : void 0) > 0;
     closed = step.details.customerConfirmedRanks || step.details.customerAcceptedFixes;
     if (closed) {
       return 'CLOSED';
