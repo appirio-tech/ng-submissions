@@ -406,7 +406,7 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-hide=\"v
     startsAt = new Date(step.startsAt);
     submissionsDueBy = new Date(step.details.submissionsDueBy);
     endsAt = new Date(step.endsAt);
-    hasSubmissions = ((ref = step.details.rankedSubmissions) != null ? ref.length : void 0) > 0;
+    hasSubmissions = ((ref = step.details.submissionIds) != null ? ref.length : void 0) > 0;
     closed = step.details.customerConfirmedRanks || step.details.customerAcceptedFixes;
     if (closed) {
       return 'CLOSED';
