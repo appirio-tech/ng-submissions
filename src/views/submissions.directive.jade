@@ -38,7 +38,8 @@ ul.submissions(ng-if="vm.statusValue > 3")
 
       li
         a(ui-sref="submission-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: submission.id})")
-          p.flex.middle.center +3 <br /> more
+          p.flex.middle.center(ng-if="!submission.more") View <br /> All
+          p.flex.middle.center(ng-if="submission.more") +{{ submission.more }} <br /> more
 
     ul.actions.flex.middle.wrap
       li.comments(ng-if="vm.status != 'CLOSED'")

@@ -48,6 +48,8 @@ FileDetailController = (helpers, $scope, $rootScope, StepsService, SubmissionsSe
     currentStep   = helpers.findInCollection steps, 'id', vm.stepId
     vm.submission = helpers.findInCollection submissions, 'id', vm.submissionId
     vm.submission = helpers.submissionWithMessageCounts vm.submission
+    vm.submission = helpers.submissionWithFileTypes vm.submission
+    vm.submission = helpers.submissionFilteredByType vm.submission
     vm.file       = helpers.findInCollection vm.submission.files, 'id', vm.fileId
     vm.messages   = vm.file.threads[0]?.messages || []
 
