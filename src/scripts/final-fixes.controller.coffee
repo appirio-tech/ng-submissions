@@ -9,11 +9,9 @@ FinalFixesController = (helpers, $scope, $rootScope, $state, StepsService, Submi
 
   config.prevStepType = 'completeDesigns'
   config.prevStepName = 'Complete Designs'
-  config.prevStepState = 'complete-designs'
 
-  config.nextStepType = null
-  config.nextStepName = null
-  config.nextStepState = null
+  config.nextStepType = 'code'
+  config.nextStepName = 'Code'
 
   config.timeline = [ '', '', 'active' ]
   config.defaultStatus = 'scheduled'
@@ -49,12 +47,20 @@ FinalFixesController = (helpers, $scope, $rootScope, $state, StepsService, Submi
     StepsService.acceptFixes vm.projectId, vm.stepId
 
   getStepRef = (projectId, step) ->
-    if step
-      $state.href 'step',
-        projectId: projectId
-        stepId: step.id
-    else
-      null
+    unless step
+      return null
+
+    stepStatus = helpers.statusOf(step)
+
+    if vm.userType == 'member' && helpers.statusValueOf(stepStatus) < 4
+      return null
+
+    if vm.userType != 'member' && stepStatus == 'PLACEHOLDER'
+      return null
+
+    $state.href 'step',
+      projectId: projectId
+      stepId: step.id
 
   onChange = ->
     steps = StepsService.get(vm.projectId)
@@ -68,23 +74,21 @@ FinalFixesController = (helpers, $scope, $rootScope, $state, StepsService, Submi
 
     currentStep = helpers.findInCollection steps, 'stepType', config.stepType
     prevStep = helpers.findInCollection steps, 'stepType', config.prevStepType
+    nextStep = helpers.findInCollection steps, 'stepType', config.nextStepType
 
     vm.startsAt = currentStep.startsAt
     vm.endsAt = currentStep.endsAt
 
     vm.prevStepRef = getStepRef vm.projectId, prevStep
+    vm.nextStepRef = getStepRef vm.projectId, nextStep
 
-    vm.submission = helpers.submissionWithMessageCounts submissions[0]
-    vm.submission = helpers.submissionWithFileTypes vm.submission
-    vm.submission = helpers.submissionFilteredByType vm.submission
+    if submissions.length > 0
+      vm.submission = helpers.submissionWithMessageCounts submissions[0]
+      vm.submission = helpers.submissionWithFileTypes vm.submission
+      vm.submission = helpers.submissionFilteredByType vm.submission
 
-    vm.status = config.defaultStatus
-
-    if Date.now() > new Date(currentStep.startsAt)
-      vm.status = 'open'
-
-    if currentStep.customerAcceptedFixes
-      vm.status = 'closed'
+    vm.status = helpers.statusOf currentStep
+    vm.statusValue = helpers.statusValueOf vm.status
 
   activate()
 

@@ -2,16 +2,16 @@ loader(ng-show="!vm.loaded")
 
 include parts/header
 
-.subheader(ng-if="vm.status == 'scheduled'")
+.subheader(ng-if="vm.status == 'SCHEDULED'")
   img.icon.biggest(src="/images/clock.svg")
 
   p Final Fixes Phase starts in
 
-  countdown.block(end="{{ vm.work.phase.startDate }}")
+  countdown.block(end="{{ vm.startsAt }}")
 
   hr
 
-  ul.winners
+  ul.winners(ng-if="vm.submission.submitter")
     li
       .rank <strong>winner</strong>
 
@@ -19,26 +19,27 @@ include parts/header
 
       a.name(href="#") {{vm.submission.submitter.handle}}
 
-.subheader(ng-if="vm.status == 'closed'")
+.subheader(ng-if="vm.status == 'CLOSED'")
   p Project Complete! Review final submission
 
-.subheader(ng-if="vm.status == 'open'")
+.subheader(ng-if="vm.status == 'REVIEWING' || vm.status == 'REVIEWING_LATE'")
   p Give your final feedback to complete this design project.
 
-  countdown.block(end="{{ vm.work.phase.endDate }}")
+  countdown.block(end="{{ vm.endsAt }}")
 
   p.duration remaining to give feedback
 
 .buttons.flex.space-between.wrap
-  button.download(ng-if="vm.status == 'open' || vm.status == 'closed'")
+  button.download(ng-if="vm.statusValue > 3")
     .icon.download.smallest
 
-    span download files
+    a(href="{{ vm.submission.downloadUrl }}") download files
 
-  button.action(ng-click="vm.confirmApproval()" ng-if="vm.status == 'open'") confirm final approval
+  button.action(ng-click="vm.confirmApproval()" ng-if="vm.status == 'REVIEWING' || vm.status == 'REVIEWING_LATE'")
+    | confirm final approval
 
 hr
 
-ul.flex.wrap.previews(ng-if="vm.status == 'open' || vm.status == 'closed'")
+ul.flex.wrap.previews(ng-if="vm.submission")
   li.preview(ng-repeat="file in vm.submission.files track by $index" fitted-width=true)
     img.img(ng-src="{{ file.url }}" ui-sref="file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: vm.submission.id, fileId: file.id})")
