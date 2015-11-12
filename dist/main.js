@@ -93,7 +93,7 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-hide=\"v
       });
     };
     onChange = function() {
-      var currentStep, nextStep, prevStep, steps, submissions;
+      var currentStep, nextStep, numberOfRanks, prevStep, steps, submissions;
       steps = StepsService.get(vm.projectId);
       submissions = SubmissionsService.get(vm.projectId, vm.stepId);
       if (steps._pending || submissions._pending) {
@@ -115,14 +115,15 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-hide=\"v
       vm.submissions = helpers.submissionsWithFileTypes(vm.submissions);
       vm.submissions = helpers.submissionsFilteredByType(vm.submissions);
       vm.submissions = helpers.submissionsWithFileLimit(vm.submissions, 6);
-      vm.rankNames = config.rankNames.slice(0, currentStep.details.numberOfRanks);
+      numberOfRanks = Math.min(currentStep.details.numberOfRanks, vm.submissions.length);
+      vm.rankNames = config.rankNames.slice(0, numberOfRanks);
       vm.ranks = helpers.makeEmptyRankList(vm.rankNames);
       vm.ranks = helpers.populatedRankList(vm.ranks, vm.submissions);
       vm.userRank = helpers.highestRank(vm.ranks, userId);
       if (currentStep.rankedSubmissions_error) {
         vm.rankUpdateError = currentStep.rankedSubmissions_error;
       }
-      vm.allFilled = currentStep.details.rankedSubmissions.length === currentStep.details.numberOfRanks;
+      vm.allFilled = currentStep.details.rankedSubmissions.length === numberOfRanks;
       vm.status = helpers.statusOf(currentStep);
       return vm.statusValue = helpers.statusValueOf(vm.status);
     };
@@ -884,7 +885,7 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-hide=\"v
       return StepsService.updateRank(vm.projectId, vm.stepId, submission.id, submission.rank);
     };
     onChange = function() {
-      var currentStep, steps, submissions;
+      var currentStep, numberOfRanks, steps, submissions;
       steps = StepsService.get(vm.projectId);
       submissions = SubmissionsService.get(vm.projectId, vm.stepId);
       if (steps._pending || submissions._pending) {
@@ -898,12 +899,12 @@ $templateCache.put("views/file-detail.directive.html","<main><loader ng-hide=\"v
       vm.submission = helpers.submissionWithMessageCounts(vm.submission);
       vm.submission = helpers.submissionWithFileTypes(vm.submission);
       vm.submission = helpers.submissionFilteredByType(vm.submission);
-      vm.rankNames = config.rankNames.slice(0, currentStep.details.numberOfRanks);
+      numberOfRanks = Math.min(currentStep.details.numberOfRanks, currentStep.details.submissionIds.length);
+      vm.rankNames = config.rankNames.slice(0, numberOfRanks);
       vm.ranks = helpers.makeEmptyRankList(vm.rankNames);
       vm.ranks = helpers.populatedRankList(vm.ranks, vm.submissions);
       vm.rank = vm.submission.rank ? config.rankNames[vm.submission.rank - 1] : null;
-      vm.allFilled = currentStep.details.rankedSubmissions.length === currentStep.details.numberOfRanks;
-      vm.allFilled = currentStep.details.rankedSubmissions.length === currentStep.details.numberOfRanks;
+      vm.allFilled = currentStep.details.rankedSubmissions.length === numberOfRanks;
       return vm.status = helpers.statusOf(currentStep);
     };
     activate();
