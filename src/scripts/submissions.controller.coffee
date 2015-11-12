@@ -124,7 +124,9 @@ SubmissionsController = (helpers, $scope, $rootScope, $state, StepsService, Subm
     vm.submissions = helpers.submissionsFilteredByType vm.submissions
     vm.submissions = helpers.submissionsWithFileLimit vm.submissions, 6
 
-    vm.rankNames = config.rankNames.slice 0, currentStep.details.numberOfRanks
+    numberOfRanks = Math.min currentStep.details.numberOfRanks, vm.submissions.length
+
+    vm.rankNames = config.rankNames.slice 0, numberOfRanks
     vm.ranks     = helpers.makeEmptyRankList(vm.rankNames)
     vm.ranks     = helpers.populatedRankList vm.ranks, vm.submissions
     vm.userRank  = helpers.highestRank vm.ranks, userId
@@ -132,7 +134,7 @@ SubmissionsController = (helpers, $scope, $rootScope, $state, StepsService, Subm
     if currentStep.rankedSubmissions_error
       vm.rankUpdateError = currentStep.rankedSubmissions_error
 
-    vm.allFilled = currentStep.details.rankedSubmissions.length == currentStep.details.numberOfRanks
+    vm.allFilled = currentStep.details.rankedSubmissions.length == numberOfRanks
 
     vm.status = helpers.statusOf currentStep
     vm.statusValue = helpers.statusValueOf vm.status
