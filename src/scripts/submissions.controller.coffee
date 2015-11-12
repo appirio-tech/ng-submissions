@@ -120,6 +120,9 @@ SubmissionsController = (helpers, $scope, $rootScope, $state, StepsService, Subm
     vm.submissions = helpers.sortSubmissions vm.submissions
     vm.submissions = helpers.submissionsWithMessageCounts vm.submissions
     vm.submissions = helpers.submissionsWithOwnership vm.submissions, userId
+    vm.submissions = helpers.submissionsWithFileTypes vm.submissions
+    vm.submissions = helpers.submissionsFilteredByType vm.submissions
+    vm.submissions = helpers.submissionsWithFileLimit vm.submissions, 6
 
     vm.rankNames = config.rankNames.slice 0, currentStep.details.numberOfRanks
     vm.ranks     = helpers.makeEmptyRankList(vm.rankNames)

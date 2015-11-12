@@ -89,6 +89,49 @@ submissionsWithMessageCounts = (submissions) ->
   submissions.map (submission) ->
     submissionWithMessageCounts submission
 
+# With file types
+fileWithFileType = (file) ->
+  extension = file.name.match /\.[0-9a-z]+$/i
+  extension = extension[0].slice 1
+  extension = extension.toLowerCase()
+
+  file.fileType = extension
+
+  file
+
+submissionWithFileTypes = (submission) ->
+  submission.files = submission.files.map (file) ->
+    fileWithFileType file
+
+  submission
+
+submissionsWithFileTypes = (submissions) ->
+  submissions.map (submission) ->
+    submissionWithFileTypes submission
+
+# Limited by number of files
+submissionWithFileLimit = (submission, limit) ->
+  submission.more = if submission.files.length > limit then submission.files.length - limit else 0
+  submission.files   = submission.files.slice 0, limit
+
+  submission
+
+submissionsWithFileLimit = (submissions, limit) ->
+  submissions.map (submission) ->
+    submissionWithFileLimit submission, limit
+
+# Filtered by file type
+submissionFilteredByType = (submission, allowedTypes = [ 'png', 'jpg', 'gif' ]) ->
+  submission.files = submission.files.filter (file) ->
+    allowedTypes.indexOf(file.fileType) > -1
+
+  submission
+
+submissionsFilteredByType = (submissions, allowedTypes) ->
+  submissions.map (submission) ->
+    submissionFilteredByType submission, allowedTypes
+
+# Decorated with submission ownership
 submissionsWithOwnership = (submissions, userId) ->
   submissions.map (submission) ->
     angular.merge {}, submission,
@@ -158,7 +201,7 @@ statusOf = (step) ->
   submissionsDueBy = new Date(step.details.submissionsDueBy)
   endsAt           = new Date(step.endsAt)
 
-  hasSubmissions   = step.details.rankedSubmissions?.length > 0
+  hasSubmissions   = step.details.submissionIds?.length > 0
   closed = step.details.customerConfirmedRanks || step.details.customerAcceptedFixes
 
   if closed
@@ -187,6 +230,12 @@ SubmissionsHelpers = ->
   fileWithMessageCounts        : fileWithMessageCounts
   submissionWithMessageCounts  : submissionWithMessageCounts
   submissionsWithMessageCounts : submissionsWithMessageCounts
+  submissionWithFileLimit      : submissionWithFileLimit
+  submissionsWithFileLimit     : submissionsWithFileLimit
+  submissionWithFileTypes      : submissionWithFileTypes
+  submissionsWithFileTypes     : submissionsWithFileTypes
+  submissionFilteredByType     : submissionFilteredByType
+  submissionsFilteredByType    : submissionsFilteredByType
   submissionsWithOwnership     : submissionsWithOwnership
   sortSubmissions              : sortSubmissions
   populatedRankList            : populatedRankList
