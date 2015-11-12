@@ -1,14 +1,14 @@
 .subheader(ng-if="vm.userType != 'member' && vm.status == 'PLACEHOLDER'")
   p You will see submissions here when they are ready.
 
-.subheader(ng-if="vm.userType != 'member' && vm.status == 'SCHEDULED'")
+.subheader.clock(ng-if="vm.userType != 'member' && vm.status == 'SCHEDULED'")
   img.icon.biggest(src="/images/clock.svg")
 
   p Work will begin on {{ vm.stepName }} submissions in
 
   countdown.block(end="{{ vm.startsAt }}")
 
-.subheader(ng-if="vm.userType != 'member' && vm.status == 'OPEN'")
+.subheader.clock(ng-if="vm.userType != 'member' && vm.status == 'OPEN'")
   img.icon.biggest(src="/images/clock.svg")
 
   p Submissions for the {{ vm.stepName }} Phase coming in

@@ -64,6 +64,14 @@ submissions, final-fixes {
       margin: 0 auto;
     }
 
+    &.clock {
+      margin-top: 10px;
+
+      > * {
+        margin-top: 20px;
+      }
+    }
+
     .winners {
       > li {
         @include vertical-align-middle();
