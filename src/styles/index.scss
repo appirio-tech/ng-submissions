@@ -8,6 +8,9 @@ submissions, final-fixes, submission-detail {
   width           : 100%;
 
   countdown.block {
+    display: block;
+    margin-top: 20px;
+
     li {
       margin-left: $margin-smallest;
 
