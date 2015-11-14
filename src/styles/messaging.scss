@@ -1,67 +1,67 @@
 @import "work-includes";
 
-aside.messaging {
+.file-detail-messaging {
   @include transition (all 0.3s ease-in-out);
 
-  position        : absolute;
-  width           : 300px;
-  right           : -300px;
+  min-width       : 300px;
   padding         : $spacing-small;
   overflow        : hidden;
-  box-shadow      : -3px 0px 5px 0px rgba(0,0,0,0.22);
   background-color: $neutral-color-lightest;
-  z-index         : 2;
+  border-left     : 1px solid $neutral-color;
 
-  &.active {
-    right: 0;
-  }
+  .title {
+    hr {
+      background-color: $neutral-color-light;
+      margin: $margin-small 0;
+      width: 100%;
+    }
 
-  hr {
-    background-color: $neutral-color-light;
-    margin: $margin-small 0;
-    width: 100%;
-  }
+    .name {
+      @include ellipsis(120px);
 
-  .name {
-    @include ellipsis(120px);
-
-    margin-left: $margin-smallest;
-    font-weight: bold;
-  }
-
-  time {
-    margin-left: $margin-smallest;
-    font-size: $font-size-smallest;
-  }
-
-  .message {
-    margin: 0 0 0 42px;
+      margin-left: $margin-smallest;
+      font-weight: bold;
+    }
   }
 
   .messages {
     overflow: auto;
 
-    > li {
-      border-top: 1px solid $neutral-color-light;
-      padding: $padding-smallest;
+    time {
+      margin-left: $margin-smallest;
+      font-size: $font-size-smallest;
+    }
 
-      &:first-child {
-        border-top: none;
+    ul {
+      > li {
+        border-top: 1px solid $neutral-color-light;
+        padding: $padding-smallest;
+
+        &:first-child {
+          border-top: none;
+        }
+      }
+
+      .message {
+        margin: 0 0 0 42px;
       }
     }
   }
 
-  form {
-    margin-top: $margin-small;
-
-    textarea {
-      width  : 100%;
-      border : 0;
-    }
-
-    button.enter {
+  .send {
+    form {
       margin-top: $margin-small;
-      width: 100%;
+
+      textarea {
+        width  : 100%;
+        border : 0;
+      }
+
+      button.enter {
+        margin-top: $margin-small;
+        width: 100%;
+      }
     }
   }
+
 }

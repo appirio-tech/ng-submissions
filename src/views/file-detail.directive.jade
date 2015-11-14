@@ -1,14 +1,15 @@
-main
-  loader(ng-hide="vm.loaded")
+loader(ng-hide="vm.loaded")
 
-  ul.header
-    li.submitter
-      avatar(avatar-url="{{ vm.submission.submitter.avatar }}")
+main.flex.column
+  .header
+    ul
+      li.submitter
+        avatar(avatar-url="{{ vm.submission.submitter.avatar }}")
 
-      .name-time
-        p.name {{ vm.submission.submitter.handle }}
+        .name-time
+          p.name {{ vm.submission.submitter.handle }}
 
-        time Submitted: {{ vm.submission.createdAt | timeLapse }}
+          time Submitted: {{ vm.submission.createdAt | timeLapse }}
 
     li.icons
       button.clean
@@ -18,37 +19,37 @@ main
       button.clean(ng-click="vm.toggleComments()")
        .icon.envelope
 
-  hr
+  .content.flex.flex-grow
+    .slideshow.flex.column.flex-grow
+      .preview.flex.center.flex-grow.flex-shrink
+        .previous.flex.flex-grow
+          a.arrow-previous(ng-if="vm.prevFile", ui-sref="file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: vm.submission.id, fileId: vm.prevFile.id})")
+            button.clean.icon.arrow.big
 
-  aside.messaging.flex.column(ng-class="{ active: vm.showComments }" flush-height=true)
-    h4 File Comments
+        .image.flex.column.center
+          .title
+            p {{ vm.file.name }}
 
-    hr
+          .img-container.flex
+            //- img(ng-src="{{ vm.file.url }}")
+            img(ng-src="http://placehold.it/400x800")
 
+        .next.flex.flex-grow
+          a.arrow-next(ng-if="vm.nextFile", ui-sref="file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: vm.submission.id, fileId: vm.nextFile.id})")
+            button.clean.icon.arrow.right.big
+
+      .thumbnails
+        ul
+          li.thumbnail(ng-repeat="file in vm.submission.files")
+            button.clean.thumbnail
+              a(ui-sref="file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: vm.submission.id, fileId: file.id})")
+                img(ng-src="{{ file.url }}")
+
+              .notification.absolute(ng-if="file.unreadMessages > 0") {{ file.unreadMessages }}
+
+    //- aside.file-detail-messaging(ng-class="{ active: vm.showComments }")
+    //- .file-detail-messaging.flex.flex-grow(ng-class="{ active: true }")
     include parts/messaging
 
-  ul.slideshow
-    li
-      a(ng-if="vm.prevFile", ui-sref="file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: vm.submission.id, fileId: vm.prevFile.id})")
-        button.clean.icon.arrow.big
 
-
-    li.preview
-      p {{ vm.file.name }}
-
-      .img-container
-        img(ng-src="{{ vm.file.url }}")
-
-
-    li
-      a(ng-if="vm.nextFile", ui-sref="file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: vm.submission.id, fileId: vm.nextFile.id})")
-        button.clean.icon.arrow.right.big
-
-  ul.thumbnails
-    li.thumbnail(ng-repeat="file in vm.submission.files")
-      button.clean.thumbnail
-        a(ui-sref="file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: vm.submission.id, fileId: file.id})")
-          img(ng-src="{{ file.url }}")
-
-          .notification.absolute(ng-if="file.unreadMessages > 0") {{ file.unreadMessages }}
 

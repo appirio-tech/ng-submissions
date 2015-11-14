@@ -1,16 +1,23 @@
-.flex.column.flex-grow
-  ul.messages.flex-grow
-    li(ng-repeat="message in vm.messages track by $index")
-      header.flex.middle
-        avatar(avatar-url="{{ message.publisher.avatar }}")
+.file-detail-messaging.flex.column.active
+  .title
+    h4 File Comments
 
-        .name {{ message.publisher.handle }}
+    hr
 
-        time {{ message.createdAt | timeLapse }}
+  .messages.flex-grow.flex-shrink
+    ul
+      li(ng-repeat="message in vm.messages track by $index")
+        header.flex.middle
+          avatar(avatar-url="{{ message.publisher.avatar }}")
 
-      p.message {{ message.body }}
+          .name {{ message.publisher.handle }}
 
-  form(ng-submit="vm.sendMessage()" ng-if="vm.status != 'CLOSED'")
-    textarea(placeholder!="Send a message&hellip;" ng-model="vm.newMessage")
+          time {{ message.createdAt | timeLapse }}
 
-    button.enter(type="submit") Enter
+        p.message {{ message.body }}
+
+  .send
+    form(ng-submit="vm.sendMessage()" ng-if="vm.status != 'CLOSED'")
+      textarea(placeholder!="Send a message&hellip;" ng-model="vm.newMessage")
+
+      button.enter(type="submit") Enter
