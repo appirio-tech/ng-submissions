@@ -31,8 +31,7 @@ main.flex.column
             p {{ vm.file.name }}
 
           .img-container.flex
-            //- img(ng-src="{{ vm.file.url }}")
-            img(ng-src="http://placehold.it/400x800")
+            img(ng-src="{{ vm.file.url }}")
 
         .next.flex.flex-grow
           a.arrow-next(ng-if="vm.nextFile", ui-sref="file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: vm.submission.id, fileId: vm.nextFile.id})")
@@ -47,8 +46,6 @@ main.flex.column
 
               .notification.absolute(ng-if="file.unreadMessages > 0") {{ file.unreadMessages }}
 
-    //- aside.file-detail-messaging(ng-class="{ active: vm.showComments }")
-    //- .file-detail-messaging.flex.flex-grow(ng-class="{ active: true }")
     include parts/messaging
 
 
