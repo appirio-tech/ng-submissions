@@ -39806,7 +39806,17 @@ angular.module('angular-storage.localStorage', ['angular-storage.cookieStorage']
 
 angular.module('angular-storage.sessionStorage', ['angular-storage.cookieStorage'])
   .service('sessionStorage', ["$window", "$injector", function ($window, $injector) {
-    if ($window.sessionStorage) {
+    var sessionStorageAvailable;
+
+    try {
+      $window.sessionStorage.setItem('testKey', 'test');
+      $window.sessionStorage.removeItem('testKey');
+      sessionStorageAvailable = true;
+    } catch(e) {
+      sessionStorageAvailable = false;
+    }
+
+    if (sessionStorageAvailable) {
       this.set = function (what, value) {
         return $window.sessionStorage.setItem(what, value);
       };
@@ -40464,13 +40474,18 @@ $templateCache.put("views/simple-countdown.directive.html","<p>{{vm.timeRemainin
     var elements, link, lockHeight;
     elements = [];
     lockHeight = function($element) {
-      var attr, childrenWithClass, classToToggle;
+      var attr, childrenWithClass, classToToggle, ignoreContent, ref;
       attr = $element.attr('lock-height');
-      if (typeof attr === 'string') {
+      if (attr !== 'lock-height') {
         classToToggle = attr;
       }
+      ignoreContent = (ref = $element.attr('ignore-content')) != null ? ref.length : void 0;
       $element.css('height', 'auto');
       $element.css('max-height', 'none');
+      $element.addClass('lock-height');
+      if (ignoreContent) {
+        $element.addClass('ignore-content');
+      }
       if (classToToggle) {
         childrenWithClass = $element.find('.' + classToToggle);
         childrenWithClass.removeClass(classToToggle);
@@ -40484,8 +40499,11 @@ $templateCache.put("views/simple-countdown.directive.html","<p>{{vm.timeRemainin
           $element.addClass(classToToggle);
         }
         if (childrenWithClass) {
-          return childrenWithClass.addClass(classToToggle);
+          childrenWithClass.addClass(classToToggle);
         }
+      }
+      if (ignoreContent) {
+        return $element.removeClass('ignore-content');
       }
     };
     $($window).bind('resize', function() {
@@ -40508,7 +40526,8 @@ $templateCache.put("views/simple-countdown.directive.html","<p>{{vm.timeRemainin
       link: link,
       priority: -1,
       scope: {
-        retainClass: '@retainClass'
+        retainClass: '@',
+        ignoreContent: '@'
       }
     };
   };
@@ -40705,6 +40724,26 @@ $templateCache.put("views/simple-countdown.directive.html","<p>{{vm.timeRemainin
   };
 
   angular.module('appirio-tech-ng-ui-components').filter('timeLapse', filter);
+
+}).call(this);
+
+(function() {
+  'use strict';
+  var filter;
+
+  filter = function() {
+    return function(number) {
+      var ordinalMap;
+      ordinalMap = {
+        1: '1st',
+        2: '2nd',
+        3: '3rd'
+      };
+      return ordinalMap[number];
+    };
+  };
+
+  angular.module('appirio-tech-ng-ui-components').filter('ordinalNumber', filter);
 
 }).call(this);
 
@@ -45090,7 +45129,7 @@ $templateCache.put("views/simple-countdown.directive.html","<p>{{vm.timeRemainin
     hasProp = {}.hasOwnProperty;
 
   OptimistHelpers = function(options) {
-    var filter, isObject, mask, timestamp, walk;
+    var filter, flatWalkTandem, isObject, mask, merge, timestamp, walk;
     if (options == null) {
       options = {};
     }
@@ -45148,12 +45187,50 @@ $templateCache.put("views/simple-countdown.directive.html","<p>{{vm.timeRemainin
       }
       return results;
     };
+    flatWalkTandem = function(target, source, action) {
+      var combinedKeys, name, results, sourceValue, targetValue, value;
+      combinedKeys = {};
+      for (name in target) {
+        if (!hasProp.call(target, name)) continue;
+        value = target[name];
+        combinedKeys[name] = true;
+      }
+      for (name in source) {
+        if (!hasProp.call(source, name)) continue;
+        value = source[name];
+        combinedKeys[name] = true;
+      }
+      results = [];
+      for (name in combinedKeys) {
+        if (!hasProp.call(combinedKeys, name)) continue;
+        value = combinedKeys[name];
+        targetValue = target[name];
+        sourceValue = source[name];
+        results.push(action(targetValue, sourceValue, name, target, source));
+      }
+      return results;
+    };
+    merge = function(target, source) {
+      var action, result;
+      result = {};
+      action = function(targetValue, sourceValue, name) {
+        if (isObject(targetValue) || isObject(sourceValue)) {
+          return result[name] = merge(targetValue || {}, sourceValue || {});
+        } else {
+          return result[name] = sourceValue === void 0 ? targetValue : sourceValue;
+        }
+      };
+      flatWalkTandem(target, source, action);
+      return result;
+    };
     return {
       timestamp: timestamp,
       isObject: isObject,
       mask: mask,
       filter: filter,
-      walk: walk
+      walk: walk,
+      flatWalkTandem: flatWalkTandem,
+      merge: merge
     };
   };
 
@@ -45243,12 +45320,12 @@ $templateCache.put("views/simple-countdown.directive.html","<p>{{vm.timeRemainin
       })(this));
     };
     Collection.prototype.findWhere = function(filters) {
-      return this._collection.filter(function(ref) {
-        var item, name, value;
-        item = ref.get();
+      return this._collection.filter(function(item) {
+        var itemData, name, value;
+        itemData = item.get();
         for (name in filters) {
           value = filters[name];
-          if (item[name] !== value) {
+          if (itemData[name] !== value) {
             return false;
           }
         }
@@ -45356,7 +45433,7 @@ $templateCache.put("views/simple-countdown.directive.html","<p>{{vm.timeRemainin
           }
         }
       });
-      angular.merge(this._data, updates);
+      this._data = OptimistHelpers.merge(this._data, updates);
       return updateCallback(this._data);
     };
     Model.prototype.fetch = function(options) {

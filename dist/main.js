@@ -115,7 +115,7 @@ $templateCache.put("views/file-detail.directive.html","<loader ng-hide=\"vm.load
       vm.submissions = helpers.submissionsWithFileTypes(vm.submissions);
       vm.submissions = helpers.submissionsFilteredByType(vm.submissions);
       vm.submissions = helpers.submissionsWithFileLimit(vm.submissions, 6);
-      numberOfRanks = Math.min(currentStep.details.numberOfRanks, vm.submissions.length);
+      numberOfRanks = Math.min(currentStep.details.numberOfRanks, submissions.length);
       vm.rankNames = config.rankNames.slice(0, numberOfRanks);
       vm.ranks = helpers.makeEmptyRankList(vm.rankNames);
       vm.ranks = helpers.populatedRankList(vm.ranks, vm.submissions);
@@ -899,7 +899,7 @@ $templateCache.put("views/file-detail.directive.html","<loader ng-hide=\"vm.load
       vm.submission = helpers.submissionWithMessageCounts(vm.submission);
       vm.submission = helpers.submissionWithFileTypes(vm.submission);
       vm.submission = helpers.submissionFilteredByType(vm.submission);
-      numberOfRanks = Math.min(currentStep.details.numberOfRanks, currentStep.details.submissionIds.length);
+      numberOfRanks = Math.min(currentStep.details.numberOfRanks, submissions.length);
       vm.rankNames = config.rankNames.slice(0, numberOfRanks);
       vm.ranks = helpers.makeEmptyRankList(vm.rankNames);
       vm.ranks = helpers.populatedRankList(vm.ranks, vm.submissions);
@@ -1079,13 +1079,15 @@ $templateCache.put("views/file-detail.directive.html","<loader ng-hide=\"vm.load
         noDrag = function(el) {
           var child, i, len, ref, results;
           el.draggable = false;
-          ref = el.children;
-          results = [];
-          for (i = 0, len = ref.length; i < len; i++) {
-            child = ref[i];
-            results.push(noDrag(child));
+          if (el.children) {
+            ref = el.children;
+            results = [];
+            for (i = 0, len = ref.length; i < len; i++) {
+              child = ref[i];
+              results.push(noDrag(child));
+            }
+            return results;
           }
-          return results;
         };
         noDrag(el);
         el.draggable = true;
