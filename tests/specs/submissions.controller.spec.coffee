@@ -23,7 +23,7 @@ describe 'SubmissionsController', ->
       expect(vm.loaded).to.be.false
 
     it 'should have a status', ->
-      expect(vm.status).to.equal 'scheduled'
+      expect(vm.status).to.equal 'PLACEHOLDER'
 
   describe 'after loading', ->
     beforeEach inject ($httpBackend) ->

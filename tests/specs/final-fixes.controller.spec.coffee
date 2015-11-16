@@ -41,7 +41,7 @@ describe 'FinalFixesController', ->
       expect(vm.startsAt).to.be.a 'string'
       expect(vm.endsAt).to.be.a 'string'
       expect(vm.submission).to.be.an 'object'
-      expect(vm.status).to.equal 'open'
+      expect(vm.status).to.equal 'REVIEWING_LATE'
 
 
 

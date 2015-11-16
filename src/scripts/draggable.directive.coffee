@@ -10,8 +10,9 @@ directive = ->
     noDrag = (el) ->
       el.draggable = false
 
-      for child in el.children
-        noDrag child
+      if el.children
+        for child in el.children
+          noDrag child
 
     noDrag(el)
     
