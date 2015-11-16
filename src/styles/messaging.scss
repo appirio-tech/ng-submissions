@@ -3,11 +3,17 @@
 .file-detail-messaging {
   @include transition (all 0.3s ease-in-out);
 
-  min-width       : 300px;
+  position        : absolute;
+  width           : 300px;
+  right           : -300px;
   padding         : $spacing-small;
   overflow        : hidden;
   background-color: $neutral-color-lightest;
   border-left     : 1px solid $neutral-color;
+
+  &.active {
+    right: 0;
+  }
 
   .title {
     hr {

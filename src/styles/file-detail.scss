@@ -7,17 +7,27 @@ file-detail {
     background-color: $white;
 
     .header {
-      min-height: 100px;
-      padding: $padding-big;
+      height: 80px;
+      padding: $spacing-biggest;
       border-bottom: 1px solid $neutral-color;
 
       @include vertical-align-middle();
 
       .submitter {
+        min-width: 240px;
         @include vertical-align-middle();
       }
 
+      .title {
+        @include ellipsis();
+        text-align: center;
+        margin-top: $spacing;
+      }
+
       .icons {
+        text-align: right;
+        min-width: 180px;
+        padding-right: $padding-biggest;
         margin-left: $margin;
 
         > * {
@@ -43,6 +53,7 @@ file-detail {
         .preview {
           overflow: auto;
           text-align: center;
+          padding: $padding-big 0;
 
           .previous, .next {
             min-width: 50px;
@@ -57,16 +68,6 @@ file-detail {
           }
 
           .image {
-            .title {
-              min-height: 3em;
-              p {
-                text-align: center;
-                margin-top: $spacing-big;
-
-                @include ellipsis();
-              }
-            }
-
             .img-container {
               overflow: auto;
 
@@ -81,7 +82,6 @@ file-detail {
 
         .thumbnails {
           min-height: 100px;
-          border-top: 1px solid $neutral-color;
 
           ul {
             text-align: center;

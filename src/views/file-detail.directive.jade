@@ -1,17 +1,19 @@
 loader(ng-hide="vm.loaded")
 
 main.flex.column
-  .header
-    ul
-      li.submitter
-        avatar(avatar-url="{{ vm.submission.submitter.avatar }}")
+  .header.flex
+    .flex-grow.submitter
+      avatar(avatar-url="{{ vm.submission.submitter.avatar }}")
 
-        .name-time
-          p.name {{ vm.submission.submitter.handle }}
+      .name-time
+        p.name {{ vm.submission.submitter.handle }}
 
-          time Submitted: {{ vm.submission.createdAt | timeLapse }}
+        time Submitted: {{ vm.submission.createdAt | timeLapse }}
 
-    li.icons
+    .title.flex-shrink.flex-grow
+      strong {{ vm.file.name }}
+
+    .flex-grow.icons
       button.clean
         a(href="{{ vm.file.url }}" target="_blank")
           .icon.download
@@ -27,9 +29,6 @@ main.flex.column
             button.clean.icon.arrow.big
 
         .image.flex.column.center
-          .title
-            p {{ vm.file.name }}
-
           .img-container.flex
             img(ng-src="{{ vm.file.url }}")
 
