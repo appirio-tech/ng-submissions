@@ -1,0 +1,64 @@
+@import "work-includes";
+@import "variables";
+
+top-selections {
+  $radius: 40px;
+
+  max-width : 568px;
+  margin    : 0 auto;
+  margin-top: 25px;
+  text-align: center;
+
+  > ul {
+    @include vertical-align-middle();
+
+    > li {
+      margin-left: 12px;
+
+      &:first-child {
+        margin-left: 0;
+      }
+    }
+  }
+
+  .shell, avatar {
+    width        : $radius;
+    height       : $radius;
+    border-radius: 50%;
+    border       : 1px solid $neutral-color;
+  }
+
+  avatar {
+    position: absolute;
+    top     : -1px;
+    left    : -1px;
+  }
+
+  .shell {
+    font-size   : $font-size-biggest;
+    border-style: dashed;
+    position    : relative;
+    color       : $black;
+    font-weight : $font-weight;
+
+    .rank {
+      position        : absolute;
+      border-radius   : 50%;
+      width           : 38px; // remember to subtract border-widths
+      line-height     : 38px; // remember to subtract border-widths
+    }
+
+    &.has-avatar {
+      .rank {
+        background-color: $neutral-color-darkest;
+        opacity         : 0;
+        color           : $white;
+        cursor          : move;
+
+        &:hover {
+          opacity: 0.9;
+        }
+      }
+    }
+  }
+}
