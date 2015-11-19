@@ -1,0 +1,48 @@
+@import "work-includes";
+@import "variables";
+
+submission-winner-card {
+  display: block;
+  width  : 305px;
+  padding: 0 12px;
+
+  avatar {
+    width: 72px;
+    height: 72px;
+    margin-top: 42px;
+  }
+
+  hr {
+    margin-top: 22px;
+    background-color: $neutral-color-dark;
+  }
+
+  .name {
+    font-size  : 16px;
+    margin-top : 10px;
+    color      : $primary-color;
+    font-weight: $font-weight-light;
+  }
+
+  .secondary {
+    font-size: 15px;
+    margin-top: 5px;
+  }
+
+  footer {
+    color: $primary-color;
+    text-transform: uppercase;
+  }
+
+  .rank {
+    font-size: 36px;
+    margin-top: 50px;
+  }
+
+  .place {
+    font-size    : 22px;
+    margin-top   : 5px;
+    margin-bottom: 65px;
+    font-weight  : $font-weight-bold;
+  }
+}

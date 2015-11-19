@@ -32,6 +32,10 @@ config = ($stateProvider) ->
     controller  : 'RowOfThumbnailsExampleController as vm'
     templateUrl : 'views/row-of-thumbnails.example.html'
 
+  states['submission-winner-card'] =
+    url         : '/submission-winner-card'
+    templateUrl : 'views/submission-winner-card.example.html'
+
   for key, state of states
     $stateProvider.state key, state
 
