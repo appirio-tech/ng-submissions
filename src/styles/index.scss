@@ -7,6 +7,11 @@ submissions, final-fixes, submission-detail {
   text-align      : center;
   width           : 100%;
 
+  > hr {
+    height: 10px;
+    margin-top: $vertical-big;
+  }
+
   countdown.block {
     display: block;
     margin-top: 20px;
@@ -32,6 +37,17 @@ submissions, final-fixes, submission-detail {
 }
 
 submissions, final-fixes {
+  p.total-count {
+    text-transform: uppercase;
+    color         : $text-color-lightest;
+    text-align    : left;
+    margin-top    : 10px;
+  }
+
+  hr.total-count {
+    margin-top: 15px;
+  }
+
   .header {
     h1 {
       padding: 0;

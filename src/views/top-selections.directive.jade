@@ -1,0 +1,17 @@
+ul.top-selection
+  li(ng-repeat="rank in vm.ranks track by $index")
+    .shell(
+      ng-class="{ 'has-avatar': rank.avatarUrl }"
+      ondragenter="return false"
+      ondragover="return false"
+      on-drop="vm.drop.handle(event, rank.value)"
+    )
+      div(ng-if="rank.id" data-id="{{ rank.id }}" draggable)
+        avatar(avatar-url="{{ rank.avatarUrl }}")
+
+        .rank {{ rank.value }}
+
+      .rank(ng-if="!rank.avatarUrl") {{ rank.value }}
+
+  li(ng-show="vm.allFilled")
+    button.action(ng-click="vm.confirmRanks()") Confirm your selections 
