@@ -7,7 +7,9 @@ header.flex.column.middle
 
 hr
 
-footer.flex.column.middle
-  .rank {{ rank }}
+footer.flex.column.middle.center
+  .rank(ng-if="rank") {{ rank }}
 
-  .place Place
+  .place(ng-if="rank") place
+
+  .winner(ng-if="!rank") winner!

@@ -36,6 +36,10 @@ config = ($stateProvider) ->
     url         : '/submission-winner-card'
     templateUrl : 'views/submission-winner-card.example.html'
 
+  states['submission-winners'] =
+    url         : '/submission-winners'
+    templateUrl : 'views/submission-winners.example.html'
+
   for key, state of states
     $stateProvider.state key, state
 

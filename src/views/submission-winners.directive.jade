@@ -1,0 +1,5 @@
+ul.submission-winner-cards.flex.wrap
+  li(fitted-width=true ng-repeat="rank in vm.ranks")
+    submission-winner-card.light-bg.elevated-bottom(name-text="{{ rank.nameText }}" avatar-url="{{ rank.avatarUrl }}" rank="{{ rank.rank }}")
+
+button.action view submissions

@@ -9,7 +9,7 @@ submission-winner-card {
   avatar {
     width: 72px;
     height: 72px;
-    margin-top: 42px;
+    margin-top: 40px;
   }
 
   hr {
@@ -30,19 +30,19 @@ submission-winner-card {
   }
 
   footer {
-    color: $primary-color;
+    color         : $primary-color;
     text-transform: uppercase;
+    font-size     : 22px;
+    font-weight   : $font-weight-bold;
+    height        : 163px;
   }
 
   .rank {
-    font-size: 36px;
-    margin-top: 50px;
+    font-size  : 36px;
+    font-weight: $font-weight-light;
   }
 
   .place {
-    font-size    : 22px;
     margin-top   : 5px;
-    margin-bottom: 65px;
-    font-weight  : $font-weight-bold;
   }
 }
