@@ -1,5 +1,51 @@
 loader(ng-hide="vm.loaded")
 
+submissions-header(text="design concept phase" subtext="You will see submissions here when they are ready." next="http://www.google.com" prev="http://www.google.com")
+
+top-selections
+
+p.total-count 32 submissions
+
+hr.total-count
+
+ul.submissions.new(ng-if="vm.statusValue > 3")
+  li.submission(ng-repeat="submission in vm.submissions track by $index" data-id="{{ submission.id }}" ng-class="{ 'belongs-to-user': submission.belongsToUser }" draggable)
+    ul.user-details.flex.middle.space-between
+      li.flex.middle
+        avatar(avatar-url="{{ submission.submitter.avatar }}")
+
+        .name-time
+          .name {{ submission.submitter.handle }}
+            span(ng-if="submission.belongsToUser") &nbsp;(Me)
+
+          p.secondary 21 Images
+
+      li
+        ul.flex.middle.actions
+          li
+            a(href="{{ submission.downloadUrl }}" target="_blank")
+            .icon.download.small
+
+          li
+            select(
+              ng-model="submission.rank"
+              ng-change="vm.handleRankSelect(submission)"
+              ng-options="rank.value as rank.label for rank in vm.ranks"
+            )
+
+          li
+            p.rank {{ vm.rankNames[$index] }}
+
+    row-of-thumbnails(thumbnails="submission.files" view-all="http://www.google.com" view-all-text="+3 more")
+
+
+
+
+br
+br
+br
+h1 *** old stuff below ***
+
 include parts/header
 
 include parts/subheader-member
@@ -21,7 +67,7 @@ ul.submissions(ng-if="vm.statusValue > 3")
 
           p.secondary Project Contributor
 
-    ul.thumbnails.flex-grow.flex
+    ul.old-thumbnails.flex-grow.flex
       li(ng-repeat="file in submission.files track by $index")
         a(ui-sref="file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: submission.id, fileId: file.id})")
           img(ng-src="{{ file.url }}")

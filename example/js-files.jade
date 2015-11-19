@@ -14,6 +14,10 @@
 - scripts.push('file-detail.directive')
 - scripts.push('on-drop.directive')
 - scripts.push('draggable.directive')
+- scripts.push('directives/submissions-header.directive')
+- scripts.push('directives/top-selections.directive')
+- scripts.push('controllers/top-selections.controller')
+- scripts.push('directives/row-of-thumbnails.directive')
 
 - var bowers = []
 - bowers.push('angular/angular')
@@ -34,7 +38,17 @@
 - bowers.push('zepto/zepto')
 - bowers.push('appirio-tech-ng-optimist/dist/main')
 
-- var examples = ['constants', 'example.module', 'routes', 'example-templates', 'file-detail', 'submission-detail', 'step']
+- var examples = []
+
+- examples.push('constants')
+- examples.push('example.module')
+- examples.push('routes')
+- examples.push('example-templates')
+- examples.push('file-detail')
+- examples.push('submission-detail')
+- examples.push('step')
+- examples.push('top-selections.example')
+- examples.push('row-of-thumbnails.example')
 
 = "\n"
 // build:js lib.js

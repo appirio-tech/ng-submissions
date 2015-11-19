@@ -1,0 +1,13 @@
+ul.header.flex.center
+  li.previous
+    a(ng-class="{ invisible: !prev }" href="{{ prev }}")
+      .icon.arrow
+
+  li
+    h1 {{ text }}
+
+  li.next
+    a(ng-class="{ invisible: !next }" href="{{ next }}")
+      .icon.arrow.right
+
+p {{ subtext }}
