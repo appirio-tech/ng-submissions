@@ -62,6 +62,8 @@ SubmissionDetailController = (helpers, $scope, $rootScope, StepsService, Submiss
 
     vm.status = helpers.statusOf currentStep
 
+    vm.thumbnailGroups = [vm.submission.files]
+
   activate()
 
   vm

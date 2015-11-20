@@ -11,6 +11,8 @@ submission-countdown {
 
   countdown {
     margin-top: 20px;
+    font-size: 22px;
+    font-weight: $font-weight-boldest;
   }
 
   p {
@@ -22,6 +24,8 @@ submission-countdown {
     padding-top: 35px;
     max-width  : 956px;
     height     : 378px;
+    margin-left: auto;
+    margin-right: auto;
 
     > hr {
       margin: 40px auto;
