@@ -1,0 +1,33 @@
+@import "work-includes";
+
+submission-countdown {
+  display: block;
+  text-align: center;
+
+  > hr {
+    margin: 40px 0;
+    height: 10px;
+  }
+
+  countdown {
+    margin-top: 20px;
+  }
+
+  p {
+    margin-top: 5px;
+    font-size: 18px;
+  }
+
+  main {
+    padding-top: 35px;
+    max-width  : 956px;
+    height     : 378px;
+
+    > hr {
+      margin: 40px auto;
+      margin-bottom: 53px;
+      max-width: 600px;
+      background-color: $neutral-color;
+    }
+  }
+}

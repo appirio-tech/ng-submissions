@@ -8,5 +8,6 @@ directive = ->
     thumbnails : '='
     viewAll    : '@'
     viewAllText: '@'
+    toolTip    : '@'
 
 angular.module('appirio-tech-submissions').directive 'rowOfThumbnails', directive

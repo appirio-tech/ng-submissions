@@ -4,7 +4,7 @@ ul.thumbnails.flex
     a(href="{{ thumbnail.link }}")
       img(ng-src="{{ thumbnail.url }}")
 
-    .tooltip.elevated(ng-if="thumbnails.length != $index + 1 || !viewAll")
+    .tooltip.elevated(ng-if="(thumbnails.length != $index + 1 || !viewAll) && toolTip")
       .arrow
 
       a.preview(href="{{ thumbnail.link }}")

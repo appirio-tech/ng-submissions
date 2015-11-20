@@ -1,0 +1,24 @@
+@import "work-includes";
+@import "variables";
+
+$thumbnail-height: 150px;
+
+grid-of-thumbnails {
+  display: block;
+
+  row-of-thumbnails {
+    margin-top: 20px;
+  }
+
+  .thumbnails {
+    li {
+      @include exclude-first(padding-left, 20px);
+
+      max-width: 290 + 20px;
+
+      > a {
+        height: 184px;
+      }
+    }
+  }
+}

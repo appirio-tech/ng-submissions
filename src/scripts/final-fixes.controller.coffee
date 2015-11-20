@@ -87,6 +87,8 @@ FinalFixesController = (helpers, $scope, $rootScope, $state, StepsService, Submi
       vm.submission = helpers.submissionWithFileTypes vm.submission
       vm.submission = helpers.submissionFilteredByType vm.submission
 
+      vm.thumbnailGroups = [vm.submission.files] # need to create groups of 5
+
     vm.status = helpers.statusOf currentStep
     vm.statusValue = helpers.statusValueOf vm.status
 
