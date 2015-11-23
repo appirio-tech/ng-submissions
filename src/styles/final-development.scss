@@ -43,5 +43,13 @@ final-development {
   row-of-thumbnails {
     display: inline-block;
     margin-top: 20px;
+
+    li {
+      max-width: 215px;
+
+      .view-all-bg div, > a  {
+        height: 184px;
+      }
+    }
   }
 }
