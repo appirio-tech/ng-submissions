@@ -49,6 +49,10 @@ config = ($stateProvider) ->
     url         : '/submission-countdown'
     templateUrl : 'views/submission-countdown.example.html'
 
+  states['final-development'] =
+    url         : '/final-development'
+    templateUrl : 'views/final-development.example.html'
+
   for key, state of states
     $stateProvider.state key, state
 
