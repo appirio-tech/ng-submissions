@@ -20,7 +20,7 @@ submissions .submissions.new {
     @include exclude-first(margin-left, 30px);
   }
 
-  row-of-thumbnails {
+  file-row {
     margin-top: 15px;
   }
 }
