@@ -23,9 +23,7 @@ SubmissionsController = (helpers, $scope, $rootScope, $state, StepsService, Subm
   vm.stepType    = config.stepType
   vm.status      = config.defaultStatus
   vm.statusValue = 0
-  vm.allFilled   = false
   vm.submissions = []
-  vm.ranks       = []
   vm.projectId   = $scope.projectId
   vm.stepId      = $scope.stepId
   vm.userType    = $scope.userType
@@ -36,23 +34,9 @@ SubmissionsController = (helpers, $scope, $rootScope, $state, StepsService, Subm
     StepsService.subscribe $scope, onChange
     SubmissionsService.subscribe $scope, onChange
 
-  # IMPORTANT: This must be an object for the onDrop directive to work
-  # See: https://github.com/angular/angular.js/wiki/Understanding-Scopes
-  vm.drop =
-    handle: (event, rankToAssign) ->
-      submissionId = event.dataTransfer.getData 'submissionId'
-
-      # The dataTransfer method returns String("undefined") if item is not found
-      # Thus the seeminly bizarre check below
-      if submissionId != 'undefined' && submissionId && rankToAssign
-        StepsService.updateRank vm.projectId, vm.stepId, submissionId, rankToAssign
-
   vm.handleRankSelect = (submission) ->
     if submission.id && submission.rank
       StepsService.updateRank vm.projectId, vm.stepId, submission.id, submission.rank
-
-  vm.confirmRanks = ->
-    StepsService.confirmRanks vm.projectId, vm.stepId
 
   onChange = ->
     steps = StepsService.get(vm.projectId)
@@ -81,11 +65,6 @@ SubmissionsController = (helpers, $scope, $rootScope, $state, StepsService, Subm
     vm.ranks     = helpers.makeEmptyRankList(vm.rankNames)
     vm.ranks     = helpers.populatedRankList vm.ranks, vm.submissions
     vm.userRank  = helpers.highestRank vm.ranks, userId
-
-    if currentStep.rankedSubmissions_error
-      vm.rankUpdateError = currentStep.rankedSubmissions_error
-
-    vm.allFilled = currentStep.details.rankedSubmissions.length == numberOfRanks
 
     vm.status = helpers.statusOf currentStep
     vm.statusValue = helpers.statusValueOf vm.status

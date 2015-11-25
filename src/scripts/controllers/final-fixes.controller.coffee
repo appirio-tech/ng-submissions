@@ -4,18 +4,6 @@ FinalFixesController = (helpers, $scope, $rootScope, $state, StepsService, Submi
   vm = this
   config = {}
 
-  config.stepType = 'finalFixes'
-  config.stepName = 'Final Fixes'
-
-  config.prevStepType = 'completeDesigns'
-  config.prevStepName = 'Complete Designs'
-
-  config.nextStepType = 'code'
-  config.nextStepName = 'Code'
-
-  config.timeline = [ '', '', 'active' ]
-  config.defaultStatus = 'scheduled'
-
   config.rankNames = [
     '1st Place'
     '2nd Place'
@@ -32,7 +20,7 @@ FinalFixesController = (helpers, $scope, $rootScope, $state, StepsService, Submi
   vm.loaded      = false
   vm.timeline    = config.timeline
   vm.stepName    = config.stepName
-  vm.status      = config.defaultStatus
+  vm.status      = 'PLACEHOLDER'
   vm.allFilled   = false
   vm.submission  = {}
   vm.projectId   = $scope.projectId

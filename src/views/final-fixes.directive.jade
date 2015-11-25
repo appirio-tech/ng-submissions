@@ -1,6 +1,6 @@
 loader(ng-show="!vm.loaded")
 
-submissions-header(text="final fixes" subtext="Give your final feedback to complete this design project." next="http://www.google.com" prev="http://www.google.com")
+submissions-header(project-id="{{ vm.projectId }}" step-id="{{ vm.stepId }}")
 
 hr
 
