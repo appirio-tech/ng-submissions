@@ -88,28 +88,13 @@ each path in scripts
   script(src="scripts/#{path}.js", type="text/javascript")
   = "\n"
 = "\n"
-// endbuild
-= "\n"
-
-// build:js main.js
-= "\n"
 each path in controllers
   script(src="scripts/controllers/#{path}.controller.js", type="text/javascript")
   = "\n"
 = "\n"
-// endbuild
-= "\n"
-
-// build:js main.js
-= "\n"
 each path in directives
   script(src="scripts/directives/#{path}.directive.js", type="text/javascript")
   = "\n"
-= "\n"
-// endbuild
-= "\n"
-
-// build:js main.js
 = "\n"
 each path in services
   script(src="scripts/services/#{path}.service.js", type="text/javascript")
