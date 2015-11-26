@@ -1,7 +1,7 @@
 'use strict'
 
 SubmissionsService = ($rootScope, helpers, SubmissionsAPIService, SubmissionsMessagesAPIService, UserV3Service, MessageUpdateAPIService) ->
-  submissions = null
+  data = {}
   currentProjectId = null
   currentStepId = null
   pending = false
@@ -23,12 +23,12 @@ SubmissionsService = ($rootScope, helpers, SubmissionsAPIService, SubmissionsMes
     unless projectId && stepId
       throw 'SubmissionsService.get requires a projectId and a stepId'
 
-    if projectId != currentProjectId || stepId != currentStepId
+    unless data[projectId]?[stepId]
       fetch(projectId, stepId)
 
     copy = []
 
-    for item in submissions
+    for item in data[projectId][stepId]
       copy.push angular.merge({}, item)
 
     copy._pending = true if pending
@@ -38,10 +38,11 @@ SubmissionsService = ($rootScope, helpers, SubmissionsAPIService, SubmissionsMes
 
   fetch = (projectId, stepId) ->
     currentProjectId = projectId
-    currentStepId = stepId
-
-    submissions          = []
-    pending = true
+    currentStepId    = stepId
+    data[projectId]  = data[projectId] || {}
+    data[projectId][stepId] = []
+    submissions      = []
+    pending          = true
 
     emitUpdates()
 
@@ -53,7 +54,8 @@ SubmissionsService = ($rootScope, helpers, SubmissionsAPIService, SubmissionsMes
 
     promise.then (res) ->
       error = false
-      submissions = res
+      data[projectId][stepId] = res
+
 
       submissions.forEach (submission) ->
         submission.files.forEach (file) ->
@@ -125,6 +127,7 @@ SubmissionsService = ($rootScope, helpers, SubmissionsAPIService, SubmissionsMes
     messages.push newMessage
     emitUpdates()
 
+  name               : 'SubmissionsService'
   subscribe          : subscribe
   get                : get
   markMessagesAsRead : markMessagesAsRead

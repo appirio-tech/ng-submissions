@@ -2,7 +2,7 @@
 
 srv = ($rootScope, helpers, StepsAPIService, OptimistCollection) ->
   currentProjectId = null
-  steps            = null
+  stepsByProject   = {}
 
   createStepCollection = ->
     newSteps = new OptimistCollection
@@ -22,10 +22,10 @@ srv = ($rootScope, helpers, StepsAPIService, OptimistCollection) ->
     onChange()
 
   get = (projectId) ->
-    if projectId != currentProjectId
+    unless stepsByProject[projectId]
       fetch(projectId)
 
-    steps.get()
+    stepsByProject[projectId].get()
 
   getCurrentStep = (projectId) ->
     filter = (step) ->
@@ -35,7 +35,7 @@ srv = ($rootScope, helpers, StepsAPIService, OptimistCollection) ->
       fetch(projectId)
       null
     else
-      steps.get().filter(filter)[0]
+      stepsByProject[projectId].get().filter(filter)[0]
 
   getStepById = (projectId, stepId) ->
     filter = (step) ->
@@ -45,10 +45,10 @@ srv = ($rootScope, helpers, StepsAPIService, OptimistCollection) ->
       fetch(projectId)
       null
     else
-      steps.get().filter(filter)[0]
+      stepsByProject[projectId].get().filter(filter)[0]
 
   fetch = (projectId) ->
-    steps = createStepCollection()
+    stepsByProject[projectId] = createStepCollection()
     currentProjectId = projectId
 
     apiCall = () ->
@@ -57,7 +57,7 @@ srv = ($rootScope, helpers, StepsAPIService, OptimistCollection) ->
 
       StepsAPIService.query(params).$promise
 
-    steps.fetch
+    stepsByProject[projectId].fetch
       apiCall: apiCall
 
   updateStep = (projectId, stepId, step, updates) ->
@@ -73,7 +73,7 @@ srv = ($rootScope, helpers, StepsAPIService, OptimistCollection) ->
       apiCall: apiCall
 
   updateRank = (projectId, stepId, submissionId, rank) ->
-    step              = steps.findOneWhere { id: stepId }
+    step              = stepsByProject[projectId].findOneWhere { id: stepId }
     stepData          = step.get()
     numberOfRanks     = stepData.details.numberOfRanks
     rankedSubmissions = stepData.details.rankedSubmissions
@@ -86,7 +86,7 @@ srv = ($rootScope, helpers, StepsAPIService, OptimistCollection) ->
     updateStep projectId, stepId, step, updates
 
   confirmRanks = (projectId, stepId) ->
-    step = steps.findOneWhere { id: stepId }
+    step = stepsByProject[projectId].findOneWhere { id: stepId }
     updates =
       details:
         customerConfirmedRanks: true
@@ -94,13 +94,14 @@ srv = ($rootScope, helpers, StepsAPIService, OptimistCollection) ->
     updateStep projectId, stepId, step, updates
 
   acceptFixes = (projectId, stepId) ->
-    step = steps.findOneWhere { id: stepId }
+    step = stepsByProject[projectId].findOneWhere { id: stepId }
     updates =
       details:
         customerAcceptedFixes: true
 
     updateStep projectId, stepId, step, updates
 
+  name         : 'StepsService'
   get          : get
   subscribe    : subscribe
   getCurrentStep : getCurrentStep

@@ -68,7 +68,6 @@ FileDetailController = (helpers, $scope, $rootScope, StepsService, SubmissionsSe
 
     vm.status = helpers.statusOf currentStep
 
-
   activate()
 
   vm

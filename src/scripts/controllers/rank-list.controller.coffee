@@ -1,9 +1,16 @@
 'use strict'
 
-RankListController = (helpers, $scope, $rootScope, $state, RankListService, StepsService) ->
-  vm = this
-  projectId = null
-  stepId = null
+RankListController = ($scope, StepsService, RankListService, DataService) ->
+  vm        = this
+  projectId = $scope.projectId
+  stepId    = $scope.stepId
+
+  activate = ->
+    DataService.subscribe $scope, render, [RankListService, 'get', projectId, stepId]
+
+  render = (rankList) ->
+    vm.ranks   = rankList
+    vm.confirm = rankList.allFull && !rankList.confirmed
 
   vm.confirmRanks = ->
     StepsService.confirmRanks projectId, stepId
@@ -19,27 +26,10 @@ RankListController = (helpers, $scope, $rootScope, $state, RankListService, Step
       if submissionId != 'undefined' && submissionId && rankToAssign
         StepsService.updateRank projectId, stepId, submissionId, rankToAssign
 
-  activate = ->
-    RankListService.subscribe $scope, render
-
-  render = ->
-    projectId = $scope.projectId
-    stepId    = $scope.stepId
-    rankList  = RankListService.get(projectId, stepId)
-
-    if rankList._pending
-      return null
-
-    vm.ranks   = rankList
-    vm.confirm = true
-
-    rankList.forEach (rank) ->
-      vm.confirm = false unless rank.id
-
   activate()
 
   vm
 
-RankListController.$inject = ['SubmissionsHelpers', '$scope', '$rootScope', '$state', 'RankListService', 'StepsService']
+RankListController.$inject = ['$scope', 'StepsService', 'RankListService', 'DataService']
 
 angular.module('appirio-tech-submissions').controller 'RankListController', RankListController

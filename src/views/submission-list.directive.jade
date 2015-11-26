@@ -17,13 +17,6 @@ ul.submissions.new(ng-if="vm.statusValue > 3")
               .icon.download.small
 
           li(ng-if="vm.userType != 'member' && vm.status != 'CLOSED'")
-            select(
-              ng-model="submission.rank"
-              ng-change="vm.handleRankSelect(submission)"
-              ng-options="rank.value as rank.label for rank in vm.ranks"
-            )
-
-          li(ng-if="vm.status == 'CLOSED'")
-            p.rank {{ vm.rankNames[$index] }}
+            rank-dropdown(project-id="{{ vm.projectId }}" step-id="{{ vm.stepId }}" submission-id="{{ submission.id }}")
 
     file-row(files="submission.files" view-all-url="http://www.google.com" limit="5")

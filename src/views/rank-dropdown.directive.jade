@@ -1,0 +1,8 @@
+select(
+  ng-if="!vm.locked"
+  ng-model="vm.rank"
+  ng-change="vm.handleRankSelect()"
+  ng-options="rank.value as rank.label for rank in vm.ranks"
+)
+
+p.rank(ng-if="vm.locked") {{ vm.rankNames[$index] }}

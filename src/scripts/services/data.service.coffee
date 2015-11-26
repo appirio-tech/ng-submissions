@@ -1,14 +1,14 @@
 'use strict'
 
-srv = ($injector) ->
+srv = ($injector, $rootScope) ->
   subscribe = (scope, subscriberOnChange, configs) ->
-    unless angular.isArray configs
+    unless angular.isArray configs[0]
       configs = [ configs ]
 
     services = configs.map (config) ->
-      [name, method, args...] = config
+      [instance, method, args...] = config
 
-      instance : $injector.get(name + 'Service')
+      instance : instance
       method   : method
       args     : args
 
@@ -23,10 +23,17 @@ srv = ($injector) ->
         subscriberOnChange.apply null, data
 
     services.forEach (service) ->
-      service.instance.subscribe scope, dataOnChange
+      destroyServiceListener = $rootScope.$on "#{service.instance.name}:changed", ->
+        dataOnChange()
+
+      if scope
+        scope.$on '$destroy', ->
+          destroyServiceListener()
+
+    dataOnChange()
 
   subscribe: subscribe
 
-srv.$inject = ['$injector']
+srv.$inject = ['$injector', '$rootScope']
 
 angular.module('appirio-tech-submissions').factory 'DataService', srv

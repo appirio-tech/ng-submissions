@@ -58,16 +58,13 @@ srv = ($rootScope, helpers, StepsService, SubmissionsService, UserV3Service) ->
 
         rank
 
+      rankFull = (allFull, rank) ->
+        allFull && rank.id
+
+      rankList.allFull   = rankList.reduce rankFull, true
+      rankList.confirmed = currentStep.details.customerConfirmedRanks
+
     emitUpdates()
-
-  subscribe = (scope, onChange) ->
-    destroyStepsListener = $rootScope.$on 'RankListService:changed', ->
-      onChange()
-
-    scope.$on '$destroy', ->
-      destroyStepsListener()
-
-    onChange()
 
   get = (projectId, stepId) ->
     unless projectId && stepId
@@ -85,8 +82,8 @@ srv = ($rootScope, helpers, StepsService, SubmissionsService, UserV3Service) ->
   $rootScope.$on 'StepsService:changed', update
   $rootScope.$on 'SubmissionsService:changed', update
 
+  name         : 'RankListService'
   get          : get
-  subscribe    : subscribe
 
 srv.$inject = ['$rootScope', 'SubmissionsHelpers', 'StepsService', 'SubmissionsService', 'UserV3Service']
 
