@@ -6,7 +6,7 @@ RankListController = (helpers, $scope, $rootScope, $state, RankListService, Step
   stepId = null
 
   vm.confirmRanks = ->
-    StepsService.confirmRanks vm.projectId, vm.stepId
+    StepsService.confirmRanks projectId, stepId
 
   # IMPORTANT: This must be an object for the onDrop directive to work
   # See: https://github.com/angular/angular.js/wiki/Understanding-Scopes

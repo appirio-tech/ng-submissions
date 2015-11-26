@@ -1,0 +1,29 @@
+ul.submissions.new(ng-if="vm.statusValue > 3")
+  li.submission(ng-repeat="submission in vm.submissions track by $index" data-id="{{ submission.id }}" ng-class="{ 'belongs-to-user': submission.belongsToUser }" draggable)
+    ul.user-details.flex.middle.space-between
+      li.flex.middle
+        avatar(avatar-url="{{ submission.submitter.avatar }}")
+
+        .name-time
+          .name {{ submission.submitter.handle }}
+            span(ng-if="submission.belongsToUser") &nbsp;(Me)
+
+          p.secondary {{ submission.files.length }} Images
+
+      li
+        ul.flex.middle.actions
+          li
+            a(href="{{ submission.downloadUrl }}" target="_blank")
+              .icon.download.small
+
+          li(ng-if="vm.userType != 'member' && vm.status != 'CLOSED'")
+            select(
+              ng-model="submission.rank"
+              ng-change="vm.handleRankSelect(submission)"
+              ng-options="rank.value as rank.label for rank in vm.ranks"
+            )
+
+          li(ng-if="vm.status == 'CLOSED'")
+            p.rank {{ vm.rankNames[$index] }}
+
+    file-row(files="submission.files" view-all-url="http://www.google.com" limit="5")
