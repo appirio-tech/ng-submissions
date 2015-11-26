@@ -1,6 +1,6 @@
 'use strict'
 
-SubmissionsController = (helpers, $scope, $rootScope, $state, StepsService, SubmissionsService, UserV3Service) ->
+SubmissionsController = ($scope, DataService, StepSubmissionsService) ->
   vm             = this
   vm.loaded      = false
   vm.status      = 'PLACEHOLDER'
@@ -10,30 +10,19 @@ SubmissionsController = (helpers, $scope, $rootScope, $state, StepsService, Subm
   vm.userType    = $scope.userType
 
   activate = ->
-    StepsService.subscribe $scope, onChange
-    SubmissionsService.subscribe $scope, onChange
+    DataService.subscribe $scope, render, [StepSubmissionsService, 'get', vm.projectId, vm.stepId]
 
-  onChange = ->
-    steps = StepsService.get(vm.projectId)
-    submissions = SubmissionsService.get(vm.projectId, vm.stepId)
-
-    if steps._pending || submissions._pending
-      vm.loaded = false
-      return null
-
-    vm.loaded = true
-
-    currentStep = helpers.findInCollection steps, 'id', vm.stepId
-    vm.startsAt = currentStep.startsAt
-    vm.endsAt = currentStep.endsAt
-
-    vm.status = helpers.statusOf currentStep
-    vm.statusValue = helpers.statusValueOf vm.status
+  render = (step) ->
+    vm.loaded      = true
+    vm.startsAt    = step.startsAt
+    vm.endsAt      = step.endsAt
+    vm.status      = step.status
+    vm.statusValue = step.statusValue
 
   activate()
 
   vm
 
-SubmissionsController.$inject = ['SubmissionsHelpers', '$scope', '$rootScope', '$state', 'StepsService', 'SubmissionsService', 'UserV3Service']
+SubmissionsController.$inject = ['$scope', 'DataService', 'StepSubmissionsService']
 
 angular.module('appirio-tech-submissions').controller 'SubmissionsController', SubmissionsController

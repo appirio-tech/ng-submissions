@@ -21,31 +21,31 @@ srv = ($rootScope, helpers, StepsAPIService, OptimistCollection) ->
 
     onChange()
 
+  dyanamicProps = (steps) ->
+    if angular.isArray steps
+      steps.forEach (step) ->
+        step.status = helpers.statusOf step
+        step.statusValue = helpers.statusValueOf step.status
+
+    steps
+
   get = (projectId) ->
     unless stepsByProject[projectId]
       fetch(projectId)
 
-    stepsByProject[projectId].get()
+    dyanamicProps stepsByProject[projectId].get()
 
   getCurrentStep = (projectId) ->
     filter = (step) ->
       step.stepType == 'designConcepts'
 
-    if projectId != currentProjectId
-      fetch(projectId)
-      null
-    else
-      stepsByProject[projectId].get().filter(filter)[0]
+    get(projectId).filter(filter)[0]
 
   getStepById = (projectId, stepId) ->
     filter = (step) ->
       step.id == stepId
 
-    if projectId != currentProjectId
-      fetch(projectId)
-      null
-    else
-      stepsByProject[projectId].get().filter(filter)[0]
+    get(projectId).filter(filter)[0]
 
   fetch = (projectId) ->
     stepsByProject[projectId] = createStepCollection()

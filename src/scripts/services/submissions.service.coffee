@@ -19,6 +19,15 @@ SubmissionsService = ($rootScope, helpers, SubmissionsAPIService, SubmissionsMes
 
     onChange()
 
+  dyanamicProps = (submissions) ->
+    user = UserV3Service.getCurrentUser()
+    submissions = helpers.submissionsWithMessageCounts submissions
+    submissions = helpers.submissionsWithOwnership submissions, user?.id
+    submissions = helpers.submissionsWithFileTypes submissions
+    submissions = helpers.submissionsFilteredByType submissions
+
+    submissions
+
   get = (projectId, stepId) ->
     unless projectId && stepId
       throw 'SubmissionsService.get requires a projectId and a stepId'
@@ -34,7 +43,7 @@ SubmissionsService = ($rootScope, helpers, SubmissionsAPIService, SubmissionsMes
     copy._pending = true if pending
     copy._error = error if error
 
-    copy
+    dyanamicProps copy
 
   fetch = (projectId, stepId) ->
     currentProjectId = projectId

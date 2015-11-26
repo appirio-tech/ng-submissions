@@ -153,31 +153,6 @@ sortSubmissions = (submissions) ->
   orderedSubmissions = orderedByRank.concat orderedBySubmitter
   orderedSubmissions
 
-populatedRankList = (rankList, submissions = []) ->
-  submissions.forEach (submission) ->
-    if submission.rank != ''
-      submissionRank = submission.rank - 1
-      if submissionRank < rankList.length
-        angular.extend rankList[submissionRank],
-         avatarUrl     : submission.submitter.avatar
-         id            : submission.id
-         handle        : submission.submitter.handle
-         belongsToUser : submission.belongsToUser
-
-  rankList
-
-makeEmptyRankList = (rankNames) ->
-  ranks = []
-
-  for i in [1..rankNames.length] by 1
-    ranks.push
-      value    : i
-      label    : rankNames[i - 1]
-      id       : null
-      avatarUrl: null
-
-  ranks
-
 highestRank = (rankList, userId) ->
   for i in [0...rankList.length] by 1
     if rankList[i].id == userId
@@ -196,24 +171,27 @@ statuses = [
 ]
 
 statusOf = (step) ->
-  now              = Date.now()
-  startsAt         = new Date(step.startsAt)
-  submissionsDueBy = new Date(step.details.submissionsDueBy)
-  endsAt           = new Date(step.endsAt)
+  if step.stepType == 'designConcepts' || step.stepType == 'completeDesigns'
+    now              = Date.now()
+    startsAt         = new Date(step.startsAt)
+    submissionsDueBy = new Date(step.details.submissionsDueBy)
+    endsAt           = new Date(step.endsAt)
 
-  hasSubmissions   = step.details.submissionIds?.length > 0
-  closed = step.details.customerConfirmedRanks || step.details.customerAcceptedFixes
+    hasSubmissions   = step.details.submissionIds?.length > 0
+    closed = step.details.customerConfirmedRanks || step.details.customerAcceptedFixes
 
-  if closed
-    'CLOSED'
-  else if now > endsAt
-    'REVIEWING_LATE'
-  else if hasSubmissions
-    'REVIEWING'
-  else if now > submissionsDueBy
-    'OPEN_LATE'
-  else if now > startsAt
-    'OPEN'
+    if closed
+      'CLOSED'
+    else if now > endsAt
+      'REVIEWING_LATE'
+    else if hasSubmissions
+      'REVIEWING'
+    else if now > submissionsDueBy
+      'OPEN_LATE'
+    else if now > startsAt
+      'OPEN'
+    else
+      'SCHEDULED'
   else
     'SCHEDULED'
 

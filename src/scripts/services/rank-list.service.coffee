@@ -1,9 +1,9 @@
 'use strict'
 
-srv = ($rootScope, helpers, StepsService, SubmissionsService, UserV3Service) ->
+srv = ($rootScope, helpers, DataService, StepsService, SubmissionsService) ->
   currentProjectId = null
   currentStepId    = null
-  rankList  = null
+  rankList         = null
 
   rankNames = [
     '1st Place'
@@ -18,9 +18,6 @@ srv = ($rootScope, helpers, StepsService, SubmissionsService, UserV3Service) ->
     '10th Place'
   ]
 
-  emitUpdates = ->
-    $rootScope.$emit 'RankListService:changed'
-
   submissionByRank = (step, submissions, rank) ->
     rankedSubmission = helpers.findInCollection step.details.rankedSubmissions, 'rank', rank
 
@@ -29,42 +26,32 @@ srv = ($rootScope, helpers, StepsService, SubmissionsService, UserV3Service) ->
     else
       null
 
-  update = ->
-    unless currentProjectId && currentStepId
-      return null
+  update = (currentStep, submissions) ->
+    numberOfRanks = Math.min currentStep.details.numberOfRanks, submissions.length
 
-    currentStep = StepsService.getStepById(currentProjectId, currentStepId)
-    submissions = SubmissionsService.get(currentProjectId, currentStepId)
-    userId      = UserV3Service.getCurrentUser()?.id
+    rankList = [1..numberOfRanks].map (i) ->
+      rank =
+        value : i
+        label : rankNames[i - 1]
 
-    if currentStep._pending || submissions._pending
-      rankList._pending = true
-    else
-      numberOfRanks = Math.min currentStep.details.numberOfRanks, submissions.length
+      submission = submissionByRank currentStep, submissions, i
 
-      rankList = [1..numberOfRanks].map (i) ->
-        rank =
-          value : i
-          label : rankNames[i - 1]
+      if submission
+        angular.extend rank,
+          id            : submission.id
+          avatarUrl     : submission.submitter.avatar
+          handle        : submission.submitter.handle
+          belongsToUser : submission.submitter.belongsToUser
 
-        submission = submissionByRank currentStep, submissions, i
+      rank
 
-        if submission
-          angular.extend rank,
-            id            : submission.id
-            avatarUrl     : submission.submitter.avatar
-            handle        : submission.submitter.handle
-            belongsToUser : submission.submitter.id == userId
+    rankFull = (allFull, rank) ->
+      allFull && rank.id
 
-        rank
+    rankList.allFull   = rankList.reduce rankFull, true
+    rankList.confirmed = currentStep.details.customerConfirmedRanks
 
-      rankFull = (allFull, rank) ->
-        allFull && rank.id
-
-      rankList.allFull   = rankList.reduce rankFull, true
-      rankList.confirmed = currentStep.details.customerConfirmedRanks
-
-    emitUpdates()
+    $rootScope.$emit 'RankListService:changed'
 
   get = (projectId, stepId) ->
     unless projectId && stepId
@@ -75,16 +62,16 @@ srv = ($rootScope, helpers, StepsService, SubmissionsService, UserV3Service) ->
       currentStepId    = stepId
       rankList         = []
 
-      update(projectId, stepId)
+      DataService.subscribe null, update, [
+        [StepsService, 'getStepById', currentProjectId, currentStepId]
+        [SubmissionsService, 'get', currentProjectId, currentStepId]
+      ]
 
     rankList
-
-  $rootScope.$on 'StepsService:changed', update
-  $rootScope.$on 'SubmissionsService:changed', update
 
   name         : 'RankListService'
   get          : get
 
-srv.$inject = ['$rootScope', 'SubmissionsHelpers', 'StepsService', 'SubmissionsService', 'UserV3Service']
+srv.$inject = ['$rootScope', 'SubmissionsHelpers', 'DataService', 'StepsService', 'SubmissionsService']
 
 angular.module('appirio-tech-submissions').factory 'RankListService', srv

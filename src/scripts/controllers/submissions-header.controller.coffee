@@ -1,6 +1,6 @@
 'use strict'
 
-SubmissionsHeaderController = (helpers, $scope, $rootScope, $state, StepsService, SubmissionsService, UserV3Service) ->
+SubmissionsHeaderController = (helpers, $scope, $state, DataService, StepsService) ->
   vm        = this
   projectId = $scope.projectId
   stepId    = $scope.stepId
@@ -19,35 +19,9 @@ SubmissionsHeaderController = (helpers, $scope, $rootScope, $state, StepsService
     code            : 'Development'
 
   activate = ->
-    StepsService.subscribe $scope, render
-    SubmissionsService.subscribe $scope, render
+    DataService.subscribe $scope, render, [StepsService, 'get', projectId]
 
-  getStepRef = (step) ->
-    unless step
-      return null
-
-    stepStatus = helpers.statusOf(step)
-
-    if vm.userType == 'member' && helpers.statusValueOf(stepStatus) < 4
-      return null
-
-    if vm.userType != 'member' && stepStatus == 'PLACEHOLDER'
-      return null
-
-    $state.href 'step',
-      projectId: projectId
-      stepId: step.id
-
-  render = ->
-    if stepId && projectId
-      steps = StepsService.get(projectId)
-      submissions = SubmissionsService.get(projectId, stepId)
-    else
-      return null
-
-    if steps._pending || submissions._pending
-      return null
-
+  render = (steps) ->
     currentStep      = helpers.findInCollection steps, 'id', stepId
     currentStepOrder = stepOrder.indexOf(currentStep.stepType)
 
@@ -61,10 +35,24 @@ SubmissionsHeaderController = (helpers, $scope, $rootScope, $state, StepsService
 
     vm.title = stepNames[currentStep.stepType]
 
+  getStepRef = (step) ->
+    unless step
+      return null
+
+    if vm.userType == 'member' && helpers.statusValueOf(step.status) < 4
+      return null
+
+    if vm.userType != 'member' && step.status == 'PLACEHOLDER'
+      return null
+
+    $state.href 'step',
+      projectId: projectId
+      stepId: step.id
+
   activate()
 
   vm
 
-SubmissionsHeaderController.$inject = ['SubmissionsHelpers', '$scope', '$rootScope', '$state', 'StepsService', 'SubmissionsService', 'UserV3Service']
+SubmissionsHeaderController.$inject = ['SubmissionsHelpers', '$scope', '$state', 'DataService', 'StepsService']
 
 angular.module('appirio-tech-submissions').controller 'SubmissionsHeaderController', SubmissionsHeaderController
