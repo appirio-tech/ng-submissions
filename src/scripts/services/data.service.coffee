@@ -17,7 +17,8 @@ srv = ($injector, $rootScope) ->
         service.instance[service.method].apply null, service.args
 
       itemReady = (acc, item) ->
-        acc && item && !item._pending
+        empty = if angular.isObject(item) then Object.keys(item).length <= 0 else false
+        acc && item && !empty && !item._pending
 
       if data.reduce itemReady, true
         subscriberOnChange.apply null, data

@@ -4,6 +4,6 @@ directive = ->
   restrict   : 'E'
   templateUrl: 'views/grid-of-thumbnails.directive.html'
   scope      :
-    thumbnailGroups: '='
+    thumbnails: '='
 
 angular.module('appirio-tech-submissions').directive 'gridOfThumbnails', directive
