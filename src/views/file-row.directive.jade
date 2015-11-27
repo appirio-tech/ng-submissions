@@ -1,7 +1,7 @@
 ul.files.flex
   li.flex-one(ng-repeat="file in vm.files track by $index")
 
-    a(href="{{ file.link }}")
+    a(href="{{ file.detailUrl }}")
       img(ng-src="{{ file.url }}")
 
     .view-all-bg(ng-if="file.isLast")

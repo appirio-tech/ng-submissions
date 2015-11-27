@@ -216,8 +216,6 @@ SubmissionsHelpers = ->
   submissionsFilteredByType    : submissionsFilteredByType
   submissionsWithOwnership     : submissionsWithOwnership
   sortSubmissions              : sortSubmissions
-  populatedRankList            : populatedRankList
-  makeEmptyRankList            : makeEmptyRankList
   highestRank                  : highestRank
   statusOf                     : statusOf
   statusValueOf                : statusValueOf

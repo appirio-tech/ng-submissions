@@ -9,7 +9,7 @@ ul.header.flex.middle
     .name {{ vm.submission.submitter.handle }}
 
   li(ng-if="vm.userType != 'member' && vm.status != 'CLOSED'")
-    select(ng-model="vm.submission.rank", ng-change="vm.handleRankSelect(vm.submission)", ng-options="rank.value as rank.label for rank in vm.ranks")
+    rank-dropdown(project-id="{{ vm.projectId }}" step-id="{{ vm.stepId }}" submission-id="{{ submission.id }}")
 
   li(ng-if="vm.status == 'CLOSED' && vm.rank") {{ vm.rank }}
 

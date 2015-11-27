@@ -19,4 +19,4 @@ ul.submissions.new(ng-if="vm.statusValue > 3")
           li(ng-if="vm.userType != 'member' && vm.status != 'CLOSED'")
             rank-dropdown(project-id="{{ vm.projectId }}" step-id="{{ vm.stepId }}" submission-id="{{ submission.id }}")
 
-    file-row(files="submission.files" view-all-url="http://www.google.com" limit="5")
+    file-row(files="submission.files" view-all-url="{{ submission.detailUrl }}" limit="5")
