@@ -15,6 +15,7 @@ SubmissionDetailController = (helpers, $scope, $rootScope, DataService, StepSubm
   render = (step) ->
     vm.loaded = true
     vm.submission = helpers.findInCollection step.submissions, 'id', vm.submissionId
+    vm.stepType = step.stepType
 
   activate()
 

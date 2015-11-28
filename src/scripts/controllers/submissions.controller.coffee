@@ -18,6 +18,8 @@ SubmissionsController = ($scope, DataService, StepSubmissionsService) ->
     vm.endsAt      = step.endsAt
     vm.status      = step.status
     vm.statusValue = step.statusValue
+    vm.stepType    = step.stepType
+    vm.submissions = step.submissions
 
   activate()
 

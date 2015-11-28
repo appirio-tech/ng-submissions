@@ -16,6 +16,7 @@ SubmissionListController = ($scope, $state, DataService, StepSubmissionsService)
     vm.submissions = step.submissions
     vm.status      = step.status
     vm.statusValue = step.statusValue
+    vm.fileCount   = step.fileCount
 
   activate()
 

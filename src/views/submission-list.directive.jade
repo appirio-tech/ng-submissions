@@ -1,3 +1,7 @@
+p.total-count {{ vm.fileCount }} submissions
+
+hr.total-count
+
 ul.submissions.new(ng-if="vm.statusValue > 3")
   li.submission(ng-repeat="submission in vm.submissions" data-id="{{ submission.id }}" ng-class="{ 'belongs-to-user': submission.belongsToUser }" draggable)
     ul.user-details.flex.middle.space-between

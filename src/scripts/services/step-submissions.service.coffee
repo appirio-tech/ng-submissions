@@ -29,6 +29,11 @@ srv = ($rootScope, $state, helpers, StepsService, SubmissionsService, DataServic
 
     step.submissions = submissions
 
+    fileCount = (acc, submission) ->
+      acc + submission.files.length
+
+    step.fileCount = submissions.reduce fileCount, 0
+
     $rootScope.$emit 'StepSubmissionsService:changed'
 
   get = (projectId, stepId) ->
