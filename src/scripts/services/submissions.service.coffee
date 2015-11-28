@@ -82,7 +82,8 @@ SubmissionsService = ($rootScope, helpers, SubmissionsAPIService, SubmissionsMes
       pending = false
       emitUpdates()
 
-  markMessagesAsRead = (submissionId, fileId, userId, threadId) ->
+  markMessagesAsRead = (submissionId, fileId) ->
+    user           = UserV3Service.getCurrentUser()
     submission     = helpers.findInCollection submissions, 'id', submissionId
     file           = helpers.findInCollection submission.files, 'id', fileId
     messages       = file.threads[0].messages
@@ -101,7 +102,7 @@ SubmissionsService = ($rootScope, helpers, SubmissionsAPIService, SubmissionsMes
     putParams =
       param:
         readFlag:     true
-        subscriberId: userId
+        subscriberId: user.id
 
     MessageUpdateAPIService.put queryParams, putParams
 
