@@ -1,6 +1,6 @@
 'use strict'
 
-SubmissionListController = ($scope, $state, DataService, StepSubmissionsService) ->
+SubmissionListController = ($scope, DataService, StepSubmissionsService) ->
   vm             = this
   vm.status      = 'PLACEHOLDER'
   vm.statusValue = 0
@@ -22,6 +22,6 @@ SubmissionListController = ($scope, $state, DataService, StepSubmissionsService)
 
   vm
 
-SubmissionListController.$inject = ['$scope', '$state', 'DataService', 'StepSubmissionsService']
+SubmissionListController.$inject = ['$scope', 'DataService', 'StepSubmissionsService']
 
 angular.module('appirio-tech-submissions').controller 'SubmissionListController', SubmissionListController

@@ -1,6 +1,6 @@
 'use strict'
 
-SubmissionDetailController = (helpers, $scope, $rootScope, DataService, StepSubmissionsService) ->
+SubmissionDetailController = ($scope, DataService, StepSubmissionsService) ->
   vm              = this
   vm.loaded       = false
   vm.submission   = {}
@@ -14,13 +14,13 @@ SubmissionDetailController = (helpers, $scope, $rootScope, DataService, StepSubm
 
   render = (step) ->
     vm.loaded = true
-    vm.submission = helpers.findInCollection step.submissions, 'id', vm.submissionId
+    vm.submission = step.submissions.filter((submission) -> submission.id == vm.submissionId)[0]
     vm.stepType = step.stepType
 
   activate()
 
   vm
 
-SubmissionDetailController.$inject = ['SubmissionsHelpers', '$scope', '$rootScope', 'DataService', 'StepSubmissionsService']
+SubmissionDetailController.$inject = ['$scope', 'DataService', 'StepSubmissionsService']
 
 angular.module('appirio-tech-submissions').controller 'SubmissionDetailController', SubmissionDetailController

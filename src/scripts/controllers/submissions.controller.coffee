@@ -21,6 +21,11 @@ SubmissionsController = ($scope, DataService, StepSubmissionsService) ->
     vm.stepType    = step.stepType
     vm.submissions = step.submissions
 
+  highestRank = (rankList, userId) ->
+    for i in [0...rankList.length] by 1
+      if rankList[i].id == userId
+        return rankList[i].label
+
   activate()
 
   vm

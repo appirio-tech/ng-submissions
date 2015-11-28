@@ -1,6 +1,6 @@
 'use strict'
 
-FileDetailController = (helpers, $scope, DataService, StepSubmissionsService) ->
+FileDetailController = ($scope, DataService, StepSubmissionsService) ->
   vm = this
 
   vm.loaded       = false
@@ -23,8 +23,8 @@ FileDetailController = (helpers, $scope, DataService, StepSubmissionsService) ->
 
   render = (step) ->
     vm.loaded     = true
-    vm.submission = helpers.findInCollection step.submissions, 'id', vm.submissionId
-    vm.file       = helpers.findInCollection vm.submission.files, 'id', vm.fileId
+    vm.submission = step.submissions.filter((submission) -> submission.id == vm.submissionId)[0]
+    vm.file       = vm.submission.files.filter((file) -> file.id == vm.submissionId)[0]
     vm.messages   = vm.file.threads[0]?.messages || []
 
     currentIndex = vm.submission.files.indexOf vm.file
@@ -57,6 +57,6 @@ FileDetailController = (helpers, $scope, DataService, StepSubmissionsService) ->
 
   vm
 
-FileDetailController.$inject = ['SubmissionsHelpers', '$scope', 'DataService', 'StepSubmissionsService']
+FileDetailController.$inject = ['$scope', 'DataService', 'StepSubmissionsService']
 
 angular.module('appirio-tech-submissions').controller 'FileDetailController', FileDetailController

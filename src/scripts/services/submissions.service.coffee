@@ -1,11 +1,85 @@
 'use strict'
 
-SubmissionsService = ($rootScope, helpers, SubmissionsAPIService, SubmissionsMessagesAPIService, UserV3Service, MessageUpdateAPIService) ->
+SubmissionsService = ($rootScope, SubmissionsAPIService, SubmissionsMessagesAPIService, UserV3Service, MessageUpdateAPIService) ->
   data = {}
   currentProjectId = null
   currentStepId = null
   pending = false
   error = false
+
+  fileWithMessageCounts = (file) ->
+    file.totalMessages = 0
+    file.unreadMessages = 0
+
+    file.threads?[0]?.messages.forEach (message) ->
+      file.totalMessages = file.totalMessages + 1
+      if !message.read
+        file.unreadMessages = file.unreadMessages + 1
+
+    file
+
+  submissionWithMessageCounts = (submission) ->
+    submission.totalMessages = 0
+    submission.unreadMessages = 0
+
+    submission.files.forEach (file) ->
+      fileWithMessageCounts(file)
+      submission.totalMessages = submission.totalMessages + file.totalMessages
+      submission.unreadMessages = submission.unreadMessages + file.unreadMessages
+
+    submission
+
+  submissionsWithMessageCounts = (submissions) ->
+    submissions.map (submission) ->
+      submissionWithMessageCounts submission
+
+  # With file types
+  fileWithFileType = (file) ->
+    extension = file.name.match /\.[0-9a-z]+$/i
+    extension = extension[0].slice 1
+    extension = extension.toLowerCase()
+
+    file.fileType = extension
+
+    file
+
+  submissionWithFileTypes = (submission) ->
+    submission.files = submission.files.map (file) ->
+      fileWithFileType file
+
+    submission
+
+  submissionsWithFileTypes = (submissions) ->
+    submissions.map (submission) ->
+      submissionWithFileTypes submission
+
+  # Limited by number of files
+  submissionWithFileLimit = (submission, limit) ->
+    submission.more = if submission.files.length > limit then submission.files.length - limit else 0
+    submission.files   = submission.files.slice 0, limit
+
+    submission
+
+  submissionsWithFileLimit = (submissions, limit) ->
+    submissions.map (submission) ->
+      submissionWithFileLimit submission, limit
+
+  # Filtered by file type
+  submissionFilteredByType = (submission, allowedTypes = [ 'png', 'jpg', 'gif' ]) ->
+    submission.files = submission.files.filter (file) ->
+      allowedTypes.indexOf(file.fileType) > -1
+
+    submission
+
+  submissionsFilteredByType = (submissions, allowedTypes) ->
+    submissions.map (submission) ->
+      submissionFilteredByType submission, allowedTypes
+
+  # Decorated with submission ownership
+  submissionsWithOwnership = (submissions, userId) ->
+    submissions.map (submission) ->
+      angular.merge {}, submission,
+        belongsToUser: submission.submitter.id == userId
 
   emitUpdates = ->
     $rootScope.$emit 'SubmissionsService:changed'
@@ -21,10 +95,10 @@ SubmissionsService = ($rootScope, helpers, SubmissionsAPIService, SubmissionsMes
 
   dyanamicProps = (submissions) ->
     user = UserV3Service.getCurrentUser()
-    submissions = helpers.submissionsWithMessageCounts submissions
-    submissions = helpers.submissionsWithOwnership submissions, user?.id
-    submissions = helpers.submissionsWithFileTypes submissions
-    submissions = helpers.submissionsFilteredByType submissions
+    submissions = submissionsWithMessageCounts submissions
+    submissions = submissionsWithOwnership submissions, user?.id
+    submissions = submissionsWithFileTypes submissions
+    submissions = submissionsFilteredByType submissions
 
     submissions
 
@@ -84,8 +158,8 @@ SubmissionsService = ($rootScope, helpers, SubmissionsAPIService, SubmissionsMes
 
   markMessagesAsRead = (submissionId, fileId) ->
     user           = UserV3Service.getCurrentUser()
-    submission     = helpers.findInCollection submissions, 'id', submissionId
-    file           = helpers.findInCollection submission.files, 'id', fileId
+    submission     = submissions.filter((submission) -> submission.id == submissionId)[0]
+    file           = submission.files.filter((file) -> file.id == fileId)[0]
     messages       = file.threads[0].messages
 
     messages.forEach (message) ->
@@ -108,8 +182,8 @@ SubmissionsService = ($rootScope, helpers, SubmissionsAPIService, SubmissionsMes
 
   sendMessage = (submissionId, fileId, message) ->
     user       = UserV3Service.getCurrentUser()
-    submission = helpers.findInCollection submissions, 'id', submissionId
-    file       = helpers.findInCollection submission.files, 'id', fileId
+    submission = submissions.filter((submission) -> submission.id == submissionId)[0]
+    file       = submission.files.filter((file) -> file.id == fileId)[0]
     thread     = file.threads[0]
     messages   = thread.messages
     now        = new Date()
@@ -143,6 +217,6 @@ SubmissionsService = ($rootScope, helpers, SubmissionsAPIService, SubmissionsMes
   markMessagesAsRead : markMessagesAsRead
   sendMessage        : sendMessage
 
-SubmissionsService.$inject = ['$rootScope', 'SubmissionsHelpers', 'SubmissionsAPIService', 'SubmissionsMessagesAPIService', 'UserV3Service', 'MessageUpdateAPIService']
+SubmissionsService.$inject = ['$rootScope', 'SubmissionsAPIService', 'SubmissionsMessagesAPIService', 'UserV3Service', 'MessageUpdateAPIService']
 
 angular.module('appirio-tech-submissions').factory 'SubmissionsService', SubmissionsService

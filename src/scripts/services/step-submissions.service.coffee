@@ -1,14 +1,42 @@
 'use strict'
 
-srv = ($rootScope, $state, helpers, StepsService, SubmissionsService, DataService) ->
+srv = ($rootScope, $state, StepsService, SubmissionsService, DataService) ->
   currentProjectId = null
   currentStepId    = null
   step             = null
 
+  submissionWithRank = (submission, rankedSubmissions = []) ->
+    submission.rank = ''
+    rankedSubmissions.forEach (rankedSubmission) ->
+      if submission.id == rankedSubmission.submissionId
+        submission.rank = rankedSubmission.rank
+
+    submission
+
+  submissionsWithRanks = (submissions, rankedSubmissions = []) ->
+    submissions.map (submission) ->
+      submissionWithRank submission, rankedSubmissions
+
+  sortSubmissions = (submissions) ->
+    ranked = submissions.filter (submission) ->
+      submission.rank != ''
+
+    unRanked = submissions.filter (submission) ->
+      submission.rank == ''
+
+    orderedByRank = ranked.sort (previousSubmission, nextSubmission) ->
+      return previousSubmission.rank - nextSubmission.rank
+
+    orderedBySubmitter = unRanked.sort (previousSubmission, nextSubmission) ->
+      previousSubmission.submitter.id - nextSubmission.submitter.id
+
+    orderedSubmissions = orderedByRank.concat orderedBySubmitter
+    orderedSubmissions
+
   update = (currentStep, submissions) ->
     step             = currentStep
-    submissions      = helpers.submissionsWithRanks submissions, currentStep.details.rankedSubmissions
-    submissions      = helpers.sortSubmissions submissions
+    submissions      = submissionsWithRanks submissions, currentStep.details.rankedSubmissions
+    submissions      = sortSubmissions submissions
 
     submissions = submissions.map (submission) ->
       submission.detailUrl = $state.href 'submission-detail',
@@ -52,6 +80,6 @@ srv = ($rootScope, $state, helpers, StepsService, SubmissionsService, DataServic
   name : 'StepSubmissionsService'
   get  : get
 
-srv.$inject = ['$rootScope', '$state', 'SubmissionsHelpers', 'StepsService', 'SubmissionsService', 'DataService']
+srv.$inject = ['$rootScope', '$state', 'StepsService', 'SubmissionsService', 'DataService']
 
 angular.module('appirio-tech-submissions').factory 'StepSubmissionsService', srv

@@ -1,6 +1,6 @@
 'use strict'
 
-srv = ($rootScope, helpers, DataService, StepsService, SubmissionsService) ->
+srv = ($rootScope, DataService, StepsService, SubmissionsService) ->
   currentProjectId = null
   currentStepId    = null
   rankList         = null
@@ -18,11 +18,11 @@ srv = ($rootScope, helpers, DataService, StepsService, SubmissionsService) ->
     '10th Place'
   ]
 
-  submissionByRank = (step, submissions, rank) ->
-    rankedSubmission = helpers.findInCollection step.details.rankedSubmissions, 'rank', rank
+  submissionByRank = (step, submissions, rankValue) ->
+    rankedSubmission = step.details.rankedSubmissions.filter((submission) -> submission.rank == rankValue)[0]
 
     if rankedSubmission
-      helpers.findInCollection submissions, 'id', rankedSubmission.submissionId
+      submissions.filter((submission) -> submissions.id == rankedSubmission.submissionId)[0]
     else
       null
 
@@ -72,6 +72,6 @@ srv = ($rootScope, helpers, DataService, StepsService, SubmissionsService) ->
   name         : 'RankListService'
   get          : get
 
-srv.$inject = ['$rootScope', 'SubmissionsHelpers', 'DataService', 'StepsService', 'SubmissionsService']
+srv.$inject = ['$rootScope', 'DataService', 'StepsService', 'SubmissionsService']
 
 angular.module('appirio-tech-submissions').factory 'RankListService', srv
