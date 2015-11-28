@@ -156,9 +156,9 @@ SubmissionsService = ($rootScope, SubmissionsAPIService, SubmissionsMessagesAPIS
       pending = false
       emitUpdates()
 
-  markMessagesAsRead = (submissionId, fileId) ->
+  markMessagesAsRead = (projectId, stepId, submissionId, fileId) ->
     user           = UserV3Service.getCurrentUser()
-    submission     = submissions.filter((submission) -> submission.id == submissionId)[0]
+    submission     = data[projectId][stepId].filter((submission) -> submission.id == submissionId)[0]
     file           = submission.files.filter((file) -> file.id == fileId)[0]
     messages       = file.threads[0].messages
 
@@ -180,9 +180,9 @@ SubmissionsService = ($rootScope, SubmissionsAPIService, SubmissionsMessagesAPIS
 
     MessageUpdateAPIService.put queryParams, putParams
 
-  sendMessage = (submissionId, fileId, message) ->
+  sendMessage = (projectId, stepId, submissionId, fileId, message) ->
     user       = UserV3Service.getCurrentUser()
-    submission = submissions.filter((submission) -> submission.id == submissionId)[0]
+    submission = data[projectId][stepId].filter((submission) -> submission.id == submissionId)[0]
     file       = submission.files.filter((file) -> file.id == fileId)[0]
     thread     = file.threads[0]
     messages   = thread.messages
