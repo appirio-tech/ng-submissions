@@ -2,8 +2,6 @@
 
 SubmissionsService = ($rootScope, SubmissionsAPIService, SubmissionsMessagesAPIService, UserV3Service, MessageUpdateAPIService) ->
   data = {}
-  currentProjectId = null
-  currentStepId = null
   pending = false
   error = false
 
@@ -81,11 +79,11 @@ SubmissionsService = ($rootScope, SubmissionsAPIService, SubmissionsMessagesAPIS
       angular.merge {}, submission,
         belongsToUser: submission.submitter.id == userId
 
-  emitUpdates = ->
-    $rootScope.$emit 'SubmissionsService:changed'
+  emitUpdates = (projectId, stepId) ->
+    $rootScope.$emit "SubmissionsService:changed:#{projectId}:#{stepId}"
 
   subscribe = (scope, onChange) ->
-    destroySubmissionsListener = $rootScope.$on 'SubmissionsService:changed', ->
+    destroySubmissionsListener = $rootScope.$on "SubmissionsService:changed:#{projectId}:#{stepId}", ->
       onChange()
 
     scope.$on '$destroy', ->
@@ -106,12 +104,12 @@ SubmissionsService = ($rootScope, SubmissionsAPIService, SubmissionsMessagesAPIS
     unless projectId && stepId
       throw 'SubmissionsService.get requires a projectId and a stepId'
 
-    unless data[projectId]?[stepId]
+    unless data[stepId]
       fetch(projectId, stepId)
 
     copy = []
 
-    for item in data[projectId][stepId]
+    for item in data[stepId]
       copy.push angular.merge({}, item)
 
     copy._pending = true if pending
@@ -120,14 +118,11 @@ SubmissionsService = ($rootScope, SubmissionsAPIService, SubmissionsMessagesAPIS
     dyanamicProps copy
 
   fetch = (projectId, stepId) ->
-    currentProjectId = projectId
-    currentStepId    = stepId
-    data[projectId]  = data[projectId] || {}
-    data[projectId][stepId] = []
-    submissions      = []
-    pending          = true
+    data[stepId] = []
+    submissions  = []
+    pending      = true
 
-    emitUpdates()
+    emitUpdates(projectId, stepId)
 
     params =
       projectId: projectId
@@ -137,7 +132,7 @@ SubmissionsService = ($rootScope, SubmissionsAPIService, SubmissionsMessagesAPIS
 
     promise.then (res) ->
       error = false
-      data[projectId][stepId] = res
+      data[stepId] = res
 
 
       submissions.forEach (submission) ->
@@ -154,18 +149,18 @@ SubmissionsService = ($rootScope, SubmissionsAPIService, SubmissionsMessagesAPIS
 
     promise.finally ->
       pending = false
-      emitUpdates()
+      emitUpdates(projectId, stepId)
 
   markMessagesAsRead = (projectId, stepId, submissionId, fileId) ->
     user           = UserV3Service.getCurrentUser()
-    submission     = data[projectId][stepId].filter((submission) -> submission.id == submissionId)[0]
+    submission     = data[stepId].filter((submission) -> submission.id == submissionId)[0]
     file           = submission.files.filter((file) -> file.id == fileId)[0]
     messages       = file.threads[0].messages
 
     messages.forEach (message) ->
       message.read = true
 
-    emitUpdates()
+    emitUpdates(projectId, stepId)
 
     message = messages[messages.length - 1]
 
@@ -182,7 +177,7 @@ SubmissionsService = ($rootScope, SubmissionsAPIService, SubmissionsMessagesAPIS
 
   sendMessage = (projectId, stepId, submissionId, fileId, message) ->
     user       = UserV3Service.getCurrentUser()
-    submission = data[projectId][stepId].filter((submission) -> submission.id == submissionId)[0]
+    submission = data[stepId].filter((submission) -> submission.id == submissionId)[0]
     file       = submission.files.filter((file) -> file.id == fileId)[0]
     thread     = file.threads[0]
     messages   = thread.messages
@@ -195,7 +190,7 @@ SubmissionsService = ($rootScope, SubmissionsAPIService, SubmissionsMessagesAPIS
         body: message
 
     params =
-      projectId: currentProjectId
+      projectId: projectId
       submissionId: submissionId
       threadId: thread.id
 
@@ -209,7 +204,7 @@ SubmissionsService = ($rootScope, SubmissionsAPIService, SubmissionsMessagesAPIS
         avatar: user.avatar
 
     messages.push newMessage
-    emitUpdates()
+    emitUpdates(projectId, stepId)
 
   name               : 'SubmissionsService'
   subscribe          : subscribe

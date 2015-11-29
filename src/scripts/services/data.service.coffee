@@ -24,7 +24,7 @@ srv = ($injector, $rootScope) ->
         subscriberOnChange.apply null, data
 
     services.forEach (service) ->
-      destroyServiceListener = $rootScope.$on "#{service.instance.name}:changed", ->
+      destroyServiceListener = $rootScope.$on "#{service.instance.name}:changed:#{service.args.join(':')}", ->
         dataOnChange()
 
       if scope

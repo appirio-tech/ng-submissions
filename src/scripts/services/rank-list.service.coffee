@@ -1,9 +1,7 @@
 'use strict'
 
-srv = ($rootScope, DataService, StepsService, SubmissionsService) ->
-  currentProjectId = null
-  currentStepId    = null
-  rankList         = null
+srv = ($rootScope, DataService, StepSubmissionsService, SubmissionsService) ->
+  data = {}
 
   rankNames = [
     '1st Place'
@@ -18,23 +16,15 @@ srv = ($rootScope, DataService, StepsService, SubmissionsService) ->
     '10th Place'
   ]
 
-  submissionByRank = (step, submissions, rankValue) ->
-    rankedSubmission = step.details.rankedSubmissions.filter((submission) -> submission.rank == rankValue)[0]
-
-    if rankedSubmission
-      submissions.filter((submission) -> submissions.id == rankedSubmission.submissionId)[0]
-    else
-      null
-
-  update = (currentStep, submissions) ->
-    numberOfRanks = Math.min currentStep.details.numberOfRanks, submissions.length
+  update = (step) ->
+    numberOfRanks = Math.min step.details.numberOfRanks, step.submissions?.length
 
     rankList = [1..numberOfRanks].map (i) ->
       rank =
         value : i
         label : rankNames[i - 1]
 
-      submission = submissionByRank currentStep, submissions, i
+      submission = step.submissions.filter((submission) -> submission.rank == i)[0]
 
       if submission
         angular.extend rank,
@@ -49,29 +39,30 @@ srv = ($rootScope, DataService, StepsService, SubmissionsService) ->
       allFull && rank.id
 
     rankList.allFull   = rankList.reduce rankFull, true
-    rankList.confirmed = currentStep.details.customerConfirmedRanks
+    rankList.confirmed = step.details.customerConfirmedRanks
+    rankList.projectId = data[step.id].projectId
 
-    $rootScope.$emit 'RankListService:changed'
+    data[step.id] = rankList
+
+    $rootScope.$emit "RankListService:changed:#{rankList.projectId}:#{step.id}"
 
   get = (projectId, stepId) ->
     unless projectId && stepId
       throw 'RankListService.get requires a projectId and a stepId'
 
-    if projectId != currentProjectId || stepId != currentStepId
-      currentProjectId = projectId
-      currentStepId    = stepId
-      rankList         = []
+    unless data[stepId]
+      data[stepId] = []
+      data[stepId].projectId = projectId
 
       DataService.subscribe null, update, [
-        [StepsService, 'getStepById', currentProjectId, currentStepId]
-        [SubmissionsService, 'get', currentProjectId, currentStepId]
+        [StepSubmissionsService, 'get', projectId, stepId]
       ]
 
-    rankList
+    data[stepId]
 
   name         : 'RankListService'
   get          : get
 
-srv.$inject = ['$rootScope', 'DataService', 'StepsService', 'SubmissionsService']
+srv.$inject = ['$rootScope', 'DataService', 'StepSubmissionsService', 'SubmissionsService']
 
 angular.module('appirio-tech-submissions').factory 'RankListService', srv

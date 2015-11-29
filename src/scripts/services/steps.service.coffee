@@ -1,8 +1,7 @@
 'use strict'
 
 srv = ($rootScope, StepsAPIService, OptimistCollection) ->
-  currentProjectId = null
-  stepsByProject   = {}
+  data = {}
 
   statuses = [
     'PLACEHOLDER'
@@ -86,16 +85,18 @@ srv = ($rootScope, StepsAPIService, OptimistCollection) ->
   statusValueOf = (status) ->
     statuses.indexOf status
 
-  createStepCollection = ->
+  createStepCollection = (projectId) ->
     newSteps = new OptimistCollection
       updateCallback: ->
-        $rootScope.$emit 'StepsService:changed'
+        $rootScope.$emit "StepsService:changed:#{projectId}"
+        data[projectId].get().forEach (step) ->
+          $rootScope.$emit "StepsService:changed:#{projectId}:#{step.id}" 
       propsToIgnore: ['$promise', '$resolved']
 
     newSteps
 
   subscribe = (scope, onChange) ->
-    destroyStepsListener = $rootScope.$on 'StepsService:changed', ->
+    destroyStepsListener = $rootScope.$on "StepsService:changed:#{projectId}", ->
       onChange()
 
     scope.$on '$destroy', ->
@@ -112,10 +113,10 @@ srv = ($rootScope, StepsAPIService, OptimistCollection) ->
     steps
 
   get = (projectId) ->
-    unless stepsByProject[projectId]
+    unless data[projectId]
       fetch(projectId)
 
-    dyanamicProps stepsByProject[projectId].get()
+    dyanamicProps data[projectId].get()
 
   getCurrentStep = (projectId) ->
     filter = (step) ->
@@ -130,7 +131,7 @@ srv = ($rootScope, StepsAPIService, OptimistCollection) ->
     get(projectId).filter(filter)[0]
 
   fetch = (projectId) ->
-    stepsByProject[projectId] = createStepCollection()
+    data[projectId] = createStepCollection(projectId)
     currentProjectId = projectId
 
     apiCall = () ->
@@ -139,7 +140,7 @@ srv = ($rootScope, StepsAPIService, OptimistCollection) ->
 
       StepsAPIService.query(params).$promise
 
-    stepsByProject[projectId].fetch
+    data[projectId].fetch
       apiCall: apiCall
 
   updateStep = (projectId, stepId, step, updates) ->
@@ -155,7 +156,7 @@ srv = ($rootScope, StepsAPIService, OptimistCollection) ->
       apiCall: apiCall
 
   updateRank = (projectId, stepId, submissionId, rank) ->
-    step              = stepsByProject[projectId].findOneWhere { id: stepId }
+    step              = data[projectId].findOneWhere { id: stepId }
     stepData          = step.get()
     numberOfRanks     = stepData.details.numberOfRanks
     rankedSubmissions = stepData.details.rankedSubmissions
@@ -168,7 +169,7 @@ srv = ($rootScope, StepsAPIService, OptimistCollection) ->
     updateStep projectId, stepId, step, updates
 
   confirmRanks = (projectId, stepId) ->
-    step = stepsByProject[projectId].findOneWhere { id: stepId }
+    step = data[projectId].findOneWhere { id: stepId }
     updates =
       details:
         customerConfirmedRanks: true
@@ -176,7 +177,7 @@ srv = ($rootScope, StepsAPIService, OptimistCollection) ->
     updateStep projectId, stepId, step, updates
 
   acceptFixes = (projectId, stepId) ->
-    step = stepsByProject[projectId].findOneWhere { id: stepId }
+    step = data[projectId].findOneWhere { id: stepId }
     updates =
       details:
         customerAcceptedFixes: true

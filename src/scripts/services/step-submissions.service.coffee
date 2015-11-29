@@ -1,9 +1,7 @@
 'use strict'
 
 srv = ($rootScope, $state, StepsService, SubmissionsService, DataService) ->
-  currentProjectId = null
-  currentStepId    = null
-  step             = null
+  data             = {}
 
   submissionWithRank = (submission, rankedSubmissions = []) ->
     submission.rank = ''
@@ -33,21 +31,22 @@ srv = ($rootScope, $state, StepsService, SubmissionsService, DataService) ->
     orderedSubmissions = orderedByRank.concat orderedBySubmitter
     orderedSubmissions
 
-  update = (currentStep, submissions) ->
-    step             = currentStep
-    submissions      = submissionsWithRanks submissions, currentStep.details.rankedSubmissions
+  update = (step, submissions) ->
+    step.projectId   = data[step.id].projectId
+    data[step.id]    = step
+    submissions      = submissionsWithRanks submissions, step.details.rankedSubmissions
     submissions      = sortSubmissions submissions
 
     submissions = submissions.map (submission) ->
       submission.detailUrl = $state.href 'submission-detail',
-        projectId    : currentProjectId
-        stepId       : currentStepId
+        projectId    : step.projectId
+        stepId       : step.id
         submissionId : submission.id
 
       submission.files = submission.files.map (file) ->
         file.detailUrl = $state.href 'file-detail',
-          projectId    : currentProjectId
-          stepId       : currentStepId
+          projectId    : step.projectId
+          stepId       : step.id
           submissionId : submission.id
           fileId       : file.id
 
@@ -62,20 +61,19 @@ srv = ($rootScope, $state, StepsService, SubmissionsService, DataService) ->
 
     step.fileCount = submissions.reduce fileCount, 0
 
-    $rootScope.$emit 'StepSubmissionsService:changed'
+    $rootScope.$emit "StepSubmissionsService:changed:#{step.projectId}:#{step.id}"
 
   get = (projectId, stepId) ->
-    if projectId != currentProjectId || stepId != currentStepId
-      currentProjectId = projectId
-      currentStepId    = stepId
-      step             = {}
+    unless data[stepId]
+      data[stepId] =
+        projectId: projectId
 
       DataService.subscribe null, update, [
-        [StepsService, 'getStepById', currentProjectId, currentStepId]
-        [SubmissionsService, 'get', currentProjectId, currentStepId]
+        [StepsService, 'getStepById', projectId, stepId]
+        [SubmissionsService, 'get', projectId, stepId]
       ]
 
-    step
+    data[stepId]
 
   name : 'StepSubmissionsService'
   get  : get
