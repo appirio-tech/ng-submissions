@@ -35,17 +35,52 @@ angular.module("app.constants", [])
     states['step'] = {
       url: '/projects/:projectId/:stepId?userType',
       controller: 'StepController as vm',
-      templateUrl: 'views/step.html'
+      templateUrl: 'views/step.example.html'
     };
     states['submission-detail'] = {
       url: '/projects/:projectId/:stepId/:submissionId?userType',
       controller: 'SubmissionDetailExampleController as vm',
-      templateUrl: 'views/submission-detail.html'
+      templateUrl: 'views/submission-detail.example.html'
     };
     states['file-detail'] = {
       url: '/projects/:projectId/:stepId/:submissionId/:fileId?userType',
       controller: 'FileDetailExampleController as vm',
-      templateUrl: 'views/file-detail.html'
+      templateUrl: 'views/file-detail.example.html'
+    };
+    states['submissions-header'] = {
+      url: '/',
+      templateUrl: 'views/submissions-header.example.html'
+    };
+    states['top-selections'] = {
+      url: '/top-selections',
+      controller: 'TopSelectionExampleController as vm',
+      templateUrl: 'views/top-selections.example.html'
+    };
+    states['row-of-thumbnails'] = {
+      url: '/row-of-thumbnails',
+      controller: 'RowOfThumbnailsExampleController as vm',
+      templateUrl: 'views/row-of-thumbnails.example.html'
+    };
+    states['grid-of-thumbnails'] = {
+      url: '/grid-of-thumbnails',
+      controller: 'GridOfThumbnailsExampleController as vm',
+      templateUrl: 'views/grid-of-thumbnails.example.html'
+    };
+    states['submission-winner-card'] = {
+      url: '/submission-winner-card',
+      templateUrl: 'views/submission-winner-card.example.html'
+    };
+    states['submission-winners'] = {
+      url: '/submission-winners',
+      templateUrl: 'views/submission-winners.example.html'
+    };
+    states['submission-countdown'] = {
+      url: '/submission-countdown',
+      templateUrl: 'views/submission-countdown.example.html'
+    };
+    states['final-development'] = {
+      url: '/final-development',
+      templateUrl: 'views/final-development.example.html'
     };
     results = [];
     for (key in states) {
@@ -61,8 +96,17 @@ angular.module("app.constants", [])
 
 }).call(this);
 
-angular.module("example").run(["$templateCache", function($templateCache) {$templateCache.put("views/submission-detail.html","<submission-detail project-id=\"abc\" step-id=\"abc\" submission-id=\"abc\" user-type=\"{{ vm.userType }}\"></submission-detail>");
-$templateCache.put("views/file-detail.html","<modal show=\"true\" background-click-close=\"background-click-close\"><file-detail project-id=\"abc\" step-id=\"abc\" submission-id=\"abc\" file-id=\"abc\" user-type=\"{{ vm.userType }}\"></file-detail></modal>");}]);
+angular.module("example").run(["$templateCache", function($templateCache) {$templateCache.put("views/file-detail.example.html","<modal show=\"true\" background-click-close=\"background-click-close\"><file-detail project-id=\"abc\" step-id=\"abc\" submission-id=\"abc\" file-id=\"abc\" user-type=\"{{ vm.userType }}\"></file-detail></modal>");
+$templateCache.put("views/final-development.example.html","<final-development></final-development>");
+$templateCache.put("views/grid-of-thumbnails.example.html","<grid-of-thumbnails thumbnail-groups=\"vm.thumbnailGroups\"></grid-of-thumbnails>");
+$templateCache.put("views/row-of-thumbnails.example.html","<row-of-thumbnails thumbnails=\"vm.thumbnails\" view-all=\"http://www.google.com\" view-all-text=\"+3 more\" tool-tip=\"tool-tip\"></row-of-thumbnails><br/><br/><br/><row-of-thumbnails thumbnails=\"vm.thumbnails2\"></row-of-thumbnails>");
+$templateCache.put("views/step.example.html","<submissions project-id=\"{{ vm.projectId }}\" step-id=\"{{ vm.stepId }}\" step-type=\"{{ vm.stepType }}\" user-type=\"{{ vm.userType }}\"></submissions>");
+$templateCache.put("views/submission-countdown.example.html","<submission-countdown end=\"2015-09-08T23:24:48.374Z\" text=\"Recieve final design submissions\"></submission-countdown>");
+$templateCache.put("views/submission-detail.example.html","<submission-detail project-id=\"abc\" step-id=\"abc\" submission-id=\"abc\" user-type=\"{{ vm.userType }}\"></submission-detail>");
+$templateCache.put("views/submission-winner-card.example.html","<ul class=\"flex\"><li><submission-winner-card name-text=\"Jeffrey Ramirez\" avatar-url=\"/images/flower.png\" rank=\"1st\" class=\"light-bg elevated-bottom\"></submission-winner-card></li><li><submission-winner-card name-text=\"Martha Quintero\" avatar-url=\"/images/flower.png\" rank=\"2nd\" class=\"light-bg elevated-bottom\"></submission-winner-card></li><li><submission-winner-card name-text=\"Luisa Crespa\" avatar-url=\"/images/flower.png\" rank=\"3rd\" class=\"light-bg elevated-bottom\"></submission-winner-card></li><li><submission-winner-card name-text=\"Luisa Crespa\" avatar-url=\"/images/flower.png\" class=\"light-bg elevated-bottom\"></submission-winner-card></li></ul>");
+$templateCache.put("views/submission-winners.example.html","<submission-winners></submission-winners>");
+$templateCache.put("views/submissions-header.example.html","<submissions-header text=\"design concept phase\" subtext=\"You will see submissions here when they are ready.\" next=\"http://www.google.com\" prev=\"http://www.google.com\"></submissions-header>");
+$templateCache.put("views/top-selections.example.html","<top-selections ranks=\"vm.ranks\"></top-selections><top-selections></top-selections>");}]);
 (function() {
   'use strict';
   var controller;
@@ -140,5 +184,106 @@ $templateCache.put("views/file-detail.html","<modal show=\"true\" background-cli
   StepController.$inject = ['$scope', '$stateParams', '$rootScope', 'StepsService'];
 
   angular.module('example').controller('StepController', StepController);
+
+}).call(this);
+
+(function() {
+  'use strict';
+  var TopSelectionExampleController;
+
+  TopSelectionExampleController = function($scope) {
+    var activate, avatars, vm;
+    vm = this;
+    vm.ranks = [];
+    avatars = ['/images/batman.jpg', '/images/phoenix.jpg', '/images/spider.png'];
+    activate = function() {
+      var avatar, i, j, len;
+      for (i = j = 0, len = avatars.length; j < len; i = ++j) {
+        avatar = avatars[i];
+        vm.ranks.push({
+          id: i + 1,
+          value: i + 1,
+          avatarUrl: avatar
+        });
+      }
+      return vm;
+    };
+    return activate();
+  };
+
+  TopSelectionExampleController.$inject = ['$scope'];
+
+  angular.module('appirio-tech-submissions').controller('TopSelectionExampleController', TopSelectionExampleController);
+
+}).call(this);
+
+(function() {
+  'use strict';
+  var RowOfThumbnailsExampleController;
+
+  RowOfThumbnailsExampleController = function($scope) {
+    var activate, images, vm;
+    vm = this;
+    vm.thumbnails = [];
+    vm.thumbnails2 = [];
+    vm.thumbnails3 = [];
+    images = ['/images/batman.jpg', '/images/phoenix.jpg', '/images/spider.png', '/images/phoenix.jpg', '/images/spider.png'];
+    activate = function() {
+      var i, image, j, len;
+      for (i = j = 0, len = images.length; j < len; i = ++j) {
+        image = images[i];
+        vm.thumbnails.push({
+          id: i + 1,
+          url: image,
+          link: 'http://www.google.com'
+        });
+      }
+      vm.thumbnails2 = vm.thumbnails.slice(0, 3);
+      vm.thumbnails3 = vm.thumbnails.concat(vm.thumbnails);
+      return vm;
+    };
+    return activate();
+  };
+
+  RowOfThumbnailsExampleController.$inject = ['$scope'];
+
+  angular.module('appirio-tech-submissions').controller('RowOfThumbnailsExampleController', RowOfThumbnailsExampleController);
+
+}).call(this);
+
+(function() {
+  'use strict';
+  var GridOfThumbnailsExampleController;
+
+  GridOfThumbnailsExampleController = function($scope) {
+    var activate, images, vm;
+    vm = this;
+    vm.thumbnailGroups = [];
+    images = ['/images/batman.jpg', '/images/phoenix.jpg', '/images/spider.png', '/images/phoenix.jpg'];
+    activate = function() {
+      var i, image, j, k, l, lastItem, len, thumbnails;
+      for (j = k = 0; k <= 2; j = ++k) {
+        thumbnails = [];
+        for (i = l = 0, len = images.length; l < len; i = ++l) {
+          image = images[i];
+          thumbnails.push({
+            id: i + 1,
+            url: image,
+            link: 'http://www.google.com'
+          });
+        }
+        vm.thumbnailGroups.push(thumbnails);
+      }
+      lastItem = vm.thumbnailGroups[vm.thumbnailGroups.length - 1];
+      lastItem = lastItem.slice(1);
+      vm.thumbnailGroups[vm.thumbnailGroups.length - 1] = lastItem;
+      return vm;
+    };
+    return activate();
+  };
+
+  GridOfThumbnailsExampleController.$inject = ['$scope'];
+
+  angular.module('appirio-tech-submissions').controller('GridOfThumbnailsExampleController', GridOfThumbnailsExampleController);
 
 }).call(this);
