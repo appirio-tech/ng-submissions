@@ -36,14 +36,13 @@ main.flex.column
           a.arrow-next(ng-if="vm.nextFile", href="{{ vm.nextFile.detailUrl }}")
             button.clean.icon.arrow.right.big
 
-      .thumbnails
-        ul
-          li.thumbnail(ng-repeat="file in vm.submission.files")
-            button.clean.thumbnail
-              a(href="{{ file.detailUrl }}")
-                img(ng-src="{{ file.url }}")
+      ul.thumbnails
+        li.thumbnail(ng-repeat="file in vm.submission.files track by $index")
+          button.clean.thumbnail
+            a(href="{{ file.detailUrl }}")
+              img(ng-src="{{ file.url }}")
 
-              .notification.absolute(ng-if="file.unreadMessages > 0") {{ file.unreadMessages }}
+            .notification.absolute(ng-if="file.unreadMessages > 0") {{ file.unreadMessages }}
 
     include parts/messaging
 
