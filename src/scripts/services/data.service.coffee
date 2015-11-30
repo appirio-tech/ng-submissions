@@ -1,5 +1,8 @@
 'use strict'
 
+isObject = (item) ->
+  item != null && typeof item == 'object' && Array.isArray(item) == false
+
 srv = ($injector, $rootScope) ->
   subscribe = (scope, subscriberOnChange, configs) ->
     unless angular.isArray configs[0]
@@ -22,7 +25,7 @@ srv = ($injector, $rootScope) ->
         if item == undefined || item == null
           ready = false
 
-        if angular.isObject(item) && Object.keys(item).length <= 0
+        if isObject(item) && Object.keys(item).length <= 0
           ready = false
 
         if item && item._pending
