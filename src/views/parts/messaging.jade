@@ -1,23 +1,36 @@
-.file-detail-messaging.flex.column(ng-class="{ active: vm.showComments }" flush-height=true)
+.file-detail-messaging.flex.column(ng-class='{ active: vm.showMessages }', flush-height='flush-height')
   .title
-    h4 File Comments
-
+    h4 Feedback
     hr
 
   .messages.flex-grow.flex-shrink
     ul
-      li(ng-repeat="message in vm.messages track by $index")
+      li(ng-if="vm.userType == 'customer'")
+        p(ng-if="vm.messages.length == 0 && vm.status != 'CLOSED'") Please provide feedback here to the community member and the copilot about this image. Your feedback will be visible to all members who have submitted, but only the copilot and the submitter of this image will be allowed to respond.
+
+        p(ng-if="vm.status == 'CLOSED'") You can no longer add feedback here. If you have additional feedback, please 
+          a message your copilot directly.
+
+      li(ng-if="vm.userType == 'copilot'")
+        p(ng-if="vm.messages.length == 0 && vm.status != 'CLOSED'") Please provide feedback here to the community member and the copilot about this image. Your feedback will be visible to all members who have submitted, but only the copilot and the submitter of this image will be allowed to respond.
+
+        p(ng-if="vm.status == 'CLOSED'") You can no longer add feedback here. If you have additional feedback, please 
+          a message your copilot directly.
+
+      li(ng-if="vm.userType == 'member'")
+        p(ng-if="vm.messages.length == 0 && vm.status != 'CLOSED'") Use this space to respond to customer feedback and provide context for your designs. Only you, the copilot, and the customer can add comments, but these comments will be visible to everyone who has submitted.
+
+        p(ng-if="vm.status == 'CLOSED'") You can no longer add comments here. If you have any questions or comments for your customer, please contact your copilot via the forum.
+
+      li(ng-repeat='message in vm.messages track by $index')
         header.flex.middle
-          avatar(avatar-url="{{ message.publisher.avatar }}")
-
+          avatar(avatar-url='{{ message.publisher.avatar }}')
           .name {{ message.publisher.handle }}
-
           time {{ message.createdAt | timeLapse }}
 
         p.message {{ message.body }}
 
   .send
-    form(ng-submit="vm.sendMessage()" ng-if="vm.status != 'CLOSED'")
-      textarea(placeholder!="Send a message&hellip;" ng-model="vm.newMessage")
-
-      button.enter(type="submit") Enter
+    form(ng-submit='vm.sendMessage()', ng-if="vm.status != 'CLOSED'")
+      textarea(placeholder='Send a message…', ng-model='vm.newMessage')
+      button.enter(type='submit') Enter

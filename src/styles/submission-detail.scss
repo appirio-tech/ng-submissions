@@ -1,20 +1,27 @@
 @import "work-includes";
 
 submission-detail {
+  display: block;
+
+  avatar {
+    width: 48px;
+    height: 48px;
+    margin-left: 40px;
+  }
+
+  .name {
+    font-size: 16px;
+    margin-left: 10px;
+  }
+
   .submitter {
     @include vertical-align-middle();
 
     text-align: left;
     float: left;
 
-    > * {
-      margin-right: $margin-smallest;
-    }
-
     a {
       text-decoration: none;
-      text-transform: uppercase;
-
     }
 
     .arrow {
@@ -29,6 +36,13 @@ submission-detail {
 
   hr {
     background-color: $neutral-color;
-    margin-top: $margin-small;
+    margin-top: 20px;
+    margin-bottom: 30px;
+  }
+
+  .preview {
+    a {
+      display: block;
+    }
   }
 }

@@ -1,32 +1,20 @@
-loader(ng-hide="vm.loaded")
+loader(ng-hide='vm.loaded')
 
 ul.header.flex.middle
   li.flex-grow.submitter
-    a(ui-sref="step({projectId: vm.projectId, stepId: vm.stepId})") submissions
+    a(ui-sref='step({projectId: vm.projectId, stepId: vm.stepId})') All Submissions
 
-    .icon.arrow.right.smallest
-
-    avatar(avatar-url="{{ vm.submission.submitter.avatar }}")
+    avatar(avatar-url='{{ vm.submission.submitter.avatar }}')
 
     .name {{ vm.submission.submitter.handle }}
 
-  li(ng-if="vm.userType != 'member' && vm.status != 'CLOSED'")
-    select(ng-model="vm.submission.rank", ng-change="vm.handleRankSelect(vm.submission)", ng-options="rank.value as rank.label for rank in vm.ranks")
-
-  li(ng-if="vm.status == 'CLOSED' && vm.rank") {{ vm.rank }}
-
+  li
+    rank-dropdown(project-id='{{ vm.projectId }}', step-id='{{ vm.stepId }}', submission-id='{{ vm.submissionId }}', user-type='{{ vm.userType }}')
 
   li.download
-    a(href="{{ vm.submission.downloadUrl }}", target="_blank")
+    a(href='{{ vm.submission.downloadUrl }}', target='_blank')
       .icon.download.small
 
 hr
 
-ul.previews.flex.wrap
-  li.preview(ng-repeat="file in vm.submission.files track by $index" fitted-width=true)
-    a(
-      ui-sref="file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: vm.submissionId, fileId: file.id})"
-    )
-      img.img(ng-src="{{ file.url }}")
-
-    p {{ file.name }}
+grid-of-thumbnails(thumbnails='vm.submission.files')

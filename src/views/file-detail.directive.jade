@@ -25,7 +25,7 @@ main.flex.column
     .slideshow.flex.column.flex-grow
       .preview.flex.center.flex-grow.flex-shrink
         .previous.flex.flex-grow
-          a.arrow-previous(ng-if="vm.prevFile", ui-sref="file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: vm.submission.id, fileId: vm.prevFile.id})")
+          a.arrow-previous(ng-if="vm.prevFile", href="{{ vm.prevFile.detailUrl }}")
             button.clean.icon.arrow.big
 
         .image.flex.column.center
@@ -33,14 +33,14 @@ main.flex.column
             img(ng-src="{{ vm.file.url }}")
 
         .next.flex.flex-grow
-          a.arrow-next(ng-if="vm.nextFile", ui-sref="file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: vm.submission.id, fileId: vm.nextFile.id})")
+          a.arrow-next(ng-if="vm.nextFile", href="{{ vm.nextFile.detailUrl }}")
             button.clean.icon.arrow.right.big
 
       .thumbnails
         ul
           li.thumbnail(ng-repeat="file in vm.submission.files")
             button.clean.thumbnail
-              a(ui-sref="file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: vm.submission.id, fileId: file.id})")
+              a(href="{{ file.detailUrl }}")
                 img(ng-src="{{ file.url }}")
 
               .notification.absolute(ng-if="file.unreadMessages > 0") {{ file.unreadMessages }}

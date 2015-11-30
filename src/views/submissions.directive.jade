@@ -1,56 +1,15 @@
-loader(ng-hide="vm.loaded")
+loader(ng-hide='vm.loaded')
 
-include parts/header
-
-include parts/subheader-member
+submissions-header(project-id='{{ vm.projectId }}', step-id='{{ vm.stepId }}')
 
 include parts/subheader-customer
+include parts/subheader-copilot
+include parts/subheader-member
 
-include parts/subheader-shared
+submission-winners(ng-if="vm.status == 'CLOSED'", project-id='{{ vm.projectId }}', step-id='{{ vm.stepId }}')
 
-ul.submissions(ng-if="vm.statusValue > 3")
-  li.submission.flex.elevated-bottom(ng-repeat="submission in vm.submissions track by $index" data-id="{{ submission.id }}" ng-class="{ 'belongs-to-user': submission.belongsToUser }" draggable)
-    ul.user-details.flex.middle
-      li
-        avatar(avatar-url="{{ submission.submitter.avatar }}")
+rank-list(ng-if="(vm.status == 'REVIEWING' || vm.status == 'REVIEWING_LATE') && (vm.stepType == 'designConcepts' || vm.stepType == 'completeDesigns')", project-id='{{ vm.projectId }}', step-id='{{ vm.stepId }}', user-type='{{ vm.userType }}')
 
-      li
-        .name-time
-          .name {{ submission.submitter.handle }}
-            span(ng-if="submission.belongsToUser") &nbsp;(Me)
+submission-list(ng-if="vm.statusValue > 3 && (vm.stepType == 'designConcepts' || vm.stepType == 'completeDesigns')", project-id='{{ vm.projectId }}', step-id='{{ vm.stepId }}', user-type='{{ vm.userType }}')
 
-          p.secondary Project Contributor
-
-    ul.thumbnails.flex-grow.flex
-      li(ng-repeat="file in submission.files track by $index")
-        a(ui-sref="file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: submission.id, fileId: file.id})")
-          img(ng-src="{{ file.url }}")
-
-        .pop-over.elevated
-          a.preview(ui-sref="file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: submission.id, fileId: file.id})")
-            img.previewImage(ng-src="{{ file.url }}")
-
-          a(ui-sref="file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: submission.id, fileId: file.id})")
-            .icon.envelope
-
-          a(href="{{ file.url }}", target="_blank")
-            .clean.icon.download
-
-      li
-        a(ui-sref="submission-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: submission.id})")
-          p.flex.middle.center(ng-if="!submission.more") View <br /> All
-          p.flex.middle.center(ng-if="submission.more") +{{ submission.more }} <br /> more
-
-    ul.actions.flex.middle.wrap
-      li.comments(ng-if="vm.status != 'CLOSED'")
-        a(href="{{ submission.downloadUrl }}", target="_blank")
-          .icon.download.small
-
-      li.comments(ng-if="vm.status == 'CLOSED' && submission.rank")
-        a(href="{{ submission.downloadUrl }}", target="_blank")
-          .icon.download.small
-
-      li(ng-if="vm.userType != 'member' && vm.status != 'CLOSED'")
-        select(ng-model="submission.rank", ng-change="vm.handleRankSelect(submission)", ng-options="rank.value as rank.label for rank in vm.ranks")
-
-      li(ng-if="vm.status == 'CLOSED'") {{ vm.rankNames[$index] }}
+grid-of-thumbnails(ng-if="vm.statusValue > 3 && vm.stepType == 'finalFixes'", thumbnails='vm.submissions[0].files')

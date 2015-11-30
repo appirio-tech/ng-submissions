@@ -1,19 +1,45 @@
 - var scripts = []
+- var controllers = []
+- var directives = []
+- var services = []
+
 - scripts.push('submissions.module')
 - scripts.push('templates')
-- scripts.push('submissions.controller')
-- scripts.push('submissions.directive')
-- scripts.push('submissions.helpers')
-- scripts.push('steps.service')
-- scripts.push('submissions.service')
-- scripts.push('final-fixes.controller')
-- scripts.push('final-fixes.directive')
-- scripts.push('submission-detail.controller')
-- scripts.push('submission-detail.directive')
-- scripts.push('file-detail.controller')
-- scripts.push('file-detail.directive')
-- scripts.push('on-drop.directive')
-- scripts.push('draggable.directive')
+
+- services.push('steps')
+- services.push('submissions')
+- services.push('rank-list')
+- services.push('step-submissions')
+- services.push('data')
+
+- controllers.push('submissions')
+- controllers.push('final-fixes')
+- controllers.push('submission-detail')
+- controllers.push('rank-list')
+- controllers.push('rank-dropdown')
+- controllers.push('submission-winners')
+- controllers.push('final-development')
+- controllers.push('file-detail')
+- controllers.push('file-row')
+- controllers.push('submissions-header')
+- controllers.push('submission-list')
+
+- directives.push('submissions')
+- directives.push('final-fixes')
+- directives.push('submission-detail')
+- directives.push('file-detail')
+- directives.push('on-drop')
+- directives.push('draggable')
+- directives.push('submissions-header')
+- directives.push('rank-list')
+- directives.push('rank-dropdown')
+- directives.push('file-row')
+- directives.push('grid-of-thumbnails')
+- directives.push('submission-winner-card')
+- directives.push('submission-winners')
+- directives.push('submission-countdown')
+- directives.push('final-development')
+- directives.push('submission-list')
 
 - var bowers = []
 - bowers.push('angular/angular')
@@ -26,7 +52,6 @@
 - bowers.push('angular-jwt/dist/angular-jwt')
 - bowers.push('appirio-tech-ng-ui-components/dist/main')
 - bowers.push('appirio-tech-ng-api-services/dist/main')
-- bowers.push('appirio-tech-ng-messaging/dist/main')
 - bowers.push('angular-scroll/angular-scroll')
 - bowers.push('moment/moment')
 - bowers.push('appirio-tech-ng-auth/dist/main')
@@ -34,7 +59,18 @@
 - bowers.push('zepto/zepto')
 - bowers.push('appirio-tech-ng-optimist/dist/main')
 
-- var examples = ['constants', 'example.module', 'routes', 'example-templates', 'file-detail', 'submission-detail', 'step']
+- var examples = []
+
+- examples.push('constants')
+- examples.push('example.module')
+- examples.push('routes')
+- examples.push('example-templates')
+- examples.push('file-detail')
+- examples.push('submission-detail')
+- examples.push('step')
+- examples.push('top-selections.example')
+- examples.push('row-of-thumbnails.example')
+- examples.push('grid-of-thumbnails.example')
 
 = "\n"
 // build:js lib.js
@@ -49,6 +85,18 @@ each path in bowers
 = "\n"
 each path in scripts
   script(src="scripts/#{path}.js", type="text/javascript")
+  = "\n"
+= "\n"
+each path in controllers
+  script(src="scripts/controllers/#{path}.controller.js", type="text/javascript")
+  = "\n"
+= "\n"
+each path in directives
+  script(src="scripts/directives/#{path}.directive.js", type="text/javascript")
+  = "\n"
+= "\n"
+each path in services
+  script(src="scripts/services/#{path}.service.js", type="text/javascript")
   = "\n"
 = "\n"
 // endbuild

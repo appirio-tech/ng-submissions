@@ -1,48 +1,24 @@
-.subheader(ng-if="vm.userType != 'member' && vm.status == 'PLACEHOLDER'")
+div(ng-if="vm.userType == 'customer' && vm.status == 'PLACEHOLDER'")
   p You will see submissions here when they are ready.
 
-.subheader.clock(ng-if="vm.userType != 'member' && vm.status == 'SCHEDULED'")
-  img.icon.biggest(src="/images/clock.svg")
+div(ng-if="vm.userType == 'customer' && vm.status == 'SCHEDULED'")
+  p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas eu ipsum sed magna dictum euismod ac sed eros. Sed iaculis, ligula non elementum sagittis, urna lectus fringilla ligula, at mattis orci mauris ut leo.
+  submission-countdown(end='{{ vm.startsAt }}', text='Work starts on {{ vm.title }} submissions')
 
-  p Work will begin on {{ vm.stepName }} submissions in
+div(ng-if="vm.userType == 'customer' && vm.status == 'OPEN'")
+  p No submissions yet, but the countdown has started. Once the submissions arrive, you will be notified by email and on your timeline. You will have 7 days to provide feedback and choose the winners for this phase.
+  submission-countdown(end='{{ vm.submissionsDueBy }}', text='Receive {{ vm.title }} submissions')
 
-  countdown.block(end="{{ vm.startsAt }}")
+div(ng-if="vm.userType == 'customer' && vm.status == 'OPEN_LATE'")
+  p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas eu ipsum sed magna dictum euismod ac sed eros. Sed iaculis, ligula non elementum sagittis, urna lectus fringilla ligula, at mattis orci mauris ut leo.
 
-.subheader.clock(ng-if="vm.userType != 'member' && vm.status == 'OPEN'")
-  img.icon.biggest(src="/images/clock.svg")
+div(ng-if="vm.userType == 'customer' && vm.status == 'REVIEWING'")
+  p Please provide feedback and select the top {{ vm.numberOfRanks }} submissions within 
+    strong
+      countdown(end='{{vm.endsAt}}') . Your feedback will be visible to the copilot and all members who have submitted to help them improve their initial concepts.
 
-  p Submissions for the {{ vm.stepName }} Phase coming in
+div(ng-if="vm.userType == 'customer' && vm.status == 'REVIEWING_LATE'")
+  p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas eu ipsum sed magna dictum euismod ac sed eros. Sed iaculis, ligula non elementum sagittis, urna lectus fringilla ligula, at mattis orci mauris ut leo.
 
-  countdown.block(end="{{ vm.submissionsDueBy }}")
-
-.subheader(ng-if="vm.userType != 'member' && vm.status == 'OPEN_LATE'")
-  p Submissions for the {{ vm.stepName }} Phase are overdue. Please contact your copilot.
-
-.subheader(ng-if="vm.userType != 'member' && (vm.status == 'REVIEWING' || vm.status == 'REVIEWING_LATE')")
-  p(ng-if="vm.status == 'REVIEWING'") Give feedback and select the top {{ vm.ranks.length }} designs. You have 
-
-    countdown(end="{{vm.endsAt}}")
-    | 
-    | to give feedback.
-
-  p(ng-if="vm.status == 'REVIEWING_LATE'") Your feedback is overdue. Please select the top {{ vm.ranks.length }} designs.
-
-  ul.top-selection
-    li(ng-repeat="rank in vm.ranks track by $index")
-      .shell(
-        ng-class="{ 'has-avatar': rank.avatarUrl }"
-        ondragenter="return false"
-        ondragover="return false"
-        on-drop="vm.drop.handle(event, rank.value)"
-      )
-        div(ng-if="rank.id" data-id="{{ rank.id }}" draggable)
-          avatar(avatar-url="{{ rank.avatarUrl }}")
-
-          .rank {{ rank.value }}
-
-        .rank(ng-if="!rank.avatarUrl") {{ rank.value }}
-
-    li(ng-show="vm.allFilled")
-      button.action(ng-click="vm.confirmRanks()") Confirm your selections 
-
-  p(ng-if="vm.rankUpdateError") {{ vm.rankUpdateError }}
+div(ng-if="vm.userType == 'customer' && vm.status == 'CLOSED'")
+  p These are your winners. You can still review submissions, but can no longer provide feedback. If you have any more comments, please message your copilot. The next phase begins in <strong><countdown end='{{ vm.nextStepStartsAt }}'></strong>.

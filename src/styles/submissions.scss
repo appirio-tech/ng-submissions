@@ -5,6 +5,26 @@
 $pop-over-top: -50px;
 $pop-over-left: 30px;
 
+submissions .submissions.new {
+  .submission {
+    padding         : 0px;
+    margin-top      : 40px;
+    background-color: transparent;
+
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+
+  ul.actions li {
+    @include exclude-first(margin-left, 30px);
+  }
+
+  file-row {
+    margin-top: 15px;
+  }
+}
+
 submissions {
   .icon.download {
     width: 21px;
@@ -123,7 +143,7 @@ submissions {
       }
     }
 
-    ul.thumbnails {
+    ul.old-thumbnails {
       margin-left: $horizontal-big;
 
       .pop-over {

@@ -1,5 +1,10 @@
-.subheader(ng-if="vm.userType == 'member' && vm.statusValue < 4")
+div(ng-if="vm.userType == 'member' && vm.statusValue < 4")
   p There are no submissions to view at this time.
 
-.subheader(ng-if="vm.userType == 'member' && (vm.status == 'REVIEWING' || vm.status == 'REVIEWING_LATE')")
-  p Browse your competitors' files, view clients comments, and improve your designs in the finals.
+div(ng-if="vm.userType == 'member' && (vm.status == 'REVIEWING' || vm.status == 'REVIEWING_LATE')")
+  p Browse other members' submissions and respond to comments from the customer or copilot on your submissions. The next phase begins in <strong>countdown(end='{{ vm.nextStepStartsAt }}')</strong>.
+
+div(ng-if="vm.userType == 'member' && vm.status == 'CLOSED'")
+  p(ng-if='vm.userRank') Congratulations, you came in <strong>{{ vm.userRank }}</strong>! Please incorporate the customer feedback and submit in the final round.
+
+  p(ng-if='!vm.userRank') Unfortunately you did not win in this round, but you can still submit and win in the final round. Review the winning designs and the customer feedback and give it another shot!
