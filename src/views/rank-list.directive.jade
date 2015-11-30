@@ -1,29 +1,33 @@
-ul.top-selection(ng-if='!vm.locked')
-  li(ng-repeat='rank in vm.ranks track by $index')
-    .shell(
-      ng-class="{ 'has-avatar': rank.avatarUrl }"
-      ondragenter='return false'
-      ondragover='return false'
-      on-drop='vm.drop.handle(event, rank.value)'
-    )
-      div(ng-if='rank.id', data-id='{{ rank.id }}', draggable)
-        avatar(avatar-url='{{ rank.avatarUrl }}')
+div(ng-if="!vm.showWinners")
+  ul.top-selection(ng-if='!vm.locked')
+    li(ng-repeat='rank in vm.ranks track by $index')
+      .shell(
+        ng-class="{ 'has-avatar': rank.avatarUrl }"
+        ondragenter='return false'
+        ondragover='return false'
+        on-drop='vm.drop.handle(event, rank.value)'
+      )
+        div(ng-if='rank.id', data-id='{{ rank.id }}', draggable)
+          avatar(avatar-url='{{ rank.avatarUrl }}')
 
-        .rank {{ rank.value }}
+          .rank {{ rank.value }}
 
-      .rank(ng-if='!rank.avatarUrl') {{ rank.value }}
+        .rank(ng-if='!rank.avatarUrl') {{ rank.value }}
 
-  li(ng-show='vm.confirm')
-    button.action(ng-click='vm.confirmRanks()') Confirm your selections
+    li(ng-show='vm.confirm')
+      button.action(ng-click='vm.confirmRanks()') Confirm your selections
 
-p(ng-show='vm.confirm') Please confirm your winner selection. You will not be able to change this once you confirm.
+  p(ng-show='vm.confirm') Please confirm your winner selection. You will not be able to change this once you confirm.
 
-ul.top-selection(ng-if='vm.locked')
-  li(ng-repeat='rank in vm.ranks track by $index')
-    .shell(ng-class="{ 'has-avatar': rank.avatarUrl }")
-      div(ng-if='rank.id', data-id='{{ rank.id }}')
-        avatar(avatar-url='{{ rank.avatarUrl }}')
+  ul.top-selection(ng-if='vm.locked')
+    li(ng-repeat='rank in vm.ranks track by $index')
+      .shell(ng-class="{ 'has-avatar': rank.avatarUrl }")
+        div(ng-if='rank.id', data-id='{{ rank.id }}')
+          avatar(avatar-url='{{ rank.avatarUrl }}')
 
-        .rank {{ rank.value }}
+          .rank {{ rank.value }}
 
-      .rank(ng-if='!rank.avatarUrl') {{ rank.value }}
+        .rank(ng-if='!rank.avatarUrl') {{ rank.value }}
+
+div(ng-if="vm.showWinners")
+  submission-winners(project-id='{{ vm.projectId }}' step-id='{{ vm.stepId }}')

@@ -13,9 +13,7 @@ div(ng-if="vm.userType == 'customer' && vm.status == 'OPEN_LATE'")
   p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas eu ipsum sed magna dictum euismod ac sed eros. Sed iaculis, ligula non elementum sagittis, urna lectus fringilla ligula, at mattis orci mauris ut leo.
 
 div(ng-if="vm.userType == 'customer' && vm.status == 'REVIEWING'")
-  p Please provide feedback and select the top {{ vm.numberOfRanks }} submissions within 
-    strong
-      countdown(end='{{vm.endsAt}}') . Your feedback will be visible to the copilot and all members who have submitted to help them improve their initial concepts.
+  p Please provide feedback and select the top {{ vm.numberOfRanks }} submissions within <strong><countdown end='{{vm.endsAt}}'></strong>. Your feedback will be visible to the copilot and all members who have submitted to help them improve their initial concepts.
 
 div(ng-if="vm.userType == 'customer' && vm.status == 'REVIEWING_LATE'")
   p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas eu ipsum sed magna dictum euismod ac sed eros. Sed iaculis, ligula non elementum sagittis, urna lectus fringilla ligula, at mattis orci mauris ut leo.
