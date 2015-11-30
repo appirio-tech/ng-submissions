@@ -3,6 +3,13 @@
 srv = ($rootScope, StepsAPIService, OptimistCollection) ->
   data = {}
 
+  stepOrder = [
+    'designConcepts'
+    'completeDesigns'
+    'finalFixes'
+    'code'
+  ]
+
   statuses = [
     'PLACEHOLDER'
     'SCHEDULED'
@@ -12,6 +19,12 @@ srv = ($rootScope, StepsAPIService, OptimistCollection) ->
     'REVIEWING_LATE'
     'CLOSED'
   ]
+
+  titles =
+    designConcepts: 'Design Concepts'
+    completeDesigns: 'Complete Designs'
+    finalFixes: 'Final Fixes'
+    code: 'Development'
 
   createOrderedRankList = (rankedSubmissions, numberOfRanks) ->
     orderedRanks = []
@@ -105,12 +118,28 @@ srv = ($rootScope, StepsAPIService, OptimistCollection) ->
     onChange()
 
   dyanamicProps = (steps) ->
-    if angular.isArray steps
-      steps.forEach (step) ->
-        step.status = statusOf step
+    if angular.isArray(steps)
+      steps.map (step) ->
+        step.title       = titles[step.stepType]
+        step.status      = statusOf step
         step.statusValue = statusValueOf step.status
+        currentStepOrder = stepOrder.indexOf step.stepType
 
-    steps
+        if currentStepOrder > 0
+          prevStep = steps.filter((step) -> step.stepType == stepOrder[currentStepOrder - 1])[0]
+
+          if prevStep
+            step.prevStepId = prevStep.id
+            step.prevStepEndsAt = prevStep.endsAt
+
+        if currentStepOrder < stepOrder.length - 1
+          nextStep = steps.filter((step) -> step.stepType == stepOrder[currentStepOrder + 1])[0]
+
+          if nextStep
+            step.nextStepId = nextStep.id
+            step.nextStepStartsAt = nextStep.startsAt
+
+        step
 
   get = (projectId) ->
     unless data[projectId]

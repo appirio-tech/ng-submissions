@@ -2,6 +2,7 @@ header.flex.column.middle
   avatar(avatar-url="{{ avatarUrl }}")
 
   h6.name {{ nameText }}
+    span(ng-if='belongsToUser') (Me)
 
   p.secondary Project Contributor
 

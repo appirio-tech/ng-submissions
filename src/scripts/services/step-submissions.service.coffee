@@ -1,7 +1,8 @@
 'use strict'
 
 srv = ($rootScope, $state, StepsService, SubmissionsService, DataService) ->
-  data             = {}
+  projectIdsByStepId = {}
+  data               = {}
 
   submissionWithRank = (submission, rankedSubmissions = []) ->
     submission.rank = ''
@@ -32,7 +33,7 @@ srv = ($rootScope, $state, StepsService, SubmissionsService, DataService) ->
     orderedSubmissions
 
   update = (step, submissions) ->
-    step.projectId   = data[step.id].projectId
+    step.projectId   = projectIdsByStepId[step.id]
     data[step.id]    = step
     submissions      = submissionsWithRanks submissions, step.details.rankedSubmissions
     submissions      = sortSubmissions submissions
@@ -67,6 +68,18 @@ srv = ($rootScope, $state, StepsService, SubmissionsService, DataService) ->
     unless data[stepId]
       data[stepId] =
         projectId: projectId
+
+      DataService.subscribe null, update, [
+        [StepsService, 'getStepById', projectId, stepId]
+        [SubmissionsService, 'get', projectId, stepId]
+      ]
+
+    data[stepId]
+
+  get = (projectId, stepId) ->
+    unless data[stepId]
+      projectIdsByStepId[stepId] = projectId
+      data[stepId]               = {}
 
       DataService.subscribe null, update, [
         [StepsService, 'getStepById', projectId, stepId]

@@ -1,29 +1,20 @@
 'use strict'
 
-SubmissionWinnersController = ($scope) ->
-  vm = this
-  vm.ranks = $scope.ranks || [
-    nameText: 'Martha Quintero'
-    avatarUrl: '/images/flower.png'
-    rank: '1st'
-  ,
-    nameText: 'Martha Quintero'
-    avatarUrl: '/images/flower.png'
-    rank: '2nd'
-  ,
-    nameText: 'Martha Quintero'
-    avatarUrl: '/images/flower.png'
-    rank: '3rd'
-  ,
-    nameText: 'Martha Quintero'
-    avatarUrl: '/images/flower.png'
-  ]
+SubmissionWinnersController = ($scope, StepsService, RankListService, DataService) ->
+  vm        = this
+  projectId = $scope.projectId
+  stepId    = $scope.stepId
 
   activate = ->
-    vm
+    DataService.subscribe $scope, render, [RankListService, 'get', projectId, stepId]
+
+  render = (rankList) ->
+    vm.ranks = rankList
 
   activate()
 
-SubmissionWinnersController.$inject = ['$scope']
+  vm
 
-angular.module('appirio-tech-submissions').controller 'SubmissionWinnersController', SubmissionWinnersController
+SubmissionWinnersController.$inject = ['$scope', 'StepsService', 'RankListService', 'DataService']
+
+angular.module('appirio-tech-submissions').controller('SubmissionWinnersController', SubmissionWinnersController)

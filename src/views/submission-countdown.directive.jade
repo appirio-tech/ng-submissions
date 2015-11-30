@@ -1,14 +1,4 @@
-submissions-header(text="design concept phase" subtext="You will see submissions here when they are ready." next="http://www.google.com" prev="http://www.google.com")
-
-hr
-
 main.light-bg.elevated-bottom
-  img(src="/images/clock.svg")
-
-  countdown.block(end="{{ end }}")
-
+  img(src='/images/clock.svg')
+  countdown.block(end='{{ end }}')
   p {{ text }}
-
-  hr
-
-  button.action view submissions

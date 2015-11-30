@@ -1,6 +1,6 @@
 'use strict'
 
-SubmissionsController = ($scope, DataService, StepSubmissionsService) ->
+SubmissionsController = ($scope, DataService, StepSubmissionsService, RankListService, UserV3Service) ->
   vm             = this
   vm.loaded      = false
   vm.status      = 'PLACEHOLDER'
@@ -8,18 +8,30 @@ SubmissionsController = ($scope, DataService, StepSubmissionsService) ->
   vm.projectId   = $scope.projectId
   vm.stepId      = $scope.stepId
   vm.userType    = $scope.userType
+  userId         = UserV3Service.getCurrentUser()?.id
 
   activate = ->
-    DataService.subscribe $scope, render, [StepSubmissionsService, 'get', vm.projectId, vm.stepId]
+    if vm.stepId
+      DataService.subscribe $scope, render, [
+        [StepSubmissionsService, 'get', vm.projectId, vm.stepId]
+        [RankListService, 'get', vm.projectId, vm.stepId]
+      ]
+    else
+      vm.loaded = true
 
-  render = (step) ->
-    vm.loaded      = true
-    vm.startsAt    = step.startsAt
-    vm.endsAt      = step.endsAt
-    vm.status      = step.status
-    vm.statusValue = step.statusValue
-    vm.stepType    = step.stepType
-    vm.submissions = step.submissions
+  render = (step, rankList) ->
+    vm.loaded           = true
+    vm.title            = step.title
+    vm.startsAt         = step.startsAt
+    vm.endsAt           = step.endsAt
+    vm.nextStepStartsAt = step.nextStepStartsAt
+    vm.submissionsDueBy = step.submissionsDueBy
+    vm.status           = step.status
+    vm.statusValue      = step.statusValue
+    vm.stepType         = step.stepType
+    vm.submissions      = step.submissions
+    vm.numberOfRanks    = rankList.length
+    vm.userRank         = highestRank(rankList, userId)
 
   highestRank = (rankList, userId) ->
     for i in [0...rankList.length] by 1
@@ -30,6 +42,6 @@ SubmissionsController = ($scope, DataService, StepSubmissionsService) ->
 
   vm
 
-SubmissionsController.$inject = ['$scope', 'DataService', 'StepSubmissionsService']
+SubmissionsController.$inject = ['$scope', 'DataService', 'StepSubmissionsService', 'RankListService', 'UserV3Service']
 
 angular.module('appirio-tech-submissions').controller 'SubmissionsController', SubmissionsController

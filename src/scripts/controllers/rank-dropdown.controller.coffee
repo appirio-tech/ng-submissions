@@ -5,24 +5,19 @@ RankDropdownController = ($scope, StepsService, RankListService, DataService) ->
   projectId    = $scope.projectId
   stepId       = $scope.stepId
   submissionId = $scope.submissionId
+  userType     = $scope.userType
 
   activate = ->
     DataService.subscribe $scope, render, [RankListService, 'get', projectId, stepId]
 
   render = (rankList) ->
-    vm.ranks = rankList
-
-    belongsToSubmission = (thisRank, rank) ->
-      if rank.id == submissionId
-        rank.value
-      else
-        thisRank
-
-    vm.rank = rankList.reduce belongsToSubmission, null
+    vm.ranks  = rankList
+    vm.rank   = rankList.filter((rank) -> rank.id == submissionId)[0]
+    vm.locked = userType == 'member' || rankList.status == 'CLOSED'
 
   vm.handleRankSelect = ->
     if submissionId && vm.rank
-      StepsService.updateRank projectId, stepId, submissionId, vm.rank
+      StepsService.updateRank projectId, stepId, submissionId, vm.rank.value
 
   activate()
 

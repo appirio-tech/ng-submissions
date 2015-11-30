@@ -7,5 +7,6 @@ directive = ->
   scope      :
     projectId : '@'
     stepId    : '@'
+    userType  : '@'
 
 angular.module('appirio-tech-submissions').directive 'rankList', directive

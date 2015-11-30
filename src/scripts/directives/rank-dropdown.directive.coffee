@@ -8,5 +8,6 @@ directive = ->
     projectId    : '@'
     stepId       : '@'
     submissionId : '@'
+    userType     : '@'
 
 angular.module('appirio-tech-submissions').directive 'rankDropdown', directive

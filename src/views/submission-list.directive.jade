@@ -2,25 +2,25 @@ p.total-count {{ vm.fileCount }} submissions
 
 hr.total-count
 
-ul.submissions.new(ng-if="vm.statusValue > 3")
-  li.submission(ng-repeat="submission in vm.submissions" data-id="{{ submission.id }}" ng-class="{ 'belongs-to-user': submission.belongsToUser }" draggable)
+ul.submissions.new(ng-if='vm.statusValue > 3')
+  li.submission(ng-repeat='submission in vm.submissions', data-id='{{ submission.id }}', ng-class="{ 'belongs-to-user': submission.belongsToUser }", draggable)
     ul.user-details.flex.middle.space-between
       li.flex.middle
-        avatar(avatar-url="{{ submission.submitter.avatar }}")
+        avatar(avatar-url='{{ submission.submitter.avatar }}')
 
         .name-time
-          .name {{ submission.submitter.handle }}
-            span(ng-if="submission.belongsToUser") &nbsp;(Me)
+          .name {{ submission.submitter.handle }} 
+            span(ng-if='submission.belongsToUser') (Me)
 
           p.secondary {{ submission.files.length }} Images
 
       li
         ul.flex.middle.actions
           li
-            a(href="{{ submission.downloadUrl }}" target="_blank")
+            a(href='{{ submission.downloadUrl }}', target='_blank')
               .icon.download.small
 
-          li(ng-if="vm.userType != 'member' && vm.status != 'CLOSED'")
-            rank-dropdown(project-id="{{ vm.projectId }}" step-id="{{ vm.stepId }}" submission-id="{{ submission.id }}")
+          li
+            rank-dropdown(project-id='{{ vm.projectId }}', step-id='{{ vm.stepId }}', submission-id='{{ submission.id }}', user-type='{{ vm.userType }}')
 
-    file-row(files="submission.files" view-all-url="{{ submission.detailUrl }}" limit="5")
+    file-row(files='submission.files', view-all-url='{{ submission.detailUrl }}', limit='5')

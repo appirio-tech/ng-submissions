@@ -1,20 +1,20 @@
-loader(ng-hide="vm.loaded")
+loader(ng-hide='vm.loaded')
 
 ul.header.flex.middle
   li.flex-grow.submitter
-    a(ui-sref="step({projectId: vm.projectId, stepId: vm.stepId})") All Submissions
+    a(ui-sref='step({projectId: vm.projectId, stepId: vm.stepId})') All Submissions
 
-    avatar(avatar-url="{{ vm.submission.submitter.avatar }}")
+    avatar(avatar-url='{{ vm.submission.submitter.avatar }}')
 
     .name {{ vm.submission.submitter.handle }}
 
   li
-    rank-dropdown(project-id="{{ vm.projectId }}" step-id="{{ vm.stepId }}" submission-id="{{ vm.submissionId }}")
+    rank-dropdown(project-id='{{ vm.projectId }}', step-id='{{ vm.stepId }}', submission-id='{{ vm.submissionId }}', user-type='{{ vm.userType }}')
 
   li.download
-    a(href="{{ vm.submission.downloadUrl }}", target="_blank")
+    a(href='{{ vm.submission.downloadUrl }}', target='_blank')
       .icon.download.small
 
 hr
 
-grid-of-thumbnails(thumbnails="vm.submission.files")
+grid-of-thumbnails(thumbnails='vm.submission.files')

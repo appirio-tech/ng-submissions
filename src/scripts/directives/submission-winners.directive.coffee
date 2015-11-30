@@ -5,8 +5,7 @@ directive = ->
   controller : 'SubmissionWinnersController as vm'
   templateUrl: 'views/submission-winners.directive.html'
   scope      :
-    nameText : '@'
-    avatarUrl: '@'
-    rank     : '@'
+    projectId : '@'
+    stepId    : '@'
 
 angular.module('appirio-tech-submissions').directive 'submissionWinners', directive

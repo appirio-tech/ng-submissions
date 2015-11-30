@@ -41,8 +41,8 @@ srv = ($rootScope, DataService, StepSubmissionsService, SubmissionsService) ->
     rankList.allFull   = rankList.reduce rankFull, true
     rankList.confirmed = step.details.customerConfirmedRanks
     rankList.projectId = data[step.id].projectId
-
-    data[step.id] = rankList
+    rankList.status    = step.status
+    data[step.id]      = rankList
 
     $rootScope.$emit "RankListService:changed:#{rankList.projectId}:#{step.id}"
 

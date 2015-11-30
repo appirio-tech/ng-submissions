@@ -4,13 +4,15 @@ RankListController = ($scope, StepsService, RankListService, DataService) ->
   vm        = this
   projectId = $scope.projectId
   stepId    = $scope.stepId
+  userType  = $scope.userType
 
   activate = ->
     DataService.subscribe $scope, render, [RankListService, 'get', projectId, stepId]
 
   render = (rankList) ->
     vm.ranks   = rankList
-    vm.confirm = rankList.allFull && !rankList.confirmed
+    vm.locked  = userType == 'member'
+    vm.confirm = rankList.allFull && !rankList.confirmed && userType != 'member'
 
   vm.confirmRanks = ->
     StepsService.confirmRanks projectId, stepId

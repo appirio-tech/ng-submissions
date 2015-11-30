@@ -1,9 +1,15 @@
-loader(ng-hide="vm.loaded")
+loader(ng-hide='vm.loaded')
 
-submissions-header(project-id="{{ vm.projectId }}" step-id="{{ vm.stepId }}")
+submissions-header(project-id='{{ vm.projectId }}', step-id='{{ vm.stepId }}')
 
-rank-list(ng-if="vm.stepType == 'designConcepts' || vm.stepType == 'completeDesigns'" project-id="{{ vm.projectId }}" step-id="{{ vm.stepId }}")
+include parts/subheader-customer
+include parts/subheader-copilot
+include parts/subheader-member
 
-submission-list(ng-if="vm.stepType == 'designConcepts' || vm.stepType == 'completeDesigns'" project-id="{{ vm.projectId }}" step-id="{{ vm.stepId }}")
+submission-winners(ng-if="vm.status == 'CLOSED'", project-id='{{ vm.projectId }}', step-id='{{ vm.stepId }}')
 
-grid-of-thumbnails(ng-if="vm.stepType == 'finalFixes'" thumbnails="vm.submissions[0].files")
+rank-list(ng-if="(vm.status == 'REVIEWING' || vm.status == 'REVIEWING_LATE') && (vm.stepType == 'designConcepts' || vm.stepType == 'completeDesigns')", project-id='{{ vm.projectId }}', step-id='{{ vm.stepId }}', user-type='{{ vm.userType }}')
+
+submission-list(ng-if="vm.statusValue > 3 && (vm.stepType == 'designConcepts' || vm.stepType == 'completeDesigns')", project-id='{{ vm.projectId }}', step-id='{{ vm.stepId }}', user-type='{{ vm.userType }}')
+
+grid-of-thumbnails(ng-if="vm.statusValue > 3 && vm.stepType == 'finalFixes'", thumbnails='vm.submissions[0].files')
