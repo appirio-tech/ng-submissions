@@ -37,7 +37,7 @@ main.flex.column
             button.clean.icon.arrow.right.big
 
       ul.thumbnails
-        li.thumbnail(ng-repeat="file in vm.submission.files track by $index")
+        li.thumbnail(ng-repeat="file in vm.submission.files")
           button.clean.thumbnail
             a(href="{{ file.detailUrl }}")
               img(ng-src="{{ file.url }}")

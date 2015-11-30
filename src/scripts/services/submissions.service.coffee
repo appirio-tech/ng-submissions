@@ -79,6 +79,17 @@ SubmissionsService = ($rootScope, SubmissionsAPIService, SubmissionsMessagesAPIS
       angular.merge {}, submission,
         belongsToUser: submission.submitter.id == userId
 
+  submissionWithoutDeliverables = (submission) ->
+    submission.files = submission.files.filter (file) ->
+      file.name?
+
+    submission
+
+  # Decorated with submission ownership
+  submissionsWithoutDeliverables = (submissions) ->
+    submissions.map (submission) ->
+      submissionWithoutDeliverables submission
+
   emitUpdates = (projectId, stepId) ->
     $rootScope.$emit "SubmissionsService:changed:#{projectId}:#{stepId}"
 
@@ -93,6 +104,7 @@ SubmissionsService = ($rootScope, SubmissionsAPIService, SubmissionsMessagesAPIS
 
   dyanamicProps = (submissions) ->
     user = UserV3Service.getCurrentUser()
+    submissions = submissionsWithoutDeliverables submissions
     submissions = submissionsWithMessageCounts submissions
     submissions = submissionsWithOwnership submissions, user?.id
     submissions = submissionsWithFileTypes submissions
