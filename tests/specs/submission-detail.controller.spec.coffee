@@ -20,8 +20,6 @@ describe 'SubmissionDetailController', ->
   describe 'before loading', ->
     it 'should set loaded to false', ->
       expect(vm.loaded).to.be.false
-      expect(vm.rankNames).to.be.an 'array'
-      expect(vm.allFilled).to.be.false
       expect(vm.submission).to.be.an 'object'
       expect(vm.projectId).to.equal 'abc'
       expect(vm.stepId).to.equal 'abc'
@@ -34,6 +32,4 @@ describe 'SubmissionDetailController', ->
     it 'should update the view-model with data from services', ->
       expect(vm.loaded).to.be.true
       expect(vm.submission).to.be.an 'object'
-      expect(vm.allFilled).to.be.false
-      expect(vm.rankNames.length).to.be.above 0
 

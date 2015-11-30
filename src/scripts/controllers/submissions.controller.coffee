@@ -21,7 +21,6 @@ SubmissionsController = ($scope, DataService, StepSubmissionsService, RankListSe
 
   render = (step, rankList) ->
     vm.loaded           = true
-    vm.title            = step.title
     vm.startsAt         = step.startsAt
     vm.endsAt           = step.endsAt
     vm.nextStepStartsAt = step.nextStepStartsAt
