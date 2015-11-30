@@ -48,7 +48,7 @@ $templateCache.put("views/submissions.directive.html","<loader ng-hide=\"vm.load
       vm.startsAt = step.startsAt;
       vm.endsAt = step.endsAt;
       vm.nextStepStartsAt = step.nextStepStartsAt;
-      vm.submissionsDueBy = step.submissionsDueBy;
+      vm.submissionsDueBy = step.details.submissionsDueBy;
       vm.status = step.status;
       vm.statusValue = step.statusValue;
       vm.stepType = step.stepType;
@@ -412,27 +412,6 @@ $templateCache.put("views/submissions.directive.html","<loader ng-hide=\"vm.load
   };
 
   angular.module('appirio-tech-submissions').directive('submissions', directive);
-
-}).call(this);
-
-(function() {
-  'use strict';
-  var directive;
-
-  directive = function() {
-    return {
-      restrict: 'E',
-      controller: 'FinalFixesController as vm',
-      templateUrl: 'views/final-fixes.directive.html',
-      scope: {
-        projectId: '@',
-        stepId: '@',
-        userType: '@'
-      }
-    };
-  };
-
-  angular.module('appirio-tech-submissions').directive('finalFixes', directive);
 
 }).call(this);
 
@@ -1423,8 +1402,12 @@ $templateCache.put("views/submissions.directive.html","<loader ng-hide=\"vm.load
 
 (function() {
   'use strict';
-  var srv,
+  var isObject, srv,
     slice = [].slice;
+
+  isObject = function(item) {
+    return item !== null && typeof item === 'object' && Array.isArray(item) === false;
+  };
 
   srv = function($injector, $rootScope) {
     var subscribe;
@@ -1453,7 +1436,7 @@ $templateCache.put("views/submissions.directive.html","<loader ng-hide=\"vm.load
           if (item === void 0 || item === null) {
             ready = false;
           }
-          if (angular.isObject(item) && Object.keys(item).length <= 0) {
+          if (isObject(item) && Object.keys(item).length <= 0) {
             ready = false;
           }
           if (item && item._pending) {
