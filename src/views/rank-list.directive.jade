@@ -2,7 +2,7 @@ div(ng-if="!vm.showWinners")
   ul.top-selection(ng-if='!vm.locked')
     li(ng-repeat='rank in vm.ranks track by $index')
       .shell(
-        ng-class="{ 'has-avatar': rank.avatarUrl }"
+        ng-class="{ 'has-user': rank.id }"
         ondragenter='return false'
         ondragover='return false'
         on-drop='vm.drop.handle(event, rank.value)'
@@ -12,7 +12,7 @@ div(ng-if="!vm.showWinners")
 
           .rank {{ rank.value }}
 
-        .rank(ng-if='!rank.avatarUrl') {{ rank.value }}
+        .rank(ng-if='!rank.id') {{ rank.value }}
 
     li(ng-show='vm.confirm')
       button.action(ng-click='vm.confirmRanks()') Confirm your selections
@@ -21,13 +21,13 @@ div(ng-if="!vm.showWinners")
 
   ul.top-selection(ng-if='vm.locked')
     li(ng-repeat='rank in vm.ranks track by $index')
-      .shell(ng-class="{ 'has-avatar': rank.avatarUrl }")
+      .shell(ng-class="{ 'has-user': rank.id }")
         div(ng-if='rank.id', data-id='{{ rank.id }}')
           avatar(avatar-url='{{ rank.avatarUrl }}')
 
           .rank {{ rank.value }}
 
-        .rank(ng-if='!rank.avatarUrl') {{ rank.value }}
+        .rank(ng-if='!rank.id') {{ rank.value }}
 
 div(ng-if="vm.showWinners")
   submission-winners(project-id='{{ vm.projectId }}' step-id='{{ vm.stepId }}')

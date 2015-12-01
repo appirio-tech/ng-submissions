@@ -48,7 +48,7 @@ rank-list {
       line-height     : 38px; // remember to subtract border-widths
     }
 
-    &.has-avatar {
+    &.has-user {
       .rank {
         background-color: $neutral-color-darkest;
         opacity         : 0;
