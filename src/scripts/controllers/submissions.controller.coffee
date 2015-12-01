@@ -21,6 +21,7 @@ SubmissionsController = ($scope, DataService, StepSubmissionsService, RankListSe
 
   render = (step, rankList) ->
     vm.loaded           = true
+    vm.title            = step.title
     vm.startsAt         = step.startsAt
     vm.endsAt           = step.endsAt
     vm.nextStepStartsAt = step.nextStepStartsAt
@@ -30,7 +31,7 @@ SubmissionsController = ($scope, DataService, StepSubmissionsService, RankListSe
     vm.stepType         = step.stepType
     vm.submissions      = step.submissions
     vm.numberOfRanks    = rankList.length
-    vm.userRank         = highestRank(rankList, userId)
+    vm.userRank         = highestRank rankList, userId
 
   highestRank = (rankList, userId) ->
     for i in [0...rankList.length] by 1
