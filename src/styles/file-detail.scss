@@ -42,7 +42,7 @@ file-detail {
 
         .name {
           font-size  : 16px;
-          font-weight: 400-lightest;
+          font-weight: 200;
         }
       }
     }
@@ -55,7 +55,7 @@ file-detail {
         .preview {
           overflow: auto;
           text-align: center;
-          padding: 15px-big 0;
+          padding: 20px 0;
 
           .previous, .next {
             min-width: 50px;
