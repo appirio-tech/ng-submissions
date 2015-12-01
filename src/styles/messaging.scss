@@ -1,4 +1,4 @@
-@import "work-includes";
+@import "work/work-includes";
 
 .file-detail-messaging {
   @include transition (all 0.3s ease-in-out);
@@ -6,10 +6,10 @@
   position        : absolute;
   width           : 300px;
   right           : -300px;
-  padding         : $spacing-small;
+  padding         : 10px;
   overflow        : hidden;
-  background-color: $neutral-color-lightest;
-  border-left     : 1px solid $neutral-color;
+  background-color: $grey-lightest;
+  border-left     : 1px solid $grey;
 
   &.active {
     right: 0;
@@ -17,15 +17,15 @@
 
   .title {
     hr {
-      background-color: $neutral-color-light;
-      margin: $margin-small 0;
+      background-color: $grey-light;
+      margin: 15px 0;
       width: 100%;
     }
 
     .name {
       @include ellipsis(120px);
 
-      margin-left: $margin-smallest;
+      margin-left: 10px;
       font-weight: bold;
     }
   }
@@ -34,14 +34,14 @@
     overflow: auto;
 
     time {
-      margin-left: $margin-smallest;
-      font-size: $font-size-smallest;
+      margin-left: 10px;
+      font-size: 12px;
     }
 
     ul {
       > li {
-        border-top: 1px solid $neutral-color-light;
-        padding: $padding-smallest;
+        border-top: 1px solid $grey-light;
+        padding: 5px;
 
         &:first-child {
           border-top: none;
@@ -56,7 +56,7 @@
 
   .send {
     form {
-      margin-top: $margin-small;
+      margin-top: 15px;
 
       textarea {
         width  : 100%;
@@ -64,7 +64,7 @@
       }
 
       button.enter {
-        margin-top: $margin-small;
+        margin-top: 15px;
         width: 100%;
       }
     }

@@ -1,4 +1,4 @@
-@import "work-styles";
+@import "work/work-styles";
 
 body #example-nav {
   position: fixed;
@@ -18,6 +18,6 @@ body #example-nav {
 }
 
 body > main {
-  padding: $padding-biggest;
-  background-color: $neutral-color-lightest;
+  padding: 60px;
+  background-color: $grey-lightest;
 }

@@ -1,4 +1,4 @@
-@import "work-includes";
+@import "work/work-includes";
 @import "variables";
 
 rank-list {
@@ -25,7 +25,7 @@ rank-list {
     width        : $radius;
     height       : $radius;
     border-radius: 50%;
-    border       : 1px solid $neutral-color;
+    border       : 1px solid $grey;
   }
 
   avatar {
@@ -35,11 +35,11 @@ rank-list {
   }
 
   .shell {
-    font-size   : $font-size-biggest;
+    font-size   : 16pxgest;
     border-style: dashed;
     position    : relative;
     color       : $black;
-    font-weight : $font-weight;
+    font-weight : 400;
 
     .rank {
       position        : absolute;
@@ -50,7 +50,7 @@ rank-list {
 
     &.has-user {
       .rank {
-        background-color: $neutral-color-darkest;
+        background-color: $grey-darker;
         opacity         : 0;
         color           : $white;
         cursor          : move;
