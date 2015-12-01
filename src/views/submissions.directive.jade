@@ -11,4 +11,4 @@ rank-list(ng-if="vm.statusValue > 3 && (vm.stepType == 'designConcepts' || vm.st
 
 submission-list(ng-if="vm.statusValue > 3 && (vm.stepType == 'designConcepts' || vm.stepType == 'completeDesigns')" project-id='{{ vm.projectId }}' step-id='{{ vm.stepId }}' user-type='{{ vm.userType }}')
 
-grid-of-thumbnails(ng-if="vm.statusValue > 3 && vm.stepType == 'finalFixes'" thumbnails='vm.submissions[0].files')
+file-grid(ng-if="vm.statusValue > 3 && vm.stepType == 'finalFixes'" thumbnails='vm.submissions[0].files')

@@ -72,39 +72,4 @@ file-row {
       }
     }
   }
-
-
-  .tooltip {
-    z-index   : 3;
-    display   : none;
-    text-align: center;
-    top       : 100%;
-    left      : -50%;
-    right     : 50%;
-    width     : 300px;
-
-    .arrow {
-      left  : 110px;
-      top   : -31px;
-      width : 40px;
-      height: 15px;
-    }
-
-    > * {
-      display: inline-block;
-      margin: $margin-small;
-      margin-bottom: 0;
-    }
-
-    .preview {
-      margin: 0;
-      height: 300px;
-      overflow: hidden;
-
-      img {
-        display: inline-block;
-        width : 100%;
-      }
-    }
-  }
 }
