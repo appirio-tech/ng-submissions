@@ -1,4 +1,4 @@
-@import "work-includes";
+@import "work/work-includes";
 
 submission-detail {
   display: block;
@@ -25,17 +25,17 @@ submission-detail {
     }
 
     .arrow {
-      font-size: $font-size-big;
-      color: $neutral-color-dark;
+      font-size: 16px;
+      color: $grey-dark;
     }
   }
 
   .download {
-    margin-left: $margin-smallest;
+    margin-left: 10px;
   }
 
   hr {
-    background-color: $neutral-color;
+    background-color: $grey;
     margin-top: 20px;
     margin-bottom: 30px;
   }

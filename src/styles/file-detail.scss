@@ -1,4 +1,4 @@
-@import "work-includes";
+@import "work/work-includes";
 
 file-detail {
   display: block;
@@ -10,8 +10,8 @@ file-detail {
 
     .header {
       height: 80px;
-      padding: $spacing-biggest;
-      border-bottom: 1px solid $neutral-color;
+      padding: 25px;
+      border-bottom: 1px solid $grey;
 
       @include vertical-align-middle();
 
@@ -23,26 +23,26 @@ file-detail {
       .title {
         @include ellipsis();
         text-align: center;
-        margin-top: $spacing;
+        margin-top: 15px;
       }
 
       .icons {
         text-align: right;
         min-width: 180px;
-        padding-right: $padding-biggest;
-        margin-left: $margin;
+        padding-right: 60px;
+        margin-left: 30px;
 
         > * {
-          margin-left: $margin-small;
+          margin-left: 15px;
         }
       }
 
       .name-time {
-        margin-left: $spacing;
+        margin-left: 15px;
 
         .name {
-          font-size  : $font-size-big;
-          font-weight: $font-weight-lightest;
+          font-size  : 16px;
+          font-weight: 400-lightest;
         }
       }
     }
@@ -55,17 +55,17 @@ file-detail {
         .preview {
           overflow: auto;
           text-align: center;
-          padding: $padding-big 0;
+          padding: 15px-big 0;
 
           .previous, .next {
             min-width: 50px;
 
             .arrow-previous {
-              margin: auto $margin-small auto auto
+              margin: auto 15px auto auto
             }
 
             .arrow-next {
-              margin: auto auto auto $margin-small
+              margin: auto auto auto 15px
             }
           }
 
@@ -92,7 +92,7 @@ file-detail {
 
           > * {
             display: inline-block;
-            margin: $margin-smallest;
+            margin: 10px;
             position: relative;
           }
 

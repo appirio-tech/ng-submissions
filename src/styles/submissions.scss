@@ -1,4 +1,4 @@
-@import "work-includes";
+@import "work/work-includes";
 @import "variables";
 
 //variables
@@ -59,7 +59,7 @@ submissions {
         width        : $radius;
         height       : $radius;
         border-radius: 50%;
-        border       : 1px solid $neutral-color;
+        border       : 1px solid $grey;
       }
 
       avatar {
@@ -69,11 +69,11 @@ submissions {
       }
 
       .shell {
-        font-size   : $font-size-biggest;
+        font-size   : 16pxgest;
         border-style: dashed;
         position    : relative;
         color       : $black;
-        font-weight : $font-weight;
+        font-weight : 400;
 
         .rank {
           position        : absolute;
@@ -84,7 +84,7 @@ submissions {
 
         &.has-avatar {
           .rank {
-            background-color: $neutral-color-darkest;
+            background-color: $grey-darker;
             opacity         : 0;
             color           : $white;
             cursor          : move;
@@ -100,13 +100,13 @@ submissions {
 
   ul.submissions {
     text-align: left;
-    margin-top: $margin;
+    margin-top: 30px;
   }
 
   .submission {
     padding         : 14px $horizontal-small;
     background-color: $white;
-    margin-top      : $margin-small;
+    margin-top      : 15px;
 
     avatar {
       width: 48px;
@@ -128,7 +128,7 @@ submissions {
         .name {
           @include ellipsis();
 
-          font-size: $font-size-big;
+          font-size: 16px;
           color: $primary-color;
         }
 
@@ -161,11 +161,11 @@ submissions {
         z-index         : 1;
         display         : none;
         text-align      : center;
-        padding         : $padding;
+        padding         : 15px;
 
         > * {
           display: inline-block;
-          margin: $margin-small;
+          margin: 15px;
           margin-bottom: 0;
         }
 

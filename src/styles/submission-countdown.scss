@@ -1,4 +1,4 @@
-@import "work-includes";
+@import "work/work-includes";
 
 submission-countdown {
   display: block;
@@ -12,7 +12,7 @@ submission-countdown {
   countdown {
     margin-top: 20px;
     font-size: 22px;
-    font-weight: $font-weight-boldest;
+    font-weight: 700;
   }
 
   p {
@@ -31,7 +31,7 @@ submission-countdown {
       margin: 40px auto;
       margin-bottom: 53px;
       max-width: 600px;
-      background-color: $neutral-color;
+      background-color: $grey;
     }
   }
 }
