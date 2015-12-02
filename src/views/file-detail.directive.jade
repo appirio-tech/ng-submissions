@@ -1,8 +1,8 @@
 loader(ng-hide="vm.loaded")
 
 main.flex.column
-  .header.flex
-    .flex-grow.submitter
+  .header.flex.middle.space-between
+    .submitter.flex.middle
       avatar(avatar-url="{{ vm.submission.submitter.avatar }}")
 
       .name-time
@@ -10,10 +10,9 @@ main.flex.column
 
         time Submitted: {{ vm.submission.createdAt | timeLapse }}
 
-    .title.flex-shrink.flex-grow
-      strong {{ vm.file.name }}
+    p.title {{ vm.file.name }}
 
-    .flex-grow.icons
+    .icons
       button.clean
         a(href="{{ vm.file.url }}" target="_blank")
           .icon.download
