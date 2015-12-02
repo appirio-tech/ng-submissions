@@ -1,6 +1,6 @@
 'use strict'
 
-GridOfThumbnailsExampleController = ($scope) ->
+controller = ($scope) ->
   vm                 = this
   vm.thumbnailGroups = []
 
@@ -33,6 +33,6 @@ GridOfThumbnailsExampleController = ($scope) ->
 
   activate()
 
-GridOfThumbnailsExampleController.$inject = ['$scope']
+controller.$inject = ['$scope']
 
-angular.module('appirio-tech-submissions').controller 'GridOfThumbnailsExampleController', GridOfThumbnailsExampleController
+angular.module('appirio-tech-submissions').controller 'FileGridExampleController', controller

@@ -27,15 +27,15 @@ config = ($stateProvider) ->
     controller  : 'TopSelectionExampleController as vm'
     templateUrl : 'views/top-selections.example.html'
 
-  states['row-of-thumbnails'] =
-    url         : '/row-of-thumbnails'
-    controller  : 'RowOfThumbnailsExampleController as vm'
-    templateUrl : 'views/row-of-thumbnails.example.html'
+  states['file-row'] =
+    url         : '/file-row'
+    controller  : 'FileRowExampleController as vm'
+    templateUrl : 'views/file-row.example.html'
 
-  states['grid-of-thumbnails'] =
-    url         : '/grid-of-thumbnails'
-    controller  : 'GridOfThumbnailsExampleController as vm'
-    templateUrl : 'views/grid-of-thumbnails.example.html'
+  states['file-grid'] =
+    url         : '/file-grid'
+    controller  : 'FileGridExampleController as vm'
+    templateUrl : 'views/file-grid.example.html'
 
   states['submission-winner-card'] =
     url         : '/submission-winner-card'
