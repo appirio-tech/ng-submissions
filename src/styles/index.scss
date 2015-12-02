@@ -1,4 +1,4 @@
-@import "work-includes";
+@import "work/work-includes";
 @import "variables";
 
 submissions, final-fixes, submission-detail {
@@ -17,7 +17,7 @@ submissions, final-fixes, submission-detail {
     margin-top: 20px;
 
     li {
-      margin-left: $margin-smallest;
+      margin-left: 10px;
 
       &:first-child {
         margin-left: 0;
@@ -39,14 +39,14 @@ submissions, final-fixes, submission-detail {
 submissions, final-fixes {
   p.total-count {
     text-transform: uppercase;
-    color         : $text-color-lightest;
+    color         : $text-color-lighter;
     text-align    : left;
     margin-top    : 10px;
   }
 
   hr.total-count {
     margin-top: 15px;
-    background-color: $neutral-color-light
+    background-color: $grey-light
   }
 
   .header {
@@ -77,7 +77,7 @@ submissions, final-fixes {
 
     hr {
       margin-bottom: 0px;
-      background-color: $neutral-color-light;
+      background-color: $grey-light;
     }
 
     .icon {
@@ -97,10 +97,10 @@ submissions, final-fixes {
         @include vertical-align-middle();
 
         display: inline-block;
-        margin: $margin;
+        margin: 30px;
 
         > * {
-          margin-left: $margin-smallest;
+          margin-left: 10px;
         }
 
         .rank {
@@ -121,7 +121,7 @@ submissions, final-fixes {
   }
 
   h4 {
-    color: $neutral-color-light;
+    color: $grey-light;
   }
 
   countdown {
@@ -145,7 +145,7 @@ final-fixes, submission-detail {
 
     .preview {
       position: relative;
-      margin  : $margin-smallest;
+      margin  : 10px;
       width   : $tile-width;
 
       .img {
@@ -164,7 +164,7 @@ final-fixes, submission-detail {
         left            : 0;
         background-color: rgba(61, 61, 61, .5);
         margin          : 0;
-        padding         : $padding-small;
+        padding         : 10px;
         color           : $white;
       }
 

@@ -1,4 +1,4 @@
-@import "work-includes";
+@import "work/work-includes";
 @import "variables";
 
 $thumbnail-height: 150px;
@@ -64,7 +64,7 @@ file-row {
         text-align : center;
         color      : $white;
         font-size  : 18px;
-        font-weight: $font-weight-boldest;
+        font-weight: 700;
 
         span {
           width: 40px;

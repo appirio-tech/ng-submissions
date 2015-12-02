@@ -1,6 +1,6 @@
 'use strict'
 
-RowOfThumbnailsExampleController = ($scope) ->
+controller = ($scope) ->
   vm             = this
   vm.thumbnails  = []
   vm.thumbnails2 = []
@@ -29,6 +29,6 @@ RowOfThumbnailsExampleController = ($scope) ->
 
   activate()
 
-RowOfThumbnailsExampleController.$inject = ['$scope']
+controller.$inject = ['$scope']
 
-angular.module('appirio-tech-submissions').controller 'RowOfThumbnailsExampleController', RowOfThumbnailsExampleController
+angular.module('appirio-tech-submissions').controller 'FileRowExampleController', controller
