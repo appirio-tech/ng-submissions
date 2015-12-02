@@ -5,91 +5,6 @@ SubmissionsService = ($rootScope, SubmissionsAPIService, SubmissionsMessagesAPIS
   pending = false
   error = false
 
-  fileWithMessageCounts = (file) ->
-    file.totalMessages = 0
-    file.unreadMessages = 0
-
-    file.threads?[0]?.messages.forEach (message) ->
-      file.totalMessages = file.totalMessages + 1
-      if !message.read
-        file.unreadMessages = file.unreadMessages + 1
-
-    file
-
-  submissionWithMessageCounts = (submission) ->
-    submission.totalMessages = 0
-    submission.unreadMessages = 0
-
-    submission.files.forEach (file) ->
-      fileWithMessageCounts(file)
-      submission.totalMessages = submission.totalMessages + file.totalMessages
-      submission.unreadMessages = submission.unreadMessages + file.unreadMessages
-
-    submission
-
-  submissionsWithMessageCounts = (submissions) ->
-    submissions.map (submission) ->
-      submissionWithMessageCounts submission
-
-  # With file types
-  fileWithFileType = (file) ->
-    extension = file.name.match /\.[0-9a-z]+$/i
-    extension = extension[0].slice 1
-    extension = extension.toLowerCase()
-
-    file.fileType = extension
-
-    file
-
-  submissionWithFileTypes = (submission) ->
-    submission.files = submission.files.map (file) ->
-      fileWithFileType file
-
-    submission
-
-  submissionsWithFileTypes = (submissions) ->
-    submissions.map (submission) ->
-      submissionWithFileTypes submission
-
-  # Limited by number of files
-  submissionWithFileLimit = (submission, limit) ->
-    submission.more = if submission.files.length > limit then submission.files.length - limit else 0
-    submission.files   = submission.files.slice 0, limit
-
-    submission
-
-  submissionsWithFileLimit = (submissions, limit) ->
-    submissions.map (submission) ->
-      submissionWithFileLimit submission, limit
-
-  # Filtered by file type
-  submissionFilteredByType = (submission, allowedTypes = [ 'png', 'jpg', 'gif' ]) ->
-    submission.files = submission.files.filter (file) ->
-      allowedTypes.indexOf(file.fileType) > -1
-
-    submission
-
-  submissionsFilteredByType = (submissions, allowedTypes) ->
-    submissions.map (submission) ->
-      submissionFilteredByType submission, allowedTypes
-
-  # Decorated with submission ownership
-  submissionsWithOwnership = (submissions, userId) ->
-    submissions.map (submission) ->
-      angular.merge {}, submission,
-        belongsToUser: submission.submitter.id == userId
-
-  submissionWithoutDeliverables = (submission) ->
-    submission.files = submission.files.filter (file) ->
-      file.name?
-
-    submission
-
-  # Decorated with submission ownership
-  submissionsWithoutDeliverables = (submissions) ->
-    submissions.map (submission) ->
-      submissionWithoutDeliverables submission
-
   emitUpdates = (projectId, stepId) ->
     $rootScope.$emit "SubmissionsService:changed:#{projectId}:#{stepId}"
 
@@ -104,13 +19,14 @@ SubmissionsService = ($rootScope, SubmissionsAPIService, SubmissionsMessagesAPIS
 
   dyanamicProps = (submissions) ->
     user = UserV3Service.getCurrentUser()
-    submissions = submissionsWithoutDeliverables submissions
-    submissions = submissionsWithMessageCounts submissions
-    submissions = submissionsWithOwnership submissions, user?.id
-    submissions = submissionsWithFileTypes submissions
-    submissions = submissionsFilteredByType submissions
 
-    submissions
+    submissions.map (submission) ->
+      submission = withSeparateDeliverable submission
+      submission = withMessageCounts submission
+      submission = withOwnership submission, user?.id
+      submission = withSortedMessages submission
+
+      submission
 
   get = (projectId, stepId) ->
     unless projectId && stepId
@@ -146,15 +62,7 @@ SubmissionsService = ($rootScope, SubmissionsAPIService, SubmissionsMessagesAPIS
       error = false
       data[stepId] = res
 
-
-      submissions.forEach (submission) ->
-        submission.files.forEach (file) ->
-          file.threads.forEach (thread) ->
-            thread.messages.sort (a, b) ->
-              aDate = new Date a.createdAt
-              bDate = new Date b.createdAt
-
-              aDate - bDate
+      submissions
 
     promise.catch (err) ->
       error = err
@@ -227,3 +135,33 @@ SubmissionsService = ($rootScope, SubmissionsAPIService, SubmissionsMessagesAPIS
 SubmissionsService.$inject = ['$rootScope', 'SubmissionsAPIService', 'SubmissionsMessagesAPIService', 'UserV3Service', 'MessageUpdateAPIService']
 
 angular.module('appirio-tech-submissions').factory 'SubmissionsService', SubmissionsService
+
+withMessageCounts = (submission) ->
+  angular.extend {}, submission,
+    files: submission.files.map (file) ->
+      angular.extend {}, file,
+        totalMessages: file.threads[0].messages.length
+        unreadMessages: file.threads[0].messages.filter((m) -> !m.read).length
+    totalMessages: submission.files.reduce ((t, f) -> t + f.totalMessages), 0
+    unreadMessages: submission.files.reduce ((t, f) -> t + f.unreadMessages), 0
+
+withOwnership = (submission, userId) ->
+  angular.extend {}, submission,
+    belongsToUser: submission.submitter.id == userId
+
+withSeparateDeliverable = (submission) ->
+  angular.extend {}, submission,
+    downloadUrl: submission.files.filter((f) -> f.role == 'PREVIEW_COLLECTION')[0]?.url
+    files: submission.files.filter((f) -> f.role != 'PREVIEW_COLLECTION')
+
+withSortedMessages = (submission) ->
+  angular.extend {}, submission,
+    files: submission.files.map (file) ->
+      angular.extend {}, file,
+        threads: file.threads.map (thread) ->
+          angular.extend {}, thread,
+            messages: thread.messages.slice(0).sort (a, b) ->
+              aDate = new Date a.createdAt
+              bDate = new Date b.createdAt
+
+              aDate - bDate
