@@ -35,6 +35,6 @@
         p.message {{ message.body }}
 
   .send
-    form(ng-submit='vm.sendMessage()', ng-if="vm.status != 'CLOSED'")
+    form(ng-submit='vm.sendMessage()', ng-if="vm.status != 'CLOSED' && vm.canComment")
       textarea(placeholder='Send a message…', ng-model='vm.newMessage')
       button.enter(type='submit') Enter

@@ -147,7 +147,7 @@ withMessageCounts = (submission) ->
 
 withOwnership = (submission, userId) ->
   angular.extend {}, submission,
-    belongsToUser: submission.submitter.id == userId
+    belongsToUser: submission.submitter.userId == userId
 
 withSeparateDeliverable = (submission) ->
   angular.extend {}, submission,
