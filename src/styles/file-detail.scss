@@ -4,40 +4,51 @@ file-detail {
   display: block;
 
   main {
-    width           : 100vw;
-    height          : 100vh;
-    background-color: $white;
+    width : 100vw;
+    height: 100vh;
+    padding: 40px 70px;
+
+    > hr {
+      height    : 10px;
+      width     : 100%;
+      margin-top: 20px;
+    }
 
     .header {
-      padding      : 25px;
-      border-bottom: 1px solid $grey;
+      width  : 100%;
+
+      avatar {
+        width: 48px;
+        height: 48px;
+      }
 
       .submitter {
         min-width: 240px;
       }
 
-      .title {
-        @include ellipsis();
-      }
-
       .icons {
         text-align: right;
-        min-width: 180px;
-        padding-right: 60px;
         margin-left: 30px;
+
+        .icon {
+          width: 20px;
+          height: 20px;
+        }
+
+        .icon.download {
+          width: 19px;
+          height: 23px;
+        }
 
         > * {
           margin-left: 15px;
         }
       }
 
-      .name-time {
+      .name {
         margin-left: 15px;
-
-        .name {
-          font-size  : 16px;
-          font-weight: 200;
-        }
+        font-size  : 16px;
+        font-weight: 200;
       }
     }
 
@@ -45,6 +56,10 @@ file-detail {
       overflow: hidden;
 
       .slideshow {
+        .icon.arrow {
+          width: 33px;
+          height: 74px;
+        }
 
         .preview {
           overflow: auto;
@@ -55,11 +70,11 @@ file-detail {
             min-width: 50px;
 
             .arrow-previous {
-              margin: auto 15px auto auto
+              margin: auto 80px auto auto
             }
 
             .arrow-next {
-              margin: auto auto auto 15px
+              margin: auto auto auto 80px
             }
           }
 
@@ -69,6 +84,7 @@ file-detail {
 
               img {
                 margin: auto;
+                margin-top: 40px;
                 max-width: 100%;
                 max-height: 100%;
               }
