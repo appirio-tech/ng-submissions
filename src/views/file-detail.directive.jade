@@ -3,10 +3,12 @@ loader(ng-hide="vm.loaded")
 main.flex.column
   .header.flex.middle.space-between
     .submitter.flex.middle
-      avatar(avatar-url="{{ vm.submission.submitter.avatar }}")
+      a(href="{{vm.generateProfileUrl(vm.submission.submitter.handle)}}" target="_blank")
+        avatar(avatar-url="{{ vm.submission.submitter.avatar }}")
 
       .name-time
-        p.name {{ vm.submission.submitter.handle }}
+        a(href="{{vm.generateProfileUrl(vm.submission.submitter.handle)}}" target="_blank")
+          p.name {{ vm.submission.submitter.handle }}
 
         time Submitted: {{ vm.submission.createdAt | timeLapse }}
 
