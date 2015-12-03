@@ -33,8 +33,8 @@ srv = ($rootScope, $state, StepsService, SubmissionsService, DataService) ->
     orderedSubmissions
 
   update = (step, submissions) ->
-    step.projectId   = projectIdsByStepId[step.id]
     data[step.id]    = step
+    step.projectId   = projectIdsByStepId[step.id]
     submissions      = submissionsWithRanks submissions, step.details.rankedSubmissions
     submissions      = sortSubmissions submissions
 
@@ -57,36 +57,21 @@ srv = ($rootScope, $state, StepsService, SubmissionsService, DataService) ->
 
     step.submissions = submissions
 
-    fileCount = (acc, submission) ->
-      acc + submission.files.length
-
-    step.fileCount = submissions.reduce fileCount, 0
+    step.fileCount = submissions.reduce ((a, s) -> a + s.files.length), 0
 
     $rootScope.$emit "StepSubmissionsService:changed:#{step.projectId}:#{step.id}"
 
   get = (projectId, stepId) ->
     unless data[stepId]
-      data[stepId] =
-        projectId: projectId
-
-      DataService.subscribe null, update, [
-        [StepsService, 'getStepById', projectId, stepId]
-        [SubmissionsService, 'get', projectId, stepId]
-      ]
-
-    data[stepId]
-
-  get = (projectId, stepId) ->
-    unless data[stepId]
       projectIdsByStepId[stepId] = projectId
-      data[stepId]               = {}
+      data[stepId] = {}
 
       DataService.subscribe null, update, [
         [StepsService, 'getStepById', projectId, stepId]
         [SubmissionsService, 'get', projectId, stepId]
       ]
 
-    data[stepId]
+    angular.merge {}, data[stepId]
 
   name : 'StepSubmissionsService'
   get  : get

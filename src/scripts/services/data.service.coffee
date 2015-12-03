@@ -25,6 +25,9 @@ srv = ($injector, $rootScope) ->
         if item == undefined || item == null
           ready = false
 
+        if Array.isArray(item) && item.length == 0
+          ready = false
+
         if isObject(item) && Object.keys(item).length <= 0
           ready = false
 

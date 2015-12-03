@@ -22,6 +22,7 @@ FileDetailController = ($scope, $state, DataService, StepSubmissionsService, Sub
     vm.loaded     = true
     vm.submission = step.submissions.filter((submission) -> submission.id == submissionId)[0]
     vm.file       = vm.submission.files.filter((file) -> file.id == fileId)[0]
+    vm.file.isCurrent = true
     vm.messages   = vm.file.threads[0]?.messages || []
     vm.status     = step.status
     vm.canComment = vm.userType == 'customer' || vm.userType == 'copilot' || vm.submission.belongsToUser

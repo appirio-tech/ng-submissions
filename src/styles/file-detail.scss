@@ -104,9 +104,13 @@ file-detail {
             display: inline-block;
             margin: 10px;
             position: relative;
+
+            &.elevated {
+              opacity: 0.6;
+            }
           }
 
-          button {
+          a {
             img {
               width  : 60px;
               height : 50px;

@@ -38,10 +38,9 @@ main.flex.column.middle.light-bg
             button.clean.icon.arrow.right
 
       ul.thumbnails
-        li.thumbnail(ng-repeat="file in vm.submission.files")
-          button.clean.thumbnail
-            a(href="{{ file.detailUrl }}")
-              img(ng-src="{{ file.url }}")
+        li.thumbnail(ng-repeat="file in vm.submission.files" ng-class="{ elevated: !file.isCurrent }")
+          a(href="{{ file.detailUrl }}")
+            img(ng-src="{{ file.url }}")
 
             .notification.absolute(ng-if="file.unreadMessages > 0") {{ file.unreadMessages }}
 
