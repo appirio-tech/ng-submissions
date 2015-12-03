@@ -8,7 +8,7 @@
 
 }).call(this);
 
-angular.module("appirio-tech-submissions").run(["$templateCache", function($templateCache) {$templateCache.put("views/file-detail.directive.html","<loader ng-hide=\"vm.loaded\"></loader><main class=\"flex column middle light-bg\"><div class=\"header flex middle space-between\"><div class=\"submitter flex middle\"><a href=\"{{vm.generateProfileUrl(vm.submission.submitter.handle)}}\" target=\"_blank\"><avatar avatar-url=\"{{ vm.submission.submitter.avatar }}\"></avatar></a><a href=\"{{vm.generateProfileUrl(vm.submission.submitter.handle)}}\" target=\"_blank\"><p class=\"name\">{{ vm.submission.submitter.handle }}</p></a></div><div class=\"icons\"><button class=\"clean\"><a href=\"{{ vm.file.url }}\" target=\"_blank\"><div class=\"icon download\"></div></a></button><button ng-click=\"vm.toggleComments()\" class=\"clean\"><div class=\"icon bubble\"></div></button></div></div><hr/><div class=\"content flex flex-grow\"><div class=\"slideshow flex column flex-grow\"><div class=\"preview flex center flex-grow flex-shrink\"><div class=\"previous flex flex-grow\"><a ng-if=\"vm.prevFile\" href=\"{{ vm.prevFile.detailUrl }}\" class=\"arrow-previous\"><button class=\"clean icon arrow\"></button></a></div><div class=\"image flex column center\"><div class=\"img-container\"><p class=\"file-name\">{{ vm.file.name }}</p><img ng-src=\"{{ vm.file.url }}\"/></div></div><div class=\"next flex flex-grow\"><a ng-if=\"vm.nextFile\" href=\"{{ vm.nextFile.detailUrl }}\" class=\"arrow-next\"><button class=\"clean icon arrow right\"></button></a></div></div><ul class=\"thumbnails\"><li ng-repeat=\"file in vm.submission.files\" class=\"thumbnail\"><button class=\"clean thumbnail\"><a href=\"{{ file.detailUrl }}\"><img ng-src=\"{{ file.url }}\"/></a><div ng-if=\"file.unreadMessages &gt; 0\" class=\"notification absolute\">{{ file.unreadMessages }}</div></button></li></ul></div><div ng-class=\"{ active: vm.showMessages }\" flush-height=\"flush-height\" class=\"file-detail-messaging flex column\"><div class=\"title\"><h4>Feedback</h4><hr/></div><div class=\"messages flex-grow flex-shrink\"><ul><li ng-if=\"vm.userType == \'customer\'\"><p ng-if=\"vm.messages.length == 0 &amp;&amp; vm.status != \'CLOSED\'\">Please provide feedback here to the community member and the copilot about this image. Your feedback will be visible to all members who have submitted, but only the copilot and the submitter of this image will be allowed to respond.</p><p ng-if=\"vm.status == \'CLOSED\'\">You can no longer add feedback here. If you have additional feedback, please <a>message your copilot directly.</a></p></li><li ng-if=\"vm.userType == \'copilot\'\"><p ng-if=\"vm.messages.length == 0 &amp;&amp; vm.status != \'CLOSED\'\">Please provide feedback here to the community member and the copilot about this image. Your feedback will be visible to all members who have submitted, but only the copilot and the submitter of this image will be allowed to respond.</p><p ng-if=\"vm.status == \'CLOSED\'\">You can no longer add feedback here. If you have additional feedback, please <a>message your copilot directly.</a></p></li><li ng-if=\"vm.userType == \'member\'\"><p ng-if=\"vm.messages.length == 0 &amp;&amp; vm.status != \'CLOSED\'\">Use this space to respond to customer feedback and provide context for your designs. Only you, the copilot, and the customer can add comments, but these comments will be visible to everyone who has submitted.</p><p ng-if=\"vm.status == \'CLOSED\'\">You can no longer add comments here. If you have any questions or comments for your customer, please contact your copilot via the forum.</p></li><li ng-repeat=\"message in vm.messages track by $index\"><header class=\"flex middle\"><a href=\"{{vm.generateProfileUrl(message.publisher.handle)}}\" target=\"_blank\"><avatar avatar-url=\"{{ message.publisher.avatar }}\"></avatar></a><a href=\"{{vm.generateProfileUrl(message.publisher.handle)}}\" target=\"_blank\"><div class=\"name\">{{ message.publisher.handle }}</div></a><time>{{ message.createdAt | timeLapse }}</time></header><p class=\"message\">{{ message.body }}</p></li></ul></div><div class=\"send\"><form ng-submit=\"vm.sendMessage()\" ng-if=\"vm.status != \'CLOSED\'\"><textarea placeholder=\"Send a message…\" ng-model=\"vm.newMessage\"></textarea><button type=\"submit\" class=\"enter\">Enter</button></form></div></div></div></main>");
+angular.module("appirio-tech-submissions").run(["$templateCache", function($templateCache) {$templateCache.put("views/file-detail.directive.html","<loader ng-hide=\"vm.loaded\"></loader><main class=\"flex column middle light-bg\"><div class=\"header flex middle space-between\"><div class=\"submitter flex middle\"><a href=\"{{vm.generateProfileUrl(vm.submission.submitter.handle)}}\" target=\"_blank\"><avatar avatar-url=\"{{ vm.submission.submitter.avatar }}\"></avatar></a><a href=\"{{vm.generateProfileUrl(vm.submission.submitter.handle)}}\" target=\"_blank\"><p class=\"name\">{{ vm.submission.submitter.handle }}</p></a></div><div class=\"icons\"><button class=\"clean\"><a href=\"{{ vm.file.url }}\" target=\"_blank\"><div class=\"icon download\"></div></a></button><button ng-click=\"vm.toggleComments()\" class=\"clean\"><div class=\"icon bubble\"></div></button></div></div><hr/><div class=\"content flex flex-grow\"><div class=\"slideshow flex column flex-grow\"><div class=\"preview flex center flex-grow flex-shrink\"><div class=\"previous flex flex-grow\"><a ng-if=\"vm.prevFile\" href=\"{{ vm.prevFile.detailUrl }}\" class=\"arrow-previous\"><button class=\"clean icon arrow\"></button></a></div><div class=\"image flex column center\"><div class=\"img-container\"><p class=\"file-name\">{{ vm.file.name }}</p><img ng-src=\"{{ vm.file.url }}\"/></div></div><div class=\"next flex flex-grow\"><a ng-if=\"vm.nextFile\" href=\"{{ vm.nextFile.detailUrl }}\" class=\"arrow-next\"><button class=\"clean icon arrow right\"></button></a></div></div><ul class=\"thumbnails\"><li ng-repeat=\"file in vm.submission.files\" ng-class=\"{ elevated: !file.isCurrent }\" class=\"thumbnail\"><a href=\"{{ file.detailUrl }}\"><img ng-src=\"{{ file.url }}\"/><div ng-if=\"file.unreadMessages &gt; 0\" class=\"notification absolute\">{{ file.unreadMessages }}</div></a></li></ul></div><div ng-class=\"{ active: vm.showMessages }\" flush-height=\"flush-height\" class=\"file-detail-messaging flex column\"><div class=\"title\"><h4>Feedback</h4><hr/></div><div class=\"messages flex-grow flex-shrink\"><ul><li ng-if=\"vm.userType == \'customer\'\"><p ng-if=\"vm.messages.length == 0 &amp;&amp; vm.status != \'CLOSED\'\">Please provide feedback here to the community member and the copilot about this image. Your feedback will be visible to all members who have submitted, but only the copilot and the submitter of this image will be allowed to respond.</p><p ng-if=\"vm.status == \'CLOSED\'\">You can no longer add feedback here. If you have additional feedback, please <a>message your copilot directly.</a></p></li><li ng-if=\"vm.userType == \'copilot\'\"><p ng-if=\"vm.messages.length == 0 &amp;&amp; vm.status != \'CLOSED\'\">Please provide feedback here to the community member and the copilot about this image. Your feedback will be visible to all members who have submitted, but only the copilot and the submitter of this image will be allowed to respond.</p><p ng-if=\"vm.status == \'CLOSED\'\">You can no longer add feedback here. If you have additional feedback, please <a>message your copilot directly.</a></p></li><li ng-if=\"vm.userType == \'member\'\"><p ng-if=\"vm.messages.length == 0 &amp;&amp; vm.status != \'CLOSED\'\">Use this space to respond to customer feedback and provide context for your designs. Only you, the copilot, and the customer can add comments, but these comments will be visible to everyone who has submitted.</p><p ng-if=\"vm.status == \'CLOSED\'\">You can no longer add comments here. If you have any questions or comments for your customer, please contact your copilot via the forum.</p></li><li ng-repeat=\"message in vm.messages track by $index\"><header class=\"flex middle\"><a href=\"{{vm.generateProfileUrl(message.publisher.handle)}}\" target=\"_blank\"><avatar avatar-url=\"{{ message.publisher.avatar }}\"></avatar></a><a href=\"{{vm.generateProfileUrl(message.publisher.handle)}}\" target=\"_blank\"><div class=\"name\">{{ message.publisher.handle }}</div></a><time>{{ message.createdAt | timeLapse }}</time></header><p class=\"message\">{{ message.body }}</p></li></ul></div><div class=\"send\"><form ng-submit=\"vm.sendMessage()\" ng-if=\"vm.status != \'CLOSED\' &amp;&amp; vm.canComment\"><textarea placeholder=\"Send a message…\" ng-model=\"vm.newMessage\"></textarea><button type=\"submit\" class=\"enter\">Enter</button></form></div></div></div></main>");
 $templateCache.put("views/file-grid.directive.html","<ul class=\"files\"><li ng-repeat=\"file in files track by $index\"><div class=\"spacer\"><a href=\"{{ file.detailUrl }}\" style=\"background-image: url({{ file.url }})\"></a></div></li></ul>");
 $templateCache.put("views/file-row.directive.html","<ul class=\"files flex\"><li ng-repeat=\"file in vm.files track by $index\" class=\"flex-one\"><a href=\"{{ file.detailUrl }}\"><img ng-src=\"{{ file.url }}\"/></a><div ng-if=\"file.isLast\" class=\"view-all-bg\"><div></div></div><a ng-if=\"file.isLast\" href=\"{{ viewAllUrl }}\" class=\"view-more\"><p class=\"flex middle center\"><span ng-if=\"vm.viewAll\">View All</span><span ng-if=\"vm.viewMore\">+{{ vm.more }} More</span></p></a></li></ul>");
 $templateCache.put("views/final-development.directive.html","<submissions-header text=\"final development\" next=\"http://www.google.com\" prev=\"http://www.google.com\"></submissions-header><hr/><main class=\"light-bg\"><div class=\"message\"><p>Co-Pilot Message</p><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p></div><image-row thumbnails=\"vm.thumbnails\" view-all-text=\"+3 more\" view-all=\"http://www.google.com\"></image-row></main><div class=\"links\"><p>Clickable Prototype</p><ul><li><a href=\"http://www.google.com\">http://www.google.com</a></li><li><a href=\"http://www.google.com\">http://www.google.com</a></li></ul></div><div class=\"links\"><p>Other Links</p><ul><li><a href=\"http://www.google.com\">http://www.google.com</a></li><li><a href=\"http://www.google.com\">http://www.google.com</a></li></ul></div><loader ng-show=\"!vm.loaded\"></loader>");
@@ -275,8 +275,10 @@ $templateCache.put("views/submissions.directive.html","<loader ng-hide=\"vm.load
       vm.file = vm.submission.files.filter(function(file) {
         return file.id === fileId;
       })[0];
+      vm.file.isCurrent = true;
       vm.messages = ((ref = vm.file.threads[0]) != null ? ref.messages : void 0) || [];
       vm.status = step.status;
+      vm.canComment = vm.userType === 'customer' || vm.userType === 'copilot' || vm.submission.belongsToUser;
       currentIndex = vm.submission.files.indexOf(vm.file);
       if (currentIndex > 0) {
         vm.prevFile = vm.submission.files[currentIndex - 1];
@@ -1169,7 +1171,7 @@ $templateCache.put("views/submissions.directive.html","<loader ng-hide=\"vm.load
 
   withOwnership = function(submission, userId) {
     return angular.extend({}, submission, {
-      belongsToUser: submission.submitter.id === userId
+      belongsToUser: submission.submitter.userId === userId
     });
   };
 
@@ -1319,9 +1321,8 @@ $templateCache.put("views/submissions.directive.html","<loader ng-hide=\"vm.load
       return orderedSubmissions;
     };
     update = function(step, submissions) {
-      var fileCount;
-      step.projectId = projectIdsByStepId[step.id];
       data[step.id] = step;
+      step.projectId = projectIdsByStepId[step.id];
       submissions = submissionsWithRanks(submissions, step.details.rankedSubmissions);
       submissions = sortSubmissions(submissions);
       submissions = submissions.map(function(submission) {
@@ -1342,20 +1343,10 @@ $templateCache.put("views/submissions.directive.html","<loader ng-hide=\"vm.load
         return submission;
       });
       step.submissions = submissions;
-      fileCount = function(acc, submission) {
-        return acc + submission.files.length;
-      };
-      step.fileCount = submissions.reduce(fileCount, 0);
+      step.fileCount = submissions.reduce((function(a, s) {
+        return a + s.files.length;
+      }), 0);
       return $rootScope.$emit("StepSubmissionsService:changed:" + step.projectId + ":" + step.id);
-    };
-    get = function(projectId, stepId) {
-      if (!data[stepId]) {
-        data[stepId] = {
-          projectId: projectId
-        };
-        DataService.subscribe(null, update, [[StepsService, 'getStepById', projectId, stepId], [SubmissionsService, 'get', projectId, stepId]]);
-      }
-      return data[stepId];
     };
     get = function(projectId, stepId) {
       if (!data[stepId]) {
@@ -1363,7 +1354,7 @@ $templateCache.put("views/submissions.directive.html","<loader ng-hide=\"vm.load
         data[stepId] = {};
         DataService.subscribe(null, update, [[StepsService, 'getStepById', projectId, stepId], [SubmissionsService, 'get', projectId, stepId]]);
       }
-      return data[stepId];
+      return angular.merge({}, data[stepId]);
     };
     return {
       name: 'StepSubmissionsService',
@@ -1411,6 +1402,9 @@ $templateCache.put("views/submissions.directive.html","<loader ng-hide=\"vm.load
           var ready;
           ready = true;
           if (item === void 0 || item === null) {
+            ready = false;
+          }
+          if (Array.isArray(item) && item.length === 0) {
             ready = false;
           }
           if (isObject(item) && Object.keys(item).length <= 0) {
