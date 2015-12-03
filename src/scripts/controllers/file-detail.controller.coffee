@@ -33,6 +33,9 @@ FileDetailController = ($scope, $state, DataService, StepSubmissionsService, Sub
     if currentIndex + 1 < vm.submission.files.length
       vm.nextFile = vm.submission.files[currentIndex + 1]
 
+  vm.generateProfileUrl = (handle) ->
+    "https://www.topcoder.com/members/#{handle}"
+
   vm.sendMessage = ->
     if vm.newMessage
       SubmissionsService.sendMessage projectId, stepId, submissionId, fileId, vm.newMessage

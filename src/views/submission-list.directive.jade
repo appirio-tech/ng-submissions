@@ -6,11 +6,13 @@ ul.submissions.new(ng-if='vm.statusValue > 3')
   li.submission(ng-repeat='submission in vm.submissions', data-id='{{ submission.id }}', ng-class="{ 'belongs-to-user': submission.belongsToUser }", draggable)
     ul.user-details.flex.middle.space-between
       li.flex.middle
-        avatar(avatar-url='{{ submission.submitter.avatar }}')
+        a(href="{{vm.generateProfileUrl(submission.submitter.handle)}}" target="_blank")
+          avatar(avatar-url='{{ submission.submitter.avatar }}')
 
         .name-time
-          .name {{ submission.submitter.handle }} 
-            span(ng-if='submission.belongsToUser') (Me)
+          a(href="{{vm.generateProfileUrl(submission.submitter.handle)}}" target="_blank")
+            .name {{ submission.submitter.handle }} 
+              span(ng-if='submission.belongsToUser') (Me)
 
           p.secondary {{ submission.files.length }} Images
 

@@ -3,9 +3,12 @@ loader(ng-hide="vm.loaded")
 main.flex.column.middle.light-bg
   .header.flex.middle.space-between
     .submitter.flex.middle
-      avatar(avatar-url="{{ vm.submission.submitter.avatar }}")
+      a(href="{{vm.generateProfileUrl(vm.submission.submitter.handle)}}" target="_blank")
+        avatar(avatar-url="{{ vm.submission.submitter.avatar }}")
 
-      p.name {{ vm.submission.submitter.handle }}
+      a(href="{{vm.generateProfileUrl(vm.submission.submitter.handle)}}" target="_blank")
+        p.name {{ vm.submission.submitter.handle }}
+
 
     .icons
       button.clean

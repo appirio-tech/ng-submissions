@@ -24,8 +24,12 @@
 
       li(ng-repeat='message in vm.messages track by $index')
         header.flex.middle
-          avatar(avatar-url='{{ message.publisher.avatar }}')
-          .name {{ message.publisher.handle }}
+          a(href="{{vm.generateProfileUrl(message.publisher.handle)}}" target="_blank")
+            avatar(avatar-url='{{ message.publisher.avatar }}')
+
+          a(href="{{vm.generateProfileUrl(message.publisher.handle)}}" target="_blank")
+            .name {{ message.publisher.handle }}
+
           time {{ message.createdAt | timeLapse }}
 
         p.message {{ message.body }}
