@@ -96,17 +96,17 @@ angular.module("app.constants", [])
 
 }).call(this);
 
-angular.module("example").run(["$templateCache", function($templateCache) {$templateCache.put("views/file-detail.example.html","<modal show=\"true\" background-click-close=\"background-click-close\"><file-detail project-id=\"abc\" step-id=\"abc\" submission-id=\"abc\" file-id=\"abc\" user-type=\"{{ vm.userType }}\"></file-detail></modal>");
-$templateCache.put("views/file-grid.example.html","<file-grid thumbnail-groups=\"vm.thumbnailGroups\"></file-grid>");
-$templateCache.put("views/file-row.example.html","<file-row thumbnails=\"vm.thumbnails\" view-all=\"http://www.google.com\" view-all-text=\"+3 more\" tool-tip=\"tool-tip\"></file-row><br/><br/><br/><file-row thumbnails=\"vm.thumbnails2\"></file-row>");
+angular.module("example").run(["$templateCache", function($templateCache) {$templateCache.put("views/file-detail.example.html","<modal show=true background-click-close=background-click-close><file-detail project-id=abc step-id=abc submission-id=abc file-id=abc user-type=\"{{ vm.userType }}\"></file-detail></modal>");
+$templateCache.put("views/file-grid.example.html","<file-grid thumbnail-groups=vm.thumbnailGroups></file-grid>");
+$templateCache.put("views/file-row.example.html","<file-row thumbnails=vm.thumbnails view-all=http://www.google.com view-all-text=\"+3 more\" tool-tip=tool-tip></file-row><br><br><br><file-row thumbnails=vm.thumbnails2></file-row>");
 $templateCache.put("views/final-development.example.html","<final-development></final-development>");
 $templateCache.put("views/step.example.html","<submissions project-id=\"{{ vm.projectId }}\" step-id=\"{{ vm.stepId }}\" step-type=\"{{ vm.stepType }}\" user-type=\"{{ vm.userType }}\"></submissions>");
-$templateCache.put("views/submission-countdown.example.html","<submission-countdown end=\"2015-09-08T23:24:48.374Z\" text=\"Recieve final design submissions\"></submission-countdown>");
-$templateCache.put("views/submission-detail.example.html","<submission-detail project-id=\"abc\" step-id=\"abc\" submission-id=\"abc\" user-type=\"{{ vm.userType }}\"></submission-detail>");
-$templateCache.put("views/submission-winner-card.example.html","<ul class=\"flex\"><li><submission-winner-card name-text=\"Jeffrey Ramirez\" avatar-url=\"/images/flower.png\" rank=\"1st\" class=\"light-bg elevated-bottom\"></submission-winner-card></li><li><submission-winner-card name-text=\"Martha Quintero\" avatar-url=\"/images/flower.png\" rank=\"2nd\" class=\"light-bg elevated-bottom\"></submission-winner-card></li><li><submission-winner-card name-text=\"Luisa Crespa\" avatar-url=\"/images/flower.png\" rank=\"3rd\" class=\"light-bg elevated-bottom\"></submission-winner-card></li><li><submission-winner-card name-text=\"Luisa Crespa\" avatar-url=\"/images/flower.png\" class=\"light-bg elevated-bottom\"></submission-winner-card></li></ul>");
+$templateCache.put("views/submission-countdown.example.html","<submission-countdown end=2015-09-08T23:24:48.374Z text=\"Recieve final design submissions\"></submission-countdown>");
+$templateCache.put("views/submission-detail.example.html","<submission-detail project-id=abc step-id=abc submission-id=abc user-type=\"{{ vm.userType }}\"></submission-detail>");
+$templateCache.put("views/submission-winner-card.example.html","<ul class=flex><li><submission-winner-card name-text=\"Jeffrey Ramirez\" avatar-url=/images/flower.png rank=1st class=\"light-bg elevated-bottom\"></submission-winner-card></li><li><submission-winner-card name-text=\"Martha Quintero\" avatar-url=/images/flower.png rank=2nd class=\"light-bg elevated-bottom\"></submission-winner-card></li><li><submission-winner-card name-text=\"Luisa Crespa\" avatar-url=/images/flower.png rank=3rd class=\"light-bg elevated-bottom\"></submission-winner-card></li><li><submission-winner-card name-text=\"Luisa Crespa\" avatar-url=/images/flower.png class=\"light-bg elevated-bottom\"></submission-winner-card></li></ul>");
 $templateCache.put("views/submission-winners.example.html","<submission-winners></submission-winners>");
-$templateCache.put("views/submissions-header.example.html","<submissions-header text=\"design concept phase\" subtext=\"You will see submissions here when they are ready.\" next=\"http://www.google.com\" prev=\"http://www.google.com\"></submissions-header>");
-$templateCache.put("views/top-selections.example.html","<top-selections ranks=\"vm.ranks\"></top-selections><top-selections></top-selections>");}]);
+$templateCache.put("views/submissions-header.example.html","<submissions-header text=\"design concept phase\" subtext=\"You will see submissions here when they are ready.\" next=http://www.google.com prev=http://www.google.com></submissions-header>");
+$templateCache.put("views/top-selections.example.html","<top-selections ranks=vm.ranks></top-selections><top-selections></top-selections>");}]);
 (function() {
   'use strict';
   var controller;

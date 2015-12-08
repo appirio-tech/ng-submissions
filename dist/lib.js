@@ -40597,7 +40597,7 @@ $templateCache.put("views/simple-countdown.directive.html","<p>{{vm.timeRemainin
   'use strict';
   var dir;
 
-  dir = function($window) {
+  dir = function($window, $timeout) {
     var elements, link, lockHeight;
     elements = [];
     lockHeight = function($element) {
@@ -40645,7 +40645,20 @@ $templateCache.put("views/simple-countdown.directive.html","<p>{{vm.timeRemainin
     link = function(scope, element, attrs) {
       elements.push($(element[0]));
       return element.ready(function() {
-        return lockHeight($(element[0]));
+        var timeoutSet;
+        lockHeight($(element[0]));
+        timeoutSet = false;
+        return scope.$watch(function() {
+          var callback;
+          if (!timeoutSet) {
+            callback = function() {
+              timeoutSet = false;
+              return lockHeight($(element[0]));
+            };
+            $timeout(callback, 0, false);
+            return timeoutSet = true;
+          }
+        });
       });
     };
     return {
@@ -40659,7 +40672,7 @@ $templateCache.put("views/simple-countdown.directive.html","<p>{{vm.timeRemainin
     };
   };
 
-  dir.$inject = ['$window'];
+  dir.$inject = ['$window', '$timeout'];
 
   angular.module('appirio-tech-ng-ui-components').directive('lockHeight', dir);
 
