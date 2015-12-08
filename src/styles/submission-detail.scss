@@ -6,7 +6,11 @@ submission-detail {
   avatar {
     width: 48px;
     height: 48px;
-    margin-left: 40px;
+  }
+
+  .all-submissions {
+    text-align: left;
+    margin-bottom: 10px;
   }
 
   .name {

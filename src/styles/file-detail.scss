@@ -6,10 +6,10 @@ file-detail {
   main {
     width : 100vw;
     height: 100vh;
-    padding: 40px 70px;
+    padding: 20px;
 
     > hr {
-      height    : 10px;
+      height    : 2px;
       width     : 100%;
       margin-top: 20px;
     }
@@ -28,16 +28,16 @@ file-detail {
 
       .icons {
         text-align: right;
-        margin-left: 30px;
+        margin-right: 60px;
 
         .icon {
-          width: 20px;
-          height: 20px;
+          width: 25px;
+          height: 25px;
         }
 
         .icon.download {
-          width: 19px;
-          height: 23px;
+          width: 22px;
+          height: 25px;
         }
 
         > * {
