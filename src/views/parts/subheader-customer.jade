@@ -16,12 +16,12 @@ div(ng-if="vm.userType == 'customer' && vm.status == 'OPEN_LATE'")
 div(ng-if="vm.userType == 'customer' && vm.status == 'REVIEWING'")
   p Please provide feedback and select the top {{ vm.numberOfRanks }} submissions within <strong><countdown end='{{vm.endsAt}}'></strong>. Your feedback will be visible to the copilot and all members who have submitted to help them improve their initial concepts.
 
-  p Please provide feedback and select the top 3 submissions within the next X days. Your feedback will be visible to the copilot as well as all members to help them improve their initial concepts.
+  p(ng-show="vm.showConfirm") Please provide feedback and select the top 3 submissions within the next X days. Your feedback will be visible to the copilot as well as all members to help them improve their initial concepts.
 
 div(ng-if="vm.userType == 'customer' && vm.status == 'REVIEWING_LATE'")
   p There has been a delay in your schedule as we need your feedback to move to the next phase of the progress. Please select the winners and provide feedback as soon as possible.
 
-  p We need your feedback to move to the next phase. Please select winners and confirm. You will not be able to change this once you confirm.
+  p(ng-show="vm.showConfirm") We need your feedback to move to the next phase. Please select winners and confirm. You will not be able to change this once you confirm.
 
 div(ng-if="vm.userType == 'customer' && vm.status == 'CLOSED'")
   p These are your winners. You can still review submissions, but can no longer provide feedback. If you have any more comments, please message your copilot. The next phase begins in <strong><countdown end='{{ vm.nextStepStartsAt }}'></strong>.
