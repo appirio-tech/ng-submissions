@@ -45099,7 +45099,7 @@ $templateCache.put("views/simple-countdown.directive.html","<p>{{vm.timeRemainin
     sendResetEmail = function(email) {
       return $http({
         method: 'GET',
-        url: API_URL + "/v3/users/resetToken?&email=" + email
+        url: API_URL + "/v3/users/resetToken?email=" + email + "&source=connect"
       });
     };
     resetPassword = function(handle, token, password) {
