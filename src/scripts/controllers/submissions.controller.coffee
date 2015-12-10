@@ -32,6 +32,7 @@ SubmissionsController = ($scope, DataService, StepSubmissionsService, RankListSe
     vm.submissions      = step.submissions
     vm.numberOfRanks    = rankList.length
     vm.userRank         = highestRank rankList, userId
+    vm.showConfirm      = rankList.allFull && !rankList.confirmed
 
   highestRank = (rankList, userId) ->
     for i in [0...rankList.length] by 1

@@ -17,8 +17,6 @@ div(ng-if="!vm.showWinners")
     li(ng-show='vm.confirm')
       button.action(ng-click='vm.confirmRanks()') Confirm your selections
 
-  p(ng-show='vm.confirm') Please confirm your winner selection. You will not be able to change this once you confirm.
-
   ul.top-selection(ng-if='vm.locked')
     li(ng-repeat='rank in vm.ranks track by $index')
       .shell(ng-class="{ 'has-user': rank.id }")
