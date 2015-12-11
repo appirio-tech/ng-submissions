@@ -44,8 +44,6 @@ FileDetailSlideController = ($scope, $state, DataService, StepSubmissionsService
     if vm.showMessages and vm.file.unreadMessages > 0
       SubmissionsService.markMessagesAsRead(projectId, stepId, submissionId, fileId)
 
-  activate()
-
   vm
 
 FileDetailSlideController.$inject = ['$scope', '$state', 'DataService', 'StepSubmissionsService', 'SubmissionsService']
