@@ -1,13 +1,12 @@
-loader(ng-hide="vm.loaded")
-  file-detail-slide-container(
-    project-id="vm.projectId"
-    step-id="vm.stepId"
-    submission-id="vm.submissionId"
-    file-id="vm.fileId"
-    user-type="vm.userType"
-    submitter-handle="vm.handle"
-    submitter-avatar="vm.avatar"
-  )
+file-detail-slide-container(
+  project-id="{{vm.projectId}}"
+  step-id="{{vm.stepId}}"
+  submission-id="{{vm.submissionId}}"
+  file-id="{{vm.fileId}}"
+  user-type="{{vm.userType}}"
+)
+
+//- loader(ng-hide="vm.loaded")
 
 //- main.flex.column.middle.light-bg
 //-   .header.flex.space-between

@@ -1,19 +1,16 @@
 'use strict'
 
 FileDetailController = ($scope, $state, DataService, StepSubmissionsService, SubmissionsService) ->
-  vm            = this
-  vm.loaded     = false
-  vm.submission = {}
-  vm.file       = {}
-  projectId     = $scope.projectId
-  stepId        = $scope.stepId
-  submissionId  = $scope.submissionId
-  fileId        = $scope.fileId
-  vm.userType   = $scope.userType
+  vm              = this
+  vm.projectId    = $scope.projectId
+  vm.stepId       = $scope.stepId
+  vm.submissionId = $scope.submissionId
+  vm.fileId       = $scope.fileId
+  vm.userType     = $scope.userType
 
-  vm.messages     = []
-  vm.newMessage   = ''
-  vm.showMessages = false
+  # vm.messages     = []
+  # vm.newMessage   = ''
+  # vm.showMessages = false
 
   # activate = ->
   #   DataService.subscribe $scope, render, [StepSubmissionsService, 'get', projectId, stepId]
