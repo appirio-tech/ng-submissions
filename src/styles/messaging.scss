@@ -1,6 +1,6 @@
 @import "work/work-includes";
 
-.file-detail-messaging {
+.image-slide-viewer-messaging {
   @include transition (all 0.3s ease-in-out);
 
   position        : absolute;
@@ -13,6 +13,8 @@
 
   &.active {
     right: 0;
+    top: 107px;
+    z-index: 1000;
   }
 
   .title {
