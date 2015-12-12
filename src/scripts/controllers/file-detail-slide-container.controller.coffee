@@ -4,7 +4,6 @@ FileDetailSlideContainerController = ($scope, $state, DataService, StepSubmissio
   vm            = this
   vm.loaded     = false
   vm.submission = {}
-  vm.file       = {}
   projectId     = $scope.projectId
   stepId        = $scope.stepId
   submissionId  = $scope.submissionId
@@ -18,14 +17,16 @@ FileDetailSlideContainerController = ($scope, $state, DataService, StepSubmissio
   render = (step) ->
     vm.loaded          = true
     vm.submission      = step.submissions.filter((submission) -> submission.id == submissionId)[0]
-    vm.files           = vm.submission.files
-    vm.startingFile    = vm.submission.files.filter((file) -> file.id == fileId)[0]
-    submitter          = vm.submission.submitter
-    vm.submitterAvatar = submitter.avatar
-    vm.submitterHandle = submitter.handle
-    vm.messages        = vm.file.threads[0]?.messages || []
-    vm.status          = step.status
-    vm.canComment      = vm.userType == 'customer' || vm.userType == 'copilot' || vm.submission.belongsToUser
+    if vm.submission
+      vm.hasSubmission   = true
+      vm.files           = vm.submission.files
+      vm.startingFile    = vm.submission.files.filter((file) -> file.id == fileId)[0]
+      submitter          = vm.submission.submitter
+      vm.submitterAvatar = submitter.avatar
+      vm.submitterHandle = submitter.handle
+      vm.messages        = vm.startingFile.threads[0]?.messages || []
+      vm.status          = step.status
+      vm.canComment      = vm.userType == 'customer' || vm.userType == 'copilot' || vm.submission.belongsToUser
 
     # currentIndex = vm.submission.files.indexOf(vm.file)
 
@@ -38,16 +39,19 @@ FileDetailSlideContainerController = ($scope, $state, DataService, StepSubmissio
   # vm.generateProfileUrl = (handle) ->
   #   "https://www.topcoder.com/members/#{handle}"
 
-  # vm.sendMessage = ->
-  #   if vm.newMessage
-  #     SubmissionsService.sendMessage projectId, stepId, submissionId, fileId, vm.newMessage
-  #     vm.newMessage = ''
+  vm.onFileChange = (file) ->
+    vm.file = file
 
-  # vm.toggleComments = ->
-  #   vm.showMessages = !vm.showMessages
+  vm.sendMessage = ->
+    if vm.newMessage
+      SubmissionsService.sendMessage projectId, stepId, submissionId, vm.file.id, vm.newMessage
+      vm.newMessage = ''
 
-  #   if vm.showMessages and vm.file.unreadMessages > 0
-  #     SubmissionsService.markMessagesAsRead(projectId, stepId, submissionId, fileId)
+  vm.toggleComments = ->
+    vm.showMessages = !vm.showMessages
+
+    if vm.showMessages and vm.file.unreadMessages > 0
+      SubmissionsService.markMessagesAsRead(projectId, stepId, submissionId, vm.file.id)
 
   activate()
 

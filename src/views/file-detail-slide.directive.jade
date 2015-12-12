@@ -1,12 +1,13 @@
 image-viewer-header(
   avatar="{{vm.submitterAvatar}}"
   handle="{{vm.submitterHandle}}"
-  toggle-comments="vm.toggleComments"
+  toggle-comments="vm.toggleComments()"
   download-allowed=true
   comments-allowed=true
 )
 
 image-slide-viewer(
+  on-file-change="vm.onFileChange(file)"
   files="vm.files"
   starting-file="vm.startingFile"
   show-notifications=true

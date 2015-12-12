@@ -13,5 +13,8 @@ directive = ->
     userType:        '@'
     status:          '@'
     canComment:      '@'
+    onFileChange:    '&'
+    toggleComments:  '&'
+    sendMessage:     '&'
 
 angular.module('appirio-tech-submissions').directive 'fileDetailSlide', directive
