@@ -9,7 +9,8 @@ FileDetailSlideContainerController = ($scope, $state, DataService, StepSubmissio
   submissionId  = $scope.submissionId
   fileId        = $scope.fileId
   vm.userType   = $scope.userType
-  vm.messages     = []
+  vm.messages   = []
+  vm.newMessage = ''
 
   activate = ->
     DataService.subscribe $scope, render, [StepSubmissionsService, 'get', projectId, stepId]
@@ -27,17 +28,6 @@ FileDetailSlideContainerController = ($scope, $state, DataService, StepSubmissio
       vm.messages        = vm.startingFile.threads[0]?.messages || []
       vm.status          = step.status
       vm.canComment      = vm.userType == 'customer' || vm.userType == 'copilot' || vm.submission.belongsToUser
-
-    # currentIndex = vm.submission.files.indexOf(vm.file)
-
-    # if currentIndex > 0
-    #   vm.prevFile = vm.submission.files[currentIndex - 1]
-
-    # if currentIndex + 1 < vm.submission.files.length
-    #   vm.nextFile = vm.submission.files[currentIndex + 1]
-
-  # vm.generateProfileUrl = (handle) ->
-  #   "https://www.topcoder.com/members/#{handle}"
 
   vm.onFileChange = (file) ->
     vm.file = file

@@ -8,6 +8,7 @@ directive = ->
     files:           '='
     startingFile:    '='
     messages:        '='
+    showMessages:    '='
     sumbitterAvatar: '@'
     submitterHandle: '@'
     userType:        '@'
@@ -16,5 +17,6 @@ directive = ->
     onFileChange:    '&'
     toggleComments:  '&'
     sendMessage:     '&'
+    newMessage:      '='
 
 angular.module('appirio-tech-submissions').directive 'fileDetailSlide', directive

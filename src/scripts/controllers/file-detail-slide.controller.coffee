@@ -19,14 +19,27 @@ FileDetailSlideController = ($scope, $state, DataService, StepSubmissionsService
   vm.messages       = $scope.messages
   vm.canComment     = $scope.canComment
 
-
-  # vm.messages     = []
-  vm.newMessage   = ''
-  vm.showMessages = false
+  vm.newMessage   = $scope.newMessage
+  vm.showMessages = $scope.showMessages
 
   vm.onFileChange = (file) ->
     $scope.onFileChange
       file: file
+
+  activate = ->
+    $scope.$watch 'showMessages', (newVal) ->
+      vm.showMessages = newVal
+
+    $scope.$watch 'vm.newMessage', (newVal) ->
+      $scope.newMessage = newVal
+
+    $scope.$watch 'newMessage', (newVal) ->
+      vm.newMessage = newVal
+
+    $scope.$watch 'messages', (newVal) ->
+      vm.messages = newVal
+
+  activate()
 
   vm
 
