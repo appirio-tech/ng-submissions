@@ -23,6 +23,7 @@ FileDetailSlideController = ($scope, $state, DataService, StepSubmissionsService
   vm.showMessages = $scope.showMessages
 
   vm.onFileChange = (file) ->
+    vm.file = file
     $scope.onFileChange
       file: file
 
