@@ -14,10 +14,10 @@ FileDetailSlideController = ($scope, $state, DataService, StepSubmissionsService
   vm.sendMessage     = $scope.sendMessage
 
   # messages
-  vm.userType       = $scope.userType
-  vm.status         = $scope.status
-  vm.messages       = $scope.messages
-  vm.canComment     = $scope.canComment
+  vm.userType   = $scope.userType
+  vm.status     = $scope.status
+  vm.messages   = $scope.messages
+  vm.canComment = $scope.canComment
 
   vm.newMessage   = $scope.newMessage
   vm.showMessages = $scope.showMessages
@@ -27,6 +27,7 @@ FileDetailSlideController = ($scope, $state, DataService, StepSubmissionsService
       file: file
 
   activate = ->
+    # TODO: get rid of watchers
     $scope.$watch 'showMessages', (newVal) ->
       vm.showMessages = newVal
 
