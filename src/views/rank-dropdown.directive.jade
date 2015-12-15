@@ -1,8 +1,10 @@
-select(
+dropdown(
   ng-if='!vm.locked'
-  ng-model='vm.rank.value'
-  ng-change='vm.handleRankSelect()'
-  ng-options='rank.value as rank.label for rank in vm.ranks'
+  options="vm.ranks"
+  on-change="vm.handleRankSelect"
+  value="vm.rank.value"
+  clearable="false"
 )
+
 
 p.rank(ng-if='vm.locked && vm.rank.label') {{ vm.rank.label }}
