@@ -1,50 +1,11 @@
-loader(ng-hide="vm.loaded")
+file-detail-slide-container(
+  project-id="{{vm.projectId}}"
+  step-id="{{vm.stepId}}"
+  submission-id="{{vm.submissionId}}"
+  file-id="{{vm.fileId}}"
+  user-type="{{vm.userType}}"
+)
 
-main.flex.column.middle.light-bg
-  .header.flex.space-between
-    .submitter.flex.middle
-      a(href="{{vm.generateProfileUrl(vm.submission.submitter.handle)}}" target="_blank")
-        avatar(avatar-url="{{ vm.submission.submitter.avatar }}")
-
-      a(href="{{vm.generateProfileUrl(vm.submission.submitter.handle)}}" target="_blank")
-        p.name {{ vm.submission.submitter.handle }}
-
-
-    .icons
-      button.clean
-        a(href="{{ vm.file.url }}" target="_blank")
-          .icon.download
-
-      button.clean(ng-click="vm.toggleComments()")
-       .icon.bubble
-
-  hr
-
-  .content.flex.flex-grow
-    .slideshow.flex.column.flex-grow
-      .preview.flex.center.flex-grow.flex-shrink
-        .previous.flex.flex-grow
-          a.arrow-previous(ng-if="vm.prevFile", href="{{ vm.prevFile.detailUrl }}")
-            button.clean.icon.arrow
-
-        .image.flex.column.center
-          .img-container
-            p.file-name {{ vm.file.name }}
-
-            img(ng-src="{{ vm.file.url }}")
-
-        .next.flex.flex-grow
-          a.arrow-next(ng-if="vm.nextFile", href="{{ vm.nextFile.detailUrl }}")
-            button.clean.icon.arrow.right
-
-      ul.thumbnails
-        li.thumbnail(ng-repeat="file in vm.submission.files" ng-class="{ elevated: !file.isCurrent }")
-          a(href="{{ file.detailUrl }}")
-            img(ng-src="{{ file.url }}")
-
-            .notification.absolute(ng-if="file.unreadMessages > 0") {{ file.unreadMessages }}
-
-    include parts/messaging
 
 
 

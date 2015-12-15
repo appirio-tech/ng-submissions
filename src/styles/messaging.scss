@@ -1,10 +1,11 @@
 @import "work/work-includes";
 
-.file-detail-messaging {
+.image-slide-viewer-messaging {
   @include transition (all 0.3s ease-in-out);
 
   position        : absolute;
   width           : 300px;
+  top             : 75px;
   right           : -300px;
   padding         : 10px;
   overflow        : hidden;
