@@ -1,8 +1,9 @@
 image-viewer-header(
+  ng-if="vm.file"
   avatar="{{vm.submitterAvatar}}"
   handle="{{vm.submitterHandle}}"
   toggle-comments="vm.toggleComments()"
-  download-url="{{vm.file.url}}"
+  download-url="vm.file.url"
   download-allowed=true
   comments-allowed=true
 )
