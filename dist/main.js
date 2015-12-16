@@ -8,11 +8,13 @@
 
 }).call(this);
 
-angular.module("appirio-tech-submissions").run(["$templateCache", function($templateCache) {$templateCache.put("views/file-detail.directive.html","<loader ng-hide=vm.loaded></loader><main class=\"flex column middle light-bg\"><div class=\"header flex space-between\"><div class=\"submitter flex middle\"><a href={{vm.generateProfileUrl(vm.submission.submitter.handle)}} target=_blank><avatar avatar-url=\"{{ vm.submission.submitter.avatar }}\"></avatar></a><a href={{vm.generateProfileUrl(vm.submission.submitter.handle)}} target=_blank><p class=name>{{ vm.submission.submitter.handle }}</p></a></div><div class=icons><button class=clean><a href=\"{{ vm.file.url }}\" target=_blank><div class=\"icon download\"></div></a></button><button ng-click=vm.toggleComments() class=clean><div class=\"icon bubble\"></div></button></div></div><hr><div class=\"content flex flex-grow\"><div class=\"slideshow flex column flex-grow\"><div class=\"preview flex center flex-grow flex-shrink\"><div class=\"previous flex flex-grow\"><a ng-if=vm.prevFile href=\"{{ vm.prevFile.detailUrl }}\" class=arrow-previous><button class=\"clean icon arrow\"></button></a></div><div class=\"image flex column center\"><div class=img-container><p class=file-name>{{ vm.file.name }}</p><img ng-src=\"{{ vm.file.url }}\"></div></div><div class=\"next flex flex-grow\"><a ng-if=vm.nextFile href=\"{{ vm.nextFile.detailUrl }}\" class=arrow-next><button class=\"clean icon arrow right\"></button></a></div></div><ul class=thumbnails><li ng-repeat=\"file in vm.submission.files\" ng-class=\"{ elevated: !file.isCurrent }\" class=thumbnail><a href=\"{{ file.detailUrl }}\"><img ng-src=\"{{ file.url }}\"><div ng-if=\"file.unreadMessages &gt; 0\" class=\"notification absolute\">{{ file.unreadMessages }}</div></a></li></ul></div><div ng-class=\"{ active: vm.showMessages }\" flush-height=flush-height class=\"file-detail-messaging flex column\"><div class=title><h4>Feedback</h4><hr></div><div class=\"messages flex-grow flex-shrink\"><ul><li ng-if=\"vm.userType == \'customer\'\"><p ng-if=\"vm.messages.length == 0 &amp;&amp; vm.status != \'CLOSED\'\">Please provide feedback here to the community member and the copilot about this image. Your feedback will be visible to all members who have submitted, but only the copilot and the submitter of this image will be allowed to respond.</p><p ng-if=\"vm.status == \'CLOSED\'\">You can no longer add feedback here. If you have additional feedback, please <a>message your copilot directly.</a></p></li><li ng-if=\"vm.userType == \'copilot\'\"><p ng-if=\"vm.messages.length == 0 &amp;&amp; vm.status != \'CLOSED\'\">Please provide feedback here to the community member and the copilot about this image. Your feedback will be visible to all members who have submitted, but only the copilot and the submitter of this image will be allowed to respond.</p><p ng-if=\"vm.status == \'CLOSED\'\">You can no longer add feedback here. If you have additional feedback, please <a>message your copilot directly.</a></p></li><li ng-if=\"vm.userType == \'member\'\"><p ng-if=\"vm.messages.length == 0 &amp;&amp; vm.status != \'CLOSED\'\">Use this space to respond to customer feedback and provide context for your designs. Only you, the copilot, and the customer can add comments, but these comments will be visible to everyone who has submitted.</p><p ng-if=\"vm.status == \'CLOSED\'\">You can no longer add comments here. If you have any questions or comments for your customer, please contact your copilot via the forum.</p></li><li ng-repeat=\"message in vm.messages track by $index\"><header class=\"flex middle\"><a href={{vm.generateProfileUrl(message.publisher.handle)}} target=_blank><avatar avatar-url=\"{{ message.publisher.avatar }}\"></avatar></a><a href={{vm.generateProfileUrl(message.publisher.handle)}} target=_blank><div class=name>{{ message.publisher.handle }}</div></a><time>{{ message.createdAt | timeLapse }}</time></header><p class=message>{{ message.body }}</p></li></ul></div><div class=send><form ng-submit=vm.sendMessage() ng-if=\"vm.status != \'CLOSED\' &amp;&amp; vm.canComment\"><textarea placeholder=\"Send a message…\" ng-model=vm.newMessage></textarea><button type=submit class=enter>Enter</button></form></div></div></div></main>");
+angular.module("appirio-tech-submissions").run(["$templateCache", function($templateCache) {$templateCache.put("views/file-detail-slide-container.directive.html","<file-detail-slide ng-if=vm.hasSubmission files=vm.files starting-file=vm.startingFile submitter-avatar={{vm.sumbitterAvatar}} submitter-handle={{vm.submitterHandle}} user-type={{vm.userType}} status={{vm.status}} messages=vm.messages on-file-change=vm.onFileChange(file) toggle-comments=vm.toggleComments() send-message=vm.sendMessage() show-messages=vm.showMessages can-comment={{vm.canComment}} new-message=vm.newMessage></file-detail-slide>");
+$templateCache.put("views/file-detail-slide.directive.html","<image-viewer-header ng-if=vm.file avatar={{vm.submitterAvatar}} handle={{vm.submitterHandle}} toggle-comments=vm.toggleComments() download-url=vm.file.url download-allowed=download-allowed comments-allowed=comments-allowed></image-viewer-header><image-slide-viewer on-file-change=vm.onFileChange(file) files=vm.files starting-file=vm.startingFile show-notifications=show-notifications></image-slide-viewer><div ng-class=\"{active: vm.showMessages}\" flush-height=flush-height class=\"image-slide-viewer-messaging flex column\"><div class=title><h4>Feedback</h4><hr></div><div class=\"messages flex-grow flex-shrink\"><ul><li ng-if=\"vm.userType == \'customer\'\"><p ng-if=\"vm.messages.length == 0 &amp;&amp; vm.status != \'CLOSED\'\">Please provide feedback here to the community member and the copilot about this image. Your feedback will be visible to all members who have submitted, but only the copilot and the submitter of this image will be allowed to respond.</p><p ng-if=\"vm.status == \'CLOSED\'\">You can no longer add feedback here. If you have additional feedback, please <a>message your copilot directly.</a></p></li><li ng-if=\"vm.userType == \'copilot\'\"><p ng-if=\"vm.messages.length == 0 &amp;&amp; vm.status != \'CLOSED\'\">Please provide feedback here to the community member and the copilot about this image. Your feedback will be visible to all members who have submitted, but only the copilot and the submitter of this image will be allowed to respond.</p><p ng-if=\"vm.status == \'CLOSED\'\">You can no longer add feedback here. If you have additional feedback, please <a>message your copilot directly.</a></p></li><li ng-if=\"vm.userType == \'member\'\"><p ng-if=\"vm.messages.length == 0 &amp;&amp; vm.status != \'CLOSED\'\">Use this space to respond to customer feedback and provide context for your designs. Only you, the copilot, and the customer can add comments, but these comments will be visible to everyone who has submitted.</p><p ng-if=\"vm.status == \'CLOSED\'\">You can no longer add comments here. If you have any questions or comments for your customer, please contact your copilot via the forum.</p></li><li ng-repeat=\"message in vm.messages track by $index\"><header class=\"flex middle\"><a href={{vm.generateProfileUrl(message.publisher.handle)}} target=_blank><avatar avatar-url=\"{{ message.publisher.avatar }}\"></avatar></a><a href={{vm.generateProfileUrl(message.publisher.handle)}} target=_blank><div class=name>{{ message.publisher.handle }}</div></a><time>{{ message.createdAt | timeLapse }}</time></header><p class=message>{{ message.body }}</p></li></ul></div><div class=send><form ng-submit=vm.sendMessage() ng-if=\"vm.status != \'CLOSED\' &amp;&amp; vm.canComment\"><textarea placeholder=\"Send a message…\" ng-model=vm.newMessage></textarea><button type=submit class=enter>Enter</button></form></div></div>");
+$templateCache.put("views/file-detail.directive.html","<file-detail-slide-container project-id={{vm.projectId}} step-id={{vm.stepId}} submission-id={{vm.submissionId}} file-id={{vm.fileId}} user-type={{vm.userType}}></file-detail-slide-container>");
 $templateCache.put("views/file-grid.directive.html","<ul class=files><li ng-repeat=\"file in files track by $index\"><div class=spacer><a href=\"{{ file.detailUrl }}\" style=\"background-image: url({{ file.url }})\"></a></div></li></ul>");
 $templateCache.put("views/file-row.directive.html","<ul class=\"files flex\"><li ng-repeat=\"file in vm.files track by $index\" class=flex-one><a href=\"{{ file.detailUrl }}\"><img ng-src=\"{{ file.url }}\"></a><div ng-if=file.isLast class=view-all-bg><div></div></div><a ng-if=file.isLast href=\"{{ viewAllUrl }}\" class=view-more><p class=\"flex middle center\"><span ng-if=vm.viewAll>View All</span><span ng-if=vm.viewMore>+{{ vm.more }} More</span></p></a></li></ul>");
 $templateCache.put("views/final-development.directive.html","<submissions-header text=\"final development\" next=http://www.google.com prev=http://www.google.com></submissions-header><hr><main class=light-bg><div class=message><p>Co-Pilot Message</p><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p></div><image-row thumbnails=vm.thumbnails view-all-text=\"+3 more\" view-all=http://www.google.com></image-row></main><div class=links><p>Clickable Prototype</p><ul><li><a href=http://www.google.com>http://www.google.com</a></li><li><a href=http://www.google.com>http://www.google.com</a></li></ul></div><div class=links><p>Other Links</p><ul><li><a href=http://www.google.com>http://www.google.com</a></li><li><a href=http://www.google.com>http://www.google.com</a></li></ul></div><loader ng-show=!vm.loaded></loader>");
-$templateCache.put("views/rank-dropdown.directive.html","<select ng-if=!vm.locked ng-model=vm.rank.value ng-change=vm.handleRankSelect() ng-options=\"rank.value as rank.label for rank in vm.ranks\"></select><p ng-if=\"vm.locked &amp;&amp; vm.rank.label\" class=rank>{{ vm.rank.label }}</p>");
+$templateCache.put("views/rank-dropdown.directive.html","<dropdown ng-if=!vm.locked options=vm.ranks on-change=vm.handleRankSelect value=vm.rank.value clearable=false></dropdown><p ng-if=\"vm.locked &amp;&amp; vm.rank.label\" class=rank>{{ vm.rank.label }}</p>");
 $templateCache.put("views/rank-list.directive.html","<div ng-if=!vm.showWinners><ul ng-if=!vm.locked class=top-selection><li ng-repeat=\"rank in vm.ranks track by $index\"><div ng-class=\"{ \'has-user\': rank.id }\" ondragenter=\"return false\" ondragover=\"return false\" on-drop=\"vm.drop.handle(event, rank.value)\" class=shell><div ng-if=rank.id data-id=\"{{ rank.id }}\" draggable><avatar avatar-url=\"{{ rank.avatarUrl }}\"></avatar><div class=rank>{{ rank.value }}</div></div><div ng-if=!rank.id class=rank>{{ rank.value }}</div></div></li><li ng-show=vm.confirm><button ng-click=vm.confirmRanks() class=action>Confirm your selections</button></li></ul><ul ng-if=vm.locked class=top-selection><li ng-repeat=\"rank in vm.ranks track by $index\"><div ng-class=\"{ \'has-user\': rank.id }\" class=shell><div ng-if=rank.id data-id=\"{{ rank.id }}\"><avatar avatar-url=\"{{ rank.avatarUrl }}\"></avatar><div class=rank>{{ rank.value }}</div></div><div ng-if=!rank.id class=rank>{{ rank.value }}</div></div></li></ul></div><div ng-if=vm.showWinners><submission-winners project-id=\"{{ vm.projectId }}\" step-id=\"{{ vm.stepId }}\"></submission-winners></div>");
 $templateCache.put("views/submission-countdown.directive.html","<main class=\"light-bg elevated-bottom\"><img src=/images/clock.svg><countdown end=\"{{ end }}\" class=block></countdown><p>{{ text }}</p></main>");
 $templateCache.put("views/submission-detail.directive.html","<loader ng-hide=vm.loaded></loader><div class=all-submissions><a ui-sref=\"step({projectId: vm.projectId, stepId: vm.stepId})\">All Submissions</a></div><ul class=\"header flex middle\"><li class=\"flex-grow submitter\"><avatar avatar-url=\"{{ vm.submission.submitter.avatar }}\"></avatar><div class=name>{{ vm.submission.submitter.handle }}</div></li><li><rank-dropdown project-id=\"{{ vm.projectId }}\" step-id=\"{{ vm.stepId }}\" submission-id=\"{{ vm.submissionId }}\" user-type=\"{{ vm.userType }}\"></rank-dropdown></li><li class=download><a href=\"{{ vm.submission.downloadUrl }}\" target=_blank><div class=\"icon download small\"></div></a></li></ul><hr><file-grid files=vm.submission.files></file-grid>");
@@ -174,7 +176,11 @@ $templateCache.put("views/submissions.directive.html","<loader ng-hide=vm.loaded
       })[0];
       return vm.locked = userType === 'member' || rankList.status === 'CLOSED';
     };
-    vm.handleRankSelect = function() {
+    vm.handleRankSelect = function(rank) {
+      var ref;
+      if ((ref = vm.rank) != null) {
+        ref.value = rank != null ? rank.value : void 0;
+      }
       if (submissionId && vm.rank) {
         return StepsService.updateRank(projectId, stepId, submissionId, vm.rank.value);
       }
@@ -251,11 +257,82 @@ $templateCache.put("views/submissions.directive.html","<loader ng-hide=vm.loaded
   var FileDetailController;
 
   FileDetailController = function($scope, $state, DataService, StepSubmissionsService, SubmissionsService) {
+    var vm;
+    vm = this;
+    vm.projectId = $scope.projectId;
+    vm.stepId = $scope.stepId;
+    vm.submissionId = $scope.submissionId;
+    vm.fileId = $scope.fileId;
+    vm.userType = $scope.userType;
+    return vm;
+  };
+
+  FileDetailController.$inject = ['$scope', '$state', 'DataService', 'StepSubmissionsService', 'SubmissionsService'];
+
+  angular.module('appirio-tech-submissions').controller('FileDetailController', FileDetailController);
+
+}).call(this);
+
+(function() {
+  'use strict';
+  var FileDetailSlideController;
+
+  FileDetailSlideController = function($scope, $state, DataService, StepSubmissionsService, SubmissionsService) {
+    var activate, vm;
+    vm = this;
+    vm.files = $scope.files;
+    vm.startingFile = $scope.startingFile;
+    vm.submitterAvatar = $scope.submitterAvatar;
+    vm.submitterHandle = $scope.submitterHandle;
+    vm.file = null;
+    vm.onFileChange = $scope.onFileChange;
+    vm.toggleComments = $scope.toggleComments;
+    vm.sendMessage = $scope.sendMessage;
+    vm.userType = $scope.userType;
+    vm.status = $scope.status;
+    vm.messages = $scope.messages;
+    vm.canComment = $scope.canComment;
+    vm.newMessage = $scope.newMessage;
+    vm.showMessages = $scope.showMessages;
+    vm.onFileChange = function(file) {
+      vm.file = file;
+      return $scope.onFileChange({
+        file: file
+      });
+    };
+    activate = function() {
+      $scope.$watch('showMessages', function(newVal) {
+        return vm.showMessages = newVal;
+      });
+      $scope.$watch('vm.newMessage', function(newVal) {
+        return $scope.newMessage = newVal;
+      });
+      $scope.$watch('newMessage', function(newVal) {
+        return vm.newMessage = newVal;
+      });
+      return $scope.$watch('messages', function(newVal) {
+        return vm.messages = newVal;
+      });
+    };
+    activate();
+    return vm;
+  };
+
+  FileDetailSlideController.$inject = ['$scope', '$state', 'DataService', 'StepSubmissionsService', 'SubmissionsService'];
+
+  angular.module('appirio-tech-submissions').controller('FileDetailSlideController', FileDetailSlideController);
+
+}).call(this);
+
+(function() {
+  'use strict';
+  var FileDetailSlideContainerController;
+
+  FileDetailSlideContainerController = function($scope, $state, DataService, StepSubmissionsService, SubmissionsService) {
     var activate, fileId, projectId, render, stepId, submissionId, vm;
     vm = this;
     vm.loaded = false;
     vm.submission = {};
-    vm.file = {};
     projectId = $scope.projectId;
     stepId = $scope.stepId;
     submissionId = $scope.submissionId;
@@ -263,53 +340,51 @@ $templateCache.put("views/submissions.directive.html","<loader ng-hide=vm.loaded
     vm.userType = $scope.userType;
     vm.messages = [];
     vm.newMessage = '';
-    vm.showMessages = false;
     activate = function() {
       return DataService.subscribe($scope, render, [StepSubmissionsService, 'get', projectId, stepId]);
     };
     render = function(step) {
-      var currentIndex, ref;
+      var ref, submitter;
       vm.loaded = true;
       vm.submission = step.submissions.filter(function(submission) {
         return submission.id === submissionId;
       })[0];
-      vm.file = vm.submission.files.filter(function(file) {
-        return file.id === fileId;
-      })[0];
-      vm.file.isCurrent = true;
-      vm.messages = ((ref = vm.file.threads[0]) != null ? ref.messages : void 0) || [];
-      vm.status = step.status;
-      vm.canComment = vm.userType === 'customer' || vm.userType === 'copilot' || vm.submission.belongsToUser;
-      currentIndex = vm.submission.files.indexOf(vm.file);
-      if (currentIndex > 0) {
-        vm.prevFile = vm.submission.files[currentIndex - 1];
-      }
-      if (currentIndex + 1 < vm.submission.files.length) {
-        return vm.nextFile = vm.submission.files[currentIndex + 1];
+      if (vm.submission) {
+        vm.hasSubmission = true;
+        vm.files = vm.submission.files;
+        vm.startingFile = vm.submission.files.filter(function(file) {
+          return file.id === fileId;
+        })[0];
+        submitter = vm.submission.submitter;
+        vm.submitterAvatar = submitter.avatar;
+        vm.submitterHandle = submitter.handle;
+        vm.messages = ((ref = vm.startingFile.threads[0]) != null ? ref.messages : void 0) || [];
+        vm.status = step.status;
+        return vm.canComment = vm.userType === 'customer' || vm.userType === 'copilot' || vm.submission.belongsToUser;
       }
     };
-    vm.generateProfileUrl = function(handle) {
-      return "https://www.topcoder.com/members/" + handle;
+    vm.onFileChange = function(file) {
+      return vm.file = file;
     };
     vm.sendMessage = function() {
       if (vm.newMessage) {
-        SubmissionsService.sendMessage(projectId, stepId, submissionId, fileId, vm.newMessage);
+        SubmissionsService.sendMessage(projectId, stepId, submissionId, vm.file.id, vm.newMessage);
         return vm.newMessage = '';
       }
     };
     vm.toggleComments = function() {
       vm.showMessages = !vm.showMessages;
       if (vm.showMessages && vm.file.unreadMessages > 0) {
-        return SubmissionsService.markMessagesAsRead(projectId, stepId, submissionId, fileId);
+        return SubmissionsService.markMessagesAsRead(projectId, stepId, submissionId, vm.file.id);
       }
     };
     activate();
     return vm;
   };
 
-  FileDetailController.$inject = ['$scope', '$state', 'DataService', 'StepSubmissionsService', 'SubmissionsService'];
+  FileDetailSlideContainerController.$inject = ['$scope', '$state', 'DataService', 'StepSubmissionsService', 'SubmissionsService'];
 
-  angular.module('appirio-tech-submissions').controller('FileDetailController', FileDetailController);
+  angular.module('appirio-tech-submissions').controller('FileDetailSlideContainerController', FileDetailSlideContainerController);
 
 }).call(this);
 
@@ -471,6 +546,60 @@ $templateCache.put("views/submissions.directive.html","<loader ng-hide=vm.loaded
   };
 
   angular.module('appirio-tech-submissions').directive('fileDetail', directive);
+
+}).call(this);
+
+(function() {
+  'use strict';
+  var directive;
+
+  directive = function() {
+    return {
+      restrict: 'E',
+      controller: 'FileDetailSlideContainerController as vm',
+      templateUrl: 'views/file-detail-slide-container.directive.html',
+      scope: {
+        projectId: '@',
+        stepId: '@',
+        submissionId: '@',
+        fileId: '@',
+        userType: '@'
+      }
+    };
+  };
+
+  angular.module('appirio-tech-submissions').directive('fileDetailSlideContainer', directive);
+
+}).call(this);
+
+(function() {
+  'use strict';
+  var directive;
+
+  directive = function() {
+    return {
+      restrict: 'E',
+      controller: 'FileDetailSlideController as vm',
+      templateUrl: 'views/file-detail-slide.directive.html',
+      scope: {
+        files: '=',
+        startingFile: '=',
+        messages: '=',
+        showMessages: '=',
+        newMessage: '=',
+        sumbitterAvatar: '@',
+        submitterHandle: '@',
+        userType: '@',
+        status: '@',
+        canComment: '@',
+        onFileChange: '&',
+        toggleComments: '&',
+        sendMessage: '&'
+      }
+    };
+  };
+
+  angular.module('appirio-tech-submissions').directive('fileDetailSlide', directive);
 
 }).call(this);
 
