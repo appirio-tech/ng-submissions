@@ -11,3 +11,13 @@ ul.files.flex
       p.flex.middle.center
         span(ng-if="vm.viewAll") View All
         span(ng-if="vm.viewMore") +{{ vm.more }} More
+
+    .pop-over.elevated
+      a.preview(ui-sref="file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: submission.id, fileId: file.id})")
+        img.previewImage(ng-src="{{ file.url }}")
+
+      a(href="{{ file.detailUrl }}" )
+        .icon.envelope
+
+      a(href="{{ file.url }}", target="_blank")
+        .clean.icon.download
