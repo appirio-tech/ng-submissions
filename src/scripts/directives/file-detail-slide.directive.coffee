@@ -10,6 +10,7 @@ directive = ->
     messages:        '='
     showMessages:    '='
     newMessage:      '='
+    title:           '@'
     sumbitterAvatar: '@'
     submitterHandle: '@'
     userType:        '@'

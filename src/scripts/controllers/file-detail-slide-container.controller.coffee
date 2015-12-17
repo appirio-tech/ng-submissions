@@ -1,6 +1,6 @@
 'use strict'
 
-FileDetailSlideContainerController = ($scope, $state, DataService, StepSubmissionsService, SubmissionsService) ->
+FileDetailSlideContainerController = ($scope, $state, $filter, DataService, StepSubmissionsService, SubmissionsService) ->
   vm            = this
   vm.loaded     = false
   vm.submission = {}
@@ -22,6 +22,7 @@ FileDetailSlideContainerController = ($scope, $state, DataService, StepSubmissio
       vm.hasSubmission   = true
       vm.files           = vm.submission.files
       vm.startingFile    = vm.submission.files.filter((file) -> file.id == fileId)[0]
+      vm.submissionDate  = $filter('timeLapse')(vm.submission.createdAt)
       submitter          = vm.submission.submitter
       vm.submitterAvatar = submitter.avatar
       vm.submitterHandle = submitter.handle
@@ -47,6 +48,6 @@ FileDetailSlideContainerController = ($scope, $state, DataService, StepSubmissio
 
   vm
 
-FileDetailSlideContainerController.$inject = ['$scope', '$state', 'DataService', 'StepSubmissionsService', 'SubmissionsService']
+FileDetailSlideContainerController.$inject = ['$scope', '$state', '$filter', 'DataService', 'StepSubmissionsService', 'SubmissionsService']
 
 angular.module('appirio-tech-submissions').controller 'FileDetailSlideContainerController', FileDetailSlideContainerController
