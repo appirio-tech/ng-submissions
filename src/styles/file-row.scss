@@ -31,6 +31,10 @@ file-row {
 
     &:first-child {
       padding-left: 0;
+
+      .view-all-bg, .view-more {
+        padding-left: 0;
+      }
     }
 
     &:last-child {
