@@ -1,4 +1,4 @@
-image-viewer-header(
+image-viewer-header.flex.column(
   ng-if="vm.file"
   title ="{{vm.title}}"
   avatar="{{vm.submitterAvatar}}"
@@ -9,7 +9,7 @@ image-viewer-header(
   comments-allowed=true
 )
 
-image-slide-viewer(
+image-slide-viewer.flex.flex-grow(
   on-file-change="vm.onFileChange(file)"
   files="vm.files"
   starting-file="vm.startingFile"

@@ -6,7 +6,9 @@
   .messages.flex-grow.flex-shrink
     ul
       li(ng-if="vm.userType == 'customer'")
-        p(ng-if="vm.messages.length == 0 && vm.status != 'CLOSED'") Please provide feedback here to the community member and the copilot about this image. Your feedback will be visible to all members who have submitted, but only the copilot and the submitter of this image will be allowed to respond.
+        p(ng-if="vm.messages.length == 0 && vm.status != 'CLOSED'") Please provide feedback here to the community member and the copilot about this image.
+
+        p(ng-if="vm.messages.length == 0 && vm.status != 'CLOSED'") Your feedback will be visible to all members who have submitted, but only the copilot and the submitter of this image will be allowed to respond.
 
         p(ng-if="vm.status == 'CLOSED'") You can no longer add feedback here. If you have additional feedback, please 
           a message your copilot directly.

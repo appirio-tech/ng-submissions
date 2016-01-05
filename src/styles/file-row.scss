@@ -125,6 +125,18 @@ file-row {
         top         : 105px;
         left        : -20px;
       }
+
+      &.left {
+        right: 100%;
+        left: inherit;
+        margin-right: -5px;
+
+        &:before {
+          border-color: transparent transparent transparent $white;
+          right: -20px;
+          left: inherit;
+        }
+      }
     }
   }
 }
