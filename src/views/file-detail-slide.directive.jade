@@ -5,15 +5,15 @@ image-viewer-header.flex.column(
   handle="{{vm.submitterHandle}}"
   toggle-comments="vm.toggleComments()"
   download-url="vm.file.url"
-  download-allowed=true
-  comments-allowed=true
+  download-allowed="true"
+  comments-allowed="true"
 )
 
 image-slide-viewer.flex.flex-grow(
   on-file-change="vm.onFileChange(file)"
   files="vm.files"
   starting-file="vm.startingFile"
-  show-notifications=true
+  show-notifications="true"
 )
 
 include parts/messaging
