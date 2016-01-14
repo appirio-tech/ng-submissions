@@ -32,6 +32,7 @@ FileDetailSlideContainerController = ($scope, $state, $filter, DataService, Step
 
   vm.onFileChange = (file) ->
     vm.file = file
+    vm.messages = vm.file.threads[0]?.messages || []
 
   vm.sendMessage = ->
     if vm.newMessage
