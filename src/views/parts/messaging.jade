@@ -24,7 +24,7 @@
 
         p(ng-if="vm.status == 'CLOSED'") You can no longer add comments here. If you have any questions or comments for your customer, please contact your copilot via the forum.
 
-      li(ng-repeat='message in vm.messages track by $index' ng-class='{first-message: $index == 0}')
+      li(ng-repeat='message in vm.messages track by $index' ng-class='{first: $index == 0}')
         header.flex.middle
           a(href="{{vm.generateProfileUrl(message.publisher.handle)}}" target="_blank")
             avatar(avatar-url='{{ message.publisher.avatar }}')
