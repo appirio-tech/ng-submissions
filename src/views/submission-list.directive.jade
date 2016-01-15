@@ -18,7 +18,7 @@ ul.submissions.new(ng-if='vm.statusValue > 3')
 
       li
         ul.flex.middle.actions
-          li
+          li(ng-class="{invisible: !submission.downloadUrl}")
             a(href='{{ submission.downloadUrl }}', target='_blank')
               .icon.download.small
 

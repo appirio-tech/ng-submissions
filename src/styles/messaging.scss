@@ -44,8 +44,21 @@
         border-top: 1px solid $grey-light;
         padding: 5px;
 
+        a.name-link {
+          margin-left: 10px;
+        }
+
         &:first-child {
           border-top: none;
+        }
+
+        .instructions {
+          padding-bottom: 0px;
+        }
+
+        .first-message {
+          border-top: none;
+          padding-top: 0px;
         }
       }
 
