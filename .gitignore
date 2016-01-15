@@ -4,6 +4,6 @@ bower_components
 node_modules
 coverage
 .sass-cache
-npm-bebug.log
+npm-debug.log
 
 
