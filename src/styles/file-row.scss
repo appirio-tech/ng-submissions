@@ -19,6 +19,12 @@ file-row {
       overflow: hidden;
     }
 
+    &:hover {
+      .tooltip {
+        display: block;
+      }
+    }
+
     img {
       width: 100%;
     }
@@ -33,14 +39,6 @@ file-row {
 
     &:last-child {
       position: relative;
-    }
-
-    .invisible-border {
-      width: 240px;
-      height: 170px;
-      background-color: transparent;
-      position: absolute;
-      z-index: 5;
     }
 
     .view-all-bg, .view-more {
@@ -113,6 +111,7 @@ file-row {
           display: inline-block;
           width : 215px;
           height: 389px;
+          box-shadow: 3px 3px 5px 1px rgba(0,0,0,0.1);
         }
       }
 
