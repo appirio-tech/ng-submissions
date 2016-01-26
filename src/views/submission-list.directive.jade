@@ -3,16 +3,14 @@ p.total-count {{ vm.submissions.length }} submissions
 hr.total-count
 
 ul.submissions.new(ng-if='vm.statusValue > 3')
-  li.submission(ng-repeat='submission in vm.submissions', data-id='{{ submission.id }}', ng-class="{ 'belongs-to-user': submission.belongsToUser }", draggable)
+  li.submission(ng-repeat='submission in vm.submissions', data-id='{{ submission.id }}', ng-class="{ 'belongs-to-user': submission.belongsToUser }")
     ul.user-details.flex.middle.space-between
       li.flex.middle
-        a(href="{{vm.generateProfileUrl(submission.submitter.handle)}}" target="_blank")
-          avatar(avatar-url='{{ submission.submitter.avatar }}')
+        .rank-number.flex.middle.space-between(ng-class="{expanded: submission.rank}")
+          .rank.flex.center.middle(ng-if="submission.rank")
+            label {{submission.rank | ordinalNumber}} Place
 
-        .name-time
-          a(href="{{vm.generateProfileUrl(submission.submitter.handle)}}" target="_blank")
-            .name {{ submission.submitter.handle }} 
-              span(ng-if='submission.belongsToUser') (Me)
+          label.submission-number # {{$index + 1}}
 
           p.secondary {{ submission.files.length }} Images
 

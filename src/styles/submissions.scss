@@ -124,16 +124,27 @@ submissions {
     ul.user-details {
       min-width: 200px;
 
-      .name-time {
-        min-width: 140px;
-        max-width: 140px;
+      .rank {
+        width: 80px;
+        height: 30px;
+        background-color: $danger-color;
+        color: $white;
+        border-radius: 3px;
+      }
+
+      .rank-number {
+        min-width: 90px;
+        max-width: 300px;
         margin-left: $horizontal-small;
 
-        .name {
-          @include ellipsis();
+        &.expanded {
+          min-width: 180px;
+        }
+
+        .submission-number {
 
           font-size: 16px;
-          color: $primary-color;
+          color: $text-color;
         }
 
         p {
