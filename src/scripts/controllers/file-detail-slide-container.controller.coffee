@@ -30,6 +30,9 @@ FileDetailSlideContainerController = ($scope, $state, $filter, DataService, Step
       vm.status          = step.status
       vm.canComment      = vm.userType == 'customer' || vm.userType == 'copilot' || vm.submission.belongsToUser
 
+      if vm.file
+        vm.file.threads[0]?.messages = vm.messages
+
   vm.onFileChange = (file) ->
     vm.file = file
     fileId = file.id
