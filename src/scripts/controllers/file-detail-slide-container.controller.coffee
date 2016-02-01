@@ -29,6 +29,7 @@ FileDetailSlideContainerController = ($scope, $state, $filter, DataService, Step
       vm.messages        = vm.startingFile.threads[0]?.messages || []
       vm.status          = step.status
       vm.canComment      = vm.userType == 'customer' || vm.userType == 'copilot' || vm.submission.belongsToUser
+      $scope.showLast    = scroll
 
       if vm.file
         vm.file.threads[0]?.messages = vm.messages
