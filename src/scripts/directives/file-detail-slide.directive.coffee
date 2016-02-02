@@ -12,7 +12,7 @@ directive = ->
     newMessage:      '='
     title:           '@'
     sumbitterAvatar: '@'
-    submitterHandle: '@'
+    submissionNumber:'@'
     userType:        '@'
     status:          '@'
     canComment:      '@'

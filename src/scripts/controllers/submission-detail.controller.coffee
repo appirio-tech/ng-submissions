@@ -9,16 +9,14 @@ SubmissionDetailController = ($scope, DataService, StepSubmissionsService) ->
   vm.submissionId = $scope.submissionId
   vm.userType     = $scope.userType
 
-  vm.generateProfileUrl = (handle) ->
-    "https://www.topcoder.com/members/#{handle}"
-
   activate = ->
     DataService.subscribe $scope, render, [StepSubmissionsService, 'get', vm.projectId, vm.stepId]
 
   render = (step) ->
-    vm.loaded = true
-    vm.submission = step.submissions.filter((submission) -> submission.id == vm.submissionId)[0]
-    vm.stepType = step.stepType
+    vm.loaded           = true
+    vm.submission       = step.submissions.filter((submission) -> submission.id == vm.submissionId)[0]
+    vm.submissionNumber = "# #{step.submissions.indexOf(vm.submission) + 1}"
+    vm.stepType         = step.stepType
 
   activate()
 

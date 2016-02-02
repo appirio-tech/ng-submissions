@@ -26,11 +26,16 @@
 
       li(ng-repeat='message in vm.messages track by $index' ng-class='{first: $index == 0}')
         header.flex.middle
-          a(href="{{vm.generateProfileUrl(message.publisher.handle)}}" target="_blank")
-            avatar(avatar-url='{{ message.publisher.avatar }}')
+          avatar(avatar-url='{{ message.publisher.avatar }}' ng-if="message.publisher.role != 'submitter'")
 
-          a.name-link(href="{{vm.generateProfileUrl(message.publisher.handle)}}" target="_blank" ng-if="message.publisher.handle")
-            .name {{ message.publisher.handle }}
+          .submission-number.flex.center.middle(ng-if="message.publisher.role == 'submitter'")
+            {{vm.submissionNumber}}
+
+          .name-link(ng-if="message.publisher.handle && message.publisher.role != 'submitter'")
+            strong.name {{ message.publisher.handle }}
+
+          .name-link(ng-if="message.publisher.role == 'submitter'")
+            strong.name Submitter
 
           time {{ message.createdAt | timeLapse }}
 

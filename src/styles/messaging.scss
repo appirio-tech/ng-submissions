@@ -5,7 +5,7 @@
 
   position        : absolute;
   width           : 300px;
-  top             : 90px;
+  top             : 84px;
   right           : -300px;
   padding         : 10px;
   overflow        : hidden;
@@ -44,7 +44,7 @@
         border-top: 1px solid $grey-light;
         padding: 5px;
 
-        a.name-link {
+        .name-link {
           margin-left: 10px;
         }
 
@@ -60,11 +60,20 @@
           border-top: none;
           padding-top: 0px;
         }
+
+        .submission-number {
+            width           : 35px;
+            height          : 35px;
+            border-radius   : 50%;
+            background-color: $gray;
+            overflow        : hidden;
+        }
       }
 
       .message {
         margin: 0 0 0 42px;
         white-space: pre-wrap;
+        word-wrap: break-word;
       }
     }
   }

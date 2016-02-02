@@ -7,7 +7,7 @@ submissions-header(project-id='{{ vm.projectId }}' step-id='{{ vm.stepId }}')
   include parts/subheader-copilot
   include parts/subheader-member
 
-rank-list(ng-if="vm.statusValue > 3 && (vm.stepType == 'designConcepts' || vm.stepType == 'completeDesigns')" project-id='{{ vm.projectId }}' step-id='{{ vm.stepId }}' user-type='{{ vm.userType }}')
+confirm-button(ng-if="vm.statusValue > 3 && (vm.stepType == 'designConcepts' || vm.stepType == 'completeDesigns')" project-id='{{ vm.projectId }}' step-id='{{ vm.stepId }}' user-type='{{ vm.userType }}')
 
 submission-list(ng-if="vm.statusValue > 3 && (vm.stepType == 'designConcepts' || vm.stepType == 'completeDesigns')" project-id='{{ vm.projectId }}' step-id='{{ vm.stepId }}' user-type='{{ vm.userType }}')
 
