@@ -3,12 +3,11 @@
 FileDetailSlideController = ($scope, $state, DataService, StepSubmissionsService, SubmissionsService) ->
   vm                 = this
   #slide viewer
-  vm.files           = $scope.files
-  vm.startingFile    = $scope.startingFile
-  vm.submitterAvatar = $scope.submitterAvatar
-  vm.submitterHandle = $scope.submitterHandle
-  vm.title           = $scope.title
-  vm.file            = null
+  vm.files            = $scope.files
+  vm.startingFile     = $scope.startingFile
+  vm.submissionNumber = $scope.submissionNumber
+  vm.title            = $scope.title
+  vm.file             = null
 
   vm.onFileChange    = $scope.onFileChange
   vm.toggleComments  = $scope.toggleComments

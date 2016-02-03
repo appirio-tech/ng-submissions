@@ -18,14 +18,14 @@ FileDetailSlideContainerController = ($scope, $state, $filter, DataService, Step
   render = (step) ->
     vm.loaded          = true
     vm.submission      = step.submissions.filter((submission) -> submission.id == submissionId)[0]
+
     if vm.submission
       vm.hasSubmission   = true
       vm.files           = vm.submission.files
       vm.startingFile    = vm.submission.files.filter((file) -> file.id == fileId)[0]
+      vm.submissionNumber = "# #{step.submissions.indexOf(vm.submission) + 1}"
       vm.submissionDate  = $filter('timeLapse')(vm.submission.createdAt)
       submitter          = vm.submission.submitter
-      vm.submitterAvatar = submitter.avatar
-      vm.submitterHandle = submitter.handle
       vm.messages        = vm.startingFile.threads[0]?.messages || []
       vm.status          = step.status
       vm.canComment      = vm.userType == 'customer' || vm.userType == 'copilot' || vm.submission.belongsToUser
