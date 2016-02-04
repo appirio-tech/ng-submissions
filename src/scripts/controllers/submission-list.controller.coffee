@@ -21,6 +21,14 @@ SubmissionListController = ($scope, DataService, StepSubmissionsService) ->
     vm.statusValue = step.statusValue
     vm.fileCount   = step.fileCount
 
+    # assign an arbitrary number to identify each submission on the ui
+    if !vm.submissionIdMap
+      vm.submissionIdMap = {}
+      ordered = vm.submissions.sort (previous, next) ->
+        previous.id - next.id
+      ordered.forEach (submission, index) ->
+        vm.submissionIdMap[submission.id] = index
+
   activate()
 
   vm

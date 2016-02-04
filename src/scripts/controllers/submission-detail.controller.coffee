@@ -15,8 +15,17 @@ SubmissionDetailController = ($scope, DataService, StepSubmissionsService) ->
   render = (step) ->
     vm.loaded           = true
     vm.submission       = step.submissions.filter((submission) -> submission.id == vm.submissionId)[0]
-    vm.submissionNumber = "# #{step.submissions.indexOf(vm.submission) + 1}"
     vm.stepType         = step.stepType
+
+    # assign an arbitrary number to identify each submission on the ui
+    if !vm.submissionIdMap
+      vm.submissionIdMap = {}
+      ordered = vm.submissions.sort (previous, next) ->
+        previous.id - next.id
+      ordered.forEach (submission, index) ->
+        vm.submissionIdMap[submission.id] = index
+
+      vm.submissionNumber = "# #{submissionIdMap[vm.submission.id]}"
 
   activate()
 
