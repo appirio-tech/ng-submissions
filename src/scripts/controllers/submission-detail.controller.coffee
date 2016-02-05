@@ -18,14 +18,15 @@ SubmissionDetailController = ($scope, DataService, StepSubmissionsService) ->
     vm.stepType         = step.stepType
 
     # assign an arbitrary number to identify each submission on the ui
-    if !vm.submissionIdMap
+    if !vm.submissionIdMap && vm.submission
       vm.submissionIdMap = {}
-      ordered = vm.submissions.sort (previous, next) ->
-        previous.id - next.id
+      submissionsCopy = step.submissions.slice()
+      ordered = submissionsCopy.sort (previous, next) ->
+        new Date(previous.createdAt) - new Date(next.createdAt)
       ordered.forEach (submission, index) ->
-        vm.submissionIdMap[submission.id] = index
+        vm.submissionIdMap[submission.id] = index + 1
 
-      vm.submissionNumber = "# #{submissionIdMap[vm.submission.id]}"
+      vm.submissionNumber = "# #{vm.submissionIdMap[vm.submission.id]}"
 
   activate()
 
