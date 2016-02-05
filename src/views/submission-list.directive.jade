@@ -10,7 +10,7 @@ ul.submissions.new(ng-if='vm.statusValue > 3')
           .rank.flex.center.middle(ng-if="submission.rank")
             label {{submission.rank | ordinalNumber}} Place
 
-          label.submission-number # {{$index + 1}}
+          label.submission-number # {{vm.submissionIdMap[submission.id]}}
 
           p.secondary {{ submission.files.length }} Images
 

@@ -1,13 +1,13 @@
 'use strict'
 
 SubmissionListController = ($scope, DataService, StepSubmissionsService) ->
-  vm             = this
-  vm.status      = 'PLACEHOLDER'
-  vm.statusValue = 0
-  vm.submissions = []
-  vm.projectId   = $scope.projectId
-  vm.stepId      = $scope.stepId
-  vm.userType    = $scope.userType
+  vm                 = this
+  vm.status          = 'PLACEHOLDER'
+  vm.statusValue     = 0
+  vm.submissions     = []
+  vm.projectId       = $scope.projectId
+  vm.stepId          = $scope.stepId
+  vm.userType        = $scope.userType
 
   vm.generateProfileUrl = (handle) ->
     "https://www.topcoder.com/members/#{handle}"
@@ -20,6 +20,18 @@ SubmissionListController = ($scope, DataService, StepSubmissionsService) ->
     vm.status      = step.status
     vm.statusValue = step.statusValue
     vm.fileCount   = step.fileCount
+
+    # assign an arbitrary number to identify each submission on the ui
+    if vm.submissions.length > 0
+      if !vm.submissionIdMap
+        vm.submissionIdMap = {}
+        submissionsCopy = vm.submissions.slice()
+
+        ordered = submissionsCopy.sort (previous, next) ->
+          new Date(previous.createdAt) - new Date(next.createdAt)
+
+        ordered.forEach (submission, index) ->
+          vm.submissionIdMap[submission.id] = index + 1
 
   activate()
 
