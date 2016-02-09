@@ -43,6 +43,6 @@
 
   .send
     form(ng-submit='vm.sendMessage()', ng-if="vm.status != 'CLOSED' && vm.canComment")
-      textarea(ng-if="vm.permissions.indexOf('CREATE') > -1" placeholder='Send a message…', ng-model='vm.newMessage')
-      textarea(ng-if="vm.permissions.indexOf('CREATE') == -1" placeholder='Messaging disabled' disabled)
+      textarea(ng-if="vm.canCreate" placeholder='Send a message…', ng-model='vm.newMessage')
+      textarea(ng-if="!vm.canCreate" placeholder='Messaging disabled' disabled)
       button.enter(type='submit' ng-disabled="vm.permissions.indexOf('CREATE') == -1") Enter

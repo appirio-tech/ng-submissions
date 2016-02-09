@@ -6,6 +6,7 @@ ConfirmButtonController = ($scope, StepsService, RankListService, DataService) -
   vm.stepId      = $scope.stepId
   vm.permissions = $scope.permissions
   userType       = $scope.userType
+  vm.canUpdate   = vm.permissions.indexOf('UPDATE') > -1
 
   activate = ->
     DataService.subscribe $scope, render, [RankListService, 'get', vm.projectId, vm.stepId]

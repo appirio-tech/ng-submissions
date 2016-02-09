@@ -4,5 +4,5 @@ dropdown(
   on-change="vm.handleRankSelect"
   value="vm.rank.value"
   clearable="false"
-  disabled="vm.permissions.indexOf('UPDATE') == -1"
+  disabled="!vm.canUpdate"
 )

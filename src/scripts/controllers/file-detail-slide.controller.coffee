@@ -23,6 +23,9 @@ FileDetailSlideController = ($scope, $state, DataService, StepSubmissionsService
   vm.newMessage   = $scope.newMessage
   vm.showMessages = $scope.showMessages
 
+  vm.canUpdate   = vm.permissions.indexOf('UPDATE') > -1
+  vm.canCreate   = vm.permissions.indexOf('CREATE') > -1
+
   vm.onFileChange = (file) ->
     vm.file = file
     $scope.onFileChange
