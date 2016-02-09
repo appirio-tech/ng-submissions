@@ -11,8 +11,8 @@ SubmissionsController = ($scope, DataService, StepSubmissionsService, RankListSe
   vm.permissions = $scope.permissions
   userId         = UserV3Service.getCurrentUser()?.id
 
-  vm.canUpdate   = vm.permissions.indexOf('UPDATE') > -1
-  vm.canCreate   = vm.permissions.indexOf('CREATE') > -1
+  vm.canUpdate   = vm.permissions?.indexOf('UPDATE') > -1
+  vm.canCreate   = vm.permissions?.indexOf('CREATE') > -1
 
   activate = ->
     if vm.stepId

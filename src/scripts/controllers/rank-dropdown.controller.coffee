@@ -7,7 +7,7 @@ RankDropdownController = ($scope, StepsService, RankListService, DataService) ->
   submissionId   = $scope.submissionId
   userType       = $scope.userType
   vm.permissions = $scope.permissions
-  vm.canUpdate   = vm.permissions.indexOf('UPDATE') > -1
+  vm.canUpdate   = vm.permissions?.indexOf('UPDATE') > -1
 
 
   activate = ->
