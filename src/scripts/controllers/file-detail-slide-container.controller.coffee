@@ -1,16 +1,17 @@
 'use strict'
 
 FileDetailSlideContainerController = ($scope, $state, $filter, DataService, StepSubmissionsService, SubmissionsService) ->
-  vm            = this
-  vm.loaded     = false
-  vm.submission = {}
-  projectId     = $scope.projectId
-  stepId        = $scope.stepId
-  submissionId  = $scope.submissionId
-  fileId        = $scope.fileId
-  vm.userType   = $scope.userType
-  vm.messages   = []
-  vm.newMessage = ''
+  vm             = this
+  vm.loaded      = false
+  vm.submission  = {}
+  projectId      = $scope.projectId
+  stepId         = $scope.stepId
+  submissionId   = $scope.submissionId
+  fileId         = $scope.fileId
+  vm.userType    = $scope.userType
+  vm.permissions = $scope.permissions
+  vm.messages    = []
+  vm.newMessage  = ''
 
   activate = ->
     DataService.subscribe $scope, render, [StepSubmissionsService, 'get', projectId, stepId]

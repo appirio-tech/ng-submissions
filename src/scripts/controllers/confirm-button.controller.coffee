@@ -4,6 +4,7 @@ ConfirmButtonController = ($scope, StepsService, RankListService, DataService) -
   vm             = this
   vm.projectId   = $scope.projectId
   vm.stepId      = $scope.stepId
+  vm.permissions = $scope.permissions
   userType       = $scope.userType
 
   activate = ->

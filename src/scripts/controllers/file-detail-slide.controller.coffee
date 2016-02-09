@@ -7,6 +7,7 @@ FileDetailSlideController = ($scope, $state, DataService, StepSubmissionsService
   vm.startingFile     = $scope.startingFile
   vm.submissionNumber = $scope.submissionNumber
   vm.title            = $scope.title
+  vm.permissions      = $scope.permissions
   vm.file             = null
 
   vm.onFileChange    = $scope.onFileChange

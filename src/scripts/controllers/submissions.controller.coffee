@@ -8,6 +8,7 @@ SubmissionsController = ($scope, DataService, StepSubmissionsService, RankListSe
   vm.projectId   = $scope.projectId
   vm.stepId      = $scope.stepId
   vm.userType    = $scope.userType
+  vm.permissions = $scope.permissions
   userId         = UserV3Service.getCurrentUser()?.id
 
   activate = ->

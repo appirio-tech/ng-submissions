@@ -7,6 +7,7 @@ SubmissionListController = ($scope, DataService, StepSubmissionsService) ->
   vm.submissions     = []
   vm.projectId       = $scope.projectId
   vm.stepId          = $scope.stepId
+  vm.permissions     = $scope.permissions
   vm.userType        = $scope.userType
 
   vm.generateProfileUrl = (handle) ->

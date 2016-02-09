@@ -1,11 +1,12 @@
 'use strict'
 
 RankDropdownController = ($scope, StepsService, RankListService, DataService) ->
-  vm           = this
-  projectId    = $scope.projectId
-  stepId       = $scope.stepId
-  submissionId = $scope.submissionId
-  userType     = $scope.userType
+  vm             = this
+  projectId      = $scope.projectId
+  stepId         = $scope.stepId
+  submissionId   = $scope.submissionId
+  userType       = $scope.userType
+  vm.permissions = $scope.permissions
 
   activate = ->
     DataService.subscribe $scope, render, [RankListService, 'get', projectId, stepId]

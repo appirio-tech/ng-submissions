@@ -7,6 +7,7 @@ FileDetailController = ($scope, $state, DataService, StepSubmissionsService, Sub
   vm.submissionId = $scope.submissionId
   vm.fileId       = $scope.fileId
   vm.userType     = $scope.userType
+  vm.permissions  = $scope.permissions
 
   vm
 
