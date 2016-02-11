@@ -2,5 +2,8 @@
 
 rank-dropdown {
   display: block;
-  min-width: 120px;
+
+  dropdown {
+    min-width: 120px;
+  }
 }
