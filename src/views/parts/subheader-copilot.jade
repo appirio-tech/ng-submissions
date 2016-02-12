@@ -22,4 +22,4 @@ div(ng-if="vm.userType == 'copilot' && vm.status == 'REVIEWING_LATE'")
   p Please inform an administrator and reach out to the customer to remind them to provide feedback. 
 
 div(ng-if="vm.userType == 'copilot' && vm.status == 'CLOSED'")
-  p(ng-if="vm.nextStepStartsAt") The next phase begins in <strong><countdown end="{{ vm.nextStepStartsAt }}"></strong>.
+  p(ng-if="vm.nextStepStartsAt && vm.isPastDate") The next phase begins in <strong><countdown end="{{ vm.nextStepStartsAt }}"></strong>.

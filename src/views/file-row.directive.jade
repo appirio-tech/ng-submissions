@@ -14,7 +14,7 @@ ul.files.flex
 
     .pop-over.elevated(ng-class="{left: file.isLast && vm.files.length > 3}")
       a.preview(ui-sref="file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: submission.id, fileId: file.id})")
-        img.previewImage(ng-src="{{ file.url }}")
+        img.previewImage.elevated(ng-src="{{ file.url }}")
 
       a(href="{{ file.detailUrl }}" )
         .icon.bubble
