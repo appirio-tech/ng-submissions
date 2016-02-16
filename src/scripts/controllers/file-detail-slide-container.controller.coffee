@@ -15,9 +15,18 @@ FileDetailSlideContainerController = ($scope, $state, $filter, DataService, Step
   activate = ->
     DataService.subscribe $scope, render, [StepSubmissionsService, 'get', projectId, stepId]
 
+  canComment = ->
+    allow = vm.userType == 'customer' || vm.userType == 'copilot' || vm.submission.belongsToUser
+
+    if vm.status == 'CLOSED' && vm.stepType != 'completeDesigns'
+      allow = false
+
+    allow
+
   render = (step) ->
-    vm.loaded          = true
-    vm.submission      = step.submissions.filter((submission) -> submission.id == submissionId)[0]
+    vm.loaded     = true
+    vm.stepType   = step.stepType
+    vm.submission = step.submissions.filter((submission) -> submission.id == submissionId)[0]
 
     if vm.submission
       vm.hasSubmission   = true
@@ -40,7 +49,7 @@ FileDetailSlideContainerController = ($scope, $state, $filter, DataService, Step
       submitter          = vm.submission.submitter
       vm.messages        = vm.startingFile.threads[0]?.messages || []
       vm.status          = step.status
-      vm.canComment      = vm.userType == 'customer' || vm.userType == 'copilot' || vm.submission.belongsToUser
+      vm.canComment      = canComment()
 
       if vm.file
         vm.file.threads[0]?.messages = vm.messages
