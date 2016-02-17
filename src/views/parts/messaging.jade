@@ -42,6 +42,6 @@
         p.message {{ message.body }}
 
   .send
-    form(ng-submit='vm.sendMessage()', ng-if="vm.canComment")
-      textarea(placeholder='Send a message…', ng-model='vm.newMessage')
+    form(ng-submit='vm.sendMessage()' ng-if="vm.canComment")
+      textarea(placeholder='Send a message…' ng-model='vm.newMessage')
       button.enter(type='submit') Enter

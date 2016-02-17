@@ -15,17 +15,23 @@ FileDetailSlideContainerController = ($scope, $state, $filter, DataService, Step
   activate = ->
     DataService.subscribe $scope, render, [StepSubmissionsService, 'get', projectId, stepId]
 
-  canComment = ->
-    allow = vm.userType == 'customer' || vm.userType == 'copilot' || vm.submission.belongsToUser
+  canComment = (role, isOwner, stepType, stepStatus, closed, rank) ->
+    # Initialize allow by customer type
+    allow = role == 'customer' || role == 'copilot' || isOwner
 
-    if vm.status == 'CLOSED' && vm.stepType != 'completeDesigns'
-      allow = false
+    # Disable commenting on Complete Designs step
+    allow = allow && stepType != 'completeDesigns'
+
+    # Disable commenting on closed steps
+    allow = allow && stepStatus != 'CLOSED'
+
+    # Allow commenting on the winning submission of Complete Designs
+    allow = allow || (stepType == 'completeDesigns' && closed && rank == 1)
 
     allow
 
   render = (step) ->
     vm.loaded     = true
-    vm.stepType   = step.stepType
     vm.submission = step.submissions.filter((submission) -> submission.id == submissionId)[0]
 
     if vm.submission
@@ -48,8 +54,7 @@ FileDetailSlideContainerController = ($scope, $state, $filter, DataService, Step
       vm.submissionDate  = $filter('timeLapse')(vm.submission.createdAt)
       submitter          = vm.submission.submitter
       vm.messages        = vm.startingFile.threads[0]?.messages || []
-      vm.status          = step.status
-      vm.canComment      = canComment()
+      vm.canComment      = canComment(vm.userType, vm.submission.belongsToUser, step.stepType, step.status, step.details.customerConfirmedRanks, vm.submission.rank)
 
       if vm.file
         vm.file.threads[0]?.messages = vm.messages
