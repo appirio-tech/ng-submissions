@@ -8,7 +8,7 @@ SubmissionsController = ($scope, DataService, StepSubmissionsService, RankListSe
   vm.projectId   = $scope.projectId
   vm.stepId      = $scope.stepId
   vm.userType    = $scope.userType
-  vm.permissions = $scope.permissions
+  vm.permissions = $scope.permissions || ['CREATE', 'UPDATE', 'DELETE']
   userId         = UserV3Service.getCurrentUser()?.id
 
   vm.canUpdate   = vm.permissions?.indexOf('UPDATE') > -1
