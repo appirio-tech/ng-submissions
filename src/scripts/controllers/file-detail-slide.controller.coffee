@@ -3,6 +3,9 @@
 FileDetailSlideController = ($scope) ->
   vm                 = this
 
+  vm.canUpdate   = vm.permissions?.indexOf('UPDATE') > -1
+  vm.canCreate   = vm.permissions?.indexOf('CREATE') > -1
+
   vm.onFileChange = (file) ->
     vm.file = file
     $scope.onFileChange

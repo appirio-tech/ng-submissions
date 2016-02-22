@@ -7,6 +7,10 @@ FileDetailController = ($scope, $state, DataService, StepSubmissionsService, Sub
   vm.submissionId = $scope.submissionId
   vm.fileId       = $scope.fileId
   vm.userType     = $scope.userType
+  vm.permissions  = $scope.permissions
+
+  vm.canUpdate   = vm.permissions?.indexOf('UPDATE') > -1
+  vm.canCreate   = vm.permissions?.indexOf('CREATE') > -1
 
   vm
 

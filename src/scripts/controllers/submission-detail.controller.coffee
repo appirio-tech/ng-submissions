@@ -8,6 +8,7 @@ SubmissionDetailController = ($scope, DataService, StepSubmissionsService) ->
   vm.stepId       = $scope.stepId
   vm.submissionId = $scope.submissionId
   vm.userType     = $scope.userType
+  vm.permissions  = $scope.permissions
 
   activate = ->
     DataService.subscribe $scope, render, [StepSubmissionsService, 'get', vm.projectId, vm.stepId]

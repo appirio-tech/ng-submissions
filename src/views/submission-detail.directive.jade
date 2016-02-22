@@ -8,7 +8,7 @@ ul.header.flex.middle
     label {{ vm.submissionNumber }}
 
   li
-    rank-dropdown(project-id='{{ vm.projectId }}', step-id='{{ vm.stepId }}', submission-id='{{ vm.submissionId }}', user-type='{{ vm.userType }}')
+    rank-dropdown(project-id='{{ vm.projectId }}', step-id='{{ vm.stepId }}', submission-id='{{ vm.submissionId }}', user-type='{{ vm.userType }}' permissions="vm.permissions")
 
   li.download(ng-class="{invisible: !vm.submission.downloadUrl}")
     a(href='{{ vm.submission.downloadUrl }}', target='_blank')

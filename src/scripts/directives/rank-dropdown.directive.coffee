@@ -9,5 +9,6 @@ directive = ->
     stepId       : '@'
     submissionId : '@'
     userType     : '@'
+    permissions  : '='
 
 angular.module('appirio-tech-submissions').directive 'rankDropdown', directive

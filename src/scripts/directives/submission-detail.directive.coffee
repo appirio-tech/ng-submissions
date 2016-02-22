@@ -9,5 +9,6 @@ directive = ->
     stepId       : '@'
     submissionId : '@'
     userType     : '@'
+    permissions  : '='
 
 angular.module('appirio-tech-submissions').directive 'submissionDetail', directive
