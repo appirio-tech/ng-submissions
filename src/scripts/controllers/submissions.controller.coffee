@@ -29,6 +29,7 @@ SubmissionsController = ($scope, DataService, StepSubmissionsService, RankListSe
     vm.startsAt         = step.startsAt
     vm.endsAt           = step.endsAt
     vm.nextStepStartsAt = step.nextStepStartsAt
+    vm.isPastDate       = Date.now() < new Date(vm.nextStepStartsAt)
     vm.submissionsDueBy = step.details.submissionsDueBy
     vm.status           = step.status
     vm.statusValue      = step.statusValue

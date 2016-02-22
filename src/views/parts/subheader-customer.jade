@@ -24,4 +24,6 @@ div(ng-if="vm.userType == 'customer' && vm.status == 'REVIEWING_LATE'")
   p(ng-show="vm.showConfirm") We need your feedback to move to the next phase. Please select winners and confirm. You will not be able to change this once you confirm.
 
 div(ng-if="vm.userType == 'customer' && vm.status == 'CLOSED'")
-  p These are your winners. You can still review submissions, but can no longer provide feedback. If you have any more comments, please message your copilot. The next phase begins in <strong><countdown end='{{ vm.nextStepStartsAt }}'></strong>.
+  p These are your winners. You can still review submissions, but can no longer provide feedback. If you have any more comments, please message your copilot. 
+
+  p(ng-if="vm.isPastDate") The next phase begins in <strong><countdown end='{{ vm.nextStepStartsAt }}'></strong>.

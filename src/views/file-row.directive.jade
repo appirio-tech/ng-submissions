@@ -13,7 +13,7 @@ ul.files.flex
         span(ng-if="vm.viewMore") +{{ vm.more }} More
 
     .pop-over.elevated(ng-class="{left: file.isLast && vm.files.length > 3}")
-      a.preview(ui-sref="file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: submission.id, fileId: file.id})")
+      a.preview.elevated(ui-sref="file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: submission.id, fileId: file.id})")
         img.previewImage(ng-src="{{ file.url }}")
 
       a(href="{{ file.detailUrl }}" )

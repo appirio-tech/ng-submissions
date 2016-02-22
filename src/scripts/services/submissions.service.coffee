@@ -40,10 +40,13 @@ SubmissionsService = ($rootScope, SubmissionsAPIService, SubmissionsMessagesAPIS
     for item in data[stepId]
       copy.push angular.merge({}, item)
 
+    copy = dyanamicProps copy
+
     copy._pending = true if pending
     copy._error = error if error
 
-    dyanamicProps copy
+    copy
+
 
   fetch = (projectId, stepId) ->
     data[stepId] = []
