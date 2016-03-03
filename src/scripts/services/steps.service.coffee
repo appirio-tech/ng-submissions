@@ -222,14 +222,14 @@ srv = ($rootScope, StepsAPIService, OptimistCollection) ->
 
     updateStep projectId, stepId, step, updates
 
-  name         : 'StepsService'
-  get          : get
-  subscribe    : subscribe
-  getCurrentStep : getCurrentStep
-  getStepById : getStepById
-  updateRank   : updateRank
-  confirmRanks : confirmRanks
-  acceptFixes  : acceptFixes
+  name:            'StepsService'
+  get:             get
+  subscribe:       subscribe
+  getCurrentStep:  getCurrentStep
+  getStepById:     getStepById
+  updateRank:      updateRank
+  confirmRanks:    confirmRanks
+  acceptFixes:     acceptFixes
   confirmComments: confirmComments
 
 srv.$inject = ['$rootScope', 'StepsAPIService', 'OptimistCollection']
