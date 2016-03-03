@@ -17,7 +17,7 @@ ConfirmButtonController = ($scope, StepsService, StepSubmissionsService, RankLis
     vm.ranks   = rankList
     vm.locked  = userType == 'member' || rankList.confirmed
     vm.confirmEnabled = rankList.allFull && !rankList.confirmed && userType != 'member'
-    vm.confirmCommentsEnabled = !step.customerConfirmedComments && rankList.confirmed && userType != 'member' && step.type == 'completeDesigns'
+    vm.confirmCommentsEnabled = !step.commentsConfirmed && rankList.confirmed && userType != 'member' && step.stepType == 'completeDesigns'
 
   vm.confirmRanks = ->
     StepsService.confirmRanks vm.projectId, vm.stepId
