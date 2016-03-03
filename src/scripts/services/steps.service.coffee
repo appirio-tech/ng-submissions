@@ -123,6 +123,7 @@ srv = ($rootScope, StepsAPIService, OptimistCollection) ->
         step.title       = titles[step.stepType]
         step.status      = statusOf step
         step.statusValue = statusValueOf step.status
+        step.commentsConfirmed = step.details.commentsConfirmed
         currentStepOrder = stepOrder.indexOf step.stepType
 
         if currentStepOrder > 0
@@ -202,6 +203,14 @@ srv = ($rootScope, StepsAPIService, OptimistCollection) ->
     updates =
       details:
         customerConfirmedRanks: true
+
+    updateStep projectId, stepId, step, updates
+
+  confirmComments = (projectId, stepId) ->
+    step = data[projectId].findOneWhere { id: stepId }
+    updates =
+      details:
+        customerConfirmedComments: true
 
     updateStep projectId, stepId, step, updates
 

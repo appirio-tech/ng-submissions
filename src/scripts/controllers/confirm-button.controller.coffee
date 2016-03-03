@@ -9,15 +9,21 @@ ConfirmButtonController = ($scope, StepsService, RankListService, DataService) -
   vm.canUpdate   = vm.permissions?.indexOf('UPDATE') > -1
 
   activate = ->
-    DataService.subscribe $scope, render, [RankListService, 'get', vm.projectId, vm.stepId]
-
-  render = (rankList) ->
+    DataService.subscribe $scope, render, [
+      [StepsService, 'get', vm.projectId, vm.stepId]
+      [RankListService, 'get', vm.projectId, vm.stepId]
+    ]
+  render = (step, rankList) ->
     vm.ranks   = rankList
     vm.locked  = userType == 'member' || rankList.confirmed
-    vm.confirm = rankList.allFull && !rankList.confirmed && userType != 'member'
+    vm.confirmEnabled = rankList.allFull && !rankList.confirmed && userType != 'member'
+    vm.confirmCommentsEnabled = !step.customerConfirmedComments && rankList.confirmed && userType != 'member'
 
   vm.confirmRanks = ->
     StepsService.confirmRanks vm.projectId, vm.stepId
+
+  vm.confirmComments = ->
+    StepsService.confirmComments vm.projectId, vm.stepId
 
   activate()
 
