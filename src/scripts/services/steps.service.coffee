@@ -123,7 +123,7 @@ srv = ($rootScope, StepsAPIService, OptimistCollection) ->
         step.title       = titles[step.stepType]
         step.status      = statusOf step
         step.statusValue = statusValueOf step.status
-        step.commentsConfirmed = step.details.commentsConfirmed
+        step.commentsConfirmed = step.details.customerConfirmedComments
         currentStepOrder = stepOrder.indexOf step.stepType
 
         if currentStepOrder > 0
@@ -230,6 +230,7 @@ srv = ($rootScope, StepsAPIService, OptimistCollection) ->
   updateRank   : updateRank
   confirmRanks : confirmRanks
   acceptFixes  : acceptFixes
+  confirmComments: confirmComments
 
 srv.$inject = ['$rootScope', 'StepsAPIService', 'OptimistCollection']
 

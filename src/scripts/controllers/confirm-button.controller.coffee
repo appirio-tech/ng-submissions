@@ -1,6 +1,6 @@
 'use strict'
 
-ConfirmButtonController = ($scope, StepsService, RankListService, DataService) ->
+ConfirmButtonController = ($scope, StepsService, StepSubmissionsService, RankListService, DataService) ->
   vm             = this
   vm.projectId   = $scope.projectId
   vm.stepId      = $scope.stepId
@@ -10,14 +10,14 @@ ConfirmButtonController = ($scope, StepsService, RankListService, DataService) -
 
   activate = ->
     DataService.subscribe $scope, render, [
-      [StepsService, 'get', vm.projectId, vm.stepId]
+      [StepSubmissionsService, 'get', vm.projectId, vm.stepId]
       [RankListService, 'get', vm.projectId, vm.stepId]
     ]
   render = (step, rankList) ->
     vm.ranks   = rankList
     vm.locked  = userType == 'member' || rankList.confirmed
     vm.confirmEnabled = rankList.allFull && !rankList.confirmed && userType != 'member'
-    vm.confirmCommentsEnabled = !step.customerConfirmedComments && rankList.confirmed && userType != 'member'
+    vm.confirmCommentsEnabled = !step.customerConfirmedComments && rankList.confirmed && userType != 'member' && step.type == 'completeDesigns'
 
   vm.confirmRanks = ->
     StepsService.confirmRanks vm.projectId, vm.stepId
@@ -29,6 +29,6 @@ ConfirmButtonController = ($scope, StepsService, RankListService, DataService) -
 
   vm
 
-ConfirmButtonController.$inject = ['$scope', 'StepsService', 'RankListService', 'DataService']
+ConfirmButtonController.$inject = ['$scope', 'StepsService', 'StepSubmissionsService', 'RankListService', 'DataService']
 
 angular.module('appirio-tech-submissions').controller 'ConfirmButtonController', ConfirmButtonController
