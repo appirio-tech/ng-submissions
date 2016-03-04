@@ -71,7 +71,7 @@ srv = ($rootScope, StepsAPIService, OptimistCollection) ->
     rankedSubmissions
 
   statusOf = (step) ->
-    if step.stepType == 'designConcepts' || step.stepType == 'completeDesigns'
+    if step.stepType == 'designConcepts' || step.stepType == 'completeDesigns' || step.stepType == 'finalFixes'
       now              = Date.now()
       startsAt         = new Date(step.startsAt)
       submissionsDueBy = new Date(step.details.submissionsDueBy)
