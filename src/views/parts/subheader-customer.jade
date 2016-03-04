@@ -30,6 +30,6 @@ div(ng-if="vm.userType == 'customer' && vm.status == 'CLOSED' && (vm.stepType !=
 
 
 div(ng-if="vm.userType == 'customer' && vm.status == 'CLOSED' && (vm.stepType == 'completeDesigns' && !vm.commentsConfirmed)")
-  p These are your winners. Please provide feedback and request changes to be made for the final fixes.
+  p These are your winners. If you would like any final changes to the winning design submission, please add comments to the submission soon. Once you confirm the comments, the copilot will contact you and get the work started.
 
   p(ng-if="vm.isPastDate") The next phase begins in <strong><countdown end='{{ vm.nextStepStartsAt }}'></strong>.
