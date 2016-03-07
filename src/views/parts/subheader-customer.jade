@@ -2,7 +2,10 @@ div(ng-if="vm.userType == 'customer' && vm.status == 'PLACEHOLDER'")
   p Work on your project hasn’t started yet. Once the initial designs are ready, you will see them here.
 
 div(ng-if="vm.userType == 'customer' && vm.status == 'SCHEDULED'")
-  p Work on this phase will start in approximately <strong><countdown end='{{ vm.startsAt }}'></strong>. Once the initial designs are ready, you will see them here.
+  p(ng-if="vm.stepType != 'finalFixes' ") Work on this phase will start in approximately <strong><countdown end='{{ vm.startsAt }}'></strong>. Once the initial designs are ready, you will see them here.
+
+  p(ng-if="vm.stepType == 'finalFixes'") Your final deliverables with the changes that you requested will be appear here in approximately <strong><countdown end='{{ vm.submissionsDueBy }}'></strong>. Please contact your copilot if you have any questions.
+
   submission-countdown(end='{{ vm.startsAt }}', text='Work starts on {{ vm.title }} submissions')
 
 div(ng-if="vm.userType == 'customer' && vm.status == 'OPEN'")
@@ -13,10 +16,13 @@ div(ng-if="vm.userType == 'customer' && vm.status == 'OPEN'")
 div(ng-if="vm.userType == 'customer' && vm.status == 'OPEN_LATE'")
   p There has been a delay in receiving the submissions. Your co-pilot will reach out to you to provide more details.
 
-div(ng-if="vm.userType == 'customer' && vm.status == 'REVIEWING'")
+div(ng-if="vm.userType == 'customer' && vm.status == 'REVIEWING' && vm.stepType != 'finalFixes' ")
   p Please provide feedback and select the top {{ vm.numberOfRanks }} submissions within <strong><countdown end='{{vm.endsAt}}'></strong>. Your feedback will be visible to the copilot and all members who have submitted to help them improve their initial concepts.
 
   p(ng-show="vm.showConfirm") Please provide feedback and select the top 3 submissions within the next X days. Your feedback will be visible to the copilot as well as all members to help them improve their initial concepts.
+
+div(ng-if="vm.userType == 'customer' && vm.status == 'REVIEWING' && vm.stepType == 'finalFixes' ")
+  p Here is your final deliverable, available for you to download. Please contact the copilot if you have any further questions.
 
 div(ng-if="vm.userType == 'customer' && vm.status == 'REVIEWING_LATE'")
   p There has been a delay in your schedule as we need your feedback to move to the next phase of the progress. Please select the winners and provide feedback as soon as possible.
