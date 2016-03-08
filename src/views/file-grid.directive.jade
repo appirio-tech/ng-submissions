@@ -2,3 +2,5 @@ ul.files
   li(ng-repeat="file in files track by $index")
     .spacer
       a(href="{{ file.detailUrl }}" style="background-image: url({{ file.url }})")
+
+      .notification.absolute(ng-if="file.unreadMessages > 0") {{file.unreadMessages}}
