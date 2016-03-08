@@ -7,6 +7,9 @@ ul.header.flex.middle
   li.flex-grow.submitter
     label {{ vm.submissionNumber }}
 
+  li.confirm-button
+    confirm-button(ng-if="vm.statusValue > 3 && (vm.stepType == 'designConcepts')" project-id='{{ vm.projectId }}' step-id='{{ vm.stepId }}' user-type='{{ vm.userType }}' permissions="vm.permissions")
+
   li
     rank-dropdown(project-id='{{ vm.projectId }}', step-id='{{ vm.stepId }}', submission-id='{{ vm.submissionId }}', user-type='{{ vm.userType }}' permissions="vm.permissions")
 
