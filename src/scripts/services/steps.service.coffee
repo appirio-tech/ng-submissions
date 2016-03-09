@@ -71,7 +71,7 @@ srv = ($rootScope, StepsAPIService, OptimistCollection) ->
     rankedSubmissions
 
   statusOf = (step) ->
-    if step.stepType == 'designConcepts' || step.stepType == 'completeDesigns'
+    if step.stepType == 'designConcepts' || step.stepType == 'completeDesigns' || step.stepType == 'finalFixes'
       now              = Date.now()
       startsAt         = new Date(step.startsAt)
       submissionsDueBy = new Date(step.details.submissionsDueBy)
@@ -123,6 +123,7 @@ srv = ($rootScope, StepsAPIService, OptimistCollection) ->
         step.title       = titles[step.stepType]
         step.status      = statusOf step
         step.statusValue = statusValueOf step.status
+        step.commentsConfirmed = step.details.customerConfirmedComments
         currentStepOrder = stepOrder.indexOf step.stepType
 
         if currentStepOrder > 0
@@ -205,6 +206,14 @@ srv = ($rootScope, StepsAPIService, OptimistCollection) ->
 
     updateStep projectId, stepId, step, updates
 
+  confirmComments = (projectId, stepId) ->
+    step = data[projectId].findOneWhere { id: stepId }
+    updates =
+      details:
+        customerConfirmedComments: true
+
+    updateStep projectId, stepId, step, updates
+
   acceptFixes = (projectId, stepId) ->
     step = data[projectId].findOneWhere { id: stepId }
     updates =
@@ -213,14 +222,15 @@ srv = ($rootScope, StepsAPIService, OptimistCollection) ->
 
     updateStep projectId, stepId, step, updates
 
-  name         : 'StepsService'
-  get          : get
-  subscribe    : subscribe
-  getCurrentStep : getCurrentStep
-  getStepById : getStepById
-  updateRank   : updateRank
-  confirmRanks : confirmRanks
-  acceptFixes  : acceptFixes
+  name:            'StepsService'
+  get:             get
+  subscribe:       subscribe
+  getCurrentStep:  getCurrentStep
+  getStepById:     getStepById
+  updateRank:      updateRank
+  confirmRanks:    confirmRanks
+  acceptFixes:     acceptFixes
+  confirmComments: confirmComments
 
 srv.$inject = ['$rootScope', 'StepsAPIService', 'OptimistCollection']
 
