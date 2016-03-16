@@ -71,7 +71,7 @@ srv = ($rootScope, StepsAPIService, OptimistCollection) ->
     rankedSubmissions
 
   statusOf = (step) ->
-    if step.stepType == 'designConcepts' || step.stepType == 'completeDesigns' || step.stepType == 'finalFixes'
+    if step.stepType == 'designConcepts' || step.stepType == 'completeDesigns' || step.stepType == 'finalFixes' || step.stepType == 'code'
       now              = Date.now()
       startsAt         = new Date(step.startsAt)
       submissionsDueBy = new Date(step.details.submissionsDueBy)
@@ -152,7 +152,7 @@ srv = ($rootScope, StepsAPIService, OptimistCollection) ->
     currentStep = null
 
     filterUnclosed = (step) ->
-      step.statusValue > 1 && step.statusValue < 6
+      step.statusValue > 0 && step.statusValue < 6
 
     filterDesignConcepts = (step) ->
       step.stepType == 'designConcepts'
