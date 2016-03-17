@@ -71,14 +71,14 @@ srv = ($rootScope, StepsAPIService, OptimistCollection) ->
     rankedSubmissions
 
   statusOf = (step) ->
-    if step.stepType == 'designConcepts' || step.stepType == 'completeDesigns' || step.stepType == 'finalFixes'
+    if step.stepType == 'designConcepts' || step.stepType == 'completeDesigns' || step.stepType == 'finalFixes' || step.stepType == 'code'
       now              = Date.now()
       startsAt         = new Date(step.startsAt)
       submissionsDueBy = new Date(step.details.submissionsDueBy)
       endsAt           = new Date(step.endsAt)
 
       hasSubmissions   = step.details.submissionIds?.length > 0
-      closed = step.details.customerConfirmedRanks || step.details.customerAcceptedFixes
+      closed = step.details.customerConfirmedRanks || step.details.customerConfirmedComments || step.details.customerAcceptedFixes
 
       if closed
         'CLOSED'
@@ -149,10 +149,23 @@ srv = ($rootScope, StepsAPIService, OptimistCollection) ->
     dyanamicProps data[projectId].get()
 
   getCurrentStep = (projectId) ->
-    filter = (step) ->
+    currentStep = null
+
+    filterUnclosed = (step) ->
+      step.statusValue > 0 && step.statusValue < 6
+
+    filterDesignConcepts = (step) ->
       step.stepType == 'designConcepts'
 
-    get(projectId).filter(filter)[0]
+    steps = get(projectId)
+    unclosed = steps.filter(filterUnclosed)
+
+    if unclosed.length == 0
+      currentStep = steps.filter(filterDesignConcepts)[0]
+    else
+      currentStep = unclosed[0]
+
+    currentStep
 
   getStepById = (projectId, stepId) ->
     filter = (step) ->
