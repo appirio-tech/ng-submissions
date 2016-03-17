@@ -20,10 +20,11 @@ SubmissionListController = ($scope, DataService, StepSubmissionsService) ->
     DataService.subscribe $scope, render, [StepSubmissionsService, 'get', vm.projectId, vm.stepId]
 
   render = (step) ->
-    vm.submissions = step.submissions
-    vm.status      = step.status
-    vm.statusValue = step.statusValue
-    vm.fileCount   = step.fileCount
+    vm.submissions            = step.submissions
+    vm.status                 = step.status
+    vm.statusValue            = step.statusValue
+    vm.fileCount              = step.fileCount
+    vm.customerConfirmedRanks = step.details.customerConfirmedRanks
 
     # assign an arbitrary number to identify each submission on the ui
     if vm.submissions.length > 0
