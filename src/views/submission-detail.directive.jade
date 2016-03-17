@@ -5,7 +5,12 @@ loader(ng-hide='vm.loaded')
 
 ul.header.flex.middle
   li.flex-grow.submitter
-    label {{ vm.submissionNumber }}
+    label(ng-if="!vm.customerConfirmedRanks") {{ vm.submissionNumber }}
+
+    .name-handle(ng-if="vm.customerConfirmedRanks")
+      avatar(avatar-url='{{ vm.submission.submitter.avatar }}')
+
+      .name {{ vm.submission.submitter.handle }}
 
   li.confirm-button
     confirm-button(ng-if="vm.statusValue > 3 && (vm.stepType == 'completeDesigns')" project-id='{{ vm.projectId }}' step-id='{{ vm.stepId }}' user-type='{{ vm.userType }}' permissions="vm.permissions")
@@ -20,3 +25,26 @@ ul.header.flex.middle
 hr
 
 file-grid(files='vm.submission.files')
+
+
+//- loader(ng-hide='vm.loaded')
+
+//- .all-submissions
+//-   a(ui-sref='step({projectId: vm.projectId, stepId: vm.stepId})') All Submissions
+
+//- ul.header.flex.middle
+//-   li.flex-grow.submitter
+//-     avatar(avatar-url='{{ vm.submission.submitter.avatar }}')
+
+//-     .name {{ vm.submission.submitter.handle }}
+
+//-   li
+//-     rank-dropdown(project-id='{{ vm.projectId }}', step-id='{{ vm.stepId }}', submission-id='{{ vm.submissionId }}', user-type='{{ vm.userType }}')
+
+//-   li.download(ng-class="{invisible: !vm.submission.downloadUrl}")
+//-     a(href='{{ vm.submission.downloadUrl }}', target='_blank')
+//-       .icon.download.small
+
+//- hr
+
+//- file-grid(files='vm.submission.files')

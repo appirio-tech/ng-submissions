@@ -141,9 +141,24 @@ submissions {
         }
 
         .submission-number {
-
           font-size: 16px;
           color: $text-color;
+        }
+
+        p {
+          margin-top: 0;
+        }
+      }
+
+      .name-time {
+        min-width: 140px;
+        max-width: 140px;
+        margin-left: $horizontal-small;
+
+        .name {
+          @include ellipsis();
+          font-size: 16px;
+          color: $primary-color;
         }
 
         p {
