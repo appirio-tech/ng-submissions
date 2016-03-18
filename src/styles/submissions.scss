@@ -150,19 +150,26 @@ submissions {
         }
       }
 
-      .name-time {
-        min-width: 75px;
-        max-width: 140px;
-        margin-left: $horizontal-small;
+      .handle-avatar {
+        .name-time {
+          min-width: 75px;
+          max-width: 140px;
+          margin-left: $horizontal-small;
 
-        .name {
-          @include ellipsis();
-          font-size: 16px;
-          color: $primary-color;
+          .name {
+            @include ellipsis();
+            font-size: 16px;
+            color: $primary-color;
+          }
+
+
+          p {
+            margin-top: 0;
+          }
         }
 
-        p {
-          margin-top: 0;
+        .rank {
+          margin-left: 10px;
         }
       }
     }
