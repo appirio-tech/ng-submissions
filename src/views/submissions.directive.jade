@@ -13,4 +13,9 @@ submission-list(ng-if="vm.statusValue > 3 && (vm.stepType == 'designConcepts' ||
 
 file-grid(ng-if="vm.statusValue > 3 && vm.stepType == 'finalFixes'" files='vm.submissions[0].files')
 
-final-development(ng-if="vm.statusValue > 3 && (vm.stepType == 'code' || vm.stepType == 'finalDevelopmentFixes')" text="vm.submissions[vm.submissions.length - 1].statusReportText" links="vm.submissions[vm.submissions.length - 1].statusReportLinks" files="vm.submissions[vm.submissions.length - 1].files")
+final-development(
+  ng-if="vm.statusValue > 3 && (vm.stepType == 'code' || vm.stepType == 'finalDevelopmentFixes')" 
+  text="vm.submissions[vm.submissions.length - 1].statusReportText" 
+  links="vm.submissions[vm.submissions.length - 1].statusReportLinks" 
+  files="vm.submissions[vm.submissions.length - 1].files"
+)
