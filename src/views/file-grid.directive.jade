@@ -2,5 +2,8 @@ ul.files
   li(ng-repeat="file in files track by $index")
     .spacer
       a(href="{{ file.detailUrl }}" style="background-image: url({{ file.url }})")
+        .thumbnail-notification.elevated.flex.center.middle(ng-if="file.unreadMessages > 0 && file.totalMessages == file.unreadMessages ") {{file.unreadMessages}}
 
-      .notification.absolute(ng-if="file.unreadMessages > 0") {{file.unreadMessages}}
+        .thumbnail-notification.wider.elevated.flex.center.middle(ng-if="file.unreadMessages > 0 && file.totalMessages != file.unreadMessages ") {{file.unreadMessages}} / {{file.totalMessages}}
+
+        .thumbnail-notification.faded.elevated.flex.center.middle(ng-if="file.unreadMessages == 0 && file.totalMessages > 0 ") {{file.totalMessages}}
