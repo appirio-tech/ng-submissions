@@ -3,9 +3,10 @@
 dependencies = [
   'ui.router'
   'ngResource'
+  'appirio-tech-ng-api-services'
+  'appirio-tech-ng-auth'
   'app.constants'
   'appirio-tech-ng-ui-components'
-  'appirio-tech-ng-auth'
   'appirio-tech-ng-optimist'
 ]
 
