@@ -32,28 +32,6 @@ file-grid {
           height             : 100%;
           background-position: center top;
           background-size    : cover;
-          position: relative;
-
-          .thumbnail-notification {
-            min-width: 30px;
-            max-width: 60px;
-            padding: 2px;
-            height: 20px;
-            background-color: $danger-color-light;
-            color: $white;
-            position: absolute;
-            right: 7%;
-            top: 10%;
-
-            &.wider {
-              min-width: 40px;
-            }
-
-            &.faded {
-              opacity: 0.6;
-            }
-          }
-
         }
       }
     }
