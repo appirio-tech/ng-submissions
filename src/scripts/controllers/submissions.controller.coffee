@@ -24,20 +24,21 @@ SubmissionsController = ($scope, DataService, StepSubmissionsService, RankListSe
       vm.loaded = true
 
   render = (step, rankList) ->
-    vm.loaded           = true
-    vm.title            = step.title
-    vm.startsAt         = step.startsAt
-    vm.endsAt           = step.endsAt
-    vm.nextStepStartsAt = step.nextStepStartsAt
-    vm.isPastDate       = Date.now() < new Date(vm.nextStepStartsAt)
-    vm.submissionsDueBy = step.details.submissionsDueBy
-    vm.status           = step.status
-    vm.statusValue      = step.statusValue
-    vm.stepType         = step.stepType
-    vm.submissions      = step.submissions
-    vm.numberOfRanks    = rankList.length
-    vm.userRank         = highestRank rankList, userId
-    vm.showConfirm      = rankList.allFull && !rankList.confirmed
+    vm.loaded            = true
+    vm.title             = step.title
+    vm.startsAt          = step.startsAt
+    vm.endsAt            = step.endsAt
+    vm.nextStepStartsAt  = step.nextStepStartsAt
+    vm.isPastDate        = Date.now() < new Date(vm.nextStepStartsAt)
+    vm.submissionsDueBy  = step.details.submissionsDueBy
+    vm.status            = step.status
+    vm.statusValue       = step.statusValue
+    vm.stepType          = step.stepType
+    vm.submissions       = step.submissions
+    vm.commentsConfirmed = step.commentsConfirmed
+    vm.numberOfRanks     = rankList.length
+    vm.userRank          = highestRank rankList, userId
+    vm.showConfirm       = rankList.allFull && !rankList.confirmed
 
   highestRank = (rankList, userId) ->
     for i in [0...rankList.length] by 1

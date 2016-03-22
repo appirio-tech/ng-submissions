@@ -71,14 +71,14 @@ srv = ($rootScope, StepsAPIService, OptimistCollection) ->
     rankedSubmissions
 
   statusOf = (step) ->
-    if step.stepType == 'designConcepts' || step.stepType == 'completeDesigns'
+    if step.stepType == 'designConcepts' || step.stepType == 'completeDesigns' || step.stepType == 'finalFixes' || step.stepType == 'code'
       now              = Date.now()
       startsAt         = new Date(step.startsAt)
       submissionsDueBy = new Date(step.details.submissionsDueBy)
       endsAt           = new Date(step.endsAt)
 
       hasSubmissions   = step.details.submissionIds?.length > 0
-      closed = step.details.customerConfirmedRanks || step.details.customerAcceptedFixes
+      closed = step.details.customerConfirmedRanks || step.details.customerConfirmedComments || step.details.customerAcceptedFixes
 
       if closed
         'CLOSED'
@@ -123,6 +123,7 @@ srv = ($rootScope, StepsAPIService, OptimistCollection) ->
         step.title       = titles[step.stepType]
         step.status      = statusOf step
         step.statusValue = statusValueOf step.status
+        step.commentsConfirmed = step.details.customerConfirmedComments
         currentStepOrder = stepOrder.indexOf step.stepType
 
         if currentStepOrder > 0
@@ -148,10 +149,23 @@ srv = ($rootScope, StepsAPIService, OptimistCollection) ->
     dyanamicProps data[projectId].get()
 
   getCurrentStep = (projectId) ->
-    filter = (step) ->
+    currentStep = null
+
+    filterUnclosed = (step) ->
+      step.statusValue > 0 && step.statusValue < 6
+
+    filterDesignConcepts = (step) ->
       step.stepType == 'designConcepts'
 
-    get(projectId).filter(filter)[0]
+    steps = get(projectId)
+    unclosed = steps.filter(filterUnclosed)
+
+    if unclosed.length == 0
+      currentStep = steps.filter(filterDesignConcepts)[0]
+    else
+      currentStep = unclosed[0]
+
+    currentStep
 
   getStepById = (projectId, stepId) ->
     filter = (step) ->
@@ -205,6 +219,14 @@ srv = ($rootScope, StepsAPIService, OptimistCollection) ->
 
     updateStep projectId, stepId, step, updates
 
+  confirmComments = (projectId, stepId) ->
+    step = data[projectId].findOneWhere { id: stepId }
+    updates =
+      details:
+        customerConfirmedComments: true
+
+    updateStep projectId, stepId, step, updates
+
   acceptFixes = (projectId, stepId) ->
     step = data[projectId].findOneWhere { id: stepId }
     updates =
@@ -213,14 +235,15 @@ srv = ($rootScope, StepsAPIService, OptimistCollection) ->
 
     updateStep projectId, stepId, step, updates
 
-  name         : 'StepsService'
-  get          : get
-  subscribe    : subscribe
-  getCurrentStep : getCurrentStep
-  getStepById : getStepById
-  updateRank   : updateRank
-  confirmRanks : confirmRanks
-  acceptFixes  : acceptFixes
+  name:            'StepsService'
+  get:             get
+  subscribe:       subscribe
+  getCurrentStep:  getCurrentStep
+  getStepById:     getStepById
+  updateRank:      updateRank
+  confirmRanks:    confirmRanks
+  acceptFixes:     acceptFixes
+  confirmComments: confirmComments
 
 srv.$inject = ['$rootScope', 'StepsAPIService', 'OptimistCollection']
 
