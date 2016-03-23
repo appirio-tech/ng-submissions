@@ -12,11 +12,7 @@ ul.files.flex
         span(ng-if="vm.viewAll") View All
         span(ng-if="vm.viewMore") +{{ vm.more }} More
 
-    .thumbnail-notification.elevated.flex.center.middle(ng-if="file.unreadMessages > 0 && file.totalMessages == file.unreadMessages ") {{file.unreadMessages}}
-
-    .thumbnail-notification.wider.elevated.flex.center.middle(ng-if="file.unreadMessages > 0 && file.totalMessages != file.unreadMessages ") {{file.unreadMessages}} / {{file.totalMessages}}
-
-    .thumbnail-notification.faded.elevated.flex.center.middle(ng-if="file.unreadMessages == 0 && file.totalMessages > 0 ") {{file.totalMessages}}
+    thumbnail-notification(unread-messages="file.unreadMessages" total-messages="file.totalMessages")
 
     .pop-over.elevated(ng-class="{left: file.isLast && vm.files.length > 3}")
       a.preview.elevated(ui-sref="file-detail({projectId: vm.projectId, stepId: vm.stepId, submissionId: submission.id, fileId: file.id})")
