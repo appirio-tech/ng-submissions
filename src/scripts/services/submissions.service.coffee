@@ -140,13 +140,15 @@ SubmissionsService.$inject = ['$rootScope', 'SubmissionsAPIService', 'Submission
 angular.module('appirio-tech-submissions').factory 'SubmissionsService', SubmissionsService
 
 withMessageCounts = (submission) ->
-  angular.extend {}, submission,
+  withFileMessageCounts = angular.extend {}, submission,
     files: submission.files.map (file) ->
       angular.extend {}, file,
         totalMessages: file.threads[0].messages.length
         unreadMessages: file.threads[0].messages.filter((m) -> !m.read).length
-    totalMessages: submission.files.reduce ((t, f) -> t + f.totalMessages), 0
-    unreadMessages: submission.files.reduce ((t, f) -> t + f.unreadMessages), 0
+
+  angular.extend {}, withFileMessageCounts,
+    totalMessages: withFileMessageCounts.files.reduce ((t, f) -> t + f.totalMessages), 0
+    unreadMessages: withFileMessageCounts.files.reduce ((t, f) -> t + f.unreadMessages), 0
 
 withOwnership = (submission, userId) ->
   angular.extend {}, submission,
