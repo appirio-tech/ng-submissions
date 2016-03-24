@@ -2,6 +2,9 @@
 
 FinalDevelopmentController = ($scope) ->
   vm = this
+  vm.text = $scope.text
+  vm.files = $scope.files
+  vm.links = $scope.links
 
   vm
 
