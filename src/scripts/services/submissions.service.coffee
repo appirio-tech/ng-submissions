@@ -143,8 +143,8 @@ withMessageCounts = (submission) ->
   withFileMessageCounts = angular.extend {}, submission,
     files: submission.files.map (file) ->
       angular.extend {}, file,
-        totalMessages: file.threads[0].messages.length
-        unreadMessages: file.threads[0].messages.filter((m) -> !m.read).length
+        totalMessages: file.threads[0]?.messages?.length
+        unreadMessages: file.threads[0]?.messages?.filter((m) -> !m.read).length
 
   angular.extend {}, withFileMessageCounts,
     totalMessages: withFileMessageCounts.files.reduce ((t, f) -> t + f.totalMessages), 0
