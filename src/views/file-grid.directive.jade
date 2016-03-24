@@ -2,3 +2,4 @@ ul.files
   li(ng-repeat="file in files track by $index")
     .spacer
       a.elevated(href="{{ file.detailUrl }}" style="background-image: url({{ file.url }})")
+        thumbnail-notification(unread-messages="file.unreadMessages" total-messages="file.totalMessages")
