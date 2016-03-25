@@ -35,6 +35,7 @@ file-grid {
           position: relative;
 
           &.file-thumbnail {
+            display: flex;
             background-color: $gray;
 
             img {

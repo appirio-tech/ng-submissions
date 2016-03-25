@@ -5,6 +5,8 @@ FileGridController = ($scope) ->
 
   vm.isImage = (file) ->
     pattern = new RegExp('image.*')
-    pattern.test(file.fileType)
+    pattern.test(file.type)
+
+  vm
 
 angular.module('appirio-tech-submissions').controller 'FileGridController', FileGridController
