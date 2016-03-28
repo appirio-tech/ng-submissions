@@ -33,6 +33,16 @@ file-grid {
           background-position: center top;
           background-size    : cover;
           position: relative;
+
+          &.file-thumbnail {
+            display: flex;
+            background-color: $gray;
+
+            img {
+              height: 35px;
+              width: 35px;
+            }
+          }
         }
       }
     }
