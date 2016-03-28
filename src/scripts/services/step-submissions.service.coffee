@@ -44,13 +44,16 @@ srv = ($rootScope, $state, StepsService, SubmissionsService, DataService) ->
         stepId       : step.id
         submissionId : submission.id
 
-      #remove non-image files and thumbnail-sized duplicates of larger preview files
+      #remove non-image files and thumbnail-sized duplicates of larger preview files for non-code phases
       filteredFiles = submission.files.filter (file) ->
         pattern = new RegExp('image.*')
         isImage = pattern.test file.type
         file.role != 'PREVIEW_SMALL' && isImage
 
-      submission.files = filteredFiles.map (file) ->
+      isCodeStep = step.stepType == 'code' || step.stepType == 'finalCodeFixes'
+      submissionFiles = if isCodeStep then submission.files else filteredFiles
+
+      submission.files = submissionFiles.map (file) ->
         file.detailUrl = $state.href 'file-detail',
           projectId    : step.projectId
           stepId       : step.id

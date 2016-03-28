@@ -14,10 +14,11 @@ SubmissionDetailController = ($scope, DataService, StepSubmissionsService) ->
     DataService.subscribe $scope, render, [StepSubmissionsService, 'get', vm.projectId, vm.stepId]
 
   render = (step) ->
-    vm.loaded           = true
-    vm.submission       = step.submissions.filter((submission) -> submission.id == vm.submissionId)[0]
-    vm.stepType         = step.stepType
-    vm.statusValue      = step.statusValue
+    vm.loaded                 = true
+    vm.submission             = step.submissions.filter((submission) -> submission.id == vm.submissionId)[0]
+    vm.stepType               = step.stepType
+    vm.statusValue            = step.statusValue
+    vm.customerConfirmedRanks = step.details.customerConfirmedRanks
 
     # assign an arbitrary number to identify each submission on the ui
     if !vm.submissionIdMap && vm.submission

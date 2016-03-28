@@ -14,12 +14,14 @@ directive = ->
     newMessage:      '='
     permissions:     '='
     title:           '@'
-    sumbitterAvatar: '@'
+    submitterAvatar: '@'
     submissionNumber:'@'
+    submitterHandle: '@'
     userType:        '@'
     status:          '@'
     canComment:      '='
     toggleComments:  '&'
     sendMessage:     '&'
+    ranksConfirmed:  '='
 
 angular.module('appirio-tech-submissions').directive 'fileDetailSlide', directive

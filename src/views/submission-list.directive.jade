@@ -6,13 +6,27 @@ ul.submissions.new(ng-if='vm.statusValue > 3')
   li.submission(ng-repeat='submission in vm.submissions', data-id='{{ submission.id }}', ng-class="{ 'belongs-to-user': submission.belongsToUser }")
     ul.user-details.flex.middle.space-between
       li.flex.middle
-        .rank-number.flex.middle.space-between(ng-class="{expanded: submission.rank}")
+        .rank-number.flex.middle.space-between(ng-class="{expanded: submission.rank}" ng-if="!vm.customerConfirmedRanks")
           .rank.flex.center.middle(ng-if="submission.rank")
             label {{submission.rank | ordinalNumber}} Place
 
           label.submission-number # {{vm.submissionIdMap[submission.id]}}
 
           p.secondary {{ submission.files.length }} Images
+
+        .handle-avatar.flex.middle.space-between(ng-if="vm.customerConfirmedRanks")
+          a(href="{{vm.generateProfileUrl(submission.submitter.handle)}}" target="_blank")
+            avatar(avatar-url='{{ submission.submitter.avatar }}')
+
+          .name-time
+            a(href="{{vm.generateProfileUrl(submission.submitter.handle)}}" target="_blank")
+              .name {{ submission.submitter.handle }} 
+                span(ng-if='submission.belongsToUser') (Me)
+
+            p.secondary {{ submission.files.length }} Images
+
+          .rank.flex.center.middle(ng-if="submission.rank")
+            label {{submission.rank | ordinalNumber}} Place
 
       li
         ul.flex.middle.actions

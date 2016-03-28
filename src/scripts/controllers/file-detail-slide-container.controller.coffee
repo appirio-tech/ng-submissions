@@ -54,10 +54,13 @@ FileDetailSlideContainerController = ($scope, $state, $filter, DataService, Step
 
         vm.submissionNumber = "# #{vm.submissionIdMap[vm.submission.id]}"
 
-      vm.submissionDate  = $filter('timeLapse')(vm.submission.createdAt)
-      submitter          = vm.submission.submitter
-      vm.messages        = vm.startingFile.threads[0]?.messages || []
-      vm.canComment      = canComment(vm.userType, vm.submission.belongsToUser, step.stepType, step.status, step.details.customerConfirmedRanks, vm.submission.rank)
+      vm.submissionDate         = $filter('timeLapse')(vm.submission.createdAt)
+      submitter                 = vm.submission.submitter
+      vm.submitterAvatar        = submitter.avatar
+      vm.submitterHandle        = submitter.handle
+      vm.customerConfirmedRanks = step.details.customerConfirmedRanks
+      vm.messages               = vm.startingFile.threads[0]?.messages || []
+      vm.canComment             = canComment(vm.userType, vm.submission.belongsToUser, step.stepType, step.status, step.details.customerConfirmedRanks, vm.submission.rank)
 
       if vm.file
         vm.file.threads[0]?.messages = vm.messages
