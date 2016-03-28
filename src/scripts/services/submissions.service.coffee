@@ -114,10 +114,10 @@ SubmissionsService = ($rootScope, SubmissionsAPIService, SubmissionsMessagesAPIS
 
     params =
       projectId: projectId
-      submissionId: submissionId
-      threadId: thread.id
       stepId: stepId
+      submissionId: submissionId
       fileId: fileId
+      threadId: thread.id
 
     SubmissionsMessagesAPIService.post params, payload
 
