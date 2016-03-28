@@ -3,6 +3,7 @@
 directive = ->
   restrict   : 'E'
   templateUrl: 'views/file-grid.directive.html'
+  controller: 'FileGridController as vm'
   scope      :
     files: '='
 

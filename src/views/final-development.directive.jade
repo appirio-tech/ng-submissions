@@ -1,34 +1,14 @@
-submissions-header(text="final development" next="http://www.google.com" prev="http://www.google.com")
-
-hr
-
-main.light-bg
+main
   .message
-    p Co-Pilot Message
+    h5 Copilot Message
 
-    p Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    p {{vm.text}}
 
-
-  image-row(thumbnails="vm.thumbnails" view-all-text="+3 more"  view-all="http://www.google.com")
-
-.links
-  p Clickable Prototype
-
-  ul
-    li
-      a(href="http://www.google.com") http://www.google.com
-
-    li
-      a(href="http://www.google.com") http://www.google.com
+  file-grid(files="vm.files")
 
 .links
-  p Other Links
+  h5 Links
 
   ul
-    li
-      a(href="http://www.google.com") http://www.google.com
-
-    li
-      a(href="http://www.google.com") http://www.google.com
-
-loader(ng-show="!vm.loaded")
+    li(ng-repeat="link in vm.links")
+      a(href="{{link}}") {{link.url}}
