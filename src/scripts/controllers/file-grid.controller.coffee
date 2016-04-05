@@ -1,6 +1,6 @@
 'use strict'
 
-FileGridController = ($scope) ->
+FileGridController = ->
   vm = this
 
   vm.isImage = (file) ->
