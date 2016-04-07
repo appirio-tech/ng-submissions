@@ -109,7 +109,11 @@ SubmissionsService = ($rootScope, SubmissionsAPIService, SubmissionsMessagesAPIS
         subscriberId: user.id
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     promise = MessageUpdateAPIService.put(queryParams, putParams).$promise
+=======
+    promise = MessageUpdateAPIService.put queryParams, putParams
+>>>>>>> parent of 4443b27... add promise to markMessageRead call
 
     promise.then (res) ->
       emitUpdates(projectId, stepId)
