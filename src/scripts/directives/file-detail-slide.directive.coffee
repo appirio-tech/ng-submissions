@@ -12,7 +12,6 @@ directive = ->
     messages:        '='
     showMessages:    '='
     newMessage:      '='
-    permissions:     '='
     title:           '@'
     submitterAvatar: '@'
     submissionNumber:'@'
