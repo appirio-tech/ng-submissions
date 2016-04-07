@@ -23,12 +23,6 @@ SubmissionsController = ($scope, DataService, StepSubmissionsService, RankListSe
     else
       vm.loaded = true
 
-  sortSubmissionsByDate = (submissions) ->
-    sorted = submissions.sort (prev, next) ->
-      new Date(prev.createdAt) - new Date(next.createdAt)
-
-    sorted[sorted.length - 1]
-
   render = (step, rankList) ->
     vm.loaded            = true
     vm.title             = step.title
@@ -41,7 +35,6 @@ SubmissionsController = ($scope, DataService, StepSubmissionsService, RankListSe
     vm.statusValue       = step.statusValue
     vm.stepType          = step.stepType
     vm.submissions       = step.submissions
-    vm.latestSubmission  = sortSubmissionsByDate step.submissions
     vm.commentsConfirmed = step.commentsConfirmed
     vm.numberOfRanks     = rankList.length
     vm.userRank          = highestRank rankList, userId

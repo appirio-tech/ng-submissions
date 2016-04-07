@@ -80,12 +80,12 @@ SubmissionsService = ($rootScope, SubmissionsAPIService, SubmissionsMessagesAPIS
     file           = submission.files.filter((file) -> file.id == fileId)[0]
     messages       = file.threads[0].messages
 
-    messages.forEach (message) ->
-      message.read = true
+    sortedMessages = messages.sort (previous, next) ->
+      new Date(previous.createdAt) - new Date(next.createdAt)
 
     emitUpdates(projectId, stepId)
 
-    message = messages[messages.length - 1]
+    message = sortedMessages[sortedMessages.length - 1]
 
     queryParams =
       threadId: message.threadId
