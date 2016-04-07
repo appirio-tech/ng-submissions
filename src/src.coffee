@@ -1,3 +1,5 @@
+require './scripts/submissions.module'
+
 requireContextFiles = (files) ->
   paths = files.keys()
 
