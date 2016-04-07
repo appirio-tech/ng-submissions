@@ -94,7 +94,7 @@ SubmissionsService = ($rootScope, SubmissionsAPIService, SubmissionsMessagesAPIS
         readFlag:     true
         subscriberId: user.id
 
-    promise = MessageUpdateAPIService.put queryParams, putParams
+    promise = MessageUpdateAPIService.put(queryParams, putParams).$promise
 
     promise.then (res) ->
       emitUpdates(projectId, stepId)
