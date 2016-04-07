@@ -80,10 +80,8 @@ SubmissionsService = ($rootScope, SubmissionsAPIService, SubmissionsMessagesAPIS
     file           = submission.files.filter((file) -> file.id == fileId)[0]
     messages       = file.threads[0].messages
 
-    sortedMessages = messages.sort (previous, next) ->
-      new Date(previous.createdAt) - new Date(next.createdAt)
-
-    emitUpdates(projectId, stepId)
+    sortedMessages = messages.sort (prev, next) ->
+      new Date(prev.createdAt) - new Date(next.createAt)
 
     message = sortedMessages[sortedMessages.length - 1]
 
@@ -96,7 +94,11 @@ SubmissionsService = ($rootScope, SubmissionsAPIService, SubmissionsMessagesAPIS
         readFlag:     true
         subscriberId: user.id
 
-    MessageUpdateAPIService.put queryParams, putParams
+    promise = MessageUpdateAPIService.put queryParams, putParams
+
+    promise.then (res) ->
+      emitUpdates(projectId, stepId)
+
 
   sendMessage = (projectId, stepId, submissionId, fileId, message) ->
     user       = UserV3Service.getCurrentUser()
@@ -119,17 +121,23 @@ SubmissionsService = ($rootScope, SubmissionsAPIService, SubmissionsMessagesAPIS
       fileId: fileId
       threadId: thread.id
 
-    SubmissionsMessagesAPIService.post params, payload
+    promise = SubmissionsMessagesAPIService.post(params, payload).$promise
 
-    newMessage = angular.merge {}, payload.param,
-      read: true
-      createdAt: now.toISOString()
-      publisher:
-        handle: user.handle
-        avatar: user.avatar
+    promise.then (res) ->
+      newMessage = angular.merge {}, payload.param,
+        read: true
+        createdAt: now.toISOString()
+        publisher:
+          handle: user.handle
+          avatar: user.avatar
 
-    messages.push newMessage
-    emitUpdates(projectId, stepId)
+      messages.push newMessage
+      emitUpdates(projectId, stepId)
+
+    promise.catch (err) ->
+
+    promise.finally ->
+      emitUpdates(projectId, stepId)
 
   name               : 'SubmissionsService'
   subscribe          : subscribe
