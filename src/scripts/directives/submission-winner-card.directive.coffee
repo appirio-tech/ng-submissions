@@ -2,7 +2,7 @@
 
 directive = ->
   restrict   : 'E'
-  templateUrl: 'views/submission-winner-card.directive.html'
+  template   : require('../../views/submission-winner-card.directive.jade')()
   scope      :
     nameText      : '@'
     avatarUrl     : '@'

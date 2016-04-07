@@ -2,7 +2,7 @@
 
 directive = ->
   restrict   : 'E'
-  templateUrl: 'views/rank-dropdown.directive.html'
+  template   : require('../../views/rank-dropdown.directive.jade')()
   controller : 'RankDropdownController as vm'
   scope      :
     projectId    : '@'

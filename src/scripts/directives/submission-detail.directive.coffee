@@ -3,7 +3,7 @@
 directive = ->
   restrict       : 'E'
   controller     : 'SubmissionDetailController as vm'
-  templateUrl    : 'views/submission-detail.directive.html'
+  template       : require('../../views/submission-detail.directive.jade')()
   scope          :
     projectId    : '@'
     stepId       : '@'

@@ -2,7 +2,7 @@
 
 directive = ->
   restrict   : 'E'
-  templateUrl: 'views/thumbnail-notification.directive.html'
+  template   : require('../../views/thumbnail-notification.directive.jade')()
   scope      :
     unreadMessages: '='
     totalMessages: '='

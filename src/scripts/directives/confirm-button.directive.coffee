@@ -2,7 +2,7 @@
 
 directive = ->
   restrict   : 'E'
-  templateUrl: 'views/confirm-button.directive.html'
+  template   : require('../../views/confirm-button.directive.jade')()
   controller : 'ConfirmButtonController as vm'
   scope      :
     projectId:   '@'

@@ -2,7 +2,7 @@
 
 directive = ->
   restrict    : 'E'
-  templateUrl : 'views/submissions-header.directive.html'
+  template    : require('../../views/submissions-header.directive.jade')()
   controller  : 'SubmissionsHeaderController as vm'
   scope       :
     projectId : '@'
