@@ -26,10 +26,10 @@ srv = ($rootScope, $state, StepsService, SubmissionsService, DataService) ->
     orderedByRank = ranked.sort (previousSubmission, nextSubmission) ->
       return previousSubmission.rank - nextSubmission.rank
 
-    orderedByDate = unRanked.sort (previousSubmission, nextSubmission) ->
-      new Date(previousSubmission.createdAt) - new Date(nextSubmission.createdAt)
+    orderedBySubmitter = unRanked.sort (previousSubmission, nextSubmission) ->
+      previousSubmission.submitter.id - nextSubmission.submitter.id
 
-    orderedSubmissions = orderedByRank.concat orderedByDate
+    orderedSubmissions = orderedByRank.concat orderedBySubmitter
     orderedSubmissions
 
   update = (step, submissions) ->
