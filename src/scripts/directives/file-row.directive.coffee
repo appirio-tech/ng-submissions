@@ -2,7 +2,7 @@
 
 directive = ->
   restrict   : 'E'
-  templateUrl: 'views/file-row.directive.html'
+  template   : require('../../views/file-row.directive.jade')()
   controller : 'FileRowController as vm'
   scope      :
     files      : '='

@@ -3,7 +3,7 @@
 directive = ->
   restrict       : 'E'
   controller     : 'FileDetailController as vm'
-  templateUrl    : 'views/file-detail.directive.html'
+  template       : require('../../views/file-detail.directive.jade')()
   scope          :
     projectId    : '@'
     stepId       : '@'

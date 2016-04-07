@@ -2,7 +2,7 @@
 
 directive = ->
   restrict   : 'E'
-  templateUrl: 'views/final-development.directive.html'
+  template   : require('../../views/final-development.directive.jade')()
   controller : 'FinalDevelopmentController as vm'
   scope:
     files: '='

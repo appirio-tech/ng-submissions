@@ -2,7 +2,7 @@
 
 directive = ->
   restrict   : 'E'
-  templateUrl: 'views/submission-countdown.directive.html'
+  template   : require('../../views/submission-countdown.directive.jade')()
   scope      :
     end : '@'
     text: '@'
