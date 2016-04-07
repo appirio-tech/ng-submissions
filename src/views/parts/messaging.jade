@@ -29,7 +29,7 @@
           avatar(avatar-url='{{ message.publisher.avatar }}' ng-if="message.publisher.role != 'submitter'")
 
           .submission-number.flex.center.middle(ng-if="message.publisher.role == 'submitter'")
-            {{vm.submissionNumber}}
+            | {{vm.submissionNumber}}
 
           .name-link(ng-if="message.publisher.handle && message.publisher.role != 'submitter'")
             strong.name {{ message.publisher.handle }}
