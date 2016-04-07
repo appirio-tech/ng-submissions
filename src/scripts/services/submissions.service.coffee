@@ -81,11 +81,18 @@ SubmissionsService = ($rootScope, SubmissionsAPIService, SubmissionsMessagesAPIS
     messages       = file.threads[0].messages
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     sortedMessages = messages.sort (prev, next) ->
       new Date(prev.createdAt) - new Date(next.createAt)
 =======
     messages.forEach (message) ->
       message.read = true
+=======
+    sortedMessages = messages.sort (previous, next) ->
+      new Date(previous.createdAt) - new Date(next.createdAt)
+
+    emitUpdates(projectId, stepId)
+>>>>>>> parent of 50f0b7f... emit updates once promise returns in submissions service messages
 
     emitUpdates(projectId, stepId)
 >>>>>>> parent of e45e326... order file messages by date & order submissions list by created time
@@ -101,11 +108,15 @@ SubmissionsService = ($rootScope, SubmissionsAPIService, SubmissionsMessagesAPIS
         readFlag:     true
         subscriberId: user.id
 
+<<<<<<< HEAD
     promise = MessageUpdateAPIService.put(queryParams, putParams).$promise
 
     promise.then (res) ->
       emitUpdates(projectId, stepId)
 
+=======
+    MessageUpdateAPIService.put queryParams, putParams
+>>>>>>> parent of 50f0b7f... emit updates once promise returns in submissions service messages
 
   sendMessage = (projectId, stepId, submissionId, fileId, message) ->
     user       = UserV3Service.getCurrentUser()
@@ -128,23 +139,17 @@ SubmissionsService = ($rootScope, SubmissionsAPIService, SubmissionsMessagesAPIS
       fileId: fileId
       threadId: thread.id
 
-    promise = SubmissionsMessagesAPIService.post(params, payload).$promise
+    SubmissionsMessagesAPIService.post params, payload
 
-    promise.then (res) ->
-      newMessage = angular.merge {}, payload.param,
-        read: true
-        createdAt: now.toISOString()
-        publisher:
-          handle: user.handle
-          avatar: user.avatar
+    newMessage = angular.merge {}, payload.param,
+      read: true
+      createdAt: now.toISOString()
+      publisher:
+        handle: user.handle
+        avatar: user.avatar
 
-      messages.push newMessage
-      emitUpdates(projectId, stepId)
-
-    promise.catch (err) ->
-
-    promise.finally ->
-      emitUpdates(projectId, stepId)
+    messages.push newMessage
+    emitUpdates(projectId, stepId)
 
   name               : 'SubmissionsService'
   subscribe          : subscribe
