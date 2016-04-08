@@ -78,12 +78,8 @@ SubmissionsService = ($rootScope, SubmissionsAPIService, SubmissionsMessagesAPIS
     user           = UserV3Service.getCurrentUser()
     submission     = data[stepId].filter((submission) -> submission.id == submissionId)[0]
     file           = submission.files.filter((file) -> file.id == fileId)[0]
-    messages       = file.threads[0].messages
-
-    messages.forEach (message) ->
-      message.read = true
-
-    emitUpdates(projectId, stepId)
+    messages       = file.threads[0].messages.sort (prev, next) ->
+      new Date(prev.createdAt) - new Date(next.createdAt)
 
     message = messages[messages.length - 1]
 
@@ -96,7 +92,15 @@ SubmissionsService = ($rootScope, SubmissionsAPIService, SubmissionsMessagesAPIS
         readFlag:     true
         subscriberId: user.id
 
-    MessageUpdateAPIService.put queryParams, putParams
+    toggleRead = ->
+      messages.forEach (message) ->
+        message.read = true
+
+    promise = MessageUpdateAPIService.put(queryParams, putParams).$promise
+
+    promise.then (res) ->
+      toggleRead()
+      emitUpdates(projectId, stepId)
 
   sendMessage = (projectId, stepId, submissionId, fileId, message) ->
     user       = UserV3Service.getCurrentUser()
@@ -119,17 +123,19 @@ SubmissionsService = ($rootScope, SubmissionsAPIService, SubmissionsMessagesAPIS
       fileId: fileId
       threadId: thread.id
 
-    SubmissionsMessagesAPIService.post params, payload
+    promise = SubmissionsMessagesAPIService.post(params, payload).$promise
 
-    newMessage = angular.merge {}, payload.param,
-      read: true
-      createdAt: now.toISOString()
-      publisher:
-        handle: user.handle
-        avatar: user.avatar
+    promise.then (res) ->
+      newMessage = angular.merge {}, payload.param,
+        id: res.result.content.id
+        read: true
+        createdAt: now.toISOString()
+        publisher:
+          handle: user.handle
+          avatar: user.avatar
 
-    messages.push newMessage
-    emitUpdates(projectId, stepId)
+      messages.push newMessage
+      emitUpdates(projectId, stepId)
 
   name               : 'SubmissionsService'
   subscribe          : subscribe
