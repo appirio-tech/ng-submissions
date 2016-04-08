@@ -76,7 +76,7 @@ FileDetailSlideContainerController = ($scope, $state, $filter, DataService, Step
     vm.showMessages = !vm.showMessages
 
     if vm.showMessages and vm.file.unreadMessages > 0
-      SubmissionsService.markMessagesAsRead(projectId, stepId, submissionId, vm.file.id)
+      SubmissionsService.markMessagesAsRead(projectId, stepId, vm.submission, vm.file.id)
 
   activate()
 

@@ -74,9 +74,8 @@ SubmissionsService = ($rootScope, SubmissionsAPIService, SubmissionsMessagesAPIS
       pending = false
       emitUpdates(projectId, stepId)
 
-  markMessagesAsRead = (projectId, stepId, submissionId, fileId) ->
+  markMessagesAsRead = (projectId, stepId, submission, fileId) ->
     user           = UserV3Service.getCurrentUser()
-    submission     = data[stepId].filter((submission) -> submission.id == submissionId)[0]
     file           = submission.files.filter((file) -> file.id == fileId)[0]
     messages       = file.threads[0].messages
 
@@ -97,6 +96,7 @@ SubmissionsService = ($rootScope, SubmissionsAPIService, SubmissionsMessagesAPIS
         subscriberId: user.id
 
     promise = MessageUpdateAPIService.put(queryParams, putParams).$promise
+
     promise.then (res) ->
       emitUpdates(projectId, stepId)
 
