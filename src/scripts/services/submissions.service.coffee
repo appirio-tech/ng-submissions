@@ -74,10 +74,12 @@ SubmissionsService = ($rootScope, SubmissionsAPIService, SubmissionsMessagesAPIS
       pending = false
       emitUpdates(projectId, stepId)
 
-  markMessagesAsRead = (projectId, stepId, submission, fileId) ->
+  markMessagesAsRead = (projectId, stepId, submissionId, fileId) ->
     user           = UserV3Service.getCurrentUser()
+    submission     = data[stepId].filter((submission) -> submission.id == submissionId)[0]
     file           = submission.files.filter((file) -> file.id == fileId)[0]
-    messages       = file.threads[0].messages
+    messages       = file.threads[0].messages.sort (prev, next) ->
+      new Date(prev.createdAt) - new Date(next.createdAt)
 
     # messages.forEach (message) ->
     #   message.read = true
@@ -95,9 +97,14 @@ SubmissionsService = ($rootScope, SubmissionsAPIService, SubmissionsMessagesAPIS
         readFlag:     true
         subscriberId: user.id
 
+    toggleRead = ->
+      messages.forEach (message) ->
+        message.read = true
+
     promise = MessageUpdateAPIService.put(queryParams, putParams).$promise
 
     promise.then (res) ->
+      toggleRead()
       emitUpdates(projectId, stepId)
 
   sendMessage = (projectId, stepId, submissionId, fileId, message) ->
