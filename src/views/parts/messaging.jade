@@ -29,7 +29,7 @@
           avatar(avatar-url='{{ message.publisher.avatar }}' ng-if="message.publisher.role != 'submitter'")
 
           .submission-number.flex.center.middle(ng-if="message.publisher.role == 'submitter'")
-            {{vm.submissionNumber}}
+            | {{vm.submissionNumber}}
 
           .name-link(ng-if="message.publisher.handle && message.publisher.role != 'submitter'")
             strong.name {{ message.publisher.handle }}
@@ -53,4 +53,4 @@
   .send
     form(ng-submit='vm.sendMessage()' ng-if="vm.canComment")
       textarea(placeholder='Send a message…' ng-model='vm.newMessage')
-      button.enter(type='submit' ng-disabled="!vm.canCreate") Enter
+      button.enter(type='submit' ng-disabled="!vm.canComment") Enter

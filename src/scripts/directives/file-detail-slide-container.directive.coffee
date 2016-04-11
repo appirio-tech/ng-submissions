@@ -3,13 +3,12 @@
 directive = ->
   restrict       : 'E'
   controller     : 'FileDetailSlideContainerController as vm'
-  templateUrl    : 'views/file-detail-slide-container.directive.html'
+  template       : require('../../views/file-detail-slide-container.directive.jade')()
   scope          :
     projectId    : '@'
     stepId       : '@'
     submissionId : '@'
     fileId       : '@'
     userType     : '@'
-    permissions  : '='
 
 angular.module('appirio-tech-submissions').directive 'fileDetailSlideContainer', directive

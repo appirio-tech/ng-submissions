@@ -9,11 +9,8 @@ FileDetailSlideContainerController = ($scope, $state, $filter, DataService, Step
   submissionId   = $scope.submissionId
   fileId         = $scope.fileId
   vm.userType    = $scope.userType
-  vm.permissions = $scope.permissions
   vm.messages    = []
   vm.newMessage  = ''
-  vm.canUpdate   = vm.permissions?.indexOf('UPDATE') > -1
-  vm.canCreate   = vm.permissions?.indexOf('CREATE') > -1
 
   activate = ->
     DataService.subscribe $scope, render, [StepSubmissionsService, 'get', projectId, stepId]
@@ -69,6 +66,7 @@ FileDetailSlideContainerController = ($scope, $state, $filter, DataService, Step
     vm.file = file
     fileId = file.id
     vm.messages = vm.file.threads[0]?.messages || []
+    vm.markMessagesAsRead()
 
   vm.sendMessage = ->
     if vm.newMessage
@@ -77,7 +75,9 @@ FileDetailSlideContainerController = ($scope, $state, $filter, DataService, Step
 
   vm.toggleComments = ->
     vm.showMessages = !vm.showMessages
+    vm.markMessagesAsRead()
 
+  vm.markMessagesAsRead = ->
     if vm.showMessages and vm.file.unreadMessages > 0
       SubmissionsService.markMessagesAsRead(projectId, stepId, submissionId, vm.file.id)
 

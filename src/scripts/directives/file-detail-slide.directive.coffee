@@ -3,7 +3,7 @@
 directive = ->
   restrict         : 'E'
   controller       : 'FileDetailSlideController as vm'
-  templateUrl      : 'views/file-detail-slide.directive.html'
+  template         : require('../../views/file-detail-slide.directive.jade')()
   scope            : 
     onFileChange:    '&'
   bindToController :
@@ -12,7 +12,6 @@ directive = ->
     messages:        '='
     showMessages:    '='
     newMessage:      '='
-    permissions:     '='
     title:           '@'
     submitterAvatar: '@'
     submissionNumber:'@'
