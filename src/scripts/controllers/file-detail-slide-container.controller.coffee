@@ -9,6 +9,7 @@ FileDetailSlideContainerController = ($scope, $state, $filter, DataService, Step
   submissionId   = $scope.submissionId
   fileId         = $scope.fileId
   vm.userType    = $scope.userType
+  vm.messagesLoading = false
   vm.messages    = []
   vm.newMessage  = ''
 
@@ -63,10 +64,10 @@ FileDetailSlideContainerController = ($scope, $state, $filter, DataService, Step
     vm.file = file
     fileId = file.id
     vm.messages = vm.file.threads[0]?.messages || []
-    vm.messagesLoading = 'true'
+    vm.messagesLoading = true
 
     SubmissionsService.getMessages(projectId, stepId, submissionId, fileId).then (res) ->
-      vm.messagesLoading = 'false'
+      vm.messagesLoading = false
       vm.messages = res.messages
       vm.markMessagesAsRead()
 
