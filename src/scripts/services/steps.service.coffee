@@ -80,7 +80,7 @@ srv = ($rootScope, StepsAPIService, OptimistCollection) ->
       endsAt           = new Date(step.endsAt)
 
       hasSubmissions   = step.details.submissionIds?.length > 0
-      closed = step.details.customerConfirmedRanks || step.details.customerConfirmedComments || step.details.customerAcceptedFixes
+      closed = step.details.customerConfirmedRanks || step.details.customerConfirmedComments || step.details.customerAcceptedFixes || step.details.finalReportSubmitted
 
       if closed
         'CLOSED'
