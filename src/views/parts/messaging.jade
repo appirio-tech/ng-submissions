@@ -1,4 +1,5 @@
 .image-slide-viewer-messaging.flex.column(ng-class='{active: vm.showMessages}', flush-height='flush-height')
+  loader(ng-show="vm.messagesLoading")
   .title
     h4 Feedback
     hr

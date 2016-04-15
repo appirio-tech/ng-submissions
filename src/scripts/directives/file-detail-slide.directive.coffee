@@ -22,5 +22,6 @@ directive = ->
     toggleComments:  '&'
     sendMessage:     '&'
     ranksConfirmed:  '='
+    messagesLoading: '='
 
 angular.module('appirio-tech-submissions').directive 'fileDetailSlide', directive

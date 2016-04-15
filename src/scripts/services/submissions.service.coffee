@@ -1,6 +1,6 @@
 'use strict'
 
-SubmissionsService = ($rootScope, SubmissionsAPIService, SubmissionsMessagesAPIService, UserV3Service, MessageUpdateAPIService) ->
+SubmissionsService = ($rootScope, SubmissionsAPIService, SubmissionsMessagesAPIService, UserV3Service, MessageUpdateAPIService, ThreadsAPIService) ->
   data = {}
   pending = false
   error = false
@@ -62,6 +62,11 @@ SubmissionsService = ($rootScope, SubmissionsAPIService, SubmissionsMessagesAPIS
     promise = SubmissionsAPIService.query(params).$promise
 
     promise.then (res) ->
+      res.forEach (submission) ->
+        submission.files.forEach (file) ->
+          if file.threads[0]
+            file.threads[0].messages = []
+
       error = false
       data[stepId] = res
 
@@ -75,6 +80,9 @@ SubmissionsService = ($rootScope, SubmissionsAPIService, SubmissionsMessagesAPIS
       emitUpdates(projectId, stepId)
 
   markMessagesAsRead = (projectId, stepId, submissionId, fileId) ->
+    unless data[stepId]
+      return false
+
     user           = UserV3Service.getCurrentUser()
     submission     = data[stepId].filter((submission) -> submission.id == submissionId)[0]
     file           = submission.files.filter((file) -> file.id == fileId)[0]
@@ -101,6 +109,27 @@ SubmissionsService = ($rootScope, SubmissionsAPIService, SubmissionsMessagesAPIS
     promise.then (res) ->
       toggleRead()
       emitUpdates(projectId, stepId)
+
+  getMessages = (projectId, stepId, submissionId, fileId) ->
+    user       = UserV3Service.getCurrentUser()
+    submission = data[stepId].filter((submission) -> submission.id == submissionId)[0]
+    file       = submission.files.filter((file) -> file.id == fileId)[0]
+    thread     = file.threads[0]
+
+    params =
+      id          : thread.id
+      subscriberId: user.id
+
+    promise = ThreadsAPIService.get(params).$promise
+
+    promise.then (res) ->
+      file.threads[0] = res
+
+  name               : 'SubmissionsService'
+  subscribe          : subscribe
+  get                : get
+  markMessagesAsRead : markMessagesAsRead
+  sendMessage        : sendMessage
 
   sendMessage = (projectId, stepId, submissionId, fileId, message) ->
     user       = UserV3Service.getCurrentUser()
@@ -140,10 +169,11 @@ SubmissionsService = ($rootScope, SubmissionsAPIService, SubmissionsMessagesAPIS
   name               : 'SubmissionsService'
   subscribe          : subscribe
   get                : get
+  getMessages        : getMessages
   markMessagesAsRead : markMessagesAsRead
   sendMessage        : sendMessage
 
-SubmissionsService.$inject = ['$rootScope', 'SubmissionsAPIService', 'SubmissionsMessagesAPIService', 'UserV3Service', 'MessageUpdateAPIService']
+SubmissionsService.$inject = ['$rootScope', 'SubmissionsAPIService', 'SubmissionsMessagesAPIService', 'UserV3Service', 'MessageUpdateAPIService', 'ThreadsAPIService']
 
 angular.module('appirio-tech-submissions').factory 'SubmissionsService', SubmissionsService
 

@@ -9,6 +9,7 @@ FileDetailSlideContainerController = ($scope, $state, $filter, DataService, Step
   submissionId   = $scope.submissionId
   fileId         = $scope.fileId
   vm.userType    = $scope.userType
+  vm.messagesLoading = false
   vm.messages    = []
   vm.newMessage  = ''
 
@@ -59,14 +60,17 @@ FileDetailSlideContainerController = ($scope, $state, $filter, DataService, Step
       vm.messages               = vm.startingFile.threads[0]?.messages || []
       vm.canComment             = canComment(vm.userType, vm.submission.belongsToUser, step.stepType, step.status, step.details.customerConfirmedRanks, vm.submission.rank)
 
-      if vm.file
-        vm.file.threads[0]?.messages = vm.messages
-
   vm.onFileChange = (file) ->
     vm.file = file
     fileId = file.id
     vm.messages = vm.file.threads[0]?.messages || []
-    vm.markMessagesAsRead()
+    vm.messagesLoading = true
+
+    SubmissionsService.getMessages(projectId, stepId, submissionId, fileId).then (res) ->
+      vm.messagesLoading = false
+      vm.messages = res.messages
+      vm.markMessagesAsRead()
+
 
   vm.sendMessage = ->
     if vm.newMessage
@@ -75,6 +79,7 @@ FileDetailSlideContainerController = ($scope, $state, $filter, DataService, Step
 
   vm.toggleComments = ->
     vm.showMessages = !vm.showMessages
+
     vm.markMessagesAsRead()
 
   vm.markMessagesAsRead = ->
