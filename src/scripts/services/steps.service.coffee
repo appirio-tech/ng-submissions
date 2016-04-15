@@ -8,6 +8,7 @@ srv = ($rootScope, StepsAPIService, OptimistCollection) ->
     'completeDesigns'
     'finalFixes'
     'code'
+    'codeFinalFixes'
   ]
 
   statuses = [
@@ -25,6 +26,7 @@ srv = ($rootScope, StepsAPIService, OptimistCollection) ->
     completeDesigns: 'Complete Designs'
     finalFixes: 'Final Fixes'
     code: 'Development'
+    codeFinalFixes: 'Development Final Fixes'
 
   createOrderedRankList = (rankedSubmissions, numberOfRanks) ->
     orderedRanks = []
@@ -71,14 +73,14 @@ srv = ($rootScope, StepsAPIService, OptimistCollection) ->
     rankedSubmissions
 
   statusOf = (step) ->
-    if step.stepType == 'designConcepts' || step.stepType == 'completeDesigns' || step.stepType == 'finalFixes' || step.stepType == 'code'
+    if step.stepType
       now              = Date.now()
       startsAt         = new Date(step.startsAt)
       submissionsDueBy = new Date(step.details.submissionsDueBy)
       endsAt           = new Date(step.endsAt)
 
       hasSubmissions   = step.details.submissionIds?.length > 0
-      closed = step.details.customerConfirmedRanks || step.details.customerConfirmedComments || step.details.customerAcceptedFixes
+      closed = step.details.customerConfirmedRanks || step.details.customerConfirmedComments || step.details.customerAcceptedFixes || step.details.finalReportSubmitted
 
       if closed
         'CLOSED'
@@ -103,7 +105,7 @@ srv = ($rootScope, StepsAPIService, OptimistCollection) ->
       updateCallback: ->
         $rootScope.$emit "StepsService:changed:#{projectId}"
         data[projectId].get().forEach (step) ->
-          $rootScope.$emit "StepsService:changed:#{projectId}:#{step.id}" 
+          $rootScope.$emit "StepsService:changed:#{projectId}:#{step.id}"
       propsToIgnore: ['$promise', '$resolved']
 
     newSteps
